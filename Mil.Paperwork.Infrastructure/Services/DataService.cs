@@ -48,6 +48,7 @@ namespace Mil.Paperwork.Infrastructure.Services
                 if (!productsDict.TryGetValue(productName, out var existingProduct))
                 {
                     productsDict.Add(productName, newProduct);
+                    _existingProducts.Add(newProduct);
                 }
                 else
                 {
