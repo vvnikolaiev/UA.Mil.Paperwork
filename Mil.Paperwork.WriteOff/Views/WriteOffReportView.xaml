@@ -1,0 +1,155 @@
+﻿<UserControl x:Class="Mil.Paperwork.WriteOff.Views.WriteOffReportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:Mil.Paperwork.WriteOff.Views"
+             xmlns:ViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels"
+             xmlns:DTO="clr-namespace:Mil.Paperwork.Domain.DataModels;assembly=Mil.Paperwork.Domain" 
+             d:DataContext="{d:DesignInstance Type=ViewModels:WriteOffReportViewModel}"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style x:Key="DataGridTextBlockStyle"  TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="MinWidth" Value="40"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="DatePicker">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Language" Value="uk-UA"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="10"/>
+        </Style>
+        
+
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="0" Grid.Column="0"
+              Background="PaleGoldenrod">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="10"
+                       Text="WriteOff Report" FontSize="20" FontWeight="Bold" Margin="10" />
+
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Зберегти в...:" VerticalAlignment="Center" />
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding DestinationFolderPath}" Width="300" VerticalAlignment="Center" IsReadOnly="True" />
+            <Button Grid.Row="1" Grid.Column="2" 
+                    Content="..." Command="{Binding SelectFolderCommand}" Width="30" VerticalAlignment="Center" />
+
+            <!-- Common Data Controls -->
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Реєстраційний номер:"/>
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Код документу:"/>
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Втрачено" />
+            <TextBlock Grid.Row="5" Grid.Column="0" Text="Причина втрати:"/>
+
+            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding RegistrationNumber}" 
+                     Width="50" HorizontalAlignment="Left"/>
+            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding DocumentNumber}" 
+                     Width="50" HorizontalAlignment="Left"/>
+            <DatePicker Grid.Row="4" Grid.Column="1" SelectedDate="{Binding WriteOffDate}" Width="100" 
+                        HorizontalAlignment="Left" Margin="5"/>
+            <TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="4" Text="{Binding Reason}" HorizontalAlignment="Stretch"
+                     TextWrapping="Wrap"/>
+
+        </Grid>
+
+        <DataGrid Grid.Row="1" Grid.Column="0" 
+                  ItemsSource="{Binding AssetsCollection}" 
+                  SelectedItem="{Binding SelectedAsset}"
+                  AutoGenerateColumns="False"
+                  Margin="10">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Назва" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding DataContext.Products, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                      Text="{Binding Name}"
+                                      SelectedItem="{Binding SelectedProduct, UpdateSourceTrigger=PropertyChanged}" 
+                                      IsEditable="True"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Center">
+                                <Behaviors:Interaction.Triggers>
+                                    <Behaviors:EventTrigger EventName="SelectionChanged">
+                                        <Behaviors:InvokeCommandAction Command="{Binding ProductSelectedCommand}" />
+                                    </Behaviors:EventTrigger>
+                                </Behaviors:Interaction.Triggers>
+                            </ComboBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Од. виміру" Binding="{Binding MeasurementUnit}" Width="50"
+                                    ElementStyle="{StaticResource DataGridTextBlockStyle}">
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="С/Н" Binding="{Binding SerialNumber}" Width="70"
+                                    ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
+                <DataGridTextColumn Header="Код ном." Binding="{Binding NomenclatureCode}" Width="70"
+                                    ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
+                <DataGridTextColumn Header="Кат-ія" Binding="{Binding Category}" Width="50"
+                                    ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
+                <DataGridTextColumn Header="Ціна" Binding="{Binding Price}" Width="60"
+                                    ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
+                <DataGridTextColumn Header="К-сть" Binding="{Binding Count}" Width="40"
+                                    ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
+                <DataGridTextColumn Header="Кзб" Binding="{Binding WearAndTearCoeff}" Width="40"
+                                    ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
+                <DataGridTemplateColumn Header="Взято на облік" Width="*" MaxWidth="110">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DatePicker SelectedDate="{Binding StartDate, Mode=TwoWay}" Language="uk-UA"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Реєстр. номер" Binding="{Binding TSRegisterNumber}" Width="60"
+                                    ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
+                <DataGridTextColumn Header="Код док." Binding="{Binding TSDocumentNumber}" Width="60"
+                                    ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Content="Generate Report" Command="{Binding GenerateReportCommand}"/>
+            <Button Content="Clear Table" Command="{Binding ClearTableCommand}"/>
+            <Button Content="Add Row" Command="{Binding AddRowCommand}" />
+            <Button Content="Remove Row" Command="{Binding RemoveRowCommand }" />
+            <Button Content="Copy selected Asset" Command="{Binding CopySelectedAssetCommand}" CommandParameter="{Binding SelectedAsset}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
