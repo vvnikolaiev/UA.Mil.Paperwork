@@ -1,0 +1,99 @@
+﻿<UserControl x:Class="Mil.Paperwork.WriteOff.Views.AssetValuationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Mil.Paperwork.WriteOff.Views"
+             xmlns:ViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels" 
+             xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors" 
+             xmlns:converters="clr-namespace:Mil.Paperwork.Infrastructure.Converters;assembly=Mil.Paperwork.Infrastructure"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=ViewModels:AssetValuationViewModel}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <converters:InversedBoolConverter x:Key="InversedBoolConverter"/>
+
+    </UserControl.Resources>
+
+    <Grid Grid.IsSharedSizeScope="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" SharedSizeGroup="ColumnTitle" />
+            <ColumnDefinition Width="110" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="110" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Назва" />
+        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4"
+            Text="{Binding Name}" 
+            TextWrapping="Wrap"
+            IsReadOnly="{Binding IsReadOnly}" />
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Загальна ціна" />
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding TotalPrice}" 
+             IsReadOnly="{Binding IsReadOnly}" />
+
+        <TextBlock Grid.Row="1" Grid.Column="2" Text="Одиниця вимірювання" />
+        <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding MeasurementUnit}" 
+                 IsReadOnly="{Binding IsReadOnly}" />
+
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Дата оцінки" />
+        <DatePicker Grid.Row="2" Grid.Column="1" SelectedDate="{Binding ValuationDate}" Width="100" 
+                HorizontalAlignment="Left" Margin="5"/>
+
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Метод" />
+        <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4" 
+                 Text="{Binding Description}" 
+                 HorizontalAlignment="Stretch"
+                 TextWrapping="Wrap"/>
+
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Шаблон" />
+
+        <Grid Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <ComboBox Grid.Column="0"
+                  ItemsSource="{Binding ValuationDataTemplates}"
+                  DisplayMemberPath="Name"
+                  SelectedItem="{Binding SelectedValuationTemplate, UpdateSourceTrigger=PropertyChanged}" 
+                  IsEditable="False"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Center">
+            </ComboBox>
+
+            <Button Grid.Column="1" 
+                Content="Apply template"
+                Command="{Binding ApplyValuationTemplateCommand}"/>
+        </Grid>
+
+        <DataGrid Grid.Row="5" Grid.ColumnSpan="6" 
+              ItemsSource="{Binding Components}"
+              AutoGenerateColumns="False"
+              CanUserAddRows="false">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Назва" Binding="{Binding Name}" Width="*"/>
+                <DataGridTextColumn Header="Од. вим." Binding="{Binding MeasurementUnit}" />
+                <DataGridTextColumn Header="К-сть" Binding="{Binding Quantity}" />
+                <DataGridTextColumn Header="Ціна" Binding="{Binding Price}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

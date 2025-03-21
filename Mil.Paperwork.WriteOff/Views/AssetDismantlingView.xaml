@@ -1,0 +1,152 @@
+﻿<UserControl x:Class="Mil.Paperwork.WriteOff.Views.AssetDismantlingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Mil.Paperwork.WriteOff.Views"
+             xmlns:ViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels" 
+             xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors" 
+             xmlns:converters="clr-namespace:Mil.Paperwork.Infrastructure.Converters;assembly=Mil.Paperwork.Infrastructure"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=ViewModels:AssetDismantlingViewModel}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <converters:InversedBoolConverter x:Key="InversedBoolConverter"/>
+    </UserControl.Resources>
+
+    <Grid Grid.IsSharedSizeScope="True" Background="Wheat">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" SharedSizeGroup="ColumnTitle" />
+            <ColumnDefinition Width="110" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="80" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Назва" 
+                   x:Name="NameTextBlock" />
+        <ComboBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="6"
+                  ItemsSource="{Binding Products}" 
+                  Text="{Binding Name}"
+                  SelectedItem="{Binding SelectedProduct, UpdateSourceTrigger=PropertyChanged}" 
+                  IsEditable="True"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Center">
+            <Behaviors:Interaction.Triggers>
+                <Behaviors:EventTrigger EventName="SelectionChanged">
+                    <Behaviors:InvokeCommandAction Command="{Binding ProductSelectedCommand}" />
+                </Behaviors:EventTrigger>
+                <Behaviors:EventTrigger EventName="TextChanged">
+                    <Behaviors:InvokeCommandAction Command="{Binding ProductNameChangedCommand}" />
+                </Behaviors:EventTrigger>
+            </Behaviors:Interaction.Triggers>
+        </ComboBox>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="C/Н:"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SerialNumber, UpdateSourceTrigger=PropertyChanged}">
+            <Behaviors:Interaction.Triggers>
+                <Behaviors:EventTrigger EventName="TextChanged">
+                    <Behaviors:InvokeCommandAction Command="{Binding ProductNameChangedCommand}" />
+                </Behaviors:EventTrigger>
+            </Behaviors:Interaction.Triggers>
+        </TextBox>
+
+        <TextBlock Grid.Row="1" Grid.Column="2" Text="Код номенкл.:" />
+        <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding NomenclatureCode}" />
+
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Реєстр. №:"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding RegistrationNumber}" />
+
+        <TextBlock Grid.Row="2" Grid.Column="2" Text="Код документу:"/>
+        <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding DocumentNumber}" />
+
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Загальна ціна" />
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding TotalPrice}" />
+
+        <TextBlock Grid.Row="3" Grid.Column="2" Text="Одиниця виміру" />
+        <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding MeasurementUnit}" />
+
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Причина:"/>
+        <TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" 
+                 Text="{Binding DismantlingReason, UpdateSourceTrigger=PropertyChanged}" 
+                 HorizontalAlignment="Stretch"
+                 MaxHeight="50" TextWrapping="Wrap"
+                 ToolTip="внаслідок авіаційно-бомбового удару противником">
+            <Behaviors:Interaction.Triggers>
+                <Behaviors:EventTrigger EventName="TextChanged">
+                    <Behaviors:InvokeCommandAction Command="{Binding ProductNameChangedCommand}" />
+                </Behaviors:EventTrigger>
+            </Behaviors:Interaction.Triggers>
+        </TextBox>
+
+        <TextBlock Grid.Row="5" Grid.Column="0"
+                       Text="Final reason text:"/>
+        <TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="5"
+                 Text="{Binding FinalReportReasonText}" 
+                 HorizontalAlignment="Stretch"
+                 Height="40" TextWrapping="Wrap"/>
+
+
+        <TextBlock Grid.Row="6" Grid.Column="0" Text="Дата оцінки" />
+        <DatePicker Grid.Row="6" Grid.Column="1" SelectedDate="{Binding ValuationDate}" Width="100" 
+                    HorizontalAlignment="Left" Margin="5"/>
+
+        <TextBlock Grid.Row="6" Grid.Column="2" Text="Метод оцінки" />
+        <TextBox Grid.Row="6" Grid.Column="3" Grid.ColumnSpan="4" Text="{Binding Description}" 
+                 HorizontalAlignment="Stretch"
+                 TextWrapping="Wrap"/>
+
+        <TextBlock Grid.Row="7" Grid.Column="0" Text="Шаблон" />
+
+        <Grid Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <ComboBox Grid.Column="0"
+                      ItemsSource="{Binding ValuationDataTemplates}"
+                      DisplayMemberPath="Name"
+                      SelectedItem="{Binding SelectedValuationTemplate, UpdateSourceTrigger=PropertyChanged}" 
+                      IsEditable="False"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Center"/>
+
+            <Button Grid.Column="1" 
+                    Content="Apply template"
+                    Command="{Binding ApplyValuationTemplateCommand}"/>
+        </Grid>
+
+
+        <DataGrid Grid.Row="8" Grid.ColumnSpan="6" 
+                ItemsSource="{Binding Components}"
+                AutoGenerateColumns="False"
+                CanUserAddRows="false">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Назва" Binding="{Binding Name}" Width="*"/>
+                <DataGridTextColumn Header="Од. вим." Binding="{Binding MeasurementUnit}" />
+                <DataGridTextColumn Header="К-сть" Binding="{Binding Quantity}" />
+                <DataGridTextColumn Header="Ціна" Binding="{Binding Price}" />
+                <DataGridCheckBoxColumn Header="Дерибан" Binding="{Binding Exclude, UpdateSourceTrigger=PropertyChanged}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

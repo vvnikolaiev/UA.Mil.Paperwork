@@ -1,0 +1,43 @@
+# Ignore build output
+bin/
+obj/
+build/
+
+#Ignore .NET Core build output
+*.dll
+*.pdb
+*.cache
+
+# Ignore user-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignore temporary files
+*.tmp
+*.log
+*.vspscc
+*.vssscc
+
+# Ignore .NET Core files
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Ignore Windows files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Ignore secrets and sensitive files
+appsettings.json
+appsettings.Development.json
+.env
+/.vs
+/.vs/Mil.Paperwork.WriteOff/CopilotIndices/17.13.431.34963
+/.vs/Mil.Paperwork.WriteOff
+/Application/
+/Mil.Paperwork.Domain/Templates/~$chnicalStateReportTemplate.docx
+/Mil.Paperwork.Domain/Templates/+Акт якісного(технічного) стану  - РОЗКОМПЛЕКТАЦІЇ (807TYTF081).docx
