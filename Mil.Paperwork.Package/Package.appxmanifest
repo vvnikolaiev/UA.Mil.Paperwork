@@ -9,7 +9,7 @@
   <Identity
     Name="UA.Mil.Paperwork"
     Publisher="CN=UA.Mil.Paperowrk, O=vvnikolaiev, C=UA"
-    Version="0.1.7.0" />
+    Version="0.1.8.0" />
 
   <Properties>
     <DisplayName>Mil.Paperwork Application</DisplayName>
