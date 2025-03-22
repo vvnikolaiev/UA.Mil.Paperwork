@@ -47,8 +47,8 @@ jobs:
 
     # Restore dependencies *
     - name: Restore dependencies
-      run: dotnet restore
-
+      run: dotnet restore --runtime win-${{ matrix.targetplatform }}
+      
     # # Build the project *
     # - name: Build the project
     #   run: dotnet build --configuration Release --no-restore
