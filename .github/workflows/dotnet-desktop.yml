@@ -17,6 +17,7 @@ jobs:
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
 
     env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
       SigningCertificate: certificate.pfx
       Solution_Path: Mil.Paperwork.WriteOff.sln
       #Test_Project_Path: Mil.Paperwork.Tests\Mil.Paperwork.Tests.csproj
@@ -36,9 +37,9 @@ jobs:
       with:
         dotnet-version: 8.0.x
     
-    # Ignore Workload errors
-    - name: Update .NET Workloads (Ignore Errors)
-      run: dotnet workload update || true
+    ## Ignore Workload errors
+    #- name: Update .NET Workloads (Ignore Errors)
+    #  run: dotnet workload update || true
       
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
