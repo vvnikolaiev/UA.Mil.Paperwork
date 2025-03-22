@@ -20,7 +20,7 @@ jobs:
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
       SigningCertificate: certificate.pfx
       Solution_Path: Mil.Paperwork.WriteOff.sln
-      #Test_Project_Path: Mil.Paperwork.Tests\Mil.Paperwork.Tests.csproj
+      Test_Project_Path: Mil.Paperwork.Tests\Mil.Paperwork.Tests.csproj
       Wap_Project_Directory: Mil.Paperwork.Package
       Wap_Project_Name: Mil.Paperwork.Package.wapproj
       Artefacts_Directory: Application\Release\net8.0-windows\
@@ -55,7 +55,7 @@ jobs:
 
     # Execute all unit tests in the solution
     - name: Execute unit tests
-      run: dotnet test
+      run: dotnet test $env:Test_Project_Path
 
     # Restore the application
     - name:  Restore the Wpf application to populate the obj folder
