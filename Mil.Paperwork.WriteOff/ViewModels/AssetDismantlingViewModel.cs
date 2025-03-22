@@ -232,7 +232,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             base.ClearComponents();
         }
 
-        private void OnAssetComponentExcludedChanged(object sender, EventArgs args)
+        private void OnAssetComponentExcludedChanged(object? sender, EventArgs args)
         {
             ProductNameChangedCommandExecute();
         }

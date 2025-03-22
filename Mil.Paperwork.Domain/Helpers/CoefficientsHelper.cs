@@ -2,6 +2,13 @@
 {
     public static class CoefficientsHelper
     {
+        // https://zakon.rada.gov.ua/laws/show/759-98-%D0%BF#n330
+        // там пиздець. Треба буде щось думати як це можливо автоматизувати.
+        // подумати над варіантами формалізації.
+        // Можливо надати можливість для самостійного формування цієї частини таблиці.
+        // Можливо додати тип майна з заздалегідь підготованими стовпчиками для вводу даних.
+
+
         public static decimal GetExploitationCoefficient(DateTime startDate, DateTime endDate)
         {
             var exploitationDays = (int)(endDate - startDate).TotalDays;

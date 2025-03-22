@@ -12,9 +12,9 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private readonly IDataService _dataService;
         private readonly INavigationService _navigationService;
 
-        private ITabViewModel _selectedTab;
+        private ITabViewModel? _selectedTab;
 
-        public ITabViewModel SelectedTab
+        public ITabViewModel? SelectedTab
         {
             get => _selectedTab; 
             set => SetProperty(ref _selectedTab, value);
@@ -60,7 +60,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void CloseTab(ITabViewModel tabViewModel)
         {
-            if (tabViewModel != null)
+            if (tabViewModel != null && Tabs != null)
             {
                 Tabs.Remove(tabViewModel);
                 tabViewModel.TabCloseRequested -= OnTabCloseRequested;
