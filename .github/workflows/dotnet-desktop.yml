@@ -85,7 +85,7 @@ jobs:
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: MSIX Package
+        name: MSIX Package ${{ github.run_number }} (${{ matrix.targetplatform }})
         path: Mil.Paperwork.Package\AppPackages\
 
 
