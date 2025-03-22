@@ -5,7 +5,7 @@ namespace Mil.Paperwork.Infrastructure.Helpers
 {
     internal static class JsonHelper
     {
-        public static T ReadJson<T>(string jsonContent)
+        public static T? ReadJson<T>(string jsonContent)
         {
             var result = JsonSerializer.Deserialize<T>(jsonContent);
             return result;

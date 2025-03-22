@@ -19,9 +19,14 @@ namespace Mil.Paperwork.WriteOff.Models
 
         public void GenerateReport(WriteOffReportData reportData)
         {
+            if (reportData == null || reportData.Assets == null)
+            {
+                return;
+            }
+
             var productInfos = reportData.Assets.Select(DTOConvertionHelper.ConvertToProductDTO).ToList();
             _dataService.SaveProductsData(productInfos);
-            var valuations = reportData.Assets.Select(x => x.ValuationData).ToList();
+            IList<IAssetValuationData?> valuations = [.. reportData.Assets.Select(x => x.ValuationData)];
             _dataService.SaveValuationData(valuations);
 
             _reportManager.GenerateWriteOffReport(reportData);

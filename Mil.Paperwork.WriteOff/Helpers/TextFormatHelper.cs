@@ -23,10 +23,15 @@
 
         public static string GetDismantlingDescriptionText(string[] excludedComponentNames, string assetFullName, string reason)
         {
+            if (excludedComponentNames == null || excludedComponentNames.Length == 0)
+            {
+                return string.Empty;
+            }
+
             var itemsCount = excludedComponentNames.Length;
 
             // TODO: REFACTOR constants
-            var componentsText = itemsCount == 1 ? excludedComponentNames?.FirstOrDefault() : "компонентів";
+            var componentsText = itemsCount == 1 ? excludedComponentNames.FirstOrDefault() : "компонентів";
             var lostText = itemsCount == 1 ? "втрачену" : "втрачені";
             var itText = itemsCount == 1 ? "його" : "їхнього";
 

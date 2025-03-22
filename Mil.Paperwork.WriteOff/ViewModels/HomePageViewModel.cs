@@ -47,7 +47,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void AddWriteOffReport(DocumentTypeEnum documentType)
         {
-            ITabViewModel createdTab;
+            ITabViewModel? createdTab;
             switch (documentType)
             {
                 case DocumentTypeEnum.WriteOff:
