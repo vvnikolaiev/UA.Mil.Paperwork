@@ -30,7 +30,7 @@ namespace Mil.Paperwork.Domain.Helpers
 
             var totalCoefficient = asset.WearAndTearCoeff * explotationCoefficient * workCoefficient * technicalStateCoefficient * indexationCoefficient;
 
-            var result = asset.Price * totalCoefficient * count;
+            var result = Math.Round(asset.Price * totalCoefficient * count, 2);
 
             return result;
         }

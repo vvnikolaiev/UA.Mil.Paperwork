@@ -5,10 +5,10 @@ namespace Mil.Paperwork.Domain.Helpers
 {
     public static class ReportDataHelper
     {
-        public static IList<IAssetValuationData> GetValuationDataCollection(this WriteOffReportData reportData)
+        public static IList<IAssetValuationData?> GetValuationDataCollection(this WriteOffReportData reportData)
         {
 
-            var valuationData = new List<IAssetValuationData>();
+            var valuationData = new List<IAssetValuationData?>();
             var assetsValuationData = reportData.Assets
                 .Where(x => x.ValuationData != null)
                 .Select(x => x.ValuationData);

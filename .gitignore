@@ -41,3 +41,6 @@ appsettings.Development.json
 /Application/
 /Mil.Paperwork.Domain/Templates/~$chnicalStateReportTemplate.docx
 /Mil.Paperwork.Domain/Templates/+Акт якісного(технічного) стану  - РОЗКОМПЛЕКТАЦІЇ (807TYTF081).docx
+/Mil.Paperwork.Package/AppPackages/
+/Mil.Paperwork.Package/BundleArtifacts
+*.pfx

@@ -25,7 +25,7 @@ namespace Mil.Paperwork.Infrastructure.Services
             }
         }
 
-        public T ReadJsonFile<T>(string fileName, string directory = null)
+        public T? ReadJsonFile<T>(string fileName, string directory = null)
         {
             directory ??= GetLocalDirectoryName();
             var filePath = Path.Combine(directory, fileName);
