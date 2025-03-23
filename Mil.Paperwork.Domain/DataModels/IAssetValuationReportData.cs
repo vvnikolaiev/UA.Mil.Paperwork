@@ -4,6 +4,6 @@ namespace Mil.Paperwork.Domain.DataModels
 {
     public interface IAssetValuationReportData : IReportData
     {
-        IList<IAssetValuationData> ValuationData { get; }
+        IList<IAssetValuationData?> ValuationData { get; }
     }
 }

@@ -19,7 +19,7 @@ namespace Mil.Paperwork.Domain.DataModels
 
         public IList<AssetDismantlingData> Dismantlings { get; set; }
 
-        public IList<IAssetValuationData> ValuationData => this.GetValuationDataCollection();
+        public IList<IAssetValuationData?> ValuationData => this.GetValuationDataCollection();
 
         public string GetDestinationPath()
         {
