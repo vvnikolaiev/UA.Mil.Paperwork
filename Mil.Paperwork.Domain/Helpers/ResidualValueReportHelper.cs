@@ -8,6 +8,8 @@
         public const string FIELD_NUMBER_NAMES = "FIELD_NUMBER_NAMES";
         public const string FIELD_SUM = "FIELD_SUM";
 
+        public const string MAPPED_FIELD_DATE = "REPORT_DATE";
+
         public const string TABLE_COLUMN_SUM_FORMULA = "=SUM(N{0}:N{1})";
 
         public const int TABLE_COLUMN_INDEX = 1;

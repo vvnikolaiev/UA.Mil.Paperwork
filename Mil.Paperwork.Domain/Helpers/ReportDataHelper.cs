@@ -7,7 +7,6 @@ namespace Mil.Paperwork.Domain.Helpers
     {
         public static IList<IAssetValuationData> GetValuationDataCollection(this WriteOffReportData reportData)
         {
-
             var valuationData = new List<IAssetValuationData>();
             var assetsValuationData = reportData.Assets
                 .Where(x => x.ValuationData != null)

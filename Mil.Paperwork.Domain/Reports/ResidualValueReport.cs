@@ -54,9 +54,7 @@ namespace Mil.Paperwork.Domain.Reports
             var sheet = package.Workbook.Worksheets[0]; // Отримуємо перший аркуш
 
             FillTheTable(reportData, sheet);
-
-            var fieldsMap = _reportDataService.GetReportConfig(ReportType.ResidualValueReport);
-            sheet.MadDataToTheNamedFields(fieldsMap);
+            FillMappedFields(reportData.ReportDate, sheet);
 
             using var reportStream = new MemoryStream();
             package.SaveAs(reportStream);
@@ -85,7 +83,6 @@ namespace Mil.Paperwork.Domain.Reports
 
                 var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
 
-                // Додаємо дані (припустимо, що в таблиці 3 колонки)
                 sheet.Cells[newRow, ResidualValueReportHelper.TABLE_COLUMN_INDEX].Value = i + 1; // number
                 sheet.Cells[newRow, ResidualValueReportHelper.TABLE_COLUMN_NAME].Value = assetName;
                 sheet.Cells[newRow, ResidualValueReportHelper.TABLE_COLUMN_MEASUREMENT_UNIT].Value = asset.MeasurementUnit;
@@ -108,6 +105,15 @@ namespace Mil.Paperwork.Domain.Reports
             var cellSum = names[ResidualValueReportHelper.FIELD_SUM];
             cellCount.Value = ReportHelper.ConvertNamesNumberToReportString(assets.Count);
             cellSum.Formula = string.Format(ResidualValueReportHelper.TABLE_COLUMN_SUM_FORMULA, table.Address.Start.Row + 1, table.Address.End.Row);
+        }
+
+        private void FillMappedFields(DateTime reportDate, ExcelWorksheet sheet)
+        {
+            var fieldsMap = _reportDataService.GetReportConfig(ReportType.ResidualValueReport);
+            // add dynamic fields
+            fieldsMap.Add(ResidualValueReportHelper.MAPPED_FIELD_DATE, reportDate.ToString(ReportHelper.DATE_FORMAT));
+
+            sheet.MapDataToTheNamedFields(fieldsMap);
         }
     }
 }

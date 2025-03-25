@@ -255,14 +255,18 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         protected virtual void GenerateReport(string folderName)
         {
-            var assetValuationData = ToAssetValuationData();
-            var reportData = new AssetValuationReportData
-            {
-                DestinationFolder = folderName,
-                ValuationData = new List<IAssetValuationData> { assetValuationData }
-            };
+            IAssetValuationData assetValuationData = ToAssetValuationData();
 
-            _reportManager.GenerateValuationReport(reportData);
+            if (assetValuationData != null)
+            {
+                var reportData = new AssetValuationReportData
+                {
+                    DestinationFolder = folderName,
+                    ValuationData = [assetValuationData]
+                };
+
+                _reportManager.GenerateValuationReport(reportData);
+            }
         }
 
         private void Ok()

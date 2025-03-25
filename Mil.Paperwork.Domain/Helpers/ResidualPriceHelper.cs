@@ -23,14 +23,16 @@ namespace Mil.Paperwork.Domain.Helpers
 
         public static decimal CalculateResidualPriceForItem(AssetInfo asset, DateTime writeOffDate, int count = 1)
         {
+            var indexationCoefficient = CoefficientsHelper.GetIndexationCoefficient(asset.StartDate, writeOffDate);
+            var indexatedValue = Math.Round(asset.Price + indexationCoefficient, 2);
+
             var explotationCoefficient = CoefficientsHelper.GetExploitationCoefficient(asset.StartDate, writeOffDate);
             var workCoefficient = CoefficientsHelper.GetWorkCoefficient(asset.CapacityLeftPercantage);
             var technicalStateCoefficient = CoefficientsHelper.GetTechnicalStateCoefficient(asset.Category);
-            var indexationCoefficient = CoefficientsHelper.GetIndexationCoefficient(asset.StartDate, writeOffDate);
 
-            var totalCoefficient = asset.WearAndTearCoeff * explotationCoefficient * workCoefficient * technicalStateCoefficient * indexationCoefficient;
+            var coeffSKZ = asset.WearAndTearCoeff * explotationCoefficient * workCoefficient * technicalStateCoefficient;
 
-            var result = asset.Price * totalCoefficient * count;
+            var result = Math.Round(indexatedValue * coeffSKZ * count, 2);
 
             return result;
         }

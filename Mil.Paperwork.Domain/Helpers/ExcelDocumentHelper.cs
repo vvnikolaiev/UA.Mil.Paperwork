@@ -40,7 +40,7 @@ namespace Mil.Paperwork.Domain.Helpers
             }
         }
 
-        public static void MadDataToTheNamedFields(this ExcelWorksheet sheet, Dictionary<string, string> fieldsMap)
+        public static void MapDataToTheNamedFields(this ExcelWorksheet sheet, Dictionary<string, string> fieldsMap)
         {
             var namedFields = sheet.GetNamedFieldRanges();
 
