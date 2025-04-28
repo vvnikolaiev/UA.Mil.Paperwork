@@ -45,7 +45,7 @@
             IsReadOnly="{Binding IsReadOnly}" />
 
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Загальна ціна" />
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding TotalPrice}" 
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Price}" 
              IsReadOnly="{Binding IsReadOnly}" />
 
         <TextBlock Grid.Row="1" Grid.Column="2" Text="Одиниця вимірювання" />

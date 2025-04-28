@@ -3,12 +3,14 @@ using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Enums;
+using Mil.Paperwork.Domain.Factories;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
     internal class HomePageViewModel : ObservableItem, ITabViewModel
     {
         private readonly ReportManager _reportManager;
+        private readonly IAssetFactory _assetFactory;
         private readonly IDataService _dataService;
         private readonly INavigationService _navigationService;
 
@@ -21,9 +23,10 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         public ICommand<DocumentTypeEnum> CreateReportCommand { get; }
 
-        public HomePageViewModel(ReportManager reportManager, IDataService dataService, INavigationService navigationService)
+        public HomePageViewModel(ReportManager reportManager, IAssetFactory assetFactory, IDataService dataService, INavigationService navigationService)
         {
             _reportManager = reportManager;
+            _assetFactory = assetFactory;
             _dataService = dataService;
             _navigationService = navigationService;
 
@@ -51,7 +54,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             switch (documentType)
             {
                 case DocumentTypeEnum.WriteOff:
-                    createdTab = new WriteOffReportViewModel(_reportManager, _dataService, _navigationService);
+                    createdTab = new WriteOffReportViewModel(_reportManager, _assetFactory, _dataService, _navigationService);
                     break;
                 case DocumentTypeEnum.Valuation:
                     createdTab = new AssetValuationViewModel(_reportManager, _dataService, _navigationService);
@@ -60,7 +63,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
                     createdTab = new AssetDismantlingViewModel(_reportManager, _dataService, _navigationService);
                     break;
                 case DocumentTypeEnum.TechnicalState11:
-                    createdTab = new AssetTechnicalStateViewModel(_reportManager, _dataService, _navigationService);
+                    createdTab = new AssetTechnicalStateViewModel(_reportManager, _assetFactory, _dataService, _navigationService);
                     break;
                 default:
                     createdTab = null;

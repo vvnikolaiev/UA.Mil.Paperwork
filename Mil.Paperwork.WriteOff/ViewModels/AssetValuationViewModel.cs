@@ -24,7 +24,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private string _name;
         private string _shortName;
         private string _measurementUnit;
-        private decimal _totalPrice;
+        private decimal _price;
         private string _serialNumber;
         private ObservableCollection<AssetValuationItemViewModel> _components = [];
 
@@ -80,10 +80,10 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _serialNumber, value);
         }
 
-        public decimal TotalPrice
+        public decimal Price
         {
-            get => _totalPrice;
-            set => SetProperty(ref _totalPrice, value);
+            get => _price;
+            set => SetProperty(ref _price, value);
         }
 
         public virtual ObservableCollection<AssetValuationItemViewModel> Components
@@ -135,12 +135,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             SaveState();
         }
 
-        public AssetValuationViewModel(AssetInfo asset, ReportManager reportManager, IDataService dataService, INavigationService navigationService)
+        public AssetValuationViewModel(IAssetInfo asset, ReportManager reportManager, IDataService dataService, INavigationService navigationService)
             : this(reportManager, dataService, navigationService)
         {
             Name = asset.Name;
             ShortName = asset.ShortName;
-            TotalPrice = asset.Price;
+            Price = asset.Price;
             SerialNumber = asset.SerialNumber;
             MeasurementUnit = asset.MeasurementUnit;
 
@@ -156,7 +156,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             var assetValuationData = new AssetValuationData
             {
                 Name = Name,
-                TotalPrice = TotalPrice,
+                Price = Price,
                 SerialNumber = SerialNumber,
                 ValuationDate = ValuationDate,
                 Description = Description,
@@ -172,7 +172,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
             isValid &= !String.IsNullOrEmpty(Name);
             isValid &= Components.Any(x => x.IsValid);
-            isValid &= TotalPrice > 0;
+            isValid &= Price > 0;
 
             IsValid = isValid;
         }
@@ -262,7 +262,9 @@ namespace Mil.Paperwork.WriteOff.ViewModels
                 ValuationData = new List<IAssetValuationData> { assetValuationData }
             };
 
-            _reportManager.GenerateValuationReport(reportData);
+                _dataService.SaveValuationData([assetValuationData]);
+                _reportManager.GenerateValuationReport(reportData);
+            }
         }
 
         private void Ok()
@@ -295,7 +297,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
                 return;
             }
 
-            var sumLeft = TotalPrice;
+            var sumLeft = Price;
             var zeroPriceItems = new List<AssetValuationItemViewModel>();
 
 
@@ -336,7 +338,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             {
                 IsValid = _isValid,
                 Name = _name,
-                TotalPrice = _totalPrice,
+                Price = _price,
                 SerialNumber = _serialNumber,
                 Description = _description,
                 ValuationDate = _valuationDate,
@@ -360,7 +362,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
             IsValid = _memento.IsValid;
             Name = _memento.Name;
-            TotalPrice = _memento.TotalPrice;
+            Price = _memento.Price;
             SerialNumber = _memento.SerialNumber;
             Description = _memento.Description;
             ValuationDate = _memento.ValuationDate;

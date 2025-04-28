@@ -69,6 +69,17 @@ namespace Mil.Paperwork.Domain.Reports
         {
             var table = sheet.Tables[0]; // Отримуємо першу таблицю
 
+            //sheet.Cells[15, ResidualValueReportHelper.TABLE_COLUMN_WEAR_AND_TEAR_COEFF].Delete(eShiftTypeDelete.Left);
+            //sheet.Cells[16, ResidualValueReportHelper.TABLE_COLUMN_WEAR_AND_TEAR_COEFF].Delete(eShiftTypeDelete.Left);
+
+            //table.Columns.Add(4);
+            //table.Columns.Delete(ResidualValueReportHelper.TABLE_COLUMN_WEAR_AND_TEAR_COEFF);
+
+            //sheet.Cells[15, ResidualValueReportHelper.TABLE_COLUMN_COEFF_TS].Delete(eShiftTypeDelete.Left);
+            //sheet.Cells[16, ResidualValueReportHelper.TABLE_COLUMN_COEFF_TS].Delete(eShiftTypeDelete.Left);
+
+            //table.Columns.Delete(ResidualValueReportHelper.TABLE_COLUMN_COEFF_TS);
+
             var assets = reportData.Assets;
 
             int firstRow = table.Address.Start.Row + 1; // Перший рядок таблиці
@@ -96,7 +107,8 @@ namespace Mil.Paperwork.Domain.Reports
                 sheet.Cells[newRow, ResidualValueReportHelper.TABLE_COLUMN_CURRENCY_CONVERSION_RATE].Value = "-";
                 sheet.Cells[newRow, ResidualValueReportHelper.TABLE_COLUMN_COEFF_E].Value = CoefficientsHelper.GetExploitationCoefficient(asset.StartDate, reportData.ReportDate);
                 sheet.Cells[newRow, ResidualValueReportHelper.TABLE_COLUMN_COEFF_R].Value = CoefficientsHelper.GetWorkCoefficient(100);
-                sheet.Cells[newRow, ResidualValueReportHelper.TABLE_COLUMN_WEAR_AND_TEAR_COEFF].Value = asset.WearAndTearCoeff;
+                //sheet.Cells[newRow, ResidualValueReportHelper.TABLE_COLUMN_WEAR_AND_TEAR_COEFF].Value = asset.WearAndTearCoeff;
+                sheet.Cells[newRow, ResidualValueReportHelper.TABLE_COLUMN_WEAR_AND_TEAR_COEFF].Value = 0.8;
                 sheet.Cells[newRow, ResidualValueReportHelper.TABLE_COLUMN_COEFF_TS].Value = CoefficientsHelper.GetTechnicalStateCoefficient(asset.Category);
                 sheet.Cells[newRow, ResidualValueReportHelper.TABLE_COLUMN_VALUATION_REPORT_REFERENCE].Value = "-";
 

@@ -6,7 +6,7 @@
 
         public DateTime ReportDate { get; set; }
 
-        public IList<AssetInfo> Assets { get; set; }
+        public IList<IAssetInfo> Assets { get; set; }
 
         public string DestinationFolder { get; set; }
 

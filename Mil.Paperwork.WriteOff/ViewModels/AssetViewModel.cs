@@ -1,4 +1,5 @@
 ﻿using Mil.Paperwork.Domain.DataModels;
+using Mil.Paperwork.Domain.Factories;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.MVVM;
@@ -12,9 +13,10 @@ namespace Mil.Paperwork.WriteOff.ViewModels
     public class AssetViewModel : ObservableItem
     {
         private readonly ReportManager _reportManager;
+        private readonly IAssetFactory _assetFactory;
         private readonly IDataService _dataService;
         private readonly INavigationService _navigationService;
-        private readonly AssetInfo _assetInfo;
+        private readonly IAssetInfo _assetInfo;
 
         private ProductDTO _selectedProduct;
         private string _name = string.Empty;
@@ -126,26 +128,28 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         public ICommand OpenAssetValuationPopupCommand { get; }
 
 
-        public AssetViewModel(ReportManager reportManager, IDataService dataService, INavigationService navigationService)
+        public AssetViewModel(ReportManager reportManager, IAssetFactory assetFactory, IDataService dataService, INavigationService navigationService)
         {
             _reportManager = reportManager;
+            _assetFactory = assetFactory;
             _dataService = dataService;
             _navigationService = navigationService;
 
-            _assetInfo = new AssetInfo();
+            _assetInfo = assetFactory.CreateAssetInfo();
+            //_assetInfo = new AssetInfo();
 
             ProductSelectedCommand = new DelegateCommand(ProductSelectedExecute);
             OpenAssetValuationPopupCommand = new DelegateCommand(OpenAssetValuationPopup);
         }
 
-        public AssetViewModel(AssetInfo assetInfo, ReportManager reportManager, IDataService dataService, INavigationService navigationService)
-            : this(reportManager, dataService, navigationService)
+        public AssetViewModel(AssetInfo assetInfo, ReportManager reportManager, IAssetFactory assetFactory, IDataService dataService, INavigationService navigationService)
+            : this(reportManager, assetFactory, dataService, navigationService)
         {
             _assetInfo = assetInfo;
             UpdateFields();
         }
 
-        public AssetInfo ToAssetInfo()
+        public IAssetInfo ToAssetInfo(DateTime? reportDate = null)
         {
             _assetInfo.Name = _name;
             _assetInfo.ShortName = _shortName;
@@ -155,15 +159,20 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             _assetInfo.Category = _category;
             _assetInfo.Price = _price;
             _assetInfo.Count = _count;
-            _assetInfo.WearAndTearCoeff = _wearAndTearCoeff;
+            //_assetInfo.WearAndTearCoeff = _wearAndTearCoeff;
             _assetInfo.StartDate = _startDate;
             _assetInfo.TSRegisterNumber = _tsRegisterNumber;
             _assetInfo.TSDocumentNumber = _tsDocumentNumber;
             _assetInfo.WarrantyPeriodYears = _warrantyPeriodYears;
 
+            if (reportDate != null)
+            {
+                _assetInfo.WriteOffDateTime = (DateTime)reportDate;
+            }
+
             if (AssetValuation != null && AssetValuation.IsValid)
             {
-                AssetValuation.TotalPrice = _price;
+                AssetValuation.Price = _price;
                 AssetValuation.Name = _name;
                 AssetValuation.SerialNumber = _serialNumber;
                 _assetInfo.ValuationData = AssetValuation.ToAssetValuationData();
@@ -183,10 +192,11 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             _category = _assetInfo.Category;
             _price = _assetInfo.Price;
             _count = _assetInfo.Count;
-            _wearAndTearCoeff = _assetInfo.WearAndTearCoeff;
+            //_wearAndTearCoeff = _assetInfo.WearAndTearCoeff;
             _startDate = _assetInfo.StartDate;
             _tsRegisterNumber = _assetInfo.TSRegisterNumber;
             _tsDocumentNumber = _assetInfo.TSDocumentNumber;
+            //_writeOffDateTime = _assetInfo.WriteOffDateTime;
             _warrantyPeriodYears = _assetInfo.WarrantyPeriodYears;
         }
 

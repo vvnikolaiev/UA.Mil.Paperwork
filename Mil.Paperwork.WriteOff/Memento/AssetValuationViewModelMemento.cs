@@ -12,7 +12,7 @@
     {
         public bool IsValid { get; set; }
         public string Name { get; set; }
-        public decimal TotalPrice { get; set; }
+        public decimal Price { get; set; }
         public string SerialNumber { get; set; }
         public string Description { get; set; }
         public DateTime ValuationDate { get; set; }

@@ -15,7 +15,7 @@ namespace Mil.Paperwork.Domain.DataModels
         
         public DateTime ReportDate { get; set; }
 
-        public IList<AssetInfo> Assets { get; set; }
+        public IList<IAssetInfo> Assets { get; set; }
 
         public IList<AssetDismantlingData> Dismantlings { get; set; }
 

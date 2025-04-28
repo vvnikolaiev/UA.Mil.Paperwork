@@ -92,17 +92,17 @@ namespace Mil.Paperwork.Domain.Reports
                 var rowNumber = i + 1;
                 var index = $"1.{rowNumber}";
                 var nomenclatureCode = assetComponent.NomenclatureCode?.ToUpper() ?? string.Empty;
-                var category = ReportHelper.ConvertCategoryToText(assetComponent.Category);
-                var totalPrice = Math.Round(assetComponent.Price * assetComponent.Quantity, 2);
+                var componentCategory = ReportHelper.ConvertCategoryToText(assetComponent.Category);
+                var totalComponentPrice = Math.Round(assetComponent.Price * assetComponent.Quantity, 2);
 
                 row.Cells[DismantlingReportHelper.COLUMN_INDEX].AddText(index, fontSize);
                 row.Cells[DismantlingReportHelper.COLUMN_COMPONENT_NAME].AddText(assetComponent.Name, fontSize, horizontalAlignment: HorizontalAlignment.Left);
                 row.Cells[DismantlingReportHelper.COLUMN_COMPONENT_NOMENCLATURE_CODE].AddText(nomenclatureCode, fontSize);
                 row.Cells[DismantlingReportHelper.COLUMN_COMPONENT_MEAS_UNIT].AddText(assetComponent.Unit, fontSize);
-                row.Cells[DismantlingReportHelper.COLUMN_COMPONENT_CATEGORY].AddText(category, fontSize);
+                row.Cells[DismantlingReportHelper.COLUMN_COMPONENT_CATEGORY].AddText(componentCategory, fontSize);
                 row.Cells[DismantlingReportHelper.COLUMN_COMPONENT_COUNT].AddNumber(assetComponent.Quantity, fontSize);
                 row.Cells[DismantlingReportHelper.COLUMN_COMPONENT_RESIDUAL_PRICE].AddPrice(assetComponent.Price, fontSize);
-                row.Cells[DismantlingReportHelper.COLUMN_COMPONENT_PRICE_TOTAL].AddPrice(totalPrice, fontSize);
+                row.Cells[DismantlingReportHelper.COLUMN_COMPONENT_PRICE_TOTAL].AddPrice(totalComponentPrice, fontSize);
             }
 
             table.Rows.Remove(firstRow);
@@ -118,13 +118,15 @@ namespace Mil.Paperwork.Domain.Reports
                 var cell = table.MergeCellsVertically(i, firstRowIndex, assetDismantlingData.AssetComponentsCount);
                 mergedCells.Add(i, cell);
             }
-
+            
+            var category = ReportHelper.ConvertCategoryToText(assetDismantlingData.Category);
+            
             mergedCells[DismantlingReportHelper.COLUMN_ASSET_NAME].AddText(assetDismantlingData.Name, fontSize, horizontalAlignment: HorizontalAlignment.Left);
             mergedCells[DismantlingReportHelper.COLUMN_ASSET_NOMENCLATURE_CODE].AddText(assetDismantlingData.NomenclatureCode, fontSize);
             mergedCells[DismantlingReportHelper.COLUMN_ASSET_MEAS_UNIT].AddText(assetDismantlingData.MeasurementUnit, fontSize);
-            mergedCells[DismantlingReportHelper.COLUMN_ASSET_CATEGORY].AddNumber(assetDismantlingData.Category, fontSize);
-            mergedCells[DismantlingReportHelper.COLUMN_ASSET_COUNT].AddNumber(1, fontSize);
-            mergedCells[DismantlingReportHelper.COLUMN_ASSET_PRICE].AddPrice(assetDismantlingData.TotalPrice, fontSize);
+            mergedCells[DismantlingReportHelper.COLUMN_ASSET_CATEGORY].AddText(category, fontSize);
+            mergedCells[DismantlingReportHelper.COLUMN_ASSET_COUNT].AddNumber(assetDismantlingData.Count, fontSize);
+            mergedCells[DismantlingReportHelper.COLUMN_ASSET_PRICE].AddPrice(assetDismantlingData.Price, fontSize);
             mergedCells[DismantlingReportHelper.COLUMN_ASSET_PRICE_TOTAL].AddPrice(assetDismantlingData.TotalPrice, fontSize);
 
             AddSummaryRow(assetDismantlingData, table);
@@ -138,16 +140,15 @@ namespace Mil.Paperwork.Domain.Reports
             var assetCellsCount = DismantlingReportHelper.COLUMN_ASSET_LAST - DismantlingReportHelper.COLUMN_ASSET_FIRST + 1;
             var summaryAssetCell = textSummaryRow.CreateMergedCell(DismantlingReportHelper.COLUMN_ASSET_FIRST, assetCellsCount);
 
-            var assetPrice = assetDismantlingData.TotalPrice;
-            var assetPriceText = ReportHelper.ConvertTotalSumToUkrainianString(assetPrice);
-            var totalAssetsText = ReportHelper.ConvertNamesNumberToReportString(1);
+            var assetPriceText = ReportHelper.ConvertTotalSumToUkrainianString(assetDismantlingData.TotalPrice);
+            var totalAssetsText = ReportHelper.ConvertNamesNumberToReportString(assetDismantlingData.Count);
             var assetSummaryText = string.Format(DismantlingReportHelper.TOTAL_TEXT_FORMAT, totalAssetsText, assetPriceText);
             textSummaryRow.Cells[DismantlingReportHelper.COLUMN_ASSET_FIRST].AddText(assetSummaryText, DismantlingReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Left);
 
             // second part of the table (asset components)
             var componentCellsCount = DismantlingReportHelper.COLUMN_COMPONENT_LAST - DismantlingReportHelper.COLUMN_COMPONENT_FIRST + 1;
             var summaryComponentsCell = textSummaryRow.CreateMergedCell(DismantlingReportHelper.COLUMN_COMPONENT_FIRST, componentCellsCount);
-            
+
             var totalSumComponents = assetDismantlingData.AssetComponents.Sum(x => Math.Round(x.Price * x.Quantity, 2));
             var totalSumText = ReportHelper.ConvertTotalSumToUkrainianString(totalSumComponents);
             var totalItemsText = ReportHelper.ConvertNamesNumberToReportString(assetDismantlingData.AssetComponentsCount);

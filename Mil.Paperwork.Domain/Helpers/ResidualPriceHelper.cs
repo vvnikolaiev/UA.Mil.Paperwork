@@ -21,16 +21,15 @@ namespace Mil.Paperwork.Domain.Helpers
             return totalSum;
         }
 
-        public static decimal CalculateResidualPriceForItem(AssetInfo asset, DateTime writeOffDate, int count = 1)
+        // add ITotalWearCoefficientProvider to the params
+        public static decimal CalculateResidualPriceForItem(IAssetInfo asset, DateTime writeOffDate, int count = 1)
         {
-            var explotationCoefficient = CoefficientsHelper.GetExploitationCoefficient(asset.StartDate, writeOffDate);
-            var workCoefficient = CoefficientsHelper.GetWorkCoefficient(asset.CapacityLeftPercantage);
-            var technicalStateCoefficient = CoefficientsHelper.GetTechnicalStateCoefficient(asset.Category);
             var indexationCoefficient = CoefficientsHelper.GetIndexationCoefficient(asset.StartDate, writeOffDate);
+            var indexatedValue = Math.Round(asset.Price * indexationCoefficient, 2);
 
-            var totalCoefficient = asset.WearAndTearCoeff * explotationCoefficient * workCoefficient * technicalStateCoefficient * indexationCoefficient;
+            var coeffSKZ = asset.TotalWearCoefficient;
 
-            var result = asset.Price * totalCoefficient * count;
+            var result = Math.Round(indexatedValue * coeffSKZ, 2) * count;
 
             return result;
         }

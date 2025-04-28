@@ -92,7 +92,7 @@
                     <DataGridTextColumn Header="Name" Width="*" Binding="{Binding Name}" IsReadOnly="True" />
                     <DataGridTextColumn Header="Serial Number" Binding="{Binding SerialNumber}" IsReadOnly="True" />
                     <DataGridTextColumn Header="Register Number" Binding="{Binding RegistrationNumber}" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Price" Binding="{Binding TotalPrice}" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Price" Binding="{Binding Price}" IsReadOnly="True" />
                     <DataGridTextColumn Header="Count" Binding="{Binding ItemsCount}" IsReadOnly="True" />
                     <DataGridTextColumn Header="Count Dismantle" Binding="{Binding ItemsToExcludeCount}" IsReadOnly="True" />
                 </DataGrid.Columns>
@@ -185,7 +185,6 @@
             <Button Content="Generate Report" Command="{Binding GenerateReportCommand}"/>
             <Button Content="Додати Розукомплектацію" Command="{Binding AddDismantlingCommand}"/>
             <Button Content="Add Row" Command="{Binding AddRowCommand}" />
-            <Button Content="Copy selected Asset" Command="{Binding CopySelectedAssetCommand}" CommandParameter="{Binding SelectedAsset}"/>
             <Button Content="Remove Row" Command="{Binding RemoveRowCommand }" />
             <Button Content="Clear Table" Command="{Binding ClearTableCommand}"/>
             <Button Content="Закрити" Command="{Binding CloseCommand}"/>

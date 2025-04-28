@@ -6,6 +6,6 @@
 
         DateTime ReportDate { get; }
 
-        IList<AssetInfo> Assets { get; set; }
+        IList<IAssetInfo> Assets { get; set; }
     }
 }

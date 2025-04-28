@@ -5,5 +5,7 @@ namespace Mil.Paperwork.Infrastructure.Services
     public interface IReportDataService
     {
         Dictionary<string, string> GetReportConfig(ReportType reportType);
+
+        AssetType GetAssetType();
     }
 }

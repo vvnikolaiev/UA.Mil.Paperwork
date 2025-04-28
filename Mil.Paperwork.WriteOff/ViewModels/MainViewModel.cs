@@ -3,12 +3,14 @@ using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.Infrastructure.Services;
 using System.Collections.ObjectModel;
+using Mil.Paperwork.Domain.Factories;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
     public class MainViewModel : ObservableItem
     {
         private readonly ReportManager _reportManager;
+        private readonly IAssetFactory _assetFactory;
         private readonly IDataService _dataService;
         private readonly INavigationService _navigationService;
 
@@ -21,9 +23,10 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         }
         public ObservableCollection<ITabViewModel> Tabs { get; set; } = [];
 
-        public MainViewModel(ReportManager reportManager, IDataService dataService, INavigationService navigationService)
+        public MainViewModel(ReportManager reportManager, IAssetFactory assetFactory, IDataService dataService, INavigationService navigationService)
         {
             _reportManager = reportManager;
+            _assetFactory = assetFactory;
             _dataService = dataService;
             _navigationService = navigationService;
 
@@ -32,7 +35,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void AddHomeTab()
         {
-            var homePageVM = new HomePageViewModel(_reportManager, _dataService, _navigationService);
+            var homePageVM = new HomePageViewModel(_reportManager, _assetFactory, _dataService, _navigationService);
             homePageVM.TabAdded += OnNewTabAdded;
 
             AddNeTab(homePageVM);

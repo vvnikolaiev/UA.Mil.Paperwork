@@ -98,7 +98,7 @@ namespace Mil.Paperwork.Infrastructure.Services
                     existingValuation.NomenclatureCode = assetValuation.NomenclatureCode;
                     existingValuation.Description = assetValuation.Description;
                     existingValuation.AssetComponents = assetValuation.AssetComponents;
-                    existingValuation.TotalPrice = assetValuation.TotalPrice;
+                    existingValuation.Price = assetValuation.Price;
                 }
             }
 
