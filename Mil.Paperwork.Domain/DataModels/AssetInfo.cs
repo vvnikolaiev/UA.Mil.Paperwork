@@ -25,6 +25,7 @@ namespace Mil.Paperwork.Domain.DataModels
 
         public abstract decimal TotalWearCoefficient { get; }
 
+        // https://zakon.rada.gov.ua/laws/show/759-98-%D0%BF#n330
         public abstract IList<decimal> GetCoefficients();
     }
 
