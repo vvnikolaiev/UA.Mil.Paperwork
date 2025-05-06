@@ -3,30 +3,6 @@ using Mil.Paperwork.Infrastructure.DataModels;
 
 namespace Mil.Paperwork.Domain.DataModels
 {
-
-    public interface IAssetInfo
-    {
-        IAssetValuationData? ValuationData { get; set; }
-
-        string Name { get; set; }
-        string ShortName { get; set; }
-        string MeasurementUnit { get; set; }
-        string SerialNumber { get; set; }
-        string NomenclatureCode { get; set; }
-        int Category { get; set; }
-        decimal Price { get; set; }
-        int Count { get; set; }
-        DateTime StartDate { get; set; }
-
-        string TSRegisterNumber { get; set; }
-        string TSDocumentNumber { get; set; }
-
-        DateTime WriteOffDateTime { get; set; }
-
-        int WarrantyPeriodYears { get; set; }
-        decimal TotalWearCoefficient { get; }
-    }
-
     public abstract class AssetInfo : IAssetInfo
     {
         public IAssetValuationData? ValuationData { get; set; }
@@ -49,6 +25,7 @@ namespace Mil.Paperwork.Domain.DataModels
 
         public abstract decimal TotalWearCoefficient { get; }
 
+        public abstract IList<decimal> GetCoefficients();
     }
 
     public class ConnectivityAssetInfo : AssetInfo
@@ -57,6 +34,16 @@ namespace Mil.Paperwork.Domain.DataModels
         public int CapacityLeftPercantage { get; } = 100;
 
         public override decimal TotalWearCoefficient => CalculateTotalWearCoefficient();
+
+        public override IList<decimal> GetCoefficients()
+        {
+            var explotationCoefficient = CoefficientsHelper.GetExploitationCoefficient(StartDate, WriteOffDateTime);
+            var workCoefficient = CoefficientsHelper.GetWorkCoefficient(CapacityLeftPercantage);
+            var technicalStateCoefficient = CoefficientsHelper.GetTechnicalStateCoefficient(Category);
+
+            var coeficients = new List<decimal>() { explotationCoefficient, workCoefficient, WearAndTearCoeff, technicalStateCoefficient };
+            return coeficients;
+        }
 
         private decimal CalculateTotalWearCoefficient()
         {
@@ -73,9 +60,14 @@ namespace Mil.Paperwork.Domain.DataModels
     public class RadiochemicalAssetInfo : AssetInfo
     {
         // if from USA then different coefficient
-        public bool IsLocal { get; } = true;
+        public bool IsLocal { get; set; } = true;
 
         public override decimal TotalWearCoefficient => GetTotalCoefficient();
+
+        public override IList<decimal> GetCoefficients()
+        {
+            return new List<decimal>();
+        }
 
         // категорія + сша/наше
         private decimal GetTotalCoefficient()

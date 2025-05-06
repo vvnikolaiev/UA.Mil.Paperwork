@@ -12,7 +12,7 @@ namespace Mil.Paperwork.Domain.Helpers
                 var priceForItem = asset.Price;
                 if (withCoefficients)
                 {
-                    priceForItem = CalculateResidualPriceForItem(asset, reportData.ReportDate);
+                    priceForItem = CalculateResidualPriceForItem(asset);
                 }
 
 
@@ -22,9 +22,9 @@ namespace Mil.Paperwork.Domain.Helpers
         }
 
         // add ITotalWearCoefficientProvider to the params
-        public static decimal CalculateResidualPriceForItem(IAssetInfo asset, DateTime writeOffDate, int count = 1)
+        public static decimal CalculateResidualPriceForItem(IAssetInfo asset, int count = 1)
         {
-            var indexationCoefficient = CoefficientsHelper.GetIndexationCoefficient(asset.StartDate, writeOffDate);
+            var indexationCoefficient = CoefficientsHelper.GetIndexationCoefficient(asset.StartDate, asset.WriteOffDateTime);
             var indexatedValue = Math.Round(asset.Price * indexationCoefficient, 2);
 
             var coeffSKZ = asset.TotalWearCoefficient;

@@ -76,16 +76,20 @@ namespace Mil.Paperwork.Domain.Reports
                 var row = table.LastRow;
 
                 var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
+                // TODO: use Initial Category instead
+                var initialCategory = ReportHelper.ConvertCategoryToText(2);
+                // TODO: calculate depending on AssetState
                 var category = ReportHelper.ConvertCategoryToText(asset.Category);
+
                 var price = asset.Price * asset.Count;
-                var residualPrice = ResidualPriceHelper.CalculateResidualPriceForItem(asset, writeOffDate, asset.Count);
+                var residualPrice = ResidualPriceHelper.CalculateResidualPriceForItem(asset, asset.Count);
                 var nomenclatureCode = asset.NomenclatureCode?.ToUpper() ?? string.Empty;
 
                 row.Cells[TechnicalStateReportHelper.COLUMN_NAME].AddText(assetName, 12, HorizontalAlignment.Left);
                 row.Cells[TechnicalStateReportHelper.COLUMN_NOMENCLATURE_CODE].AddText(nomenclatureCode);
                 row.Cells[TechnicalStateReportHelper.COLUMN_MEAS_UNIT].AddText(asset.MeasurementUnit);
                 row.Cells[TechnicalStateReportHelper.COLUMN_COUNT].AddNumber(asset.Count);
-                row.Cells[TechnicalStateReportHelper.COLUMN_CATEGORY_INITIAL].AddText(category);
+                row.Cells[TechnicalStateReportHelper.COLUMN_CATEGORY_INITIAL].AddText(initialCategory);
                 row.Cells[TechnicalStateReportHelper.COLUMN_CATEGORY_RESIDUAL].AddText(category);
                 row.Cells[TechnicalStateReportHelper.COLUMN_PRICE_INITIAL].AddPrice(price);
                 row.Cells[TechnicalStateReportHelper.COLUMN_PRICE_RESIDUAL].AddPrice(residualPrice);

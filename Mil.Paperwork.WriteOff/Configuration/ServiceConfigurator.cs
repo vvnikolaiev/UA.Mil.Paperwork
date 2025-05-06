@@ -4,6 +4,7 @@ using Mil.Paperwork.WriteOff.ViewModels;
 using Mil.Paperwork.WriteOff.Views;
 using Mil.Paperwork.Infrastructure;
 using Mil.Paperwork.Domain;
+using Mil.Paperwork.WriteOff.Factories;
 
 namespace Mil.Paperwork.WriteOff.Configuration
 {
@@ -21,6 +22,9 @@ namespace Mil.Paperwork.WriteOff.Configuration
             services.AddTransient<MainWindow>();
             services.AddTransient<AssetValuationDialogWindow>();
             services.AddTransient<WriteOffReportView>();
+
+            // Register Factories
+            services.AddSingleton<IAssetFactory, AssetFactory>();
 
             // Register Services
             InfrastructureServicesRegistrator.Register(services);

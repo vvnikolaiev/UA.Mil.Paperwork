@@ -9,7 +9,7 @@ using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.WriteOff.Helpers;
 using Microsoft.Win32;
-using Mil.Paperwork.Domain.Factories;
+using Mil.Paperwork.WriteOff.Factories;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
@@ -69,8 +69,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             _reportManager = reportManager;
             _dataService = dataService;
 
-            _assetViewModel = new AssetViewModel(reportManager, assetFactory, dataService, navigationService);
-
+            _assetViewModel = assetFactory.CreateAssetViewModel();
+            
             UpdateProductsCollection();
 
             ProductSelectedCommand = new DelegateCommand(ProductSelectedExecute);

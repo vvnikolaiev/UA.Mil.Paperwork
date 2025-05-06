@@ -1,10 +1,13 @@
 ﻿using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.DataModels;
+using Mil.Paperwork.Infrastructure.Enums;
 
 namespace Mil.Paperwork.Domain.DataModels
 {
     public class WriteOffReportData : ITechnicalStateReportData, IDismantlingReportData, IAssetValuationReportData
     {
+        public AssetType AssetType { get; set; }
+
         public string DestinationFolder { get; set; }
 
         public string RegistrationNumber { get; set; }

@@ -262,9 +262,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels
                 ValuationData = new List<IAssetValuationData> { assetValuationData }
             };
 
-                _dataService.SaveValuationData([assetValuationData]);
-                _reportManager.GenerateValuationReport(reportData);
-            }
+            _dataService.SaveValuationData([assetValuationData]);
+            _reportManager.GenerateValuationReport(reportData);
         }
 
         private void Ok()

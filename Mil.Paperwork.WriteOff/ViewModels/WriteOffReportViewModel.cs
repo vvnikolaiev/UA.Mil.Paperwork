@@ -10,7 +10,8 @@ using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.WriteOff.Views;
-using Mil.Paperwork.Domain.Factories;
+using Mil.Paperwork.Infrastructure.Enums;
+using Mil.Paperwork.WriteOff.Factories;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
@@ -31,6 +32,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private AssetViewModel _selectedAsset;
         private AssetValuationViewModel _selectedDismantlingItem;
         private ObservableCollection<AssetDismantlingViewModel> _dismantleCollection = [];
+        private AssetType _selectedAssetType;
 
         public event EventHandler<ITabViewModel> TabCloseRequested;
 
@@ -91,6 +93,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _dismantleCollection, value);
         }
 
+        public AssetType SelectedAssetType
+        {
+            get => _selectedAssetType;
+            set => SetProperty(ref _selectedAssetType, value);
+        }
+
         public ICommand<AssetValuationViewModel> OpenDismatlingItemCommand { get; }
         public ICommand GenerateReportCommand { get; }
         public ICommand ClearTableCommand { get; }
@@ -100,7 +108,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         public ICommand AddDismantlingCommand { get; }
         public ICommand CloseCommand { get; }
 
-        public WriteOffReportViewModel(ReportManager reportManager, IAssetFactory assetFactory, IDataService dataService, INavigationService navigationService)
+        public WriteOffReportViewModel(
+            ReportManager reportManager, 
+            IAssetFactory assetFactory, 
+            IDataService dataService, 
+            IReportDataService reportDataService, 
+            INavigationService navigationService)
         {
             _reportManager = reportManager;
             _assetFactory = assetFactory;
@@ -110,6 +123,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             _model = new WriteOffReportModel(reportManager, dataService);
             AssetsCollection = new ObservableCollection<AssetViewModel>();
             UpdateProductsCollection();
+
+            SelectedAssetType = reportDataService.GetAssetType();
 
             GenerateReportCommand = new DelegateCommand(GenerateReport);
             ClearTableCommand = new DelegateCommand(ClearTable);
@@ -125,6 +140,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         {
             var reportData = new WriteOffReportData
             {
+                AssetType = SelectedAssetType,
                 DestinationFolder = DestinationFolderPath,
                 RegistrationNumber = RegistrationNumber,
                 DocumentNumber = DocumentNumber,
@@ -176,7 +192,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void AddRow()
         {
-            var asset = CreateDefaultAsset();
+            var asset = _assetFactory.CreateAssetViewModel();
             AssetsCollection.Add(asset);
 
             SelectedAsset = asset;
@@ -226,12 +242,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             {
                 TabCloseRequested.Invoke(this, this);
             }
-        }
-
-        private AssetViewModel CreateDefaultAsset()
-        {
-            var assetVM = new AssetViewModel(_reportManager, _assetFactory, _dataService, _navigationService);
-            return assetVM;
         }
     }
 }

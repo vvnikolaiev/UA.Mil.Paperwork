@@ -3,7 +3,7 @@ using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Enums;
-using Mil.Paperwork.Domain.Factories;
+using Mil.Paperwork.WriteOff.Factories;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
@@ -12,6 +12,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private readonly ReportManager _reportManager;
         private readonly IAssetFactory _assetFactory;
         private readonly IDataService _dataService;
+        private readonly IReportDataService _reportDataService;
         private readonly INavigationService _navigationService;
 
         public event EventHandler<ITabViewModel> TabAdded;
@@ -23,11 +24,17 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         public ICommand<DocumentTypeEnum> CreateReportCommand { get; }
 
-        public HomePageViewModel(ReportManager reportManager, IAssetFactory assetFactory, IDataService dataService, INavigationService navigationService)
+        public HomePageViewModel(
+            ReportManager reportManager, 
+            IAssetFactory assetFactory, 
+            IDataService dataService, 
+            IReportDataService reportDataService, 
+            INavigationService navigationService)
         {
             _reportManager = reportManager;
             _assetFactory = assetFactory;
             _dataService = dataService;
+            _reportDataService = reportDataService;
             _navigationService = navigationService;
 
             DocumentTypes = [.. GetAllReportTypes()];
@@ -54,7 +61,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             switch (documentType)
             {
                 case DocumentTypeEnum.WriteOff:
-                    createdTab = new WriteOffReportViewModel(_reportManager, _assetFactory, _dataService, _navigationService);
+                    createdTab = new WriteOffReportViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _navigationService);
                     break;
                 case DocumentTypeEnum.Valuation:
                     createdTab = new AssetValuationViewModel(_reportManager, _dataService, _navigationService);

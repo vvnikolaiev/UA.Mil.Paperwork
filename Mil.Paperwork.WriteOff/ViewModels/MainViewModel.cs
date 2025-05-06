@@ -3,7 +3,7 @@ using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.Infrastructure.Services;
 using System.Collections.ObjectModel;
-using Mil.Paperwork.Domain.Factories;
+using Mil.Paperwork.WriteOff.Factories;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
@@ -12,22 +12,29 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private readonly ReportManager _reportManager;
         private readonly IAssetFactory _assetFactory;
         private readonly IDataService _dataService;
+        private readonly IReportDataService _reportDataService;
         private readonly INavigationService _navigationService;
 
-        private ITabViewModel _selectedTab;
+        private ITabViewModel? _selectedTab;
 
-        public ITabViewModel SelectedTab
+        public ITabViewModel? SelectedTab
         {
             get => _selectedTab; 
             set => SetProperty(ref _selectedTab, value);
         }
         public ObservableCollection<ITabViewModel> Tabs { get; set; } = [];
 
-        public MainViewModel(ReportManager reportManager, IAssetFactory assetFactory, IDataService dataService, INavigationService navigationService)
+        public MainViewModel(
+            ReportManager reportManager, 
+            IAssetFactory assetFactory, 
+            IDataService dataService,
+            IReportDataService reportDataService, 
+            INavigationService navigationService)
         {
             _reportManager = reportManager;
             _assetFactory = assetFactory;
             _dataService = dataService;
+            _reportDataService = reportDataService;
             _navigationService = navigationService;
 
             AddHomeTab();
@@ -35,7 +42,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void AddHomeTab()
         {
-            var homePageVM = new HomePageViewModel(_reportManager, _assetFactory, _dataService, _navigationService);
+            var homePageVM = new HomePageViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _navigationService);
             homePageVM.TabAdded += OnNewTabAdded;
 
             AddNeTab(homePageVM);
