@@ -6,7 +6,7 @@ namespace Mil.Paperwork.Domain.DataModels
     {
         public string DestinationFolder { get; set; }
 
-        public IList<IAssetValuationData> ValuationData { get; set; }
+        public IList<IAssetValuationData?> ValuationData { get; set; }
 
         public string GetDestinationPath()
         {

@@ -70,7 +70,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void CloseTab(ITabViewModel tabViewModel)
         {
-            if (tabViewModel != null)
+            if (tabViewModel != null && Tabs != null)
             {
                 Tabs.Remove(tabViewModel);
                 tabViewModel.TabCloseRequested -= OnTabCloseRequested;

@@ -29,7 +29,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private DateTime _writeOffDate = DateTime.Now.Date;
         private string _reason = string.Empty;
         private string _destinationFolderPath = "C:\\Work\\Temp";
-        private AssetViewModel _selectedAsset;
+        private AssetViewModel? _selectedAsset;
         private AssetValuationViewModel _selectedDismantlingItem;
         private ObservableCollection<AssetDismantlingViewModel> _dismantleCollection = [];
         private AssetType _selectedAssetType;
@@ -46,7 +46,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _products, value);
         }
 
-        public AssetViewModel SelectedAsset
+        public AssetViewModel? SelectedAsset
         {
             get => _selectedAsset;
             set => SetProperty(ref _selectedAsset, value);
@@ -200,7 +200,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void RemoveRowExecute()
         {
-            if (SelectedAsset != null)
+            if (SelectedAsset != null && AssetsCollection != null)
             {
                 AssetsCollection.Remove(SelectedAsset);
 

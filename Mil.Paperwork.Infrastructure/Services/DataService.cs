@@ -66,7 +66,7 @@ namespace Mil.Paperwork.Infrastructure.Services
             Save();
         }
 
-        public void SaveValuationData(IList<IAssetValuationData> valuationData)
+        public void SaveValuationData(IList<IAssetValuationData?> valuationData)
         {
             if (valuationData == null || valuationData.Count == 0)
             {
@@ -79,7 +79,7 @@ namespace Mil.Paperwork.Infrastructure.Services
             foreach (var assetValuation in valuationData)
             {
                 var valuationKey = assetValuation?.Key;
-                if (String.IsNullOrEmpty(valuationKey))
+                if (assetValuation == null || String.IsNullOrEmpty(valuationKey))
                 {
                     continue;
                 }
@@ -113,7 +113,8 @@ namespace Mil.Paperwork.Infrastructure.Services
         {
             try
             {
-                _storageData = _fileStorageService.ReadJsonFile<SimpleDataStorageDTO>(DataStorageFileName);
+                var data = _fileStorageService.ReadJsonFile<SimpleDataStorageDTO>(DataStorageFileName);
+                _storageData = data ?? new SimpleDataStorageDTO();
             }
             catch (FileNotFoundException)
             {
