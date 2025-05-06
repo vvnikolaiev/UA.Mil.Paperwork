@@ -1,7 +1,6 @@
 ﻿using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.WriteOff.Providers;
 using Mil.Paperwork.WriteOff.ViewModels;
-using Spire.Xls;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +13,7 @@ namespace Mil.Paperwork.WriteOff.Views
     public partial class WriteOffReportView : UserControl
     {
         private readonly Style _textBlockStyle;
+        private List<DataGridColumn> _dynamicColumns = [];
 
         public WriteOffReportView()
         {
@@ -60,17 +60,15 @@ namespace Mil.Paperwork.WriteOff.Views
             var columnProvider = GetColumnProvider(viewModel.SelectedAssetType);
 
             // Clear existing dynamic columns
-            var dynamicColumns = AssetsDataGrid.Columns
-                .Where(c => c.Header?.ToString()?.StartsWith("Dynamic") == true)
-                .ToList();
 
-            foreach (var column in dynamicColumns)
+            foreach (var column in _dynamicColumns)
             {
                 AssetsDataGrid.Columns.Remove(column);
             }
 
             // Add new dynamic columns from the provider
-            foreach (var column in columnProvider.GetColumns())
+            _dynamicColumns = [.. columnProvider.GetColumns()];
+            foreach (var column in _dynamicColumns)
             {
                 if (column is DataGridTextColumn dataGridTextColumn)
                 {
