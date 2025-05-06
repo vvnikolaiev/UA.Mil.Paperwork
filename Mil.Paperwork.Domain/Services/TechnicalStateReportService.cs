@@ -22,6 +22,7 @@ namespace Mil.Paperwork.Domain.Services
             var result = false;
 
             var assets = reportData.Assets;
+            // aggregate assets here if there are duplications in each field but serial number
             foreach (var asset in assets)
             {
                 var report = new TechnicalStateReport(_reportDataService);

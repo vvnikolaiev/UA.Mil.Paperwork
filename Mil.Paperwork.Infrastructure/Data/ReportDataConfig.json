@@ -1,4 +1,7 @@
 {
+  "Common": {
+    "AssetType": "Connectivity"
+  },
   "QualityStateReport": {
     "SERVICE_NAME": "правопорядок",
     "SERVICE_NAME2": "служби правопорядку",

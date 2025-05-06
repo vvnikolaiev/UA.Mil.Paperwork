@@ -9,12 +9,11 @@ using System.Windows.Input;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
-    public class AssetViewModel : ObservableItem
+    public abstract class AssetViewModel : ObservableItem
     {
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
         private readonly INavigationService _navigationService;
-        private readonly AssetInfo _assetInfo;
 
         private ProductDTO _selectedProduct;
         private string _name = string.Empty;
@@ -25,12 +24,13 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private int _category = 2;
         private decimal _price = 0;
         private int _count = 1;
-        private decimal _wearAndTearCoeff = 0.8m;
         private DateTime _startDate = new DateTime(2023, 01, 01);
         private string _tsRegisterNumber = string.Empty;
         private string _tsDocumentNumber = string.Empty;
         private int _warrantyPeriodYears = 5;
         private AssetValuationViewModel _assetValuation;
+
+        internal abstract IAssetInfo AssetInfo { get; }
 
         public ProductDTO SelectedProduct
         {
@@ -86,12 +86,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _count, value);
         }
 
-        public decimal WearAndTearCoeff
-        {
-            get => _wearAndTearCoeff;
-            set => SetProperty(ref _wearAndTearCoeff, value);
-        }
-
         public DateTime StartDate
         {
             get => _startDate;
@@ -132,62 +126,40 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             _dataService = dataService;
             _navigationService = navigationService;
 
-            _assetInfo = new AssetInfo();
-
             ProductSelectedCommand = new DelegateCommand(ProductSelectedExecute);
             OpenAssetValuationPopupCommand = new DelegateCommand(OpenAssetValuationPopup);
         }
 
-        public AssetViewModel(AssetInfo assetInfo, ReportManager reportManager, IDataService dataService, INavigationService navigationService)
-            : this(reportManager, dataService, navigationService)
+        public virtual IAssetInfo ToAssetInfo(DateTime? reportDate = null)
         {
-            _assetInfo = assetInfo;
-            UpdateFields();
-        }
+            AssetInfo.Name = _name;
+            AssetInfo.ShortName = _shortName;
+            AssetInfo.MeasurementUnit = _measurementUnit;
+            AssetInfo.SerialNumber = _serialNumber;
+            AssetInfo.NomenclatureCode = _nomenclatureCode;
+            AssetInfo.Category = _category;
+            AssetInfo.Price = _price;
+            AssetInfo.Count = _count;
+            AssetInfo.StartDate = _startDate;
+            AssetInfo.TSRegisterNumber = _tsRegisterNumber;
+            AssetInfo.TSDocumentNumber = _tsDocumentNumber;
+            AssetInfo.WarrantyPeriodYears = _warrantyPeriodYears;
 
-        public AssetInfo ToAssetInfo()
-        {
-            _assetInfo.Name = _name;
-            _assetInfo.ShortName = _shortName;
-            _assetInfo.MeasurementUnit = _measurementUnit;
-            _assetInfo.SerialNumber = _serialNumber;
-            _assetInfo.NomenclatureCode = _nomenclatureCode;
-            _assetInfo.Category = _category;
-            _assetInfo.Price = _price;
-            _assetInfo.Count = _count;
-            _assetInfo.WearAndTearCoeff = _wearAndTearCoeff;
-            _assetInfo.StartDate = _startDate;
-            _assetInfo.TSRegisterNumber = _tsRegisterNumber;
-            _assetInfo.TSDocumentNumber = _tsDocumentNumber;
-            _assetInfo.WarrantyPeriodYears = _warrantyPeriodYears;
+            if (reportDate != null)
+            {
+                AssetInfo.WriteOffDateTime = (DateTime)reportDate;
+            }
 
             if (AssetValuation != null && AssetValuation.IsValid)
             {
-                AssetValuation.TotalPrice = _price;
+                AssetValuation.Price = _price;
                 AssetValuation.Name = _name;
                 AssetValuation.SerialNumber = _serialNumber;
-                _assetInfo.ValuationData = AssetValuation.ToAssetValuationData();
+                AssetInfo.ValuationData = AssetValuation.ToAssetValuationData();
             }
 
 
-            return _assetInfo;
-        }
-
-        private void UpdateFields()
-        {
-            _name = _assetInfo.Name;
-            _shortName = _assetInfo.ShortName;
-            _measurementUnit = _assetInfo.MeasurementUnit;
-            _serialNumber = _assetInfo.SerialNumber;
-            _nomenclatureCode = _assetInfo.NomenclatureCode;
-            _category = _assetInfo.Category;
-            _price = _assetInfo.Price;
-            _count = _assetInfo.Count;
-            _wearAndTearCoeff = _assetInfo.WearAndTearCoeff;
-            _startDate = _assetInfo.StartDate;
-            _tsRegisterNumber = _assetInfo.TSRegisterNumber;
-            _tsDocumentNumber = _assetInfo.TSDocumentNumber;
-            _warrantyPeriodYears = _assetInfo.WarrantyPeriodYears;
+            return AssetInfo;
         }
 
         private void ProductSelectedExecute()

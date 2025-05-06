@@ -13,7 +13,7 @@ namespace Mil.Paperwork.Infrastructure.DataModels
         public string ShortName { get; set; }
         public string NomenclatureCode { get; set; }
 
-        public decimal TotalPrice { get; set; }
+        public decimal Price { get; set; }
         public string Description { get; set; }
 
         public  DateTime ValuationDate { get; set; } = new DateTime(2023, 01, 01);

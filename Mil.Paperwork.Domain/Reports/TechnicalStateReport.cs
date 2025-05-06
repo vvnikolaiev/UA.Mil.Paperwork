@@ -19,7 +19,7 @@ namespace Mil.Paperwork.Domain.Reports
             _reportDataService = reportDataService;
         }
 
-        public bool TryCreate(AssetInfo assetInfo, DateTime writeOffDate, string reason)
+        public bool TryCreate(IAssetInfo assetInfo, DateTime writeOffDate, string reason)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace Mil.Paperwork.Domain.Reports
             return _reportBytes;
         }
 
-        private void FillTheFields(AssetInfo asset, string reason, Document document)
+        private void FillTheFields(IAssetInfo asset, string reason, Document document)
         {
             var reportConfig = _reportDataService.GetReportConfig(ReportType.TechnicalStateReport);
             var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
@@ -66,7 +66,7 @@ namespace Mil.Paperwork.Domain.Reports
             document.ReplaceFields(reportConfig);
         }
 
-        private static void FillAssetTable(AssetInfo asset, DateTime writeOffDate, Document document)
+        private static void FillAssetTable(IAssetInfo asset, DateTime writeOffDate, Document document)
         {
             var tables = document.Sections[0].Tables.Cast<Table>().ToList();
             var table = tables.FirstOrDefault(x => x.Title == TechnicalStateReportHelper.TABLE_ASSET_NAME);
@@ -76,16 +76,20 @@ namespace Mil.Paperwork.Domain.Reports
                 var row = table.LastRow;
 
                 var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
+                // TODO: use Initial Category instead
+                var initialCategory = ReportHelper.ConvertCategoryToText(2);
+                // TODO: calculate depending on AssetState
                 var category = ReportHelper.ConvertCategoryToText(asset.Category);
+
                 var price = asset.Price * asset.Count;
-                var residualPrice = ResidualPriceHelper.CalculateResidualPriceForItem(asset, writeOffDate, asset.Count);
+                var residualPrice = ResidualPriceHelper.CalculateResidualPriceForItem(asset, asset.Count);
                 var nomenclatureCode = asset.NomenclatureCode?.ToUpper() ?? string.Empty;
 
                 row.Cells[TechnicalStateReportHelper.COLUMN_NAME].AddText(assetName, 12, HorizontalAlignment.Left);
                 row.Cells[TechnicalStateReportHelper.COLUMN_NOMENCLATURE_CODE].AddText(nomenclatureCode);
                 row.Cells[TechnicalStateReportHelper.COLUMN_MEAS_UNIT].AddText(asset.MeasurementUnit);
                 row.Cells[TechnicalStateReportHelper.COLUMN_COUNT].AddNumber(asset.Count);
-                row.Cells[TechnicalStateReportHelper.COLUMN_CATEGORY_INITIAL].AddText(category);
+                row.Cells[TechnicalStateReportHelper.COLUMN_CATEGORY_INITIAL].AddText(initialCategory);
                 row.Cells[TechnicalStateReportHelper.COLUMN_CATEGORY_RESIDUAL].AddText(category);
                 row.Cells[TechnicalStateReportHelper.COLUMN_PRICE_INITIAL].AddPrice(price);
                 row.Cells[TechnicalStateReportHelper.COLUMN_PRICE_RESIDUAL].AddPrice(residualPrice);
@@ -95,7 +99,7 @@ namespace Mil.Paperwork.Domain.Reports
             }
         }
 
-        private static void FillOperationalTable(AssetInfo asset, DateTime writeOffDate, Document document)
+        private static void FillOperationalTable(IAssetInfo asset, DateTime writeOffDate, Document document)
         {
             var tables = document.Sections[0].Tables.Cast<Table>().ToList();
             var table = tables.FirstOrDefault(x => x.Title == TechnicalStateReportHelper.TABLE_OPERATIONAL_INDICATORS_NAME);

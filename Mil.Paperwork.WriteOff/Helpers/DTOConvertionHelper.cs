@@ -5,7 +5,7 @@ namespace Mil.Paperwork.WriteOff.Helpers
 {
     internal static class DTOConvertionHelper
     {
-        public static ProductDTO ConvertToProductDTO(AssetInfo asset)
+        public static ProductDTO ConvertToProductDTO(IAssetInfo asset)
         {
             return new ProductDTO
             {

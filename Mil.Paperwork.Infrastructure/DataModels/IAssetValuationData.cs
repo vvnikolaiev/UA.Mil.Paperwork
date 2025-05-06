@@ -8,7 +8,7 @@ namespace Mil.Paperwork.Infrastructure.DataModels
         string SerialNumber { get; }
         string ShortName { get; set; }
         string NomenclatureCode { get; set; }
-        decimal TotalPrice { get; set; }
+        decimal Price { get; set; }
         string Description { get; set; }
         DateTime ValuationDate { get; }
         IList<AssetComponent> AssetComponents { get; set; }

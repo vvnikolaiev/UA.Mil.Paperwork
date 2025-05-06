@@ -8,7 +8,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private string _name;
         private string _nomenclatureCode;
         private string _unit;
-        private int _quantity;
+        private int _quantity = 1;
         private decimal _price;
 
         private bool _exclude;
@@ -67,6 +67,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             MeasurementUnit = assetComponent.Unit;
             Quantity = assetComponent.Quantity;
             Price = assetComponent.Price;
+            Exclude = assetComponent.Exclude;
             NomenclatureCode = assetComponent.NomenclatureCode;
         }
 
@@ -77,7 +78,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels
                 Name = _name,
                 Unit = _unit,
                 Quantity = _quantity,
-                Price = _price
+                Price = _price,
+                Exclude = _exclude
             };
             return assetComponent;
         }

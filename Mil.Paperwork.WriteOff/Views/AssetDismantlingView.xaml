@@ -79,7 +79,7 @@
         <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding DocumentNumber}" />
 
         <TextBlock Grid.Row="3" Grid.Column="0" Text="Загальна ціна" />
-        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding TotalPrice}" />
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Price}" />
 
         <TextBlock Grid.Row="3" Grid.Column="2" Text="Одиниця виміру" />
         <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding MeasurementUnit}" />

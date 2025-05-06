@@ -10,12 +10,15 @@ using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.WriteOff.Views;
+using Mil.Paperwork.Infrastructure.Enums;
+using Mil.Paperwork.WriteOff.Factories;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
     public class WriteOffReportViewModel : ObservableItem, ITabViewModel
     {
         private readonly ReportManager _reportManager;
+        private readonly IAssetFactory _assetFactory;
         private readonly IDataService _dataService;
         private readonly INavigationService _navigationService;
         private WriteOffReportModel _model;
@@ -29,6 +32,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private AssetViewModel? _selectedAsset;
         private AssetValuationViewModel _selectedDismantlingItem;
         private ObservableCollection<AssetDismantlingViewModel> _dismantleCollection = [];
+        private AssetType _selectedAssetType;
 
         public event EventHandler<ITabViewModel> TabCloseRequested;
 
@@ -89,8 +93,13 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _dismantleCollection, value);
         }
 
+        public AssetType SelectedAssetType
+        {
+            get => _selectedAssetType;
+            set => SetProperty(ref _selectedAssetType, value);
+        }
+
         public ICommand<AssetValuationViewModel> OpenDismatlingItemCommand { get; }
-        public ICommand CopySelectedAssetCommand { get; }
         public ICommand GenerateReportCommand { get; }
         public ICommand ClearTableCommand { get; }
         public ICommand AddRowCommand { get; }
@@ -99,9 +108,15 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         public ICommand AddDismantlingCommand { get; }
         public ICommand CloseCommand { get; }
 
-        public WriteOffReportViewModel(ReportManager reportManager, IDataService dataService, INavigationService navigationService)
+        public WriteOffReportViewModel(
+            ReportManager reportManager, 
+            IAssetFactory assetFactory, 
+            IDataService dataService, 
+            IReportDataService reportDataService, 
+            INavigationService navigationService)
         {
             _reportManager = reportManager;
+            _assetFactory = assetFactory;
             _dataService = dataService;
             _navigationService = navigationService;
 
@@ -109,12 +124,13 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             AssetsCollection = new ObservableCollection<AssetViewModel>();
             UpdateProductsCollection();
 
+            SelectedAssetType = reportDataService.GetAssetType();
+
             GenerateReportCommand = new DelegateCommand(GenerateReport);
             ClearTableCommand = new DelegateCommand(ClearTable);
             AddRowCommand = new DelegateCommand(AddRow);
             RemoveRowCommand = new DelegateCommand(RemoveRowExecute);
             SelectFolderCommand = new DelegateCommand(SelectFolder);
-            CopySelectedAssetCommand = new DelegateCommand(CopySelectedAssetExecute);
             AddDismantlingCommand = new DelegateCommand(AddDismantlingExecute);
             OpenDismatlingItemCommand = new DelegateCommand<AssetValuationViewModel>(OpenDismatlingItemExecute);
             CloseCommand = new DelegateCommand(CloseCommandExecute);
@@ -124,12 +140,13 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         {
             var reportData = new WriteOffReportData
             {
+                AssetType = SelectedAssetType,
                 DestinationFolder = DestinationFolderPath,
                 RegistrationNumber = RegistrationNumber,
                 DocumentNumber = DocumentNumber,
                 Reason = Reason,
                 ReportDate = WriteOffDate,
-                Assets = [.. AssetsCollection.Select(x => x.ToAssetInfo())],
+                Assets = [.. AssetsCollection.Select(x => x.ToAssetInfo(WriteOffDate))],
                 Dismantlings = [.. DismantleCollection.Select(x => x.ToAssetDismantlingData())]
             };
 
@@ -175,7 +192,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void AddRow()
         {
-            var asset = CreateDefaultAsset();
+            var asset = _assetFactory.CreateAssetViewModel();
             AssetsCollection.Add(asset);
 
             SelectedAsset = asset;
@@ -188,35 +205,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels
                 AssetsCollection.Remove(SelectedAsset);
 
                 SelectedAsset = AssetsCollection.FirstOrDefault();
-            }
-        }
-
-        private void CopySelectedAssetExecute()
-        {
-            if (SelectedAsset != null)
-            {
-                var copiedAsset = new AssetInfo
-                {
-                    Name = _selectedAsset.Name,
-                    ShortName = _selectedAsset.ShortName,
-                    MeasurementUnit = _selectedAsset.MeasurementUnit,
-                    SerialNumber = _selectedAsset.SerialNumber,
-                    NomenclatureCode = _selectedAsset.NomenclatureCode,
-                    Category = _selectedAsset.Category,
-                    Price = _selectedAsset.Price,
-                    Count = _selectedAsset.Count,
-                    WearAndTearCoeff = _selectedAsset.WearAndTearCoeff,
-                    StartDate = _selectedAsset.StartDate,
-                    TSRegisterNumber = _selectedAsset.TSRegisterNumber,
-                    TSDocumentNumber = _selectedAsset.TSDocumentNumber,
-                    WarrantyPeriodYears = _selectedAsset.WarrantyPeriodYears
-                };
-
-                var copiedItem = new AssetViewModel(copiedAsset, _reportManager, _dataService, _navigationService);
-
-                AssetsCollection.Add(copiedItem);
-
-                SelectedAsset = copiedItem;
             }
         }
 
@@ -254,12 +242,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             {
                 TabCloseRequested.Invoke(this, this);
             }
-        }
-
-        private AssetViewModel CreateDefaultAsset()
-        {
-            var assetVM = new AssetViewModel(_reportManager, _dataService, _navigationService);
-            return assetVM;
         }
     }
 }

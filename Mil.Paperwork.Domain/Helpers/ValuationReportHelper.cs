@@ -5,6 +5,7 @@
         public const string REPORT_TEMPLATE_NAME = "AssetValuationReportTemplate.docx";
         public const string OUTPUT_REPORT_NAME_FORMAT = "Акт оцінки {0}.docx";
         
+        public const int FONT_SIZE = 12;
         public const int TABLE_FONT_SIZE = 11;
 
         public const string TABLE_ASSET_NAME = "TABLE_ASSET";

@@ -79,8 +79,12 @@ namespace Mil.Paperwork.Domain.Reports
 
                 // TODO: optimize. Make a mapper.
 
-                var residualPrice = ResidualPriceHelper.CalculateResidualPriceForItem(asset, reportData.ReportDate);
+                var residualPrice = ResidualPriceHelper.CalculateResidualPriceForItem(asset);
+                // TODO: use Initial Category instead
+                var initialCategory = ReportHelper.ConvertCategoryToText(2);
+                // TODO: calculate depending on AssetState
                 var category = ReportHelper.ConvertCategoryToText(asset.Category);
+                
                 var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
                 var nomenclatureCode = asset.NomenclatureCode?.ToUpper() ?? string.Empty;
                 var monthsOperated = (int)((reportData.ReportDate - asset.StartDate).TotalDays / 30);
@@ -89,7 +93,7 @@ namespace Mil.Paperwork.Domain.Reports
                 row.Cells[QualityStateReportHelper.COLUMN_NAME].AddText(assetName, fontSize, HorizontalAlignment.Left);
                 row.Cells[QualityStateReportHelper.COLUMN_NOMENCLATURE_CODE].AddText(nomenclatureCode, fontSize);
                 row.Cells[QualityStateReportHelper.COLUMN_MEASUREMENT_UNIT].AddText(asset.MeasurementUnit, fontSize);
-                row.Cells[QualityStateReportHelper.COLUMN_CATEGORY].AddText(category, fontSize);
+                row.Cells[QualityStateReportHelper.COLUMN_CATEGORY].AddText(initialCategory, fontSize);
                 row.Cells[QualityStateReportHelper.COLUMN_COUNT].AddNumber(asset.Count, fontSize);
                 row.Cells[QualityStateReportHelper.COLUMN_PRICE].AddPrice(asset.Price, fontSize);
                 row.Cells[QualityStateReportHelper.COLUMN_TOTAL_PRICE].AddPrice(asset.Count * asset.Price, fontSize);

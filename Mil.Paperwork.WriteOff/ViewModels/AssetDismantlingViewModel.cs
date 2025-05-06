@@ -103,7 +103,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
                 DocumentNumber = _documentNumber,
                 NomenclatureCode = _nomenclatureCode,
                 DismantlingReason = _dismantlingReason,
-                TotalPrice = TotalPrice,
+                Price = Price,
                 SerialNumber = SerialNumber,
                 Description = Description,
                 ValuationDate = ValuationDate,
@@ -131,7 +131,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             DocumentNumber = _memento.DocumentNumber;
             NomenclatureCode = _memento.NomenclatureCode;
             DismantlingReason = _memento.DismantlingReason;
-            TotalPrice = _memento.TotalPrice;
+            Price = _memento.Price;
             SerialNumber = _memento.SerialNumber;
             Description = _memento.Description;
             ValuationDate = _memento.ValuationDate;
@@ -171,7 +171,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
                 DocumentNumber = _documentNumber,
                 NomenclatureCode = _nomenclatureCode,
                 Reason = _finalReportReasonText,
-                TotalPrice = TotalPrice,
+                Price = Price,
                 SerialNumber = SerialNumber,
                 ValuationDate = ValuationDate,
                 Description = Description,
@@ -200,6 +200,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             //    SerialNumber = valuationDataTemplate.SerialNumber;
             //    ValuationDate = valuationDataTemplate.ValuationDate;
             //}
+            Description = valuationDataTemplate.Description;
+            ValuationDate = valuationDataTemplate.ValuationDate;
 
             base.ApplyTemplateData(valuationDataTemplate);
         }
@@ -213,6 +215,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
                 Dismantlings = new List<AssetDismantlingData> { dismantlingData }
             };
 
+            _dataService.SaveValuationData([dismantlingData]);
             _reportManager.GenerateDismantlingReport(reportData);
         }
 
@@ -263,8 +266,10 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             if (SelectedProduct != null)
             {
                 Name = SelectedProduct.Name;
+                ShortName = SelectedProduct.ShortName;
                 NomenclatureCode = SelectedProduct.NomenclatureCode;
-                TotalPrice = SelectedProduct.Price;
+                Price = SelectedProduct.Price;
+                MeasurementUnit = SelectedProduct.MeasurementUnit;
             }
             else
             {

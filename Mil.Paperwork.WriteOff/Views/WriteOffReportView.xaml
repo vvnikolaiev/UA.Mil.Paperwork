@@ -92,7 +92,7 @@
                     <DataGridTextColumn Header="Name" Width="*" Binding="{Binding Name}" IsReadOnly="True" />
                     <DataGridTextColumn Header="Serial Number" Binding="{Binding SerialNumber}" IsReadOnly="True" />
                     <DataGridTextColumn Header="Register Number" Binding="{Binding RegistrationNumber}" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Price" Binding="{Binding TotalPrice}" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Price" Binding="{Binding Price}" IsReadOnly="True" />
                     <DataGridTextColumn Header="Count" Binding="{Binding ItemsCount}" IsReadOnly="True" />
                     <DataGridTextColumn Header="Count Dismantle" Binding="{Binding ItemsToExcludeCount}" IsReadOnly="True" />
                 </DataGrid.Columns>
@@ -106,6 +106,7 @@
 
 
         <DataGrid Grid.Row="2" Grid.Column="0" 
+                  x:Name="AssetsDataGrid"
                   ItemsSource="{Binding AssetsCollection}" 
                   SelectedItem="{Binding SelectedAsset}"
                   AutoGenerateColumns="False"
@@ -140,15 +141,13 @@
                                     ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
                 <DataGridTextColumn Header="Ціна" Binding="{Binding Price}" Width="60"
                                     ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
-                <DataGridTextColumn Header="Кзб" Binding="{Binding WearAndTearCoeff}" Width="40"
-                                    ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
                 <DataGridTextColumn Header="Кат-ія" Binding="{Binding Category}" Width="50"
                                     ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
 
                 <DataGridTemplateColumn Header="Взято на облік" Width="*" MaxWidth="110">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <DatePicker SelectedDate="{Binding StartDate, Mode=TwoWay}" Language="uk-UA"/>
+                            <DatePicker SelectedDate="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Language="uk-UA"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -158,7 +157,8 @@
 
                 <DataGridTextColumn Header="Код док." Binding="{Binding TSDocumentNumber}" Width="60"
                                     ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
-
+                
+                <!--Make a separate button of it-->
                 <DataGridTemplateColumn Header="Оцінка" Width="50">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -185,7 +185,6 @@
             <Button Content="Generate Report" Command="{Binding GenerateReportCommand}"/>
             <Button Content="Додати Розукомплектацію" Command="{Binding AddDismantlingCommand}"/>
             <Button Content="Add Row" Command="{Binding AddRowCommand}" />
-            <Button Content="Copy selected Asset" Command="{Binding CopySelectedAssetCommand}" CommandParameter="{Binding SelectedAsset}"/>
             <Button Content="Remove Row" Command="{Binding RemoveRowCommand }" />
             <Button Content="Clear Table" Command="{Binding ClearTableCommand}"/>
             <Button Content="Закрити" Command="{Binding CloseCommand}"/>

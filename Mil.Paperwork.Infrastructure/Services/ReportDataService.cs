@@ -26,15 +26,28 @@ namespace Mil.Paperwork.Infrastructure.Services
 
             var fieldsMap = reportType switch
             {
-                ReportType.QualityStateReport => _config.QualityStateReport,
-                ReportType.TechnicalStateReport => _config.TechnicalStateReport,
-                ReportType.ResidualValueReport => _config.ResidualValueReport,
-                ReportType.AssetValuationReport => _config.AssetValuationReport,
-                ReportType.AssetDismantlingReport => _config.AssetDismantlingReport,
-                _ => emptyDict
+                ReportType.QualityStateReport => _config.QualityStateReport.ToDictionary(),
+                ReportType.TechnicalStateReport => _config.TechnicalStateReport.ToDictionary(),
+                ReportType.ResidualValueReport => _config.ResidualValueReport.ToDictionary(),
+                ReportType.AssetValuationReport => _config.AssetValuationReport.ToDictionary(),
+                ReportType.AssetDismantlingReport => _config.AssetDismantlingReport.ToDictionary(),
+                _ => new Dictionary<string, string>()
             };
 
             return fieldsMap;
         }
+
+        public AssetType GetAssetType()
+        {
+            if (Enum.TryParse<AssetType>(_config.Common.AssetType, true, out var assetType))
+            {
+                return assetType;
+            }
+            else
+            {
+                return AssetType.Default;
+            }
+        }
+
     }
 }

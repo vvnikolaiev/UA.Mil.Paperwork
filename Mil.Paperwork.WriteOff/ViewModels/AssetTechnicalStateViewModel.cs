@@ -9,6 +9,7 @@ using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.WriteOff.Helpers;
 using Microsoft.Win32;
+using Mil.Paperwork.WriteOff.Factories;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
@@ -63,13 +64,13 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         public ICommand CloseCommand { get; }
 
 
-        public AssetTechnicalStateViewModel(ReportManager reportManager, IDataService dataService, INavigationService navigationService)
+        public AssetTechnicalStateViewModel(ReportManager reportManager, IAssetFactory assetFactory, IDataService dataService, INavigationService navigationService)
         {
             _reportManager = reportManager;
             _dataService = dataService;
 
-            _assetViewModel = new AssetViewModel(reportManager, dataService, navigationService);
-
+            _assetViewModel = assetFactory.CreateAssetViewModel();
+            
             UpdateProductsCollection();
 
             ProductSelectedCommand = new DelegateCommand(ProductSelectedExecute);
@@ -84,7 +85,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             if (folderDialog.ShowDialog() == true)
             {
                 var folderName = folderDialog.FolderName;
-                var assets = new List<AssetInfo>() { _assetViewModel.ToAssetInfo() };
+                var assets = new List<IAssetInfo>() { _assetViewModel.ToAssetInfo(ReportDate) };
                 var reportData = new TechnicalStateReportData
                 {
                     Reason = _reason,
