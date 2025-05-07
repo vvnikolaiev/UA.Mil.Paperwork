@@ -7,5 +7,7 @@ namespace Mil.Paperwork.Infrastructure.Services
         Dictionary<string, string> GetReportConfig(ReportType reportType);
 
         AssetType GetAssetType();
+
+        void SetAssetType(AssetType assetType);
     }
 }

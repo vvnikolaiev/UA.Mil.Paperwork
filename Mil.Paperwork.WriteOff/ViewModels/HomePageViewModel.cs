@@ -4,6 +4,7 @@ using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Enums;
 using Mil.Paperwork.WriteOff.Factories;
+using System.Windows.Input;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
@@ -14,21 +15,27 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private readonly IDataService _dataService;
         private readonly IReportDataService _reportDataService;
         private readonly INavigationService _navigationService;
+        private SettingsViewModel _settingsViewModel;
 
         public event EventHandler<ITabViewModel> TabAdded;
+        public event EventHandler<ITabViewModel> TabSelectionRequested;
         public event EventHandler<ITabViewModel> TabCloseRequested;
 
         public string Header => "HOME PAGE";
 
-        public List<ReportViewModelItem> DocumentTypes { get; private set; }
+        public bool IsClosed => false;
+
+        public List<ReportItemViewModel> DocumentTypes { get; private set; }
 
         public ICommand<DocumentTypeEnum> CreateReportCommand { get; }
 
+        public ICommand OpenSettingsCommand { get; }
+
         public HomePageViewModel(
-            ReportManager reportManager, 
-            IAssetFactory assetFactory, 
-            IDataService dataService, 
-            IReportDataService reportDataService, 
+            ReportManager reportManager,
+            IAssetFactory assetFactory,
+            IDataService dataService,
+            IReportDataService reportDataService,
             INavigationService navigationService)
         {
             _reportManager = reportManager;
@@ -40,16 +47,17 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             DocumentTypes = [.. GetAllReportTypes()];
 
             CreateReportCommand = new DelegateCommand<DocumentTypeEnum>(AddWriteOffReport);
+            OpenSettingsCommand = new DelegateCommand(OpenSettingsExecute);
         }
 
-        private IList<ReportViewModelItem> GetAllReportTypes()
+        private IList<ReportItemViewModel> GetAllReportTypes()
         {
-            var reportTypes = new List<ReportViewModelItem>()
+            var reportTypes = new List<ReportItemViewModel>()
             {
-                new ReportViewModelItem("Списання", DocumentTypeEnum.WriteOff),
-                new ReportViewModelItem("Акт тех. стану", DocumentTypeEnum.TechnicalState11),
-                new ReportViewModelItem("Оцінка", DocumentTypeEnum.Valuation),
-                new ReportViewModelItem("Розукомплектація", DocumentTypeEnum.Dismantling),
+                new ReportItemViewModel("Списання", DocumentTypeEnum.WriteOff),
+                new ReportItemViewModel("Акт тех. стану", DocumentTypeEnum.TechnicalState11),
+                new ReportItemViewModel("Оцінка", DocumentTypeEnum.Valuation),
+                new ReportItemViewModel("Розукомплектація", DocumentTypeEnum.Dismantling),
             };
 
             return reportTypes;
@@ -81,6 +89,19 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             if (createdTab != null)
             {
                 TabAdded?.Invoke(this, createdTab);
+            }
+        }
+
+        private void OpenSettingsExecute()
+        {
+            if (_settingsViewModel?.IsClosed == false)
+            {
+                TabSelectionRequested?.Invoke(this, _settingsViewModel);
+            }
+            else
+            {
+                _settingsViewModel = new SettingsViewModel(_reportDataService);
+                TabAdded?.Invoke(this, _settingsViewModel);
             }
         }
     }

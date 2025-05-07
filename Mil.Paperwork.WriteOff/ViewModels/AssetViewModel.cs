@@ -137,7 +137,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             AssetInfo.MeasurementUnit = _measurementUnit;
             AssetInfo.SerialNumber = _serialNumber;
             AssetInfo.NomenclatureCode = _nomenclatureCode;
-            AssetInfo.Category = _category;
+            AssetInfo.InitialCategory = _category;
             AssetInfo.Price = _price;
             AssetInfo.Count = _count;
             AssetInfo.StartDate = _startDate;

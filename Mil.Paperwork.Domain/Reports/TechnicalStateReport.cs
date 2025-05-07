@@ -54,7 +54,7 @@ namespace Mil.Paperwork.Domain.Reports
         {
             var reportConfig = _reportDataService.GetReportConfig(ReportType.TechnicalStateReport);
             var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
-            var category = ReportHelper.ConvertCategoryToText(asset.Category);
+            var category = ReportHelper.ConvertCategoryToText(asset.InitialCategory);
 
 
             document.ReplaceField(TechnicalStateReportHelper.FIELD_ASSET_NAME, assetName);
@@ -79,7 +79,7 @@ namespace Mil.Paperwork.Domain.Reports
                 // TODO: use Initial Category instead
                 var initialCategory = ReportHelper.ConvertCategoryToText(2);
                 // TODO: calculate depending on AssetState
-                var category = ReportHelper.ConvertCategoryToText(asset.Category);
+                var category = ReportHelper.ConvertCategoryToText(asset.InitialCategory);
 
                 var price = asset.Price * asset.Count;
                 var residualPrice = ResidualPriceHelper.CalculateResidualPriceForItem(asset, asset.Count);

@@ -5,5 +5,7 @@
         event EventHandler<ITabViewModel> TabCloseRequested;
 
         string Header { get; }
+
+        bool IsClosed { get; }
     }
 }

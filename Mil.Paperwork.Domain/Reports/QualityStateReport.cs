@@ -83,7 +83,7 @@ namespace Mil.Paperwork.Domain.Reports
                 // TODO: use Initial Category instead
                 var initialCategory = ReportHelper.ConvertCategoryToText(2);
                 // TODO: calculate depending on AssetState
-                var category = ReportHelper.ConvertCategoryToText(asset.Category);
+                var category = ReportHelper.ConvertCategoryToText(asset.InitialCategory);
                 
                 var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
                 var nomenclatureCode = asset.NomenclatureCode?.ToUpper() ?? string.Empty;

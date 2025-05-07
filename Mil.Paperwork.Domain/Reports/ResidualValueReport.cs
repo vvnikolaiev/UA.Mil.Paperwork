@@ -193,6 +193,7 @@ namespace Mil.Paperwork.Domain.Reports
                 sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.MeasurementUnit].ColumnIndex].Value = asset.MeasurementUnit;
                 sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.Count].ColumnIndex].Value = asset.Count;
                 sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.Price].ColumnIndex].Value = asset.Price;
+                sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.DateStart].ColumnIndex].Value = asset.StartDate.ToString(ReportHelper.DATE_FORMAT);
 
                 sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.IndexationCoefficient].ColumnIndex].Value = indexationCoefficient;
                 sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.CurrencyConversionRate].ColumnIndex].Value = "-";
@@ -227,6 +228,7 @@ namespace Mil.Paperwork.Domain.Reports
                 { ResidualValueTableColumns.MeasurementUnit, new BaseColumnInfo(ResidualValueReportHelper.TABLE_COLUMN_MEASUREMENT_UNIT, 3) },
                 { ResidualValueTableColumns.Count, new BaseColumnInfo(ResidualValueReportHelper.TABLE_COLUMN_COUNT, 4) },
                 { ResidualValueTableColumns.Price, new BaseColumnInfo(ResidualValueReportHelper.TABLE_COLUMN_PRICE, 5) },
+                { ResidualValueTableColumns.DateStart, new BaseColumnInfo(ResidualValueReportHelper.TABLE_COLUMN_DATE_START, 5) },
                 { ResidualValueTableColumns.IndexationCoefficient, new BaseColumnInfo(ResidualValueReportHelper.TABLE_COLUMN_INDEXATION_COEFF, 6) },
                 { ResidualValueTableColumns.CurrencyConversionRate, new BaseColumnInfo(ResidualValueReportHelper.TABLE_COLUMN_CURRENCY_CONVERSION_RATE, 8) }
             };

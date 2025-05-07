@@ -38,6 +38,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         public string Header => "Списання";
 
+        public bool IsClosed { get; private set; }
+
         public ObservableCollection<AssetViewModel> AssetsCollection { get; set; }
 
         public ObservableCollection<ProductDTO> Products
@@ -241,6 +243,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             if (MessageBox.Show("Are you sure you want to close this tab?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
                 TabCloseRequested.Invoke(this, this);
+                IsClosed = true;
             }
         }
     }
