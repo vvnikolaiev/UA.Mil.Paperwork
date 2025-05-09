@@ -1,4 +1,5 @@
-﻿using Mil.Paperwork.Domain.DataModels;
+﻿using Mil.Paperwork.Domain.DataModels.Assets;
+using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Managers;
@@ -29,9 +30,9 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             _assetInfo = new RadiochemicalAssetInfo();
         }
 
-        public override IAssetInfo ToAssetInfo(DateTime? reportDate = null)
+        public override IAssetInfo ToAssetInfo(EventType eventType = EventType.Lost, DateTime ? reportDate = null)
         {
-            base.ToAssetInfo(reportDate);
+            base.ToAssetInfo(eventType, reportDate);
             _assetInfo.IsLocal = IsLocal;
 
             return _assetInfo;

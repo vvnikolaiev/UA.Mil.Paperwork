@@ -1,4 +1,5 @@
-﻿using Mil.Paperwork.Domain.DataModels;
+﻿using Mil.Paperwork.Domain.DataModels.Assets;
+using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;
@@ -19,17 +20,17 @@ namespace Mil.Paperwork.Domain.Reports
             _reportDataService = reportDataService;
         }
 
-        public bool TryCreate(IAssetInfo assetInfo, DateTime writeOffDate, string reason)
+        public bool TryCreate(IAssetInfo assetInfo, EventType eventType, DateTime writeOffDate, string reason)
         {
             try
             {
-                var templatePath = PathsHelper.GetTemplatePath(TechnicalStateReportHelper.REPORT_TEMPLATE_NAME);
+                var templatePath = PathsHelper.GetTemplatePath(TechnicalStateReportHelper.REPORT11_TEMPLATE_NAME);
 
                 var document = new Document();
                 document.LoadFromFile(templatePath, FileFormat.Docx);
 
-                FillTheFields(assetInfo, reason, document);
-                FillAssetTable(assetInfo, writeOffDate, document);
+                FillTheFields(assetInfo, eventType, reason, document);
+                FillAssetTable(assetInfo, eventType, writeOffDate, document);
                 FillOperationalTable(assetInfo, writeOffDate, document);
 
                 using var reportStream = new MemoryStream();
@@ -50,12 +51,11 @@ namespace Mil.Paperwork.Domain.Reports
             return _reportBytes;
         }
 
-        private void FillTheFields(IAssetInfo asset, string reason, Document document)
+        private void FillTheFields(IAssetInfo asset, EventType eventType, string reason, Document document)
         {
             var reportConfig = _reportDataService.GetReportConfig(ReportType.TechnicalStateReport);
             var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
-            var category = ReportHelper.ConvertCategoryToText(asset.InitialCategory);
-
+            var category = ReportHelper.ConvertEventTypeToCategoryText(asset.InitialCategory, eventType);
 
             document.ReplaceField(TechnicalStateReportHelper.FIELD_ASSET_NAME, assetName);
             document.ReplaceField(TechnicalStateReportHelper.FIELD_REGISTRATION_NUMBER, asset.TSRegisterNumber);
@@ -66,7 +66,7 @@ namespace Mil.Paperwork.Domain.Reports
             document.ReplaceFields(reportConfig);
         }
 
-        private static void FillAssetTable(IAssetInfo asset, DateTime writeOffDate, Document document)
+        private static void FillAssetTable(IAssetInfo asset, EventType eventType, DateTime writeOffDate, Document document)
         {
             var tables = document.Sections[0].Tables.Cast<Table>().ToList();
             var table = tables.FirstOrDefault(x => x.Title == TechnicalStateReportHelper.TABLE_ASSET_NAME);
@@ -76,10 +76,9 @@ namespace Mil.Paperwork.Domain.Reports
                 var row = table.LastRow;
 
                 var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
-                // TODO: use Initial Category instead
-                var initialCategory = ReportHelper.ConvertCategoryToText(2);
-                // TODO: calculate depending on AssetState
-                var category = ReportHelper.ConvertCategoryToText(asset.InitialCategory);
+                
+                var initialCategory = ReportHelper.ConvertCategoryToText(asset.InitialCategory);
+                var category = ReportHelper.ConvertEventTypeToCategoryText(asset.InitialCategory, eventType);
 
                 var price = asset.Price * asset.Count;
                 var residualPrice = ResidualPriceHelper.CalculateResidualPriceForItem(asset, asset.Count);

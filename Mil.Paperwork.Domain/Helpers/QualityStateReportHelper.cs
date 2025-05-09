@@ -12,6 +12,7 @@
 
         public const string FIELD_REGISTRATION_NUMBER = "«REGISTRATION_NUMBER»";
         public const string FIELD_DOCUMENT_NUMBER = "«DOCUMENT_NUMBER»";
+        public const string FIELD_WHAT_HAPPENED = "«WHAT_HAPPENED»";
 
         public const int COLUMN_INDEX = 0;
         public const int COLUMN_NAME = 1;

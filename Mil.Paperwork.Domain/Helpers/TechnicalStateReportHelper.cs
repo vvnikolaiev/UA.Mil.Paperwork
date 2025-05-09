@@ -2,7 +2,8 @@
 {
     internal class TechnicalStateReportHelper
     {
-        public const string REPORT_TEMPLATE_NAME = "TechnicalStateReportTemplate.docx";
+        public const string REPORT7_TEMPLATE_NAME = "TechnicalState7ReportTemplate.docx";
+        public const string REPORT11_TEMPLATE_NAME = "TechnicalState11ReportTemplate.docx";
         public const string OUTPUT_REPORT_NAME_FORMAT = "Акт технічного стану {0}.docx";
 
         public const string TABLE_ASSET_NAME = "TABLE_ASSET";

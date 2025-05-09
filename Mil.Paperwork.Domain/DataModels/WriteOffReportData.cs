@@ -1,4 +1,6 @@
-﻿using Mil.Paperwork.Domain.Helpers;
+﻿using Mil.Paperwork.Domain.DataModels.Assets;
+using Mil.Paperwork.Domain.Enums;
+using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
 
@@ -7,6 +9,8 @@ namespace Mil.Paperwork.Domain.DataModels
     public class WriteOffReportData : ITechnicalStateReportData, IDismantlingReportData, IAssetValuationReportData
     {
         public AssetType AssetType { get; set; }
+
+        public EventType EventType { get; set; }
 
         public string DestinationFolder { get; set; }
 
@@ -22,7 +26,7 @@ namespace Mil.Paperwork.Domain.DataModels
 
         public IList<AssetDismantlingData> Dismantlings { get; set; }
 
-        public IList<IAssetValuationData?> ValuationData => this.GetValuationDataCollection();
+        public IList<IAssetValuationData?> ValuationData { get; set; }
 
         public string GetDestinationPath()
         {

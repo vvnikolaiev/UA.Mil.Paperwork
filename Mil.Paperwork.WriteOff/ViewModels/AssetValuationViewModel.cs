@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using Mil.Paperwork.Domain.DataModels;
+using Mil.Paperwork.Domain.DataModels.Assets;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.MVVM;
@@ -26,6 +27,10 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private string _measurementUnit;
         private decimal _price;
         private string _serialNumber;
+        private string _nomenclatureCode;
+        private ProductDTO _selectedProduct;
+        private ObservableCollection<ProductDTO> _products;
+
         private ObservableCollection<AssetValuationItemViewModel> _components = [];
 
         private string _description;
@@ -88,6 +93,24 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _price, value);
         }
 
+        public string NomenclatureCode
+        {
+            get => _nomenclatureCode;
+            set => SetProperty(ref _nomenclatureCode, value);
+        }
+
+        public ProductDTO SelectedProduct
+        {
+            get => _selectedProduct;
+            set => SetProperty(ref _selectedProduct, value);
+        }
+
+        public ObservableCollection<ProductDTO> Products
+        {
+            get => _products;
+            set => SetProperty(ref _products, value);
+        }
+
         public virtual ObservableCollection<AssetValuationItemViewModel> Components
         {
             get => _components;
@@ -110,6 +133,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         public bool IsReadOnly { get; }
 
+        public ICommand ProductSelectedCommand { get; }
         public ICommand ApplyValuationTemplateCommand { get; }
         public ICommand AddRowCommand { get; }
         public ICommand ClearCommand { get; }
@@ -126,6 +150,9 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
             UpdateValuationTemplatesCollection();
 
+            UpdateProductsCollection();
+
+            ProductSelectedCommand = new DelegateCommand(ProductSelectedExecute);
             ApplyValuationTemplateCommand = new DelegateCommand(ApplyValuationTemplateExecute);
             AddRowCommand = new DelegateCommand(AddRow);
             ClearCommand = new DelegateCommand(Clear);
@@ -207,6 +234,32 @@ namespace Mil.Paperwork.WriteOff.ViewModels
                 .ToList();
 
             return components;
+        }
+
+        private void ProductSelectedExecute()
+        {
+            FillProductDetails();
+        }
+
+        private void FillProductDetails()
+        {
+            if (SelectedProduct != null)
+            {
+                Name = SelectedProduct.Name;
+                ShortName = SelectedProduct.ShortName;
+                NomenclatureCode = SelectedProduct.NomenclatureCode;
+                Price = SelectedProduct.Price;
+                MeasurementUnit = SelectedProduct.MeasurementUnit;
+            }
+            else
+            {
+                OnPropertyChanged(nameof(Name));
+            }
+        }
+
+        private void UpdateProductsCollection()
+        {
+            Products = [.. _dataService.LoadProductsData()];
         }
 
         private void UpdateValuationTemplatesCollection()

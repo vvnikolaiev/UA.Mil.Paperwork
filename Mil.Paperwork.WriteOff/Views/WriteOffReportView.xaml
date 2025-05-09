@@ -44,6 +44,8 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
@@ -67,8 +69,18 @@
             <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding DocumentNumber}" 
                     Width="50" HorizontalAlignment="Left"/>
 
-            <TextBlock Grid.Row="2" Grid.Column="4" Text="Втрачено:" />
-            <DatePicker Grid.Row="2" Grid.Column="5" SelectedDate="{Binding WriteOffDate}" Width="100" 
+            <TextBlock Grid.Row="2" Grid.Column="4" Text="Майно було" />
+            <ComboBox Grid.Row="2" Grid.Column="5"
+                      Width="100"
+                      ItemsSource="{Binding EventTypes}" 
+                      SelectedValue="{Binding EventType}"
+                      IsEditable="False"
+                      SelectedValuePath="EventType"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Center"/>
+            
+            <TextBlock Grid.Row="2" Grid.Column="6" Text="Дата:" />
+            <DatePicker Grid.Row="2" Grid.Column="7" SelectedDate="{Binding WriteOffDate}" Width="100" 
                     HorizontalAlignment="Left" Margin="5"/>
 
             <TextBlock Grid.Row="3" Grid.Column="0" Text="Причина втрати:" VerticalAlignment="Top"/>
@@ -82,33 +94,58 @@
 
         <Expander Grid.Row="1" Grid.Column="0" Header="Розукомплектування"
                   Margin="10"
-                  Visibility="{Binding DismantleCollection.Count, Converter={x:Static converters:VisibilityConverter.ZeroToCollapsed}}">
+                  Visibility="{Binding IsAnyValuationOrDismantling, Converter={x:Static converters:VisibilityConverter.FalseToCollapsed}}">
 
-            <DataGrid ItemsSource="{Binding DismantleCollection}"
-                      SelectedItem="{Binding SelectedDismantlingItem}"
-                      AutoGenerateColumns="False"
-                      Margin="0">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Name" Width="*" Binding="{Binding Name}" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Serial Number" Binding="{Binding SerialNumber}" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Register Number" Binding="{Binding RegistrationNumber}" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Price" Binding="{Binding Price}" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Count" Binding="{Binding ItemsCount}" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Count Dismantle" Binding="{Binding ItemsToExcludeCount}" IsReadOnly="True" />
-                </DataGrid.Columns>
-                <Behaviors:Interaction.Triggers>
-                    <Behaviors:EventTrigger EventName="MouseDoubleClick">
-                        <Behaviors:InvokeCommandAction Command="{Binding OpenDismatlingItemCommand}" CommandParameter="{Binding SelectedDismantlingItem}" />
-                    </Behaviors:EventTrigger>
-                </Behaviors:Interaction.Triggers>
-            </DataGrid>
+            <StackPanel Orientation="Vertical">
+
+                <DataGrid ItemsSource="{Binding ValuationCollection}"
+                          SelectedItem="{Binding SelectedValuationItem}"
+                          AutoGenerateColumns="False"
+                          Margin="0 0 0 5">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Width="*" Binding="{Binding Name}" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Serial Number" Binding="{Binding SerialNumber}" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Price" Binding="{Binding Price}" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Count" Binding="{Binding ItemsCount}" IsReadOnly="True" />
+                    </DataGrid.Columns>
+                    <Behaviors:Interaction.Triggers>
+                        <Behaviors:EventTrigger EventName="MouseDoubleClick">
+                            <Behaviors:InvokeCommandAction Command="{Binding OpenValuationItemCommand}" CommandParameter="{Binding SelectedValuationItem}" />
+                        </Behaviors:EventTrigger>
+                    </Behaviors:Interaction.Triggers>
+                </DataGrid>
+
+
+                <DataGrid ItemsSource="{Binding DismantleCollection}"
+                          SelectedItem="{Binding SelectedDismantlingItem}"
+                          AutoGenerateColumns="False"
+                          Margin="0">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Width="*" Binding="{Binding Name}" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Serial Number" Binding="{Binding SerialNumber}" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Register Number" Binding="{Binding RegistrationNumber}" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Price" Binding="{Binding Price}" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Count" Binding="{Binding ItemsCount}" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Count Dismantle" Binding="{Binding ItemsToExcludeCount}" IsReadOnly="True" />
+                    </DataGrid.Columns>
+                    <Behaviors:Interaction.Triggers>
+                        <Behaviors:EventTrigger EventName="MouseDoubleClick">
+                            <Behaviors:InvokeCommandAction Command="{Binding OpenDismatlingItemCommand}" CommandParameter="{Binding SelectedDismantlingItem}" />
+                        </Behaviors:EventTrigger>
+                    </Behaviors:Interaction.Triggers>
+                </DataGrid>
+                
+                
+            </StackPanel>
+
         </Expander>
 
 
         <DataGrid Grid.Row="2" Grid.Column="0" 
                   x:Name="AssetsDataGrid"
                   ItemsSource="{Binding AssetsCollection}" 
-                  SelectedItem="{Binding SelectedAsset}"
+                  SelectedItem="{Binding SelectedAsset}" 
+                  EnableRowVirtualization="False"
                   AutoGenerateColumns="False"
                   Margin="10">
             <DataGrid.Columns>
@@ -158,31 +195,12 @@
                 <DataGridTextColumn Header="Код док." Binding="{Binding TSDocumentNumber}" Width="60"
                                     ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
                 
-                <!--Make a separate button of it-->
-                <DataGridTemplateColumn Header="Оцінка" Width="50">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button x:Name="btnValuation"  Content="+" Command="{Binding OpenAssetValuationPopupCommand}">
-                                <Button.Style>
-                                    <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding AssetValuation.IsValid,UpdateSourceTrigger=PropertyChanged}" Value="True">
-                                                <Setter Property="Background" Value="DarkOliveGreen"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-                            </Button>
-                            <DataTemplate.Triggers>
-                            </DataTemplate.Triggers>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
 
         <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button Content="Generate Report" Command="{Binding GenerateReportCommand}"/>
+            <Button Content="Додати Оцінку" Command="{Binding AddValuationCommand}"/>
             <Button Content="Додати Розукомплектацію" Command="{Binding AddDismantlingCommand}"/>
             <Button Content="Add Row" Command="{Binding AddRowCommand}" />
             <Button Content="Remove Row" Command="{Binding RemoveRowCommand }" />

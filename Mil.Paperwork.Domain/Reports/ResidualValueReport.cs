@@ -1,4 +1,5 @@
 ﻿using Mil.Paperwork.Domain.DataModels;
+using Mil.Paperwork.Domain.DataModels.Assets;
 using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Domain.Resources;

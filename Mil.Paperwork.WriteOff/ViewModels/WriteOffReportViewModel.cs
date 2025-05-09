@@ -12,10 +12,13 @@ using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.WriteOff.Views;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.WriteOff.Factories;
+using Mil.Paperwork.WriteOff.DataModels;
+using Mil.Paperwork.Infrastructure.Helpers;
+using Mil.Paperwork.Domain.Enums;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
-    public class WriteOffReportViewModel : ObservableItem, ITabViewModel
+    internal class WriteOffReportViewModel : ObservableItem, ITabViewModel
     {
         private readonly ReportManager _reportManager;
         private readonly IAssetFactory _assetFactory;
@@ -28,9 +31,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private string _documentNumber = string.Empty;
         private DateTime _writeOffDate = DateTime.Now.Date;
         private string _reason = string.Empty;
+        private EventType _eventType;
         private string _destinationFolderPath = "C:\\Work\\Temp";
         private AssetViewModel? _selectedAsset;
-        private AssetValuationViewModel _selectedDismantlingItem;
+        private AssetValuationViewModel _selectedValuationItem;
+        private ObservableCollection<AssetValuationViewModel> _valuationCollection = [];
+        private AssetDismantlingViewModel _selectedDismantlingItem;
         private ObservableCollection<AssetDismantlingViewModel> _dismantleCollection = [];
         private AssetType _selectedAssetType;
 
@@ -83,7 +89,25 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _reason, value);
         }
 
-        public AssetValuationViewModel SelectedDismantlingItem
+        public EventType EventType
+        {
+            get => _eventType;
+            set => SetProperty(ref _eventType, value);
+        }
+
+        public AssetValuationViewModel SelectedValuationItem
+        {
+            get => _selectedValuationItem;
+            set => SetProperty(ref _selectedValuationItem, value);
+        }
+
+        public ObservableCollection<AssetValuationViewModel> ValuationCollection
+        {
+            get => _valuationCollection;
+            set => SetProperty(ref _valuationCollection, value);
+        }
+
+        public AssetDismantlingViewModel SelectedDismantlingItem
         {
             get => _selectedDismantlingItem;
             set => SetProperty(ref _selectedDismantlingItem, value);
@@ -95,18 +119,24 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _dismantleCollection, value);
         }
 
+        public bool IsAnyValuationOrDismantling => ValuationCollection.Count > 0 || DismantleCollection.Count > 0;
+
         public AssetType SelectedAssetType
         {
             get => _selectedAssetType;
             set => SetProperty(ref _selectedAssetType, value);
         }
 
-        public ICommand<AssetValuationViewModel> OpenDismatlingItemCommand { get; }
+        public ObservableCollection<EventTypeDataModel> EventTypes { get; private set; }
+
+        public ICommand<AssetValuationViewModel> OpenValuationItemCommand { get; }
+        public ICommand<AssetDismantlingViewModel> OpenDismatlingItemCommand { get; }
         public ICommand GenerateReportCommand { get; }
         public ICommand ClearTableCommand { get; }
         public ICommand AddRowCommand { get; }
         public ICommand RemoveRowCommand { get; }
         public ICommand SelectFolderCommand { get; }
+        public ICommand AddValuationCommand { get; }
         public ICommand AddDismantlingCommand { get; }
         public ICommand CloseCommand { get; }
 
@@ -125,6 +155,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             _model = new WriteOffReportModel(reportManager, dataService);
             AssetsCollection = new ObservableCollection<AssetViewModel>();
             UpdateProductsCollection();
+            FillAssetTypesCollection();
 
             SelectedAssetType = reportDataService.GetAssetType();
 
@@ -133,8 +164,10 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             AddRowCommand = new DelegateCommand(AddRow);
             RemoveRowCommand = new DelegateCommand(RemoveRowExecute);
             SelectFolderCommand = new DelegateCommand(SelectFolder);
+            AddValuationCommand = new DelegateCommand(AddValuationExecute);
             AddDismantlingCommand = new DelegateCommand(AddDismantlingExecute);
-            OpenDismatlingItemCommand = new DelegateCommand<AssetValuationViewModel>(OpenDismatlingItemExecute);
+            OpenValuationItemCommand = new DelegateCommand<AssetValuationViewModel>(OpenValuationItemExecute);
+            OpenDismatlingItemCommand = new DelegateCommand<AssetDismantlingViewModel>(OpenDismatlingItemExecute);
             CloseCommand = new DelegateCommand(CloseCommandExecute);
         }
 
@@ -147,9 +180,11 @@ namespace Mil.Paperwork.WriteOff.ViewModels
                 RegistrationNumber = RegistrationNumber,
                 DocumentNumber = DocumentNumber,
                 Reason = Reason,
+                EventType = EventType,
                 ReportDate = WriteOffDate,
-                Assets = [.. AssetsCollection.Select(x => x.ToAssetInfo(WriteOffDate))],
-                Dismantlings = [.. DismantleCollection.Select(x => x.ToAssetDismantlingData())]
+                Assets = [.. AssetsCollection.Select(x => x.ToAssetInfo(EventType, WriteOffDate))],
+                Dismantlings = [.. DismantleCollection.Select(x => x.ToAssetDismantlingData())],
+                ValuationData = [.. ValuationCollection.Select(x => x.ToAssetValuationData())]
             };
 
             _model.GenerateReport(reportData);
@@ -182,6 +217,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             products.AddRange(_loadedProducts);
 
             Products = [.. products];
+        }
+
+        private void FillAssetTypesCollection()
+        {
+            var eventTypes = EnumHelper.GetValuesWithDescriptions<EventType>().Select(x => new EventTypeDataModel(x.Value, x.Description));
+            EventTypes = [.. eventTypes];
         }
 
         private void ClearTable()
@@ -228,12 +269,33 @@ namespace Mil.Paperwork.WriteOff.ViewModels
                 DismantleCollection.Add(viewModel);
 
                 UpdateMergedProductsCollection();
+                OnPropertyChanged(nameof(IsAnyValuationOrDismantling));
             }
         }
 
-        private void OpenDismatlingItemExecute(AssetValuationViewModel viewModel)
+        private void AddValuationExecute()
+        {
+            var viewModel = _navigationService.OpenWindow<AssetValuationDialogWindow, AssetValuationViewModel>();
+            
+            if (viewModel.IsValid)
+            {
+                ValuationCollection.Add(viewModel);
+
+                UpdateMergedProductsCollection();
+                OnPropertyChanged(nameof(IsAnyValuationOrDismantling));
+            }
+        }
+
+        private void OpenValuationItemExecute(AssetValuationViewModel viewModel)
         {
             _navigationService.OpenWindow<AssetValuationDialogWindow, AssetValuationViewModel>(viewModel);
+
+            UpdateMergedProductsCollection();
+        }
+
+        private void OpenDismatlingItemExecute(AssetDismantlingViewModel viewModel)
+        {
+            _navigationService.OpenWindow<AssetValuationDialogWindow, AssetDismantlingViewModel>(viewModel);
 
             UpdateMergedProductsCollection();
         }

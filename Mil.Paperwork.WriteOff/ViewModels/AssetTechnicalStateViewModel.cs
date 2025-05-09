@@ -10,6 +10,10 @@ using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.WriteOff.Helpers;
 using Microsoft.Win32;
 using Mil.Paperwork.WriteOff.Factories;
+using Mil.Paperwork.Domain.DataModels.Assets;
+using Mil.Paperwork.Domain.Enums;
+using Mil.Paperwork.Infrastructure.Helpers;
+using Mil.Paperwork.WriteOff.DataModels;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
@@ -21,6 +25,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private AssetViewModel _assetViewModel;
         private DateTime _reportDate = DateTime.Now.Date;
         private string _reason = string.Empty;
+        private EventType _eventType;
 
         private ProductDTO _selectedProduct;
         private ObservableCollection<ProductDTO> _products;
@@ -43,6 +48,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _reportDate, value);
         }
 
+        public EventType EventType
+        {
+            get => _eventType;
+            set => SetProperty(ref _eventType, value);
+        }
+
         public AssetViewModel Asset
         {
             get => _assetViewModel;
@@ -61,6 +72,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _products, value);
         }
 
+        public ObservableCollection<EventTypeDataModel> EventTypes { get; private set; }
+        
         public ICommand ProductSelectedCommand { get; }
         public ICommand GenerateReportCommand { get; }
         public ICommand CloseCommand { get; }
@@ -74,6 +87,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             _assetViewModel = assetFactory.CreateAssetViewModel();
             
             UpdateProductsCollection();
+            FillAssetTypesCollection();
 
             ProductSelectedCommand = new DelegateCommand(ProductSelectedExecute);
             GenerateReportCommand = new DelegateCommand(GenerateReport);
@@ -83,15 +97,16 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private void GenerateReport()
         {
             var folderDialog = new OpenFolderDialog();
-            // TODO: folderDialog.InitialDirectory = ;
+
             if (folderDialog.ShowDialog() == true)
             {
                 var folderName = folderDialog.FolderName;
-                var assets = new List<IAssetInfo>() { _assetViewModel.ToAssetInfo(ReportDate) };
+                var assets = new List<IAssetInfo>() { _assetViewModel.ToAssetInfo(EventType, ReportDate) };
                 var reportData = new TechnicalStateReportData
                 {
                     Reason = _reason,
                     ReportDate = _reportDate,
+                    EventType = _eventType,
                     Assets = assets,
                     DestinationFolder = folderName
                 };
@@ -105,6 +120,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private void UpdateProductsCollection()
         {
             Products = [.. _dataService.LoadProductsData()];
+        }
+
+        private void FillAssetTypesCollection()
+        {
+            var eventTypes = EnumHelper.GetValuesWithDescriptions<EventType>().Select(x => new EventTypeDataModel(x.Value, x.Description));
+            EventTypes = [.. eventTypes];
         }
 
         private void ProductSelectedExecute()

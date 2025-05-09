@@ -1,4 +1,5 @@
-﻿using Mil.Paperwork.Domain.DataModels;
+﻿using Mil.Paperwork.Domain.DataModels.Assets;
+using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.MVVM;
@@ -28,7 +29,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private string _tsRegisterNumber = string.Empty;
         private string _tsDocumentNumber = string.Empty;
         private int _warrantyPeriodYears = 5;
-        private AssetValuationViewModel _assetValuation;
 
         internal abstract IAssetInfo AssetInfo { get; }
 
@@ -110,15 +110,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _warrantyPeriodYears, value);
         }
 
-        public AssetValuationViewModel AssetValuation
-        {
-            get => _assetValuation;
-            set => SetProperty(ref _assetValuation, value);
-        }
-
         public ICommand ProductSelectedCommand { get; }
-        public ICommand OpenAssetValuationPopupCommand { get; }
-
 
         public AssetViewModel(ReportManager reportManager, IDataService dataService, INavigationService navigationService)
         {
@@ -127,10 +119,9 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             _navigationService = navigationService;
 
             ProductSelectedCommand = new DelegateCommand(ProductSelectedExecute);
-            OpenAssetValuationPopupCommand = new DelegateCommand(OpenAssetValuationPopup);
         }
 
-        public virtual IAssetInfo ToAssetInfo(DateTime? reportDate = null)
+        public virtual IAssetInfo ToAssetInfo(EventType eventType = EventType.Lost, DateTime? reportDate = null)
         {
             AssetInfo.Name = _name;
             AssetInfo.ShortName = _shortName;
@@ -144,20 +135,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             AssetInfo.TSRegisterNumber = _tsRegisterNumber;
             AssetInfo.TSDocumentNumber = _tsDocumentNumber;
             AssetInfo.WarrantyPeriodYears = _warrantyPeriodYears;
+            AssetInfo.EventType = eventType;
 
             if (reportDate != null)
             {
                 AssetInfo.WriteOffDateTime = (DateTime)reportDate;
             }
-
-            if (AssetValuation != null && AssetValuation.IsValid)
-            {
-                AssetValuation.Price = _price;
-                AssetValuation.Name = _name;
-                AssetValuation.SerialNumber = _serialNumber;
-                AssetInfo.ValuationData = AssetValuation.ToAssetValuationData();
-            }
-
 
             return AssetInfo;
         }
@@ -165,17 +148,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private void ProductSelectedExecute()
         {
             FillProductDetails();
-        }
-
-        private void OpenAssetValuationPopup()
-        {
-            if (AssetValuation == null)
-            {
-                var asset = this.ToAssetInfo();
-                AssetValuation = new AssetValuationViewModel(asset, _reportManager, _dataService, _navigationService);
-            }
-
-            _navigationService.OpenWindow<AssetValuationDialogWindow, AssetValuationViewModel>(AssetValuation);
         }
 
         private void FillProductDetails()

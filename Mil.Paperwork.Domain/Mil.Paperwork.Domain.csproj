@@ -54,7 +54,7 @@
     <None Update="Templates\ResidualValueReportTemplate.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Templates\TechnicalStateReportTemplate.docx">
+    <None Update="Templates\TechnicalState11ReportTemplate.docx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

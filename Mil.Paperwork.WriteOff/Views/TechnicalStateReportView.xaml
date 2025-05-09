@@ -80,8 +80,18 @@
         <TextBlock Grid.Row="4" Grid.Column="0" Text="Взято на облік"/>
         <DatePicker Grid.Row="4" Grid.Column="1" SelectedDate="{Binding Asset.StartDate}" Language="uk-UA"/>
 
-        <TextBlock Grid.Row="4" Grid.Column="2" Text="Дата звіту"/>
-        <DatePicker Grid.Row="4" Grid.Column="3" SelectedDate="{Binding ReportDate}" Language="uk-UA"/>
+
+        <TextBlock Grid.Row="4" Grid.Column="2" Text="Майно було" />
+        <ComboBox Grid.Row="4" Grid.Column="3"
+                      ItemsSource="{Binding EventTypes}" 
+                      SelectedValue="{Binding EventType}"
+                      IsEditable="False"
+                      SelectedValuePath="EventType"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Center"/>
+        
+        <TextBlock Grid.Row="4" Grid.Column="4" Text="Дата звіту"/>
+        <DatePicker Grid.Row="4" Grid.Column="5" SelectedDate="{Binding ReportDate}" Language="uk-UA"/>
 
         <TextBlock Grid.Row="5" Grid.Column="0" Text="Реєстр. номер"/>
         <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Asset.TSRegisterNumber}" TextWrapping="Wrap"/>

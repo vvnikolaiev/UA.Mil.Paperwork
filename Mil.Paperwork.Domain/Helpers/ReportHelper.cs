@@ -1,4 +1,7 @@
-﻿namespace Mil.Paperwork.Domain.Helpers
+﻿using Mil.Paperwork.Domain.Enums;
+using Mil.Paperwork.Infrastructure.Helpers;
+
+namespace Mil.Paperwork.Domain.Helpers
 {
     public static class ReportHelper
     {
@@ -58,6 +61,33 @@
 
         public const string DATE_FORMAT = "dd.MM.yyyy";
 
+        public static string ConvertEventTypeToText(EventType state)
+        {
+            var result = EnumHelper.GetDescription(state).ToLower();
+
+            return result;
+        }
+
+        public static string ConvertEventTypeToCategoryText(int initialCategory, EventType state)
+        {
+            var category = ConvertEventTypeToCategory(initialCategory, state);
+            var result = ConvertCategoryToText(category);
+
+            return result;
+        }
+
+        public static int ConvertEventTypeToCategory(int initialCategory, EventType state)
+        {
+            var result = state switch
+            {
+                EventType.Lost => initialCategory,
+                EventType.Destroyed => 5,
+                _ => initialCategory,
+            };
+
+            return result;
+        }
+
         public static string ConvertCategoryToText(int category)
         {
             var result = category switch
@@ -71,6 +101,12 @@
             };
             return result;
         }
+
+        //public static string ConvertCategoryToFullText()
+        //{
+        //    // віносться до 1 (першої) категорії
+        //    // переводиться в 2 (другу) категорію
+        //}
 
         public static string GetFullAssetName(string assetName, string serialNumber)
         {
