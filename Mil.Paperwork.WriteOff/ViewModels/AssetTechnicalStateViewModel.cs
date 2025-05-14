@@ -28,7 +28,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private EventType _eventType;
 
         private ProductDTO _selectedProduct;
-        private ObservableCollection<ProductDTO> _products;
 
         public event EventHandler<ITabViewModel> TabCloseRequested;
 
@@ -66,18 +65,13 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _selectedProduct, value);
         }
 
-        public ObservableCollection<ProductDTO> Products
-        {
-            get => _products;
-            set => SetProperty(ref _products, value);
-        }
+        public ProductSelectionViewModel ProductSelector { get; }
 
         public ObservableCollection<EventTypeDataModel> EventTypes { get; private set; }
         
         public ICommand ProductSelectedCommand { get; }
         public ICommand GenerateReportCommand { get; }
         public ICommand CloseCommand { get; }
-
 
         public AssetTechnicalStateViewModel(ReportManager reportManager, IAssetFactory assetFactory, IDataService dataService, INavigationService navigationService)
         {
@@ -86,7 +80,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
             _assetViewModel = assetFactory.CreateAssetViewModel();
             
-            UpdateProductsCollection();
+            ProductSelector = new ProductSelectionViewModel(_dataService);
+
             FillAssetTypesCollection();
 
             ProductSelectedCommand = new DelegateCommand(ProductSelectedExecute);
@@ -115,11 +110,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels
                 var productInfos = reportData.Assets.Select(DTOConvertionHelper.ConvertToProductDTO).ToList();
                 _dataService.SaveProductsData(productInfos);
             }
-        }
-
-        private void UpdateProductsCollection()
-        {
-            Products = [.. _dataService.LoadProductsData()];
         }
 
         private void FillAssetTypesCollection()

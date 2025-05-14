@@ -6,7 +6,7 @@ using Mil.Paperwork.WriteOff.Managers;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
-    public class RadiochemicalAssetInfoViewModel : AssetViewModel
+    internal class RadiochemicalAssetInfoViewModel : AssetViewModel
     {
         private readonly RadiochemicalAssetInfo _assetInfo;
 

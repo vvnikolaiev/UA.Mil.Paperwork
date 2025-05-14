@@ -13,7 +13,7 @@ using System.Windows.Input;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
-    public class AssetValuationViewModel : ObservableItem, ITabViewModel
+    internal class AssetValuationViewModel : ObservableItem, ITabViewModel
     {
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
@@ -29,7 +29,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private string _serialNumber;
         private string _nomenclatureCode;
         private ProductDTO _selectedProduct;
-        private ObservableCollection<ProductDTO> _products;
 
         private ObservableCollection<AssetValuationItemViewModel> _components = [];
 
@@ -105,11 +104,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _selectedProduct, value);
         }
 
-        public ObservableCollection<ProductDTO> Products
-        {
-            get => _products;
-            set => SetProperty(ref _products, value);
-        }
+        public ProductSelectionViewModel ProductSelector { get; }
 
         public virtual ObservableCollection<AssetValuationItemViewModel> Components
         {
@@ -150,7 +145,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
             UpdateValuationTemplatesCollection();
 
-            UpdateProductsCollection();
+            ProductSelector = new ProductSelectionViewModel(dataService);
 
             ProductSelectedCommand = new DelegateCommand(ProductSelectedExecute);
             ApplyValuationTemplateCommand = new DelegateCommand(ApplyValuationTemplateExecute);
@@ -255,11 +250,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             {
                 OnPropertyChanged(nameof(Name));
             }
-        }
-
-        private void UpdateProductsCollection()
-        {
-            Products = [.. _dataService.LoadProductsData()];
         }
 
         private void UpdateValuationTemplatesCollection()

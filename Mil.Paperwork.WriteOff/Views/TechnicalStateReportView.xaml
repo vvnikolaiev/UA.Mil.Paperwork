@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Mil.Paperwork.WriteOff.Views"
-             xmlns:ViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels" xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:ViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels" 
+             xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=ViewModels:AssetTechnicalStateViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -39,8 +40,9 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock Grid.Row="0" Grid.Column="0" Text="Назва"/>
+
         <ComboBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="5"
-                  ItemsSource="{Binding Products}" 
+                  ItemsSource="{Binding ProductSelector.Products}" 
                   Text="{Binding Asset.Name}"
                   SelectedItem="{Binding SelectedProduct, UpdateSourceTrigger=PropertyChanged}" 
                   IsEditable="True"

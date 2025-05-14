@@ -6,7 +6,7 @@ using Mil.Paperwork.WriteOff.Managers;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
-    public class ConnectivityAssetInfoViewModel : AssetViewModel
+    internal class ConnectivityAssetInfoViewModel : AssetViewModel
     {
         private readonly ConnectivityAssetInfo _assetInfo;
         

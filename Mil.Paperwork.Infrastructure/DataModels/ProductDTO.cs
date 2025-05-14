@@ -15,4 +15,23 @@
             return Name;
         }
     }
+
+    public class ProductComparer : IEqualityComparer<ProductDTO>
+    {
+        public bool Equals(ProductDTO x, ProductDTO y)
+        {
+            if (x == null || y == null)
+                return false;
+
+            return x.Name == y.Name;
+        }
+
+        public int GetHashCode(ProductDTO obj)
+        {
+            if (obj == null)
+                return 0;
+
+            return HashCode.Combine(obj.Name);
+        }
+    }
 }

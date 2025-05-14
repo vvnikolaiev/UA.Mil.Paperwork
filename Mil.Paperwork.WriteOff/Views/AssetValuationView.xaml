@@ -40,7 +40,7 @@
 
         <TextBlock Grid.Row="0" Grid.Column="0" Text="Назва" />
         <ComboBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="6"
-                  ItemsSource="{Binding Products}" 
+                  ItemsSource="{Binding ProductSelector.Products}" 
                   Text="{Binding Name}"
                   SelectedItem="{Binding SelectedProduct, UpdateSourceTrigger=PropertyChanged}" 
                   IsEditable="True"

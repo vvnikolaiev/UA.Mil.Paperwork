@@ -7,12 +7,11 @@ using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Helpers;
 using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.WriteOff.Memento;
-using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
-    public class AssetDismantlingViewModel : AssetValuationViewModel
+    internal class AssetDismantlingViewModel : AssetValuationViewModel
     {
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;

@@ -152,7 +152,7 @@
                 <DataGridTemplateColumn Header="Назва" Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <ComboBox ItemsSource="{Binding DataContext.Products, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                            <ComboBox ItemsSource="{Binding DataContext.ProductsSelector.Products, RelativeSource={RelativeSource AncestorType=UserControl}}" 
                                       Text="{Binding Name}"
                                       SelectedItem="{Binding SelectedProduct, UpdateSourceTrigger=PropertyChanged}" 
                                       IsEditable="True"

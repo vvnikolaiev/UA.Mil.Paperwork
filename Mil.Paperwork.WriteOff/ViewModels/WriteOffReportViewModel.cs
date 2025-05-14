@@ -6,7 +6,6 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
-using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.WriteOff.Views;
@@ -20,13 +19,10 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 {
     internal class WriteOffReportViewModel : ObservableItem, ITabViewModel
     {
-        private readonly ReportManager _reportManager;
         private readonly IAssetFactory _assetFactory;
-        private readonly IDataService _dataService;
         private readonly INavigationService _navigationService;
-        private WriteOffReportModel _model;
-        private IList<ProductDTO> _loadedProducts;
-        private ObservableCollection<ProductDTO> _products;
+        private readonly WriteOffReportModel _model;
+
         private string _registrationNumber = string.Empty;
         private string _documentNumber = string.Empty;
         private DateTime _writeOffDate = DateTime.Now.Date;
@@ -46,13 +42,9 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         public bool IsClosed { get; private set; }
 
-        public ObservableCollection<AssetViewModel> AssetsCollection { get; set; }
+        public ProductSelectionViewModel ProductsSelector { get; }
 
-        public ObservableCollection<ProductDTO> Products
-        {
-            get => _products;
-            set => SetProperty(ref _products, value);
-        }
+        public ObservableCollection<AssetViewModel> AssetsCollection { get; set; }
 
         public AssetViewModel? SelectedAsset
         {
@@ -141,20 +133,19 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         public ICommand CloseCommand { get; }
 
         public WriteOffReportViewModel(
-            ReportManager reportManager, 
-            IAssetFactory assetFactory, 
-            IDataService dataService, 
-            IReportDataService reportDataService, 
+            ReportManager reportManager,
+            IAssetFactory assetFactory,
+            IDataService dataService,
+            IReportDataService reportDataService,
             INavigationService navigationService)
         {
-            _reportManager = reportManager;
             _assetFactory = assetFactory;
-            _dataService = dataService;
             _navigationService = navigationService;
 
             _model = new WriteOffReportModel(reportManager, dataService);
+            ProductsSelector = new ProductSelectionViewModel(dataService);
             AssetsCollection = new ObservableCollection<AssetViewModel>();
-            UpdateProductsCollection();
+
             FillAssetTypesCollection();
 
             SelectedAssetType = reportDataService.GetAssetType();
@@ -189,34 +180,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
             _model.GenerateReport(reportData);
 
-            UpdateProductsCollection();
-        }
-
-        private void UpdateProductsCollection()
-        {
-            _loadedProducts = _model.LoadProductData();
-
-            UpdateMergedProductsCollection();
-        }
-
-        private void UpdateMergedProductsCollection()
-        {
-            var products = new List<ProductDTO>();
-
-            var excludedItems = DismantleCollection
-                .Where(x => x != null && x.IsValid)
-                .SelectMany(x => x.Components
-                            .Where(c => c != null && x.IsValid && c.Exclude)
-                            .Select(c => c.ToProductDTO()));
-
-            if (excludedItems != null)
-            {
-                products.AddRange(excludedItems);
-            }
-
-            products.AddRange(_loadedProducts);
-
-            Products = [.. products];
+            ProductsSelector.UpdateProductsCollection(DismantleCollection);
         }
 
         private void FillAssetTypesCollection()
@@ -263,12 +227,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private void AddDismantlingExecute()
         {
             var viewModel = _navigationService.OpenWindow<AssetValuationDialogWindow, AssetDismantlingViewModel>();
-            
+
             if (viewModel.IsValid)
             {
                 DismantleCollection.Add(viewModel);
 
-                UpdateMergedProductsCollection();
+                ProductsSelector.UpdateProductsCollection(DismantleCollection);
                 OnPropertyChanged(nameof(IsAnyValuationOrDismantling));
             }
         }
@@ -276,12 +240,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private void AddValuationExecute()
         {
             var viewModel = _navigationService.OpenWindow<AssetValuationDialogWindow, AssetValuationViewModel>();
-            
+
             if (viewModel.IsValid)
             {
                 ValuationCollection.Add(viewModel);
 
-                UpdateMergedProductsCollection();
+                ProductsSelector.UpdateProductsCollection(DismantleCollection);
                 OnPropertyChanged(nameof(IsAnyValuationOrDismantling));
             }
         }
@@ -290,14 +254,14 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         {
             _navigationService.OpenWindow<AssetValuationDialogWindow, AssetValuationViewModel>(viewModel);
 
-            UpdateMergedProductsCollection();
+            ProductsSelector.UpdateProductsCollection(DismantleCollection);
         }
 
         private void OpenDismatlingItemExecute(AssetDismantlingViewModel viewModel)
         {
             _navigationService.OpenWindow<AssetValuationDialogWindow, AssetDismantlingViewModel>(viewModel);
 
-            UpdateMergedProductsCollection();
+            ProductsSelector.UpdateProductsCollection(DismantleCollection);
         }
 
         private void CloseCommandExecute()
