@@ -7,7 +7,8 @@
 
         public const string ResidualValueReportName = "Акт залишкової вартості";
         public const string QualityStateReportName = "Акт зміни якісного стану";
-        public const string TechnicalStateReportName = "Акт технічного стану";
+        public const string InitialTechnicalStateReportName = "Акт технічного стану (№7)";
+        public const string TechnicalStateReportName = "Акт технічного стану (№11)";
         public const string ValuationReportName = "Акт оцінки майна";
         public const string DismantlingReportName = "Акт зміни якісного стану - РОЗУКОМПЛЕКТАЦІЇ - майна";
 

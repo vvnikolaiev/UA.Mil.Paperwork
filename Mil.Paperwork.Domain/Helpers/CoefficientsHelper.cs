@@ -9,9 +9,14 @@
         // Можливо додати тип майна з заздалегідь підготованими стовпчиками для вводу даних.
 
 
-        public static decimal GetExploitationCoefficient(DateTime startDate, DateTime endDate)
+        public static decimal GetExploitationCoefficient(DateTime startDate, DateTime? endDate)
         {
-            var exploitationDays = (int)(endDate - startDate).TotalDays;
+            if (endDate == null)
+            {
+                return 1.0m;
+            }
+
+            var exploitationDays = (int)(endDate.Value - startDate).TotalDays;
             int exploitationYears = exploitationDays / 365;
 
             var result = exploitationYears switch
@@ -84,11 +89,16 @@
             { 2025, new() { { 2025, 1.000m }, { 2024, 1.000m }, { 2023, 1.000m }, { 2022, 1.000m }, { 2021, 1.000m }, { 2020, 1.000m }, { 2019, 1.000m }, { 2018, 1.000m }, { 2017, 1.000m }, { 2016, 1.000m }, { 2015, 1.000m }, { 2014, 1.000m } } }
         };
 
-        public static decimal GetIndexationCoefficient(DateTime startDate, DateTime endDate)
+        public static decimal GetIndexationCoefficient(DateTime startDate, DateTime? endDate)
         {
+            if (endDate == null)
+            {
+                return 1.0m;
+            }
+
             const int MinYear = 1997;
             var startYear = startDate.Year;
-            var endYear = endDate.Year;
+            var endYear = endDate.Value.Year;
 
             var result = 1.0m;
 

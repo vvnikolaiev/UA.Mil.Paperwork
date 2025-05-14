@@ -62,10 +62,15 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Grid Width="100" Height="100" Background="LightGray" Margin="5">
-                                <Button Content="{Binding Text}" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                <Button HorizontalAlignment="Center" VerticalAlignment="Center" 
                                         Width="70" Height="70"
                                         Command="{Binding DataContext.CreateReportCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
-                                        CommandParameter="{Binding DocumentType}"/>
+                                        CommandParameter="{Binding DocumentType}">
+                                    <Button.Content>
+                                        <TextBlock Text="{Binding Text}" TextWrapping="Wrap" 
+                                                   TextAlignment="Center"/>
+                                    </Button.Content>
+                                </Button>
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -83,6 +88,10 @@
 
         <DataTemplate DataType="{x:Type viewModels:WriteOffReportViewModel}">
             <views:WriteOffReportView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModels:AssetInitialTechnicalStateViewModel}">
+            <views:TechnicalStateReportView />
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type viewModels:AssetTechnicalStateViewModel}">

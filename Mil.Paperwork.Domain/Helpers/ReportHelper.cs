@@ -28,11 +28,15 @@ namespace Mil.Paperwork.Domain.Helpers
             public string Names { get; set; }
             public string Hryvna { get; set; }
             public string Kopiyka { get; set; }
+
+            public string First { get; set; }
+            public string Second { get; set; }
+            public string Third { get; set; }
         }
 
-        private static readonly Words NominativeWords = new() { Year = "рік", Month = "місяць", Hour = "година", Names = "найменування", Hryvna = "гривня", Kopiyka = "копійка" };
-        private static readonly Words GenitiveWords = new() { Year = "років", Month = "місяців", Hour = "годин", Names = "найменувань", Hryvna = "гривень", Kopiyka = "копійок" };
-        private static readonly Words AccusativeWords = new() { Year = "роки", Month = "місяці", Hour = "години", Names = "найменування", Hryvna = "гривні", Kopiyka = "копійки" };
+        private static readonly Words NominativeWords = new() { Year = "рік", Month = "місяць", Hour = "година", Names = "найменування", Hryvna = "гривня", Kopiyka = "копійка", First="перша", Second="друга", Third="третя" };
+        private static readonly Words GenitiveWords = new() { Year = "років", Month = "місяців", Hour = "годин", Names = "найменувань", Hryvna = "гривень", Kopiyka = "копійок", First = "першої", Second = "другої", Third = "третьої" };
+        private static readonly Words AccusativeWords = new() { Year = "роки", Month = "місяці", Hour = "години", Names = "найменування", Hryvna = "гривні", Kopiyka = "копійки", First = "першу", Second = "другу", Third = "третю" };
 
         private static readonly Dictionary<NounCases, Words> NounCasesWords = new()
         {
@@ -80,6 +84,7 @@ namespace Mil.Paperwork.Domain.Helpers
         {
             var result = state switch
             {
+                EventType.Accounted => 2,
                 EventType.Lost => initialCategory,
                 EventType.Destroyed => 5,
                 _ => initialCategory,
@@ -102,11 +107,30 @@ namespace Mil.Paperwork.Domain.Helpers
             return result;
         }
 
-        //public static string ConvertCategoryToFullText()
-        //{
-        //    // віносться до 1 (першої) категорії
-        //    // переводиться в 2 (другу) категорію
-        //}
+        public static void ConvertCategoryToFullText(int initialCategory, int resultCategory, out string sInitialCategory, out string sResidualCategory)
+        {
+            var initialCategoryWords = NounCasesWords[NounCases.Genitive];
+            var resultCategoryWords = NounCasesWords[NounCases.Accusative];
+
+            sInitialCategory = initialCategory switch
+            {
+                1 => initialCategoryWords.First,
+                2 => initialCategoryWords.Second,
+                3 => initialCategoryWords.Third,
+                _ => throw new NotImplementedException()
+            };
+            sInitialCategory = $"{initialCategory} ({sInitialCategory})";
+
+            sResidualCategory = resultCategory switch
+            {
+                1 => resultCategoryWords.First,
+                2 => resultCategoryWords.Second,
+                3 => resultCategoryWords.Third,
+                _ => throw new NotImplementedException()
+            };
+
+            sResidualCategory = $"{resultCategory} ({sResidualCategory})";
+        }
 
         public static string GetFullAssetName(string assetName, string serialNumber)
         {
@@ -157,10 +181,18 @@ namespace Mil.Paperwork.Domain.Helpers
         public static string GetMonthsOperatedText(DateTime startDate, DateTime endDate)
         {
             var monthsOperated = (int)((endDate - startDate).TotalDays / 30);
-            var caseMonths = GetNounFormFromNumber(monthsOperated);
+
+            var result = GetMonthsText(monthsOperated);
+
+            return result;
+        }
+
+        public static string GetMonthsText(int months)
+        {
+            var caseMonths = GetNounFormFromNumber(months);
             var monthsText = NounCasesWords[caseMonths].Month;
 
-            var result = $"{monthsOperated} {monthsText}";
+            var result = $"{months} {monthsText}";
 
             return result;
         }

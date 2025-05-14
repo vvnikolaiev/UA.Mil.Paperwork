@@ -10,6 +10,7 @@ namespace Mil.Paperwork.WriteOff.Managers
         private readonly IReportService<WriteOffReportData> _qualityStateReportService;
         private readonly IReportService<WriteOffReportData> _residualValueReportService;
         private readonly IReportService<ITechnicalStateReportData> _technicalStateReportService;
+        private readonly IReportService<IInitialTechnicalStateReportData> _initialTechnicalStateReportService;
         private readonly IReportService<IAssetValuationReportData> _valuationReportService;
         private readonly IReportService<IDismantlingReportData> _dismantlingReportService;
 
@@ -22,6 +23,7 @@ namespace Mil.Paperwork.WriteOff.Managers
         {
             _qualityStateReportService = qualityStateReportService;
             _technicalStateReportService = technicalStateReportService;
+            _initialTechnicalStateReportService = technicalStateReportService;
             _residualValueReportService = residualValueService;
             _valuationReportService = valuationReportService;
             _dismantlingReportService = dismantlingReportService;
@@ -46,6 +48,14 @@ namespace Mil.Paperwork.WriteOff.Managers
             var message = $"{residualValueReportResultStatus}\n{technicalStateReportResultStatus}\n{qualityStateReportResultStatus}\n{assetValuationReportResult}\n{dismantlingReportResultStatus}";
 
             MessageBox.Show(message);
+        }
+
+        public void GenerateInitialTechnicalStateReport(IInitialTechnicalStateReportData reportData)
+        {
+            var technicalStateReportResult = _initialTechnicalStateReportService.TryGenerateReport(reportData);
+
+            var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.InitialTechnicalStateReportName, technicalStateReportResult);
+            MessageBox.Show(status);
         }
 
         public void GenerateTechnicalStateReport(ITechnicalStateReportData reportData)

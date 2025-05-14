@@ -19,7 +19,7 @@ namespace Mil.Paperwork.Domain.DataModels.Assets
         string TSRegisterNumber { get; set; }
         string TSDocumentNumber { get; set; }
 
-        DateTime WriteOffDateTime { get; set; }
+        DateTime? WriteOffDateTime { get; set; }
 
         EventType EventType { get; set; }
 

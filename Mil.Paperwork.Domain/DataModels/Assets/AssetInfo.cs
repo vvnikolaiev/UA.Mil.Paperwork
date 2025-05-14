@@ -16,7 +16,7 @@ namespace Mil.Paperwork.Domain.DataModels.Assets
         public int Count { get; set; } = 1;
         public DateTime StartDate { get; set; } = new DateTime(2023, 01, 01);
 
-        public DateTime WriteOffDateTime { get; set; } = new DateTime(2023, 01, 01);
+        public DateTime? WriteOffDateTime { get; set; }
         public EventType EventType { get; set; }
 
         public string TSRegisterNumber { get; set; }

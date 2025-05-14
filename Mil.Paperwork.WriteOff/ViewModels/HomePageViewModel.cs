@@ -55,7 +55,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             var reportTypes = new List<ReportItemViewModel>()
             {
                 new ReportItemViewModel("Списання", DocumentTypeEnum.WriteOff),
-                new ReportItemViewModel("Акт тех. стану", DocumentTypeEnum.TechnicalState11),
+                new ReportItemViewModel("Акт тех. стану (№11)", DocumentTypeEnum.TechnicalState11),
+                new ReportItemViewModel("Акт тех. стану (№7)", DocumentTypeEnum.TechnicalState7),
                 new ReportItemViewModel("Оцінка", DocumentTypeEnum.Valuation),
                 new ReportItemViewModel("Розукомплектація", DocumentTypeEnum.Dismantling),
             };
@@ -77,8 +78,11 @@ namespace Mil.Paperwork.WriteOff.ViewModels
                 case DocumentTypeEnum.Dismantling:
                     createdTab = new AssetDismantlingViewModel(_reportManager, _dataService, _navigationService);
                     break;
+                case DocumentTypeEnum.TechnicalState7:
+                    createdTab = new AssetInitialTechnicalStateViewModel(_reportManager, _assetFactory, _dataService);
+                    break;
                 case DocumentTypeEnum.TechnicalState11:
-                    createdTab = new AssetTechnicalStateViewModel(_reportManager, _assetFactory, _dataService, _navigationService);
+                    createdTab = new AssetTechnicalStateViewModel(_reportManager, _assetFactory, _dataService);
                     break;
                 default:
                     createdTab = null;
