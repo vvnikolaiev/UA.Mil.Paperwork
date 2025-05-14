@@ -1,39 +1,19 @@
-﻿using Mil.Paperwork.Infrastructure.MVVM;
-using Mil.Paperwork.Domain.DataModels;
+﻿using Mil.Paperwork.Domain.DataModels;
 using Mil.Paperwork.WriteOff.Managers;
-using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Input;
-using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Services;
-using Mil.Paperwork.Domain.Services;
-using Mil.Paperwork.WriteOff.Helpers;
-using Microsoft.Win32;
 using Mil.Paperwork.WriteOff.Factories;
 using Mil.Paperwork.Domain.DataModels.Assets;
-using Mil.Paperwork.Domain.Enums;
-using Mil.Paperwork.Infrastructure.Helpers;
-using Mil.Paperwork.WriteOff.DataModels;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
-    internal class AssetTechnicalStateViewModel : ObservableItem, ITabViewModel
+    internal class AssetTechnicalStateViewModel : AssetInitialTechnicalStateViewModel
     {
         private readonly ReportManager _reportManager;
-        private readonly IDataService _dataService;
 
-        private AssetViewModel _assetViewModel;
         private DateTime _reportDate = DateTime.Now.Date;
         private string _reason = string.Empty;
-        private EventType _eventType;
 
-        private ProductDTO _selectedProduct;
-
-        public event EventHandler<ITabViewModel> TabCloseRequested;
-
-        public string Header => "Тех. стан";
-
-        public bool IsClosed { get; private set; }
+        public override string Header => "Тех. стан (№11)";
 
         public string Reason
         {
@@ -47,104 +27,24 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _reportDate, value);
         }
 
-        public EventType EventType
-        {
-            get => _eventType;
-            set => SetProperty(ref _eventType, value);
-        }
-
-        public AssetViewModel Asset
-        {
-            get => _assetViewModel;
-            set => SetProperty(ref _assetViewModel, value);
-        }
-
-        public ProductDTO SelectedProduct
-        {
-            get => _selectedProduct;
-            set => SetProperty(ref _selectedProduct, value);
-        }
-
-        public ProductSelectionViewModel ProductSelector { get; }
-
-        public ObservableCollection<EventTypeDataModel> EventTypes { get; private set; }
-        
-        public ICommand ProductSelectedCommand { get; }
-        public ICommand GenerateReportCommand { get; }
-        public ICommand CloseCommand { get; }
-
-        public AssetTechnicalStateViewModel(ReportManager reportManager, IAssetFactory assetFactory, IDataService dataService, INavigationService navigationService)
+        public AssetTechnicalStateViewModel(ReportManager reportManager, IAssetFactory assetFactory, IDataService dataService) 
+            : base(reportManager, assetFactory, dataService)
         {
             _reportManager = reportManager;
-            _dataService = dataService;
-
-            _assetViewModel = assetFactory.CreateAssetViewModel();
-            
-            ProductSelector = new ProductSelectionViewModel(_dataService);
-
-            FillAssetTypesCollection();
-
-            ProductSelectedCommand = new DelegateCommand(ProductSelectedExecute);
-            GenerateReportCommand = new DelegateCommand(GenerateReport);
-            CloseCommand = new DelegateCommand(CloseCommandExecute);
         }
 
-        private void GenerateReport()
+        protected override void GenerateReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
         {
-            var folderDialog = new OpenFolderDialog();
-
-            if (folderDialog.ShowDialog() == true)
+            var reportData = new TechnicalStateReportData
             {
-                var folderName = folderDialog.FolderName;
-                var assets = new List<IAssetInfo>() { _assetViewModel.ToAssetInfo(EventType, ReportDate) };
-                var reportData = new TechnicalStateReportData
-                {
-                    Reason = _reason,
-                    ReportDate = _reportDate,
-                    EventType = _eventType,
-                    Assets = assets,
-                    DestinationFolder = folderName
-                };
+                Reason = _reason,
+                ReportDate = _reportDate,
+                EventType = EventType,
+                Assets = [.. assets],
+                DestinationFolder = destinationFolder
+            };
 
-                _reportManager.GenerateTechnicalStateReport(reportData);
-                var productInfos = reportData.Assets.Select(DTOConvertionHelper.ConvertToProductDTO).ToList();
-                _dataService.SaveProductsData(productInfos);
-            }
+            _reportManager.GenerateInitialTechnicalStateReport(reportData);
         }
-
-        private void FillAssetTypesCollection()
-        {
-            var eventTypes = EnumHelper.GetValuesWithDescriptions<EventType>().Select(x => new EventTypeDataModel(x.Value, x.Description));
-            EventTypes = [.. eventTypes];
-        }
-
-        private void ProductSelectedExecute()
-        {
-            FillProductDetails();
-        }
-
-        private void FillProductDetails()
-        {
-            if (SelectedProduct != null)
-            {
-                Asset.Name = SelectedProduct.Name;
-                Asset.NomenclatureCode = SelectedProduct.NomenclatureCode;
-                Asset.Price = SelectedProduct.Price;
-            }
-            else
-            {
-                OnPropertyChanged(nameof(Asset.Name));
-            }
-        }
-
-        private void CloseCommandExecute()
-        {
-            if (MessageBox.Show("Are you sure you want to close this tab?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                TabCloseRequested.Invoke(this, this);
-                IsClosed = true;
-            }
-        }
-
     }
 }

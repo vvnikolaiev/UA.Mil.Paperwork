@@ -4,7 +4,8 @@
     {
         public const string REPORT7_TEMPLATE_NAME = "TechnicalState7ReportTemplate.docx";
         public const string REPORT11_TEMPLATE_NAME = "TechnicalState11ReportTemplate.docx";
-        public const string OUTPUT_REPORT_NAME_FORMAT = "Акт технічного стану {0}.docx";
+        public const string OUTPUT_REPORT_7_NAME_FORMAT = "Акт технічного стану (№7) {0}.docx";
+        public const string OUTPUT_REPORT_11_NAME_FORMAT = "Акт технічного стану (№11) {0}.docx";
 
         public const string TABLE_ASSET_NAME = "TABLE_ASSET";
         public const string TABLE_OPERATIONAL_INDICATORS_NAME = "TABLE_OPERATIONAL_INDICATORS";
@@ -12,7 +13,10 @@
         public const string FIELD_ASSET_NAME = "«ASSET_NAME»";
         public const string FIELD_REGISTRATION_NUMBER = "«REGISTRATION_NUMBER»";
         public const string FIELD_DOCUMENT_NUMBER = "«DOCUMENT_NUMBER»";
+        public const string FIELD_ASSET_INITIAL_CATEGORY = "«ASSET_INITIAL_CATEGORY»";
         public const string FIELD_ASSET_RESIDUAL_CATEGORY = "«ASSET_RESIDUAL_CATEGORY»";
+        public const string FIELD_ASSET_INITIAL_CATEGORY_TEXT = "«ASSET_INITIAL_CATEGORY_TEXT»";
+        public const string FIELD_ASSET_RESIDUAL_CATEGORY_TEXT = "«ASSET_RESIDUAL_CATEGORY_TEXT»";
         public const string FIELD_REASON = "«REASON»";
 
         public const int ROW_COMMISIONING_YEAR = 1;
