@@ -64,6 +64,9 @@ namespace Mil.Paperwork.Domain.Reports
 
             document.ReplaceField(QualityStateReportHelper.FIELD_REGISTRATION_NUMBER, reportData.RegistrationNumber);
             document.ReplaceField(QualityStateReportHelper.FIELD_DOCUMENT_NUMBER, reportData.DocumentNumber);
+
+            var assetStateText = ReportHelper.ConvertEventTypeToText(reportData.EventType);
+            document.ReplaceField(QualityStateReportHelper.FIELD_WHAT_HAPPENED, assetStateText);
         }
 
         private static void FillTheTable(WriteOffReportData reportData, Table table)
@@ -80,10 +83,9 @@ namespace Mil.Paperwork.Domain.Reports
                 // TODO: optimize. Make a mapper.
 
                 var residualPrice = ResidualPriceHelper.CalculateResidualPriceForItem(asset);
-                // TODO: use Initial Category instead
-                var initialCategory = ReportHelper.ConvertCategoryToText(2);
-                // TODO: calculate depending on AssetState
-                var category = ReportHelper.ConvertCategoryToText(asset.Category);
+
+                var initialCategory = ReportHelper.ConvertCategoryToText(asset.InitialCategory);
+                var residualCategory = ReportHelper.ConvertEventTypeToCategoryText(asset.InitialCategory, reportData.EventType);
                 
                 var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
                 var nomenclatureCode = asset.NomenclatureCode?.ToUpper() ?? string.Empty;
@@ -102,7 +104,7 @@ namespace Mil.Paperwork.Domain.Reports
                 row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_NAME].AddText(assetName, fontSize, HorizontalAlignment.Left);
                 row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_NOMENCLATURE_CODE].AddText(nomenclatureCode, fontSize);
                 row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_MEASUREMENT_UNIT].AddText(asset.MeasurementUnit, fontSize);
-                row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_CATEGORY].AddText(category, fontSize);
+                row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_CATEGORY].AddText(residualCategory, fontSize);
                 row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_COUNT].AddNumber(asset.Count, fontSize);
                 row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_PRICE].AddPrice(residualPrice, fontSize);
                 row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_TOTAL_PRICE].AddPrice(residualPrice * asset.Count, fontSize);

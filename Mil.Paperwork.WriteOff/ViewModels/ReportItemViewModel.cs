@@ -3,13 +3,13 @@ using Mil.Paperwork.WriteOff.Enums;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
-    internal class ReportViewModelItem : ObservableItem
+    internal class ReportItemViewModel : ObservableItem
     {
         public string Text { get; set; }
 
         public DocumentTypeEnum DocumentType { get; set; }
 
-        public ReportViewModelItem(string text, DocumentTypeEnum documentType)
+        public ReportItemViewModel(string text, DocumentTypeEnum documentType)
         {
             Text = text;
             DocumentType = documentType;

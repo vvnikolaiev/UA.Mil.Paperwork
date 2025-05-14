@@ -1,4 +1,4 @@
-﻿using Mil.Paperwork.Domain.DataModels;
+﻿using Mil.Paperwork.Domain.DataModels.Assets;
 using Mil.Paperwork.Infrastructure.DataModels;
 
 namespace Mil.Paperwork.WriteOff.Helpers

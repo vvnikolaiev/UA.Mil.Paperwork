@@ -10,6 +10,10 @@ using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.WriteOff.Helpers;
 using Microsoft.Win32;
 using Mil.Paperwork.WriteOff.Factories;
+using Mil.Paperwork.Domain.DataModels.Assets;
+using Mil.Paperwork.Domain.Enums;
+using Mil.Paperwork.Infrastructure.Helpers;
+using Mil.Paperwork.WriteOff.DataModels;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
@@ -21,13 +25,15 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private AssetViewModel _assetViewModel;
         private DateTime _reportDate = DateTime.Now.Date;
         private string _reason = string.Empty;
+        private EventType _eventType;
 
         private ProductDTO _selectedProduct;
-        private ObservableCollection<ProductDTO> _products;
 
         public event EventHandler<ITabViewModel> TabCloseRequested;
 
         public string Header => "Тех. стан";
+
+        public bool IsClosed { get; private set; }
 
         public string Reason
         {
@@ -39,6 +45,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         {
             get => _reportDate;
             set => SetProperty(ref _reportDate, value);
+        }
+
+        public EventType EventType
+        {
+            get => _eventType;
+            set => SetProperty(ref _eventType, value);
         }
 
         public AssetViewModel Asset
@@ -53,16 +65,13 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _selectedProduct, value);
         }
 
-        public ObservableCollection<ProductDTO> Products
-        {
-            get => _products;
-            set => SetProperty(ref _products, value);
-        }
+        public ProductSelectionViewModel ProductSelector { get; }
 
+        public ObservableCollection<EventTypeDataModel> EventTypes { get; private set; }
+        
         public ICommand ProductSelectedCommand { get; }
         public ICommand GenerateReportCommand { get; }
         public ICommand CloseCommand { get; }
-
 
         public AssetTechnicalStateViewModel(ReportManager reportManager, IAssetFactory assetFactory, IDataService dataService, INavigationService navigationService)
         {
@@ -71,7 +80,9 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
             _assetViewModel = assetFactory.CreateAssetViewModel();
             
-            UpdateProductsCollection();
+            ProductSelector = new ProductSelectionViewModel(_dataService);
+
+            FillAssetTypesCollection();
 
             ProductSelectedCommand = new DelegateCommand(ProductSelectedExecute);
             GenerateReportCommand = new DelegateCommand(GenerateReport);
@@ -81,15 +92,16 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private void GenerateReport()
         {
             var folderDialog = new OpenFolderDialog();
-            // TODO: folderDialog.InitialDirectory = ;
+
             if (folderDialog.ShowDialog() == true)
             {
                 var folderName = folderDialog.FolderName;
-                var assets = new List<IAssetInfo>() { _assetViewModel.ToAssetInfo(ReportDate) };
+                var assets = new List<IAssetInfo>() { _assetViewModel.ToAssetInfo(EventType, ReportDate) };
                 var reportData = new TechnicalStateReportData
                 {
                     Reason = _reason,
                     ReportDate = _reportDate,
+                    EventType = _eventType,
                     Assets = assets,
                     DestinationFolder = folderName
                 };
@@ -100,9 +112,10 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             }
         }
 
-        private void UpdateProductsCollection()
+        private void FillAssetTypesCollection()
         {
-            Products = [.. _dataService.LoadProductsData()];
+            var eventTypes = EnumHelper.GetValuesWithDescriptions<EventType>().Select(x => new EventTypeDataModel(x.Value, x.Description));
+            EventTypes = [.. eventTypes];
         }
 
         private void ProductSelectedExecute()
@@ -129,6 +142,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             if (MessageBox.Show("Are you sure you want to close this tab?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
                 TabCloseRequested.Invoke(this, this);
+                IsClosed = true;
             }
         }
 

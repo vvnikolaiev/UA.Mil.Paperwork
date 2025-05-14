@@ -1,5 +1,5 @@
 ﻿using Mil.Paperwork.Domain.DataModels;
-using Mil.Paperwork.Infrastructure.DataModels;
+using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Helpers;
 using Mil.Paperwork.WriteOff.Managers;
@@ -26,14 +26,12 @@ namespace Mil.Paperwork.WriteOff.Models
 
             var productInfos = reportData.Assets.Select(DTOConvertionHelper.ConvertToProductDTO).ToList();
             _dataService.SaveProductsData(productInfos);
-            _dataService.SaveValuationData(reportData.ValuationData);
+            
+            var valuationData = ReportDataHelper.GetValuationDataCollection(reportData);
+            reportData.ValuationData = valuationData;
+            _dataService.SaveValuationData(valuationData);
 
             _reportManager.GenerateWriteOffReport(reportData);
-        }
-
-        public IList<ProductDTO> LoadProductData()
-        {
-            return _dataService.LoadProductsData();
         }
     }
 }

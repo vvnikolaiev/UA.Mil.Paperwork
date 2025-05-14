@@ -1,4 +1,5 @@
 ﻿using Mil.Paperwork.Domain.DataModels;
+using Mil.Paperwork.Domain.DataModels.Assets;
 
 namespace Mil.Paperwork.Domain.Helpers
 {

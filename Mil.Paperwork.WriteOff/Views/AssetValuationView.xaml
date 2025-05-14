@@ -39,10 +39,22 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock Grid.Row="0" Grid.Column="0" Text="Назва" />
-        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4"
-            Text="{Binding Name}" 
-            TextWrapping="Wrap"
-            IsReadOnly="{Binding IsReadOnly}" />
+        <ComboBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="6"
+                  ItemsSource="{Binding ProductSelector.Products}" 
+                  Text="{Binding Name}"
+                  SelectedItem="{Binding SelectedProduct, UpdateSourceTrigger=PropertyChanged}" 
+                  IsEditable="True"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Center">
+            <Behaviors:Interaction.Triggers>
+                <Behaviors:EventTrigger EventName="SelectionChanged">
+                    <Behaviors:InvokeCommandAction Command="{Binding ProductSelectedCommand}" />
+                </Behaviors:EventTrigger>
+                <Behaviors:EventTrigger EventName="TextChanged">
+                    <Behaviors:InvokeCommandAction Command="{Binding ProductNameChangedCommand}" />
+                </Behaviors:EventTrigger>
+            </Behaviors:Interaction.Triggers>
+        </ComboBox>
 
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Загальна ціна" />
         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Price}" 

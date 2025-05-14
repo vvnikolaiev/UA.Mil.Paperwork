@@ -9,13 +9,10 @@ namespace Mil.Paperwork.Domain.Helpers
         {
 
             var valuationData = new List<IAssetValuationData?>();
-            var assetsValuationData = reportData.Assets
-                .Where(x => x.ValuationData != null)
-                .Select(x => x.ValuationData);
 
-            if (assetsValuationData != null)
+            if (reportData.ValuationData != null)
             {
-                valuationData.AddRange(assetsValuationData);
+                valuationData.AddRange(reportData.ValuationData);
             }
 
             if (reportData.Dismantlings != null)

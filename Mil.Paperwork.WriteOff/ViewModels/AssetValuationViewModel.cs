@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using Mil.Paperwork.Domain.DataModels;
+using Mil.Paperwork.Domain.DataModels.Assets;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.MVVM;
@@ -12,7 +13,7 @@ using System.Windows.Input;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
-    public class AssetValuationViewModel : ObservableItem, ITabViewModel
+    internal class AssetValuationViewModel : ObservableItem, ITabViewModel
     {
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
@@ -26,6 +27,9 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private string _measurementUnit;
         private decimal _price;
         private string _serialNumber;
+        private string _nomenclatureCode;
+        private ProductDTO _selectedProduct;
+
         private ObservableCollection<AssetValuationItemViewModel> _components = [];
 
         private string _description;
@@ -37,6 +41,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         public event EventHandler<ITabViewModel> TabCloseRequested;
 
         public virtual string Header => "Акт оцінки";
+
+        public bool IsClosed { get; private set; }
 
         public string Description
         {
@@ -86,6 +92,20 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _price, value);
         }
 
+        public string NomenclatureCode
+        {
+            get => _nomenclatureCode;
+            set => SetProperty(ref _nomenclatureCode, value);
+        }
+
+        public ProductDTO SelectedProduct
+        {
+            get => _selectedProduct;
+            set => SetProperty(ref _selectedProduct, value);
+        }
+
+        public ProductSelectionViewModel ProductSelector { get; }
+
         public virtual ObservableCollection<AssetValuationItemViewModel> Components
         {
             get => _components;
@@ -108,6 +128,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         public bool IsReadOnly { get; }
 
+        public ICommand ProductSelectedCommand { get; }
         public ICommand ApplyValuationTemplateCommand { get; }
         public ICommand AddRowCommand { get; }
         public ICommand ClearCommand { get; }
@@ -124,6 +145,9 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
             UpdateValuationTemplatesCollection();
 
+            ProductSelector = new ProductSelectionViewModel(dataService);
+
+            ProductSelectedCommand = new DelegateCommand(ProductSelectedExecute);
             ApplyValuationTemplateCommand = new DelegateCommand(ApplyValuationTemplateExecute);
             AddRowCommand = new DelegateCommand(AddRow);
             ClearCommand = new DelegateCommand(Clear);
@@ -207,6 +231,27 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             return components;
         }
 
+        private void ProductSelectedExecute()
+        {
+            FillProductDetails();
+        }
+
+        private void FillProductDetails()
+        {
+            if (SelectedProduct != null)
+            {
+                Name = SelectedProduct.Name;
+                ShortName = SelectedProduct.ShortName;
+                NomenclatureCode = SelectedProduct.NomenclatureCode;
+                Price = SelectedProduct.Price;
+                MeasurementUnit = SelectedProduct.MeasurementUnit;
+            }
+            else
+            {
+                OnPropertyChanged(nameof(Name));
+            }
+        }
+
         private void UpdateValuationTemplatesCollection()
         {
             ValuationDataTemplates = [.. _dataService.LoadValuationData()];
@@ -286,6 +331,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             if (MessageBox.Show("Are you sure you want to close this tab?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
                 TabCloseRequested.Invoke(this, this);
+                IsClosed = true;
             }
         }
 

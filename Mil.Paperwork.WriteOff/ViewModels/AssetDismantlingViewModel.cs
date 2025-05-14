@@ -7,12 +7,11 @@ using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Helpers;
 using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.WriteOff.Memento;
-using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
-    public class AssetDismantlingViewModel : AssetValuationViewModel
+    internal class AssetDismantlingViewModel : AssetValuationViewModel
     {
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
@@ -22,11 +21,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private string _registrationNumber;
         private string _documentNumber;
         private string _dismantlingReason;
-        private string _nomenclatureCode;
         private string _finalReportReasonText;
-
-        private ProductDTO _selectedProduct;
-        private ObservableCollection<ProductDTO> _products;
 
 
         public override string Header => "Акт розукомплектації";
@@ -49,12 +44,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _dismantlingReason, value);
         }
 
-        public string NomenclatureCode
-        {
-            get => _nomenclatureCode;
-            set => SetProperty(ref _nomenclatureCode, value);
-        }
-
         public string FinalReportReasonText
         {
             get => _finalReportReasonText;
@@ -63,20 +52,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         public int ItemsToExcludeCount => Components.Count(x => x.Exclude);
 
-        public ProductDTO SelectedProduct
-        {
-            get => _selectedProduct;
-            set => SetProperty(ref _selectedProduct, value);
-        }
-
-        public ObservableCollection<ProductDTO> Products
-        {
-            get => _products;
-            set => SetProperty(ref _products, value);
-        }
-
         public ICommand ProductNameChangedCommand { get; }
-        public ICommand ProductSelectedCommand { get; }
 
         public AssetDismantlingViewModel(ReportManager reportManager, IDataService dataService, INavigationService navigationService)
             : base(reportManager, dataService, navigationService)
@@ -84,9 +60,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             _reportManager = reportManager;
             _dataService = dataService;
 
-            UpdateProductsCollection();
-
-            ProductSelectedCommand = new DelegateCommand(ProductSelectedExecute);
             ProductNameChangedCommand = new DelegateCommand(ProductNameChangedCommandExecute);
             //SaveState();
         }
@@ -101,7 +74,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
                 Name = Name,
                 RegistrationNumber = _registrationNumber,
                 DocumentNumber = _documentNumber,
-                NomenclatureCode = _nomenclatureCode,
+                NomenclatureCode = NomenclatureCode,
                 DismantlingReason = _dismantlingReason,
                 Price = Price,
                 SerialNumber = SerialNumber,
@@ -169,7 +142,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
                 Name = Name,
                 RegistrationNumber = _registrationNumber,
                 DocumentNumber = _documentNumber,
-                NomenclatureCode = _nomenclatureCode,
+                NomenclatureCode = NomenclatureCode,
                 Reason = _finalReportReasonText,
                 Price = Price,
                 SerialNumber = SerialNumber,
@@ -240,16 +213,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             ProductNameChangedCommandExecute();
         }
 
-        private void UpdateProductsCollection()
-        {
-            Products = [.. _dataService.LoadProductsData()];
-        }
-
-        private void ProductSelectedExecute()
-        {
-            FillProductDetails();
-        }
-
         private void ProductNameChangedCommandExecute()
         {
             var excludedComponents = Components.Where(x => x.Exclude).Select(x => x.Name).ToArray();
@@ -261,20 +224,5 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             }
         }
 
-        private void FillProductDetails()
-        {
-            if (SelectedProduct != null)
-            {
-                Name = SelectedProduct.Name;
-                ShortName = SelectedProduct.ShortName;
-                NomenclatureCode = SelectedProduct.NomenclatureCode;
-                Price = SelectedProduct.Price;
-                MeasurementUnit = SelectedProduct.MeasurementUnit;
-            }
-            else
-            {
-                OnPropertyChanged(nameof(Name));
-            }
-        }
     }
 }

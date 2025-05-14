@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Mil.Paperwork.WriteOff.Views"
-             xmlns:ViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels" xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:ViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels" 
+             xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=ViewModels:AssetTechnicalStateViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -39,8 +40,9 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock Grid.Row="0" Grid.Column="0" Text="Назва"/>
+
         <ComboBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="5"
-                  ItemsSource="{Binding Products}" 
+                  ItemsSource="{Binding ProductSelector.Products}" 
                   Text="{Binding Asset.Name}"
                   SelectedItem="{Binding SelectedProduct, UpdateSourceTrigger=PropertyChanged}" 
                   IsEditable="True"
@@ -80,8 +82,18 @@
         <TextBlock Grid.Row="4" Grid.Column="0" Text="Взято на облік"/>
         <DatePicker Grid.Row="4" Grid.Column="1" SelectedDate="{Binding Asset.StartDate}" Language="uk-UA"/>
 
-        <TextBlock Grid.Row="4" Grid.Column="2" Text="Дата звіту"/>
-        <DatePicker Grid.Row="4" Grid.Column="3" SelectedDate="{Binding ReportDate}" Language="uk-UA"/>
+
+        <TextBlock Grid.Row="4" Grid.Column="2" Text="Майно було" />
+        <ComboBox Grid.Row="4" Grid.Column="3"
+                      ItemsSource="{Binding EventTypes}" 
+                      SelectedValue="{Binding EventType}"
+                      IsEditable="False"
+                      SelectedValuePath="EventType"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Center"/>
+        
+        <TextBlock Grid.Row="4" Grid.Column="4" Text="Дата звіту"/>
+        <DatePicker Grid.Row="4" Grid.Column="5" SelectedDate="{Binding ReportDate}" Language="uk-UA"/>
 
         <TextBlock Grid.Row="5" Grid.Column="0" Text="Реєстр. номер"/>
         <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Asset.TSRegisterNumber}" TextWrapping="Wrap"/>

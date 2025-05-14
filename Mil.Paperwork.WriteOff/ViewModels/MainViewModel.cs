@@ -19,16 +19,16 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         public ITabViewModel? SelectedTab
         {
-            get => _selectedTab; 
+            get => _selectedTab;
             set => SetProperty(ref _selectedTab, value);
         }
         public ObservableCollection<ITabViewModel> Tabs { get; set; } = [];
 
         public MainViewModel(
-            ReportManager reportManager, 
-            IAssetFactory assetFactory, 
+            ReportManager reportManager,
+            IAssetFactory assetFactory,
             IDataService dataService,
-            IReportDataService reportDataService, 
+            IReportDataService reportDataService,
             INavigationService navigationService)
         {
             _reportManager = reportManager;
@@ -44,6 +44,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         {
             var homePageVM = new HomePageViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _navigationService);
             homePageVM.TabAdded += OnNewTabAdded;
+            homePageVM.TabSelectionRequested += OnTabSelectRequested;
 
             AddNeTab(homePageVM);
         }
@@ -51,6 +52,14 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private void OnNewTabAdded(object? sender, ITabViewModel tabViewModel)
         {
             AddNeTab(tabViewModel);
+        }
+
+        private void OnTabSelectRequested(object? sender, ITabViewModel tabViewModel)
+        {
+            if (tabViewModel != null)
+            {
+                SelectedTab = tabViewModel;
+            }
         }
 
         private void OnTabCloseRequested(object? sender, ITabViewModel tabViewModel)

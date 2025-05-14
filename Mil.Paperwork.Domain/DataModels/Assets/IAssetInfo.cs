@@ -1,18 +1,16 @@
-﻿using Mil.Paperwork.Infrastructure.DataModels;
+﻿using Mil.Paperwork.Domain.Enums;
 
-namespace Mil.Paperwork.Domain.DataModels
+namespace Mil.Paperwork.Domain.DataModels.Assets
 {
     public interface IAssetInfo
     {
-        IAssetValuationData? ValuationData { get; set; }
-
         string Name { get; set; }
         string ShortName { get; set; }
         string MeasurementUnit { get; set; }
         string SerialNumber { get; set; }
         string NomenclatureCode { get; set; }
         // initial category?
-        int Category { get; set; }
+        int InitialCategory { get; set; }
         // enum state (lost, destroyed, etc.) => II, V, ... category 
         decimal Price { get; set; }
         int Count { get; set; }
@@ -22,6 +20,8 @@ namespace Mil.Paperwork.Domain.DataModels
         string TSDocumentNumber { get; set; }
 
         DateTime WriteOffDateTime { get; set; }
+
+        EventType EventType { get; set; }
 
         int WarrantyPeriodYears { get; set; }
         decimal TotalWearCoefficient { get; }

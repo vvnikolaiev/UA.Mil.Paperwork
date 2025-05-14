@@ -29,12 +29,10 @@ namespace Mil.Paperwork.Domain.Helpers
         public const int TABLE_COLUMN_MEASUREMENT_UNIT = 3;
         public const int TABLE_COLUMN_COUNT = 4;
         public const int TABLE_COLUMN_PRICE = 5;
-        public const int TABLE_COLUMN_INDEXATION_COEFF = 6;
-        public const int TABLE_COLUMN_CURRENCY_CONVERSION_RATE = 8;
-        public const int TABLE_FIRST_COEFF_COLUMN = 9;
-
-        public const int TABLE_COLUMN_RESIDUAL_SUM = 14;
-        public const int TABLE_COLUMN_VALUATION_REPORT_REFERENCE = 15;
+        public const int TABLE_COLUMN_DATE_START = 6;
+        public const int TABLE_COLUMN_INDEXATION_COEFF = 7;
+        public const int TABLE_COLUMN_CURRENCY_CONVERSION_RATE = 9;
+        public const int TABLE_FIRST_COEFF_COLUMN = 10;
 
         public const string RESIDUAL_VALUE_SUM_FORMAT = "# ##0.00_₴";
 

@@ -1,5 +1,6 @@
 ﻿using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
+using System.Security.Permissions;
 
 namespace Mil.Paperwork.Infrastructure.Services
 {
@@ -49,5 +50,13 @@ namespace Mil.Paperwork.Infrastructure.Services
             }
         }
 
+        public void SetAssetType(AssetType assetType)
+        {
+            if (_config != null)
+            {
+                _config.Common.AssetType = assetType.ToString();
+                _fileStorageService.WriteJsonToFile(_config, ReportDataConfigFileName);
+            }
+        }
     }
 }
