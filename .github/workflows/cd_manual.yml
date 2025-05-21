@@ -26,10 +26,15 @@ jobs:
 
   call-cd:
     uses: ./.github/workflows/cd_reusable.yml
-    with:
+      with:
       channel: ${{ inputs.channel }}
       targetPlatform: ${{ inputs.targetPlatform }}
     secrets:
       Base64_Encoded_Pfx: ${{ secrets.Base64_Encoded_Pfx }}
       Pfx_Key: ${{ secrets.Pfx_Key }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}  # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+        asset_path: ${{ env.Wap_Project_Directory }}\${{ env.App_Packages_Directory }}\${{ env.App_Packages_Archive }}
+        asset_name: ${{ env.App_Packages_Archive }}
+        asset_content_type: application/zip
