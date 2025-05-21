@@ -1,0 +1,33 @@
+name: .NET Core Desktop Continuous Delivery
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: 'Channel'
+        required: true
+        type: choice
+        options:
+          - Debug
+          - Release
+      targetPlatform:
+        description: 'Target Platform'
+        required: true
+        type: choice
+        options:
+          - x86
+          - x64
+      tag:
+        description: 'Tag'
+        required: false
+        type: string
+
+jobs:
+  call-cd:
+    uses: ./.github/workflows/cd_reusable.yml
+    with:
+      channel: ${{ inputs.channel }}
+      targetPlatform: ${{ inputs.targetPlatform }}
+    secrets:
+      Base64_Encoded_Pfx: ${{ secrets.Base64_Encoded_Pfx }}
+      Pfx_Key: ${{ secrets.Pfx_Key }}
