@@ -73,9 +73,9 @@ jobs:
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v2
 
-    # # Restore dependencies *
-    # - name: Restore dependencies
-    #   run: dotnet restore --runtime win-${{ matrix.targetplatform }}
+    # Restore dependencies *
+    - name: Restore dependencies
+      run: dotnet restore --runtime win-${{ matrix.targetplatform }}
       
     # # Execute all unit tests in the solution
     # - name: Execute unit tests
