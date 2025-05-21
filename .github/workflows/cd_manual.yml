@@ -1,4 +1,4 @@
-name: .NET Core Desktop Continuous Delivery
+name: Manual CD 
 
 on:
   workflow_dispatch:
@@ -24,7 +24,7 @@ on:
 
 jobs:
   call-cd:
-    uses: .github/workflows/cd_reusable.yml
+    uses: .github/workflows/cd_reusable.yml@master
     with:
       channel: ${{ inputs.channel }}
       targetPlatform: ${{ inputs.targetPlatform }}
