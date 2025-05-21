@@ -19,19 +19,20 @@ namespace Mil.Paperwork.Infrastructure.Services
 
         public Dictionary<string, string> GetReportConfig(ReportType reportType)
         {
+            var config = _config;
             var emptyDict = new Dictionary<string, string>();
-            if (_config == null)
+            if (config == null)
             {
                 return emptyDict;
-            }
+            } 
 
             var fieldsMap = reportType switch
             {
-                ReportType.QualityStateReport => _config.QualityStateReport.ToDictionary(),
-                ReportType.TechnicalStateReport => _config.TechnicalStateReport.ToDictionary(),
-                ReportType.ResidualValueReport => _config.ResidualValueReport.ToDictionary(),
-                ReportType.AssetValuationReport => _config.AssetValuationReport.ToDictionary(),
-                ReportType.AssetDismantlingReport => _config.AssetDismantlingReport.ToDictionary(),
+                ReportType.QualityStateReport => config.QualityStateReport.ToDictionary(),
+                ReportType.TechnicalStateReport => config.TechnicalStateReport.ToDictionary(),
+                ReportType.ResidualValueReport => config.ResidualValueReport.ToDictionary(),
+                ReportType.AssetValuationReport => config.AssetValuationReport.ToDictionary(),
+                ReportType.AssetDismantlingReport => config.AssetDismantlingReport.ToDictionary(),
                 _ => new Dictionary<string, string>()
             };
 
@@ -40,7 +41,7 @@ namespace Mil.Paperwork.Infrastructure.Services
 
         public AssetType GetAssetType()
         {
-            if (Enum.TryParse<AssetType>(_config.Common.AssetType, true, out var assetType))
+            if (Enum.TryParse<AssetType>(_config?.Common.AssetType, true, out var assetType))
             {
                 return assetType;
             }
