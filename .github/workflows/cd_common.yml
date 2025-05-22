@@ -9,6 +9,9 @@ on:
       targetPlatform:
         required: true
         type: string
+      tagName:
+        required: true
+        type: string
       tag:
         required: false
         type: string
@@ -40,8 +43,7 @@ jobs:
       MsixPublisherId: CN=UA.Mil.Paperowrk, O=vvnikolaiev, C=UA
       MsixPackageDisplayName: UA.Mil.Paperwork Application (${{ inputs.channel }})
       TargetPlatform: ${{ inputs.targetPlatform }}
-      Tag: ${{ inputs.tag }}
-      TagName: ${{ inputs.tag && inputs.tag != '' && format('master.{0}.{1}.{2}', inputs.tag, inputs.channel, inputs.targetPlatform) || format('master.{0}.{1}', inputs.channel, inputs.targetPlatform) }}
+      TagName: ${{ inputs.tagName }}
       
     steps:
     - name: Checkout
