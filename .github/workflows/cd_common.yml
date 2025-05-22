@@ -59,12 +59,13 @@ jobs:
       id: gitversion
       
     - name: Make a valid version
-      run: |
-        echo "VERSION=${{ steps.gitversion.outputs.majorMinorPatch }}.${{ steps.gitversion.outputs.preReleaseNumber }}" >> $GITHUB_ENV
-        
+      run: echo "VERSION=${{ steps.gitversion.outputs.majorMinorPatch }}.${{ steps.gitversion.outputs.preReleaseNumber }}" >> $GITHUB_ENV
+      shell: bash
+      
     - name: Print VERSION
       run: |
-        echo "Final version is: $env:VERSION"
+        echo "(1) Final version is: $env:VERSION"
+        echo "(2) Final version is: ${{ env.VERSION }}"
       shell: pwsh
       
     # Install the .NET Core workload
