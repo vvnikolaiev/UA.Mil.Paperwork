@@ -9,7 +9,6 @@ on:
     tags:
       - '*'
 
-
 jobs:
 
   build:
@@ -42,133 +41,8 @@ jobs:
     with:
       channel: ${{ matrix.ChannelName }}
       targetPlatform: ${{ matrix.targetPlatform }}
-      tagName: ${{ github.ref }}.${{ matrix.ChannelName }}.${{ matrix.targetPlatform }}
-      tag: ${{ github.ref }}
+      tagName: ${{ github.ref_name  }}.${{ matrix.ChannelName }}.${{ matrix.targetPlatform }}
+      tag: ${{ github.ref_name  }}
     secrets:
       Base64_Encoded_Pfx: ${{ secrets.Base64_Encoded_Pfx }}
       Pfx_Key: ${{ secrets.Pfx_Key }}
-
-    # runs-on: windows-latest  # For a list of available runner types, refer to
-    #                          # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
-
-    # env:
-    #   App_Packages_Archive: AppPackages.zip
-    #   App_Packages_Directory: AppPackages
-    #   SigningCertificate: certificate.pfx
-    #   Solution_Path: Mil.Paperwork.WriteOff.sln
-    #   Test_Project_Path: Mil.Paperwork.Tests\Mil.Paperwork.Tests.csproj
-    #   Wpf_Project_Path: Mil.Paperwork.WriteOff\Mil.Paperwork.WriteOff.csproj
-    #   Wap_Project_Directory: Mil.Paperwork.Package
-    #   Wap_Project_Name: Mil.Paperwork.Package.wapproj
-    #   Actions_Allow_Unsecure_Commands: true # Allows AddPAth and SetEnv commands
-      
-    # steps:
-    
-    # - name: Call common code
-    #   uses: ./.github/workflows/cd_common.yml
-    #   with:
-    #     channel: ${{ inputs.channel }}
-    #     targetPlatform: ${{ inputs.targetPlatform }}
-    #   secrets:
-    #     Base64_Encoded_Pfx: ${{ secrets.Base64_Encoded_Pfx }}
-    #     Pfx_Key: ${{ secrets.Pfx_Key }}
-
-
-    # - name: Checkout
-    #   uses: actions/checkout@v4
-    #   with:
-    #     fetch-depth: 0
-
-    # # Use Nerdbank.GitVersioning to set version variables: https://github.com/AArnott/nbgv
-    # - name: Use Nerdbank.GitVersioning to set version variables
-    #   uses: dotnet/nbgv@master
-    #   id: nbgv
-
-    # # Install the .NET Core workload
-    # - name: Install .NET Core
-    #   uses: actions/setup-dotnet@v4
-    #   with:
-    #     dotnet-version: 8.0.x
-    
-    # # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    # - name: Setup MSBuild.exe
-    #   uses: microsoft/setup-msbuild@v2
-
-    # # Restore dependencies *
-    # - name: Restore dependencies
-    #   run: dotnet restore --runtime win-${{ matrix.targetplatform }}
-      
-    # # Update the appxmanifest before build by setting the per-channel values set in the matrix such as
-    # # the Package.Identity.Version or the Package.Identity.Name, which allows multiple channels to be built.
-    # - name: Update manifest version
-    #   run: |
-    #     [xml]$manifest = get-content ".\$env:Wap_Project_Directory\Package.appxmanifest"
-    #     $manifest.Package.Identity.Version = "${{ steps.nbgv.outputs.SimpleVersion }}.0"
-    #     $manifest.Package.Identity.Name = "${{ matrix.MsixPackageId }}"
-    #     $manifest.Package.Identity.Publisher = "${{ matrix.MsixPublisherId }}"
-    #     $manifest.Package.Properties.DisplayName = "${{ matrix.MsixPackageDisplayName }}"
-    #     $manifest.Package.Applications.Application.VisualElements.DisplayName = "${{ matrix.MsixPackageDisplayName }}"
-    #     $manifest.save(".\$env:Wap_Project_Directory\Package.appxmanifest")
-
-    # # Decode the Base64 encoded Pfx
-    # - name: Decode the Pfx
-    #   run: |
-    #     $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.Base64_Encoded_Pfx }}")
-    #     $currentDirectory = Get-Location
-    #     $certificatePath = Join-Path -Path $currentDirectory -ChildPath $env:Wap_Project_Directory -AdditionalChildPath $env:SigningCertificate
-    #     [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
-
-    # # Restore the application
-    # - name:  Restore the Wpf application to populate the obj folder
-    #   run: msbuild $env:Solution_Path /t:Restore /p:Configuration=$env:Configuration /p:RuntimeIdentifier=$env:RuntimeIdentifier
-    #   env:
-    #     Configuration: ${{ matrix.Configuration }}
-    #     RuntimeIdentifier: win-${{ matrix.targetplatform }}
-
-    # # Build the Windows Application Packaging project
-    # - name: Build the Windows Application Packaging Project (wapproj) for ${{ matrix.ChannelName }}
-    #   run: msbuild $env:Solution_Path /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:BuildMode /p:AppxBundle=$env:AppxBundle /p:PackageCertificateKeyFile=$env:SigningCertificate /p:PackageCertificatePassword=${{ secrets.Pfx_Key }}
-    #   env:
-    #     AppxBundle: Never
-    #     # AppInstallerUri: ${{ matrix.DistributionUrl }}
-    #     BuildMode: SideLoadOnly
-    #     Configuration: ${{ matrix.Configuration }}
-    #     GenerateAppInstallerFile: True
-    #     TargetPlatform: ${{ matrix.targetplatform }}
-    
-    # # Remove the .pfx
-    # - name: Remove the .pfx
-    #   run: Remove-Item -path $env:Wap_Project_Directory/$env:SigningCertificate
-      
-    # # Archive the package
-    # - name: Create archive
-    #   run: Compress-Archive -Path $env:Wap_Project_Directory\$env:App_Packages_Directory\* -DestinationPath $env:Wap_Project_Directory\$env:App_Packages_Directory\$env:App_Packages_Archive
-
-    # - name: Echo full identifier
-    #   run: |
-    #     echo "Full identifier: ${{ github.ref }}.${{ env.ChannelName }}.${{ env.TargetPlatform }}"
-    #     echo "Full identifier: ${{ github.ref}}.${{matrix.ChannelName}}.${{ matrix.targetplatform }}"
-        
-    # # Create the release:  https://github.com/actions/create-release
-    # - name: Create release
-    #   id: create_release
-    #   uses: actions/create-release@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-    #   with:
-    #     tag_name: ${{ github.ref}}.${{matrix.ChannelName}}.${{ matrix.targetplatform }}
-    #     release_name:  ${{ github.ref }}.${{ matrix.ChannelName }}.${{ matrix.targetplatform }}
-    #     draft: false
-    #     prerelease: false
-
-    # # Upload release asset:   https://github.com/actions/upload-release-asset
-    # - name: Update release asset
-    #   id: upload-release-asset
-    #   uses: actions/upload-release-asset@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     upload_url: ${{ steps.create_release.outputs.upload_url }}  # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-    #     asset_path: ${{ env.Wap_Project_Directory }}\${{ env.App_Packages_Directory }}\${{ env.App_Packages_Archive }}
-    #     asset_name: ${{ env.App_Packages_Archive }}
-    #     asset_content_type: application/zip
