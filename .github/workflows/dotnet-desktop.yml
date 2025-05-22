@@ -82,31 +82,4 @@ jobs:
       with:
         name: MSIX Package ${{ github.run_number }} (${{ matrix.targetplatform }})
         path: Mil.Paperwork.Package\AppPackages\
-
-
-
-    # # Decode the Base64 encoded Pfx
-    # - name: Decode the Pfx
-    #   run: |
-    #     $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.Base64_Encoded_Pfx }}")
-    #     $currentDirectory = Get-Location
-    #     $certificatePath = Join-Path -Path $currentDirectory -ChildPath $env:Wap_Project_Directory -AdditionalChildPath $env:SigningCertificate
-    #     [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
-
-    # # Build the Windows Application Packaging project for Dev and Prod_Sideload
-    # - name: Build the Windows Application Packaging Project (wapproj) for ${{ matrix.ChannelName }}
-    #   run: msbuild $env:Wap_Project_Directory/$env:Wap_Project_Name /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:BuildMode /p:GenerateAppInstallerFile=$env:GenerateAppInstallerFile /p:AppInstallerUri=$env:AppInstallerUri /p:PackageCertificateKeyFile=$env:SigningCertificate /p:PackageCertificatePassword=${{ secrets.Pfx_Key }}
-    #   if: ${{ matrix.ChannelName }} != Prod_Store
-    #   env:
-    #     AppInstallerUri: ${{ matrix.DistributionUrl }}
-    #     BuildMode: SideLoadOnly
-    #     Configuration: ${{ matrix.Configuration }}
-    #     GenerateAppInstallerFile: True
-    #     TargetPlatform: ${{ matrix.TargetPlatform }}
-
-    # # Upload build artifacts
-    # - name: Upload build artifacts
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     name: BuildOutput
-    #     path: ${{ env.Artefacts_Directory }}
+        retention-days: 21
