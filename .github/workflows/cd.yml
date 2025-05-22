@@ -123,6 +123,11 @@ jobs:
     - name: Create archive
       run: Compress-Archive -Path $env:Wap_Project_Directory\$env:App_Packages_Directory\* -DestinationPath $env:Wap_Project_Directory\$env:App_Packages_Directory\$env:App_Packages_Archive
 
+    - name: Echo full identifier
+      run: |
+        echo "Full identifier: ${{ github.ref }}.${{ env.ChannelName }}.${{ env.TargetPlatform }}"
+        echo "Full identifier: ${{ github.ref}}.${{matrix.ChannelName}}.${{ matrix.targetplatform }}"
+        
     # Create the release:  https://github.com/actions/create-release
     - name: Create release
       id: create_release
