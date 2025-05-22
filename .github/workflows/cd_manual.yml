@@ -28,7 +28,7 @@ jobs:
     with:
       channel: ${{ inputs.channel }}
       targetPlatform: ${{ inputs.targetPlatform }}
-      tagName: ${{ inputs.tag && inputs.tag != '' && format('{0}.{1}.{2}.{3}', env.branchName, inputs.tag, inputs.channel, inputs.targetPlatform) || format('{0}.{1}.{2}', env.branchName, inputs.channel, inputs.targetPlatform) }}
+      tagName: ${{ inputs.tag && inputs.tag != '' && format('{0}.{1}.{2}.{3}', github.ref_name, inputs.tag, inputs.channel, inputs.targetPlatform) || format('{0}.{1}.{2}', github.ref_name, inputs.channel, inputs.targetPlatform) }}
       tag: ${{ inputs.tag }}
       
     secrets:
