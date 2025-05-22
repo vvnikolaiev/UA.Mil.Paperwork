@@ -61,10 +61,10 @@ jobs:
     - name: Get commit count
       id: versioning
       run: |
-        VERSION_PREFIX=${{ steps.gitversion.outputs.SemVer }}
-        COMMITS=$(git rev-list --count HEAD)
-        echo "version=${VERSION_PREFIX}.${COMMITS}" >> $GITHUB_OUTPUT
-        echo "Full version: ${VERSION_PREFIX}.${COMMITS}"
+        $version_prefix=${{ steps.gitversion.outputs.SemVer }}
+        $commits=$(git rev-list --count HEAD)
+        echo "version=$version_prefix.$commits" >> $GITHUB_OUTPUT
+        echo "Full version: $version_prefix.$commits"
     
     # Install the .NET Core workload
     - name: Install .NET Core
