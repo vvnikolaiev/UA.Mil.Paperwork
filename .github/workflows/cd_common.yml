@@ -61,7 +61,7 @@ jobs:
     - name: Make a valid version
       run: |
         echo "VERSION=${{ steps.gitversion.outputs.majorMinorPatch }}.${{ steps.gitversion.outputs.preReleaseNumber }}" >> $GITHUB_ENV
-        echo "Final version is: ${{ env.VERSION }}"
+        echo "Final version is: $VERSION"
 
     # Install the .NET Core workload
     - name: Install .NET Core
@@ -82,7 +82,7 @@ jobs:
     - name: Update manifest version
       run: |
         [xml]$manifest = get-content ".\$env:Wap_Project_Directory\Package.appxmanifest"
-        $manifest.Package.Identity.Version = "${{ env.VERSION }}"
+        $manifest.Package.Identity.Version = "$VERSION"
         $manifest.Package.Identity.Name = "${{ env.MsixPackageId }}"
         $manifest.Package.Identity.Publisher = "${{ env.MsixPublisherId }}"
         $manifest.Package.Properties.DisplayName = "${{ env.MsixPackageDisplayName }}"
@@ -134,8 +134,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-        tag_name: ${{ env.TagName }}_${{ env.VERSION }}
-        release_name: ${{ env.TagName }}_${{ env.VERSION }}
+        tag_name: ${{ env.TagName }}_$VERSION
+        release_name: ${{ env.TagName }}_$VERSION
         draft: false
         prerelease: false
 
