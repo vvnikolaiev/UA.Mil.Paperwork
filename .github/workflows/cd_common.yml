@@ -51,11 +51,20 @@ jobs:
       with:
         fetch-depth: 0
 
-    # Use Nerdbank.GitVersioning to set version variables: https://github.com/AArnott/nbgv
+        
     - name: Use Nerdbank.GitVersioning to set version variables
-      uses: dotnet/nbgv@master
-      id: nbgv
+    - uses: gittools/actions/gitversion/setup@v1
+    - uses: gittools/actions/gitversion/execute@v1
+      id: gitversion
 
+    - name: Get commit count
+      id: versioning
+      run: |
+        VERSION_PREFIX={{ steps.gitversion.outputs.SemVer }}
+        COMMITS=$(git rev-list --count HEAD)
+        echo "version=${VERSION_PREFIX}.${COMMITS}" >> $GITHUB_OUTPUT
+        echo "Full version: ${VERSION_PREFIX}.${COMMITS}"
+    
     # Install the .NET Core workload
     - name: Install .NET Core
       uses: actions/setup-dotnet@v4
@@ -75,7 +84,7 @@ jobs:
     - name: Update manifest version
       run: |
         [xml]$manifest = get-content ".\$env:Wap_Project_Directory\Package.appxmanifest"
-        $manifest.Package.Identity.Version = "${{ steps.nbgv.outputs.SimpleVersion }}.0"
+        $manifest.Package.Identity.Version = "${{ steps.versioning.outputs.version }}"
         $manifest.Package.Identity.Name = "${{ env.MsixPackageId }}"
         $manifest.Package.Identity.Publisher = "${{ env.MsixPublisherId }}"
         $manifest.Package.Properties.DisplayName = "${{ env.MsixPackageDisplayName }}"
@@ -92,7 +101,7 @@ jobs:
 
     # Restore the application
     - name:  Restore the Wpf application to populate the obj folder
-      run: msbuild $env:Solution_Path /t:Restore /p:Configuration=$env:Configuration /p:RuntimeIdentifier=$env:RuntimeIdentifier
+      run: msbuild $env:Solution_Path /t:Restore /p:Configuration=$env:Configuration /p:RuntimeIdentifier=$env:RuntimeIdentifier /p:Version${{ steps.versioning.outputs.version }}
       env:
         Configuration: ${{ env.Configuration }}
         RuntimeIdentifier: win-${{ env.TargetPlatform }}
@@ -127,8 +136,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-        tag_name: ${{ env.TagName }}_${{ steps.nbgv.outputs.SimpleVersion }}.0
-        release_name: ${{ env.TagName }}_${{ steps.nbgv.outputs.SimpleVersion }}.0
+        tag_name: ${{ env.TagName }}_${{ steps.versioning.outputs.version }}
+        release_name: ${{ env.TagName }}_${{ steps.versioning.outputs.version }}
         draft: false
         prerelease: false
 
