@@ -23,11 +23,14 @@ on:
         type: string
 
 jobs:
-  call-cd:
+  call_common_code:
     uses: ./.github/workflows/cd_common.yml
     with:
       channel: ${{ inputs.channel }}
       targetPlatform: ${{ inputs.targetPlatform }}
+      tagName: ${{ inputs.tag && inputs.tag != '' && format('master.{0}.{1}.{2}', inputs.tag, inputs.channel, inputs.targetPlatform) || format('master.{0}.{1}', inputs.channel, inputs.targetPlatform) }}
+      tag: ${{ inputs.tag }}
+      
     secrets:
       Base64_Encoded_Pfx: ${{ secrets.Base64_Encoded_Pfx }}
       Pfx_Key: ${{ secrets.Pfx_Key }}

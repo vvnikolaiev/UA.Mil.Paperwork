@@ -9,6 +9,9 @@ on:
       targetPlatform:
         required: true
         type: string
+      tagName:
+        required: true
+        type: string
       tag:
         required: false
         type: string
@@ -40,8 +43,7 @@ jobs:
       MsixPublisherId: CN=UA.Mil.Paperowrk, O=vvnikolaiev, C=UA
       MsixPackageDisplayName: UA.Mil.Paperwork Application (${{ inputs.channel }})
       TargetPlatform: ${{ inputs.targetPlatform }}
-      Tag: ${{ inputs.tag }}
-      TagName: ${{ inputs.tag && inputs.tag != '' && format('master.{0}.{1}.{2}', inputs.tag, inputs.channel, inputs.targetPlatform) || format('master.{0}.{1}', inputs.channel, inputs.targetPlatform) }}
+      TagName: ${{ inputs.tagName }}
       
     steps:
     - name: Checkout
@@ -125,8 +127,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-        tag_name: ${{ env.TagName }}"
-        release_name: ${{ env.TagName }}"
+        tag_name: ${{ env.TagName }}_${{ steps.nbgv.outputs.SimpleVersion }}.0
+        release_name: ${{ env.TagName }}_${{ steps.nbgv.outputs.SimpleVersion }}.0
         draft: false
         prerelease: false
 
