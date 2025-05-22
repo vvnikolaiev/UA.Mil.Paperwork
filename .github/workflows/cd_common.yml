@@ -52,7 +52,7 @@ jobs:
         fetch-depth: 0
     
     - name: Setup GitVersion
-      uses: gittools/actions/gitversion/setup@v1
+      uses: gittools/actions/gitversion/setup@v3
     
     - name: Run GitVersion
       uses: gittools/actions/gitversion/execute@v3
