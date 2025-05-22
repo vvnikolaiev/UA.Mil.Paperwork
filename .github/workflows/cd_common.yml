@@ -1,4 +1,4 @@
-name: .NET Core Desktop Continuous Delivery
+name: Common CD code
 
 on:
   workflow_call:
@@ -65,7 +65,7 @@ jobs:
       
     # Restore dependencies *
     - name: Restore dependencies
-      run: dotnet restore --runtime win-${{ env.targetplatform }}
+      run: dotnet restore --runtime win-${{ env.TargetPlatform }}
       
     # Update the appxmanifest before build by setting the per-channel values set in the matrix such as
     # the Package.Identity.Version or the Package.Identity.Name, which allows multiple channels to be built.
@@ -92,7 +92,7 @@ jobs:
       run: msbuild $env:Solution_Path /t:Restore /p:Configuration=$env:Configuration /p:RuntimeIdentifier=$env:RuntimeIdentifier
       env:
         Configuration: ${{ env.Configuration }}
-        RuntimeIdentifier: win-${{ env.targetplatform }}
+        RuntimeIdentifier: win-${{ env.TargetPlatform }}
 
     # Build the Windows Application Packaging project
     - name: Build the Windows Application Packaging Project (wapproj) for ${{ env.ChannelName }}
@@ -103,7 +103,7 @@ jobs:
         BuildMode: SideLoadOnly
         Configuration: ${{ env.Configuration }}
         GenerateAppInstallerFile: True
-        TargetPlatform: ${{ env.targetplatform }}
+        TargetPlatform: ${{ env.TargetPlatform }}
     
     # Remove the .pfx
     - name: Remove the .pfx
@@ -120,8 +120,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-        tag_name: ${{ github.ref}}.${{env.ChannelName}}.${{ env.targetplatform }}
-        release_name:  ${{ github.ref }}.${{ env.ChannelName }}.${{ env.targetplatform }}
+        tag_name: ${{ github.ref }}.${{ env.ChannelName }}.${{ env.TargetPlatform }}
+        release_name:  ${{ github.ref }}.${{ env.ChannelName }}.${{ env.TargetPlatform }}
         draft: false
         prerelease: false
 
