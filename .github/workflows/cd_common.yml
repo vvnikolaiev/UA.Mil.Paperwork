@@ -41,6 +41,7 @@ jobs:
       MsixPackageDisplayName: UA.Mil.Paperwork Application (${{ inputs.channel }})
       TargetPlatform: ${{ inputs.targetPlatform }}
       Tag: ${{ inputs.tag }}
+      TagName: ${{ github.ref }}.${{ inputs.channel }}.${{ inputs.targetPlatform }}
       
     steps:
     - name: Checkout
@@ -112,7 +113,12 @@ jobs:
     # Archive the package
     - name: Create archive
       run: Compress-Archive -Path $env:Wap_Project_Directory\$env:App_Packages_Directory\* -DestinationPath $env:Wap_Project_Directory\$env:App_Packages_Directory\$env:App_Packages_Archive
-
+    
+    - name: Echo full identifier
+      run: |
+        echo "Full identifier: ${{ github.ref }}.${{ env.ChannelName }}.${{ env.TargetPlatform }}"
+        echo "Alternativa way: ${{ env.TagName }}"
+        
     # Create the release:  https://github.com/actions/create-release
     - name: Create release
       id: create_release
