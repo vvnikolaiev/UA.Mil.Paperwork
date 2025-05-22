@@ -41,7 +41,7 @@ jobs:
       MsixPackageDisplayName: UA.Mil.Paperwork Application (${{ inputs.channel }})
       TargetPlatform: ${{ inputs.targetPlatform }}
       Tag: ${{ inputs.tag }}
-      TagName: ${{ github.ref }}.${{ inputs.channel }}.${{ inputs.targetPlatform }}
+      TagName: ${{ inputs.tag && inputs.tag != '' && format('master.{0}.{1}.{2}', inputs.tag, inputs.channel, inputs.targetPlatform) || format('master.{0}.{1}', inputs.channel, inputs.targetPlatform) }}
       
     steps:
     - name: Checkout
@@ -116,8 +116,7 @@ jobs:
     
     - name: Echo full identifier
       run: |
-        echo "Full identifier: ${{ github.ref }}.${{ env.ChannelName }}.${{ env.TargetPlatform }}"
-        echo "Alternativa way: ${{ env.TagName }}"
+        echo "Full identifier: ${{ env.TagName }}"
         
     # Create the release:  https://github.com/actions/create-release
     - name: Create release
@@ -126,8 +125,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-        tag_name: ${{ github.ref }}.${{ env.ChannelName }}.${{ env.TargetPlatform }}
-        release_name:  ${{ github.ref }}.${{ env.ChannelName }}.${{ env.TargetPlatform }}
+        tag_name: ${{ env.TagName }}"
+        release_name: ${{ env.TagName }}"
         draft: false
         prerelease: false
 
