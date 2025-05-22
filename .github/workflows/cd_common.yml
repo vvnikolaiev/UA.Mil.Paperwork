@@ -55,7 +55,7 @@ jobs:
       uses: gittools/actions/gitversion/setup@v1
     
     - name: Run GitVersion
-      uses: gittools/actions/gitversion/execute@v1
+      uses: gittools/actions/gitversion/execute@v3
       id: gitversion
 
     - name: Get commit count
