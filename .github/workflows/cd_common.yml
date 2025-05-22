@@ -61,7 +61,7 @@ jobs:
     - name: Get commit count
       id: versioning
       run: |
-        VERSION_PREFIX={{ steps.gitversion.outputs.SemVer }}
+        VERSION_PREFIX=${{ steps.gitversion.outputs.SemVer }}
         COMMITS=$(git rev-list --count HEAD)
         echo "version=${VERSION_PREFIX}.${COMMITS}" >> $GITHUB_OUTPUT
         echo "Full version: ${VERSION_PREFIX}.${COMMITS}"
