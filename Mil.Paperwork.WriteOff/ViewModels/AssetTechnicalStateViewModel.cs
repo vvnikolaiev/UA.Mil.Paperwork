@@ -44,7 +44,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
                 DestinationFolder = destinationFolder
             };
 
-            _reportManager.GenerateInitialTechnicalStateReport(reportData);
+            _reportManager.GenerateTechnicalStateReport(reportData);
         }
     }
 }
