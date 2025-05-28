@@ -118,8 +118,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             if (SelectedProduct != null)
             {
                 Asset.Name = SelectedProduct.Name;
+                Asset.ShortName = SelectedProduct.ShortName;
                 Asset.NomenclatureCode = SelectedProduct.NomenclatureCode;
                 Asset.Price = SelectedProduct.Price;
+                Asset.MeasurementUnit = SelectedProduct.MeasurementUnit;
+                Asset.StartDate = SelectedProduct.StartDate;
+                Asset.WarrantyPeriodYears = SelectedProduct.WarrantyPeriodYears;
             }
             else
             {
