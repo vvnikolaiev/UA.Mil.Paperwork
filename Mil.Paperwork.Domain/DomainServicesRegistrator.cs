@@ -14,6 +14,9 @@ namespace Mil.Paperwork.Domain
             services.AddSingleton<ResidualValueReportService>();
             services.AddSingleton<AssetDismantlingReportService>();
             services.AddSingleton<AssetValuationReportService>();
+
+            services.AddSingleton<IExportService, ExportService>();
+            //services.AddSingleton<IImportService, ImportService>();
         }
     }
 }

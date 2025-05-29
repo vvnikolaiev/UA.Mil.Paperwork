@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Mil.Paperwork.Domain.DataModels.Assets;
+using System.IO;
 using System.Text.RegularExpressions;
 namespace Mil.Paperwork.Domain.Helpers
 {
@@ -32,6 +33,18 @@ namespace Mil.Paperwork.Domain.Helpers
 
             var sanitizedFileName = regex.Replace(fileName, "_");
             return sanitizedFileName;
+        }
+
+        public static string GetDetailedFileName(IAssetInfo asset, string fileNameFormat)
+        {
+            var number = String.IsNullOrEmpty(asset.TSDocumentNumber) ? asset.TSRegisterNumber : asset.TSDocumentNumber;
+            var fullNumber = String.IsNullOrEmpty(asset.SerialNumber) ? number : $"{number},{asset.SerialNumber}";
+
+            var name = String.IsNullOrEmpty(asset.ShortName) ? fullNumber : $"{asset.ShortName} {fullNumber}";
+
+            var fileName = String.Format(fileNameFormat, name);
+
+            return fileName;
         }
     }
 }

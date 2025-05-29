@@ -3,11 +3,14 @@ using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
+using System.Security.Policy;
 
 namespace Mil.Paperwork.Domain.DataModels
 {
     public class WriteOffReportData : ITechnicalStateReportData, IDismantlingReportData, IAssetValuationReportData
     {
+        public int? EventReportNumber { get; set; }
+
         public AssetType AssetType { get; set; }
 
         public EventType EventType { get; set; }

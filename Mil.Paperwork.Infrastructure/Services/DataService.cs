@@ -30,6 +30,16 @@ namespace Mil.Paperwork.Infrastructure.Services
             return data.ValuationData;
         }
 
+        public void RemoveProductsData(IList<ProductDTO> productsToRemove)
+        {
+            if (productsToRemove == null || productsToRemove.Count == 0)
+                return;
+
+            var namesToRemove = new HashSet<string>(productsToRemove.Select(p => p.AlmostUniqueID));
+            _storageData.ProductsData?.RemoveAll(p => namesToRemove.Contains(p.AlmostUniqueID));
+            Save();
+        }
+
         public void SaveProductsData(IList<ProductDTO> newProducts)
         {
             var productsDict = _storageData.ProductsData?.ToDictionary(p => p.Name, p => p) ?? [];
@@ -113,8 +123,11 @@ namespace Mil.Paperwork.Infrastructure.Services
         {
             try
             {
-                var data = _fileStorageService.ReadJsonFile<SimpleDataStorageDTO>(DataStorageFileName);
-                _storageData = data ?? new SimpleDataStorageDTO();
+                if (_storageData == null)
+                {
+                    var data = _fileStorageService.ReadJsonFile<SimpleDataStorageDTO>(DataStorageFileName);
+                    _storageData = data ?? new SimpleDataStorageDTO();
+                }
             }
             catch (FileNotFoundException)
             {

@@ -26,14 +26,21 @@ namespace Mil.Paperwork.Domain.Services
             {
                 byte[] reportBytes = report.GetReportBytes();
 
-                var destinationPath = reportData.GetDestinationPath();
-                var fileName = PathsHelper.SanitizeFileName(String.Format(QualityStateReportHelper.OUTPUT_REPORT_NAME_TEMPLATE, reportData.DocumentNumber));
-                var outputPath = Path.Combine(destinationPath, fileName);
-
+                var outputPath = GetFileName(reportData);
                 _fileStorage.SaveFile(outputPath, reportBytes);
             }
 
             return result;
+        }
+
+        private string GetFileName(WriteOffReportData reportData)
+        {
+            var destinationPath = reportData.GetDestinationPath();
+            var rawFileName = String.Format(QualityStateReportHelper.OUTPUT_REPORT_NAME_TEMPLATE, reportData.DocumentNumber);
+            var fileName = PathsHelper.SanitizeFileName(rawFileName);
+            var outputPath = Path.Combine(destinationPath, fileName);
+
+            return outputPath;
         }
     }
 }

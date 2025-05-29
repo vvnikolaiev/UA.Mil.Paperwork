@@ -5,18 +5,12 @@ using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Managers;
-using Mil.Paperwork.WriteOff.Views;
-using System.Windows.Input;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
     public abstract class AssetViewModel : ObservableItem
     {
-        private readonly ReportManager _reportManager;
-        private readonly IDataService _dataService;
-        private readonly INavigationService _navigationService;
-
-        private ProductDTO _selectedProduct;
+        private string _selectedProductId = string.Empty;
         private string _name = string.Empty;
         private string _shortName = string.Empty;
         private string _measurementUnit = string.Empty;
@@ -32,10 +26,10 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         internal abstract IAssetInfo AssetInfo { get; }
 
-        public ProductDTO SelectedProduct
+        public string SelectedProductId
         {
-            get => _selectedProduct;
-            set => SetProperty(ref _selectedProduct, value);
+            get => _selectedProductId;
+            set => SetProperty(ref _selectedProductId, value);
         }
 
         public string Name
@@ -110,15 +104,11 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _warrantyPeriodYears, value);
         }
 
-        public ICommand ProductSelectedCommand { get; }
+        public ICommand<ProductDTO> ProductSelectedCommand { get; }
 
         public AssetViewModel(ReportManager reportManager, IDataService dataService, INavigationService navigationService)
         {
-            _reportManager = reportManager;
-            _dataService = dataService;
-            _navigationService = navigationService;
-
-            ProductSelectedCommand = new DelegateCommand(ProductSelectedExecute);
+            ProductSelectedCommand = new DelegateCommand<ProductDTO>(ProductSelectedExecute);
         }
 
         public virtual IAssetInfo ToAssetInfo(EventType eventType = EventType.Lost, DateTime? reportDate = null)
@@ -145,21 +135,21 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             return AssetInfo;
         }
 
-        private void ProductSelectedExecute()
+        private void ProductSelectedExecute(ProductDTO product)
         {
-            FillProductDetails();
+            FillProductDetails(product);
         }
 
-        private void FillProductDetails()
+        private void FillProductDetails(ProductDTO product)
         {
-            if (SelectedProduct != null)
+            if (product != null)
             {
-                Name = SelectedProduct.Name;
-                MeasurementUnit = SelectedProduct.MeasurementUnit;
-                NomenclatureCode = SelectedProduct.NomenclatureCode;
-                Price = SelectedProduct.Price;
-                StartDate = SelectedProduct.StartDate;
-                WarrantyPeriodYears = SelectedProduct.WarrantyPeriodYears;
+                Name = product.Name;
+                MeasurementUnit = product.MeasurementUnit;
+                NomenclatureCode = product.NomenclatureCode;
+                Price = product.Price;
+                StartDate = product.StartDate;
+                WarrantyPeriodYears = product.WarrantyPeriodYears;
             }
             else
             {

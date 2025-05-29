@@ -31,10 +31,9 @@ namespace Mil.Paperwork.Domain.Services
 
                 if (result)
                 {
-                    var fileName = GetFileName(asset, TechnicalStateReportHelper.OUTPUT_REPORT_11_NAME_FORMAT);
+                    var fileName = PathsHelper.GetDetailedFileName(asset, TechnicalStateReportHelper.OUTPUT_REPORT_11_NAME_FORMAT);
                     SaveReport(report, reportData, fileName);
                 }
-
             }
 
             return result;
@@ -53,21 +52,13 @@ namespace Mil.Paperwork.Domain.Services
 
                 if (result)
                 {
-                    var fileName = GetFileName(asset, TechnicalStateReportHelper.OUTPUT_REPORT_7_NAME_FORMAT);
+                    var fileName = PathsHelper.GetDetailedFileName(asset, TechnicalStateReportHelper.OUTPUT_REPORT_7_NAME_FORMAT);
                     SaveReport(report, reportData, fileName);
                 }
 
             }
 
             return result;
-        }
-
-        private string GetFileName(IAssetInfo asset, string fileNameFormat)
-        {
-            var name = String.IsNullOrEmpty(asset.SerialNumber) ? asset.TSDocumentNumber : $"{asset.TSDocumentNumber},{asset.SerialNumber}";
-            var fileName = String.Format(fileNameFormat, name);
-
-            return fileName;
         }
 
         private void SaveReport(IReport report, IReportData reportData, string fileName)

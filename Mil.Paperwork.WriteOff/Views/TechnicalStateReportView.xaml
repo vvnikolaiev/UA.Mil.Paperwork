@@ -42,7 +42,7 @@
                 <ComboBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="5"
                   ItemsSource="{Binding ProductSelector.Products}" 
                   Text="{Binding Asset.Name}"
-                  SelectedItem="{Binding SelectedProduct, UpdateSourceTrigger=PropertyChanged}" 
+                  SelectedItem="{Binding ProductSelector.SelectedProduct, UpdateSourceTrigger=PropertyChanged}" 
                   IsEditable="True"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Center">
@@ -79,7 +79,7 @@
                       ItemsSource="{Binding EventTypes}" 
                       SelectedValue="{Binding EventType}"
                       IsEditable="False"
-                      SelectedValuePath="EventType"
+                      SelectedValuePath="Value"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Center"/>
 

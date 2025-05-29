@@ -46,7 +46,7 @@
         <ComboBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="6"
                   ItemsSource="{Binding ProductSelector.Products}" 
                   Text="{Binding Name}"
-                  SelectedItem="{Binding SelectedProduct, UpdateSourceTrigger=PropertyChanged}" 
+                  SelectedItem="{Binding ProductSelector.SelectedProduct, UpdateSourceTrigger=PropertyChanged}" 
                   IsEditable="True"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Center">

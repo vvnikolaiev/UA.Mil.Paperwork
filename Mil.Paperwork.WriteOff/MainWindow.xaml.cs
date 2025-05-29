@@ -1,5 +1,6 @@
 ﻿using Mil.Paperwork.WriteOff.ViewModels;
 using System.Windows;
+using System.Windows.Controls;
 namespace Mil.Paperwork.WriteOff;
 
 /// <summary>
@@ -11,5 +12,15 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         DataContext = mainViewModel;
+    }
+
+    private void ExportButton_Click(object sender, RoutedEventArgs e)
+    {
+        var btn = sender as Button;
+        if (btn != null)
+        {
+            btn.ContextMenu.PlacementTarget = btn;
+            btn.ContextMenu.IsOpen = true;
+        }
     }
 }

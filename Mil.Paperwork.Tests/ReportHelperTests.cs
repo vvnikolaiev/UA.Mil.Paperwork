@@ -3,12 +3,6 @@ using System.Globalization;
 
 namespace Mil.Paperwork.Tests.Helpers
 {
-    public class ResidualValueHelperTests
-    {
-
-    }
-
-    
     public class ReportHelperTests
     {
         public ReportHelperTests()

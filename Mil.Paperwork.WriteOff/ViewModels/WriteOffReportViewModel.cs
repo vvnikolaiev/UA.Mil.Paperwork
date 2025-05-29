@@ -23,6 +23,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private readonly INavigationService _navigationService;
         private readonly WriteOffReportModel _model;
 
+        private int? _eventReportNumber = null;
         private string _registrationNumber = string.Empty;
         private string _documentNumber = string.Empty;
         private DateTime _writeOffDate = DateTime.Now.Date;
@@ -50,6 +51,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         {
             get => _selectedAsset;
             set => SetProperty(ref _selectedAsset, value);
+        }
+
+        public int? EventReportNumber
+        {
+            get => _eventReportNumber;
+            set => SetProperty(ref _eventReportNumber, value);
         }
 
         public string RegistrationNumber
@@ -119,7 +126,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _selectedAssetType, value);
         }
 
-        public ObservableCollection<EventTypeDataModel> EventTypes { get; private set; }
+        public ObservableCollection<EnumItemDataModel<EventType>> EventTypes { get; private set; }
 
         public ICommand<AssetValuationViewModel> OpenValuationItemCommand { get; }
         public ICommand<AssetDismantlingViewModel> OpenDismatlingItemCommand { get; }
@@ -166,6 +173,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         {
             var reportData = new WriteOffReportData
             {
+                EventReportNumber = EventReportNumber,
                 AssetType = SelectedAssetType,
                 DestinationFolder = DestinationFolderPath,
                 RegistrationNumber = RegistrationNumber,
@@ -180,12 +188,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
             _model.GenerateReport(reportData);
 
-            ProductsSelector.UpdateProductsCollection(DismantleCollection);
+            UpdateProductsCollection();
         }
 
         private void FillAssetTypesCollection()
         {
-            var eventTypes = EnumHelper.GetValuesWithDescriptions<EventType>().Select(x => new EventTypeDataModel(x.Value, x.Description));
+            var eventTypes = EnumHelper.GetValuesWithDescriptions<EventType>().Select(x => new EnumItemDataModel<EventType>(x.Value, x.Description));
             EventTypes = [.. eventTypes];
         }
 
@@ -232,7 +240,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             {
                 DismantleCollection.Add(viewModel);
 
-                ProductsSelector.UpdateProductsCollection(DismantleCollection);
+                UpdateProductsCollection();
                 OnPropertyChanged(nameof(IsAnyValuationOrDismantling));
             }
         }
@@ -245,7 +253,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             {
                 ValuationCollection.Add(viewModel);
 
-                ProductsSelector.UpdateProductsCollection(DismantleCollection);
+                UpdateProductsCollection();
                 OnPropertyChanged(nameof(IsAnyValuationOrDismantling));
             }
         }
@@ -253,15 +261,14 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private void OpenValuationItemExecute(AssetValuationViewModel viewModel)
         {
             _navigationService.OpenWindow<AssetValuationDialogWindow, AssetValuationViewModel>(viewModel);
-
-            ProductsSelector.UpdateProductsCollection(DismantleCollection);
+            UpdateProductsCollection();
         }
 
         private void OpenDismatlingItemExecute(AssetDismantlingViewModel viewModel)
         {
             _navigationService.OpenWindow<AssetValuationDialogWindow, AssetDismantlingViewModel>(viewModel);
 
-            ProductsSelector.UpdateProductsCollection(DismantleCollection);
+            UpdateProductsCollection();
         }
 
         private void CloseCommandExecute()
@@ -270,6 +277,27 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             {
                 TabCloseRequested.Invoke(this, this);
                 IsClosed = true;
+            }
+        }
+
+        private void UpdateProductsCollection()
+        {
+            var assetsWithProdId = AssetsCollection.Select(x => new { Asset = x, x.SelectedProductId }).ToList();
+
+            ProductsSelector.UpdateProductsCollection(DismantleCollection);
+
+            // restore selected values
+            var products = ProductsSelector.Products.ToDictionary(x => x.AlmostUniqueID, x => x);
+            foreach (var item in assetsWithProdId)
+            {
+                // If asset.SelectedProductId is not in the new Products, set it to null or a default value
+                var selectedValue = item.SelectedProductId;
+                if (selectedValue != null)
+                {
+                    products.TryGetValue(selectedValue, out var product);
+
+                    item.Asset.SelectedProductId = product?.AlmostUniqueID;
+                }
             }
         }
     }
