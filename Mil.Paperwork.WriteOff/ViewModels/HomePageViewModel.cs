@@ -14,8 +14,10 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private readonly IAssetFactory _assetFactory;
         private readonly IDataService _dataService;
         private readonly IReportDataService _reportDataService;
+        private readonly IExportService _exportService;
         private readonly INavigationService _navigationService;
-        private SettingsViewModel _settingsViewModel;
+        private ITabViewModel _settingsViewModel;
+        private ITabViewModel _productsDictionaryViewModel;
 
         public event EventHandler<ITabViewModel> TabAdded;
         public event EventHandler<ITabViewModel> TabSelectionRequested;
@@ -30,24 +32,28 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         public ICommand<DocumentTypeEnum> CreateReportCommand { get; }
 
         public ICommand OpenSettingsCommand { get; }
+        public ICommand OpenProductsDictionaryCommand { get; }
 
         public HomePageViewModel(
             ReportManager reportManager,
             IAssetFactory assetFactory,
             IDataService dataService,
             IReportDataService reportDataService,
+            IExportService exportService,
             INavigationService navigationService)
         {
             _reportManager = reportManager;
             _assetFactory = assetFactory;
             _dataService = dataService;
             _reportDataService = reportDataService;
+            _exportService = exportService;
             _navigationService = navigationService;
 
             DocumentTypes = [.. GetAllReportTypes()];
 
             CreateReportCommand = new DelegateCommand<DocumentTypeEnum>(AddWriteOffReport);
             OpenSettingsCommand = new DelegateCommand(OpenSettingsExecute);
+            OpenProductsDictionaryCommand = new DelegateCommand(OpenProductsDictionaryCommandExecute);
         }
 
         private IList<ReportItemViewModel> GetAllReportTypes()
@@ -106,6 +112,19 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             {
                 _settingsViewModel = new SettingsViewModel(_reportDataService);
                 TabAdded?.Invoke(this, _settingsViewModel);
+            }
+        }
+
+        private void OpenProductsDictionaryCommandExecute()
+        {
+            if (_productsDictionaryViewModel?.IsClosed == false)
+            {
+                TabSelectionRequested?.Invoke(this, _productsDictionaryViewModel);
+            }
+            else
+            {
+                _productsDictionaryViewModel = new ProductsDictionaryViewModel(_dataService, _exportService);
+                TabAdded?.Invoke(this, _productsDictionaryViewModel);
             }
         }
     }

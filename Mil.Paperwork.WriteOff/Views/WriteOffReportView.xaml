@@ -50,11 +50,21 @@
             </Grid.ColumnDefinitions>
 
 
-            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
+            <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
+                        Orientation="Horizontal">
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
                         HorizontalAlignment="Center"
                         Text="СПИСАННЯ" FontSize="20" FontWeight="Bold" Margin="5" />
 
+                <TextBlock Text="Рапорт №" FontSize="20"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding EventReportNumber}" 
+                         Width="50"/>
+
+            </StackPanel>
+
             <StackPanel Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="6" Orientation="Horizontal">
+                <TextBlock Text="Шлях" />
                 <TextBox Text="{Binding DestinationFolderPath}" Width="300" VerticalAlignment="Center" IsReadOnly="True" />
                 <Button Grid.Row="0" Grid.Column="2" 
                     Padding="0"
@@ -75,7 +85,7 @@
                       ItemsSource="{Binding EventTypes}" 
                       SelectedValue="{Binding EventType}"
                       IsEditable="False"
-                      SelectedValuePath="EventType"
+                      SelectedValuePath="Value"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Center"/>
             
@@ -154,13 +164,15 @@
                         <DataTemplate>
                             <ComboBox ItemsSource="{Binding DataContext.ProductsSelector.Products, RelativeSource={RelativeSource AncestorType=UserControl}}" 
                                       Text="{Binding Name}"
-                                      SelectedItem="{Binding SelectedProduct, UpdateSourceTrigger=PropertyChanged}" 
+                                      SelectedValue="{Binding SelectedProductId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedValuePath="AlmostUniqueID"
                                       IsEditable="True"
                                       HorizontalAlignment="Stretch"
                                       VerticalAlignment="Center">
                                 <Behaviors:Interaction.Triggers>
                                     <Behaviors:EventTrigger EventName="SelectionChanged">
-                                        <Behaviors:InvokeCommandAction Command="{Binding ProductSelectedCommand}" />
+                                        <Behaviors:InvokeCommandAction Command="{Binding ProductSelectedCommand}" 
+                                                                       CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=ComboBox}}" />
                                     </Behaviors:EventTrigger>
                                 </Behaviors:Interaction.Triggers>
                             </ComboBox>

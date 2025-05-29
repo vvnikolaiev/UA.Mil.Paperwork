@@ -28,7 +28,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private decimal _price;
         private string _serialNumber;
         private string _nomenclatureCode;
-        private ProductDTO _selectedProduct;
 
         private ObservableCollection<AssetValuationItemViewModel> _components = [];
 
@@ -96,12 +95,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         {
             get => _nomenclatureCode;
             set => SetProperty(ref _nomenclatureCode, value);
-        }
-
-        public ProductDTO SelectedProduct
-        {
-            get => _selectedProduct;
-            set => SetProperty(ref _selectedProduct, value);
         }
 
         public ProductSelectionViewModel ProductSelector { get; }
@@ -238,13 +231,15 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void FillProductDetails()
         {
-            if (SelectedProduct != null)
+            var product = ProductSelector?.SelectedProduct;
+
+            if (product != null)
             {
-                Name = SelectedProduct.Name;
-                ShortName = SelectedProduct.ShortName;
-                NomenclatureCode = SelectedProduct.NomenclatureCode;
-                Price = SelectedProduct.Price;
-                MeasurementUnit = SelectedProduct.MeasurementUnit;
+                Name = product.Name;
+                ShortName = product.ShortName;
+                NomenclatureCode = product.NomenclatureCode;
+                Price = product.Price;
+                MeasurementUnit = product.MeasurementUnit;
             }
             else
             {

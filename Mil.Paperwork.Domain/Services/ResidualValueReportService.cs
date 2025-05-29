@@ -26,10 +26,9 @@ namespace Mil.Paperwork.Domain.Services
                 var report = new ResidualValueReport(_reportDataService);
                 if (report.TryCreate(reportData))
                 {
-                    var destinationPath = reportData.GetDestinationPath();
-                    var outputPath = Path.Combine(destinationPath, ResidualValueReportHelper.OUTPUT_REPORT_NAME);
                     byte[] reportBytes = report.GetReportBytes();
 
+                    var outputPath = GetOutputReportFilePath(reportData);
                     _fileStorage.SaveFile(outputPath, reportBytes);
 
                     result = true;
@@ -43,6 +42,18 @@ namespace Mil.Paperwork.Domain.Services
             }
 
             return result;
+        }
+
+        private string GetOutputReportFilePath(WriteOffReportData reportData)
+        {
+            var destinationPath = reportData.GetDestinationPath();
+            var addParam = (reportData.EventReportNumber ?? 0) > 0
+                ? reportData.EventReportNumber.ToString()
+                : reportData.ReportDate.ToString("dd-MM-yyyy");
+            var fileName = string.Format(ResidualValueReportHelper.OUTPUT_REPORT_NAME_FORMAT, addParam);
+            var outputPath = Path.Combine(destinationPath, fileName);
+
+            return outputPath;
         }
     }
 }

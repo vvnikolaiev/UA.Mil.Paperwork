@@ -13,6 +13,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private readonly IAssetFactory _assetFactory;
         private readonly IDataService _dataService;
         private readonly IReportDataService _reportDataService;
+        private readonly IExportService _exportService;
         private readonly INavigationService _navigationService;
 
         private ITabViewModel? _selectedTab;
@@ -29,12 +30,14 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             IAssetFactory assetFactory,
             IDataService dataService,
             IReportDataService reportDataService,
+            IExportService exportService,
             INavigationService navigationService)
         {
             _reportManager = reportManager;
             _assetFactory = assetFactory;
             _dataService = dataService;
             _reportDataService = reportDataService;
+            _exportService = exportService;
             _navigationService = navigationService;
 
             AddHomeTab();
@@ -42,7 +45,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void AddHomeTab()
         {
-            var homePageVM = new HomePageViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _navigationService);
+            var homePageVM = new HomePageViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _exportService, _navigationService);
             homePageVM.TabAdded += OnNewTabAdded;
             homePageVM.TabSelectionRequested += OnTabSelectRequested;
 

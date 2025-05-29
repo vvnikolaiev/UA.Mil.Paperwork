@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace Mil.Paperwork.Infrastructure.Helpers
 {
-    internal static class JsonHelper
+    public static class JsonHelper
     {
         public static T? ReadJson<T>(string jsonContent)
         {

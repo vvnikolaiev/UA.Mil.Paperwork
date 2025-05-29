@@ -8,6 +8,7 @@ namespace Mil.Paperwork.Infrastructure.Services
         IList<AssetValuationData> LoadValuationData();
 
         void SaveProductsData(IList<ProductDTO> products);
+        void RemoveProductsData(IList<ProductDTO> products);
         void SaveValuationData(IList<IAssetValuationData?> valuationData);
     }
 }

@@ -1,10 +1,10 @@
-﻿using Mil.Paperwork.Infrastructure.MVVM;
-using Mil.Paperwork.Infrastructure.Services;
-using System.Windows.Input;
-using System.Collections.ObjectModel;
-using Mil.Paperwork.Infrastructure.Enums;
+﻿using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
+using Mil.Paperwork.Infrastructure.MVVM;
+using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.DataModels;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
@@ -23,7 +23,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _selectedAssetType, value);
         }
 
-        public ObservableCollection<AssetTypeDataModel> AssetTypes { get; private set; }
+        public ObservableCollection<EnumItemDataModel<AssetType>> AssetTypes { get; private set; }
 
         public event EventHandler<ITabViewModel> TabCloseRequested;
 
@@ -43,7 +43,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void FillAssetTypesCollection()
         {
-            var assetTypes = EnumHelper.GetValuesWithDescriptions<AssetType>().Select(x => new AssetTypeDataModel(x.Value, x.Description));
+            var assetTypes = EnumHelper.GetValuesWithDescriptions<AssetType>().Select(x => new EnumItemDataModel<AssetType>(x.Value, x.Description));
             AssetTypes = [.. assetTypes];
         }
 

@@ -23,9 +23,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private AssetViewModel _assetViewModel;
         private EventType _eventType;
-
-        private ProductDTO _selectedProduct;
-
+        
         public event EventHandler<ITabViewModel> TabCloseRequested;
 
         public virtual string Header => "Тех. стан (№7)";
@@ -44,15 +42,9 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _assetViewModel, value);
         }
 
-        public ProductDTO SelectedProduct
-        {
-            get => _selectedProduct;
-            set => SetProperty(ref _selectedProduct, value);
-        }
-
         public ProductSelectionViewModel ProductSelector { get; }
 
-        public ObservableCollection<EventTypeDataModel> EventTypes { get; private set; }
+        public ObservableCollection<EnumItemDataModel<EventType>> EventTypes { get; private set; }
 
         public ICommand ProductSelectedCommand { get; }
         public ICommand GenerateReportCommand { get; }
@@ -104,7 +96,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void FillAssetTypesCollection()
         {
-            var eventTypes = EnumHelper.GetValuesWithDescriptions<EventType>().Select(x => new EventTypeDataModel(x.Value, x.Description));
+            var eventTypes = EnumHelper.GetValuesWithDescriptions<EventType>().Select(x => new EnumItemDataModel<EventType>(x.Value, x.Description));
             EventTypes = [.. eventTypes];
         }
 
@@ -115,15 +107,16 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void FillProductDetails()
         {
-            if (SelectedProduct != null)
+            var product = ProductSelector?.SelectedProduct;
+            if (product != null)
             {
-                Asset.Name = SelectedProduct.Name;
-                Asset.ShortName = SelectedProduct.ShortName;
-                Asset.NomenclatureCode = SelectedProduct.NomenclatureCode;
-                Asset.Price = SelectedProduct.Price;
-                Asset.MeasurementUnit = SelectedProduct.MeasurementUnit;
-                Asset.StartDate = SelectedProduct.StartDate;
-                Asset.WarrantyPeriodYears = SelectedProduct.WarrantyPeriodYears;
+                Asset.Name = product.Name;
+                Asset.ShortName = product.ShortName;
+                Asset.NomenclatureCode = product.NomenclatureCode;
+                Asset.Price = product.Price;
+                Asset.MeasurementUnit = product.MeasurementUnit;
+                Asset.StartDate = product.StartDate;
+                Asset.WarrantyPeriodYears = product.WarrantyPeriodYears;
             }
             else
             {

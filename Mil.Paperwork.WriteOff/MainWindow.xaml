@@ -33,7 +33,7 @@
                           ItemsSource="{Binding AssetTypes}" 
                           SelectedValue="{Binding SelectedAssetType}"
                           IsEditable="False"
-                          SelectedValuePath="AssetType"
+                          SelectedValuePath="Value"
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Center"/>
 
@@ -45,6 +45,86 @@
             </Grid>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type viewModels:ProductsDictionaryViewModel}">
+            <DockPanel>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
+                    <Button Content="Add" Command="{Binding AddItemCommand}" Margin="0,0,5,0"/>
+                    <Button Content="Remove" Command="{Binding RemoveItemCommand}" 
+                            CommandParameter="{Binding SelectedItem, ElementName=ProductsTable}" Margin="0,0,5,0"/>
+                    <Button Content="Save" Command="{Binding SaveCommand}" Margin="0,0,5,0"/>
+                    <Button Content="Import" Command="{Binding ImportCommand}" Margin="0,0,5,0" IsEnabled="False"/>
+                    <Button Content="Export" Margin="0,0,5,0">
+                        <Button.ContextMenu>
+                            <ContextMenu ItemsSource="{Binding ExportTypes}">
+                                <ContextMenu.ItemContainerStyle>
+                                    <Style TargetType="MenuItem">
+                                        <Setter Property="Header" Value="{Binding Title}" />
+                                        <Setter Property="Command" Value="{Binding DataContext.ExportDataCommand, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                        <Setter Property="CommandParameter" Value="{Binding Value}" />
+                                    </Style>
+                                </ContextMenu.ItemContainerStyle>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                <EventSetter Event="Click" Handler="ExportButton_Click"/>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="Refresh" Command="{Binding RefreshCommand}" Margin="0,0,5,0"/>
+                    <Button Content="Close" Command="{Binding CloseCommand}" Margin="0,0,5,0"/>
+                </StackPanel>
+                
+                <DataGrid x:Name="ProductsTable" 
+                          ItemsSource="{Binding Products}"
+                          AutoGenerateColumns="False" CanUserAddRows="False" Margin="5">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Назва" Binding="{Binding Name}" 
+                                            ElementStyle="{StaticResource DataGridNameTextBlockStyle}"
+                                            Width="*" />
+                        <DataGridTextColumn Header="Коротка назва" Binding="{Binding ShortName}"
+                                            ElementStyle="{StaticResource DataGridTextBlockStyle}" />
+                        <DataGridTextColumn Header="Од. виміру" Binding="{Binding MeasurementUnit}" 
+                                            ElementStyle="{StaticResource DataGridTextBlockStyle}"
+                                            Width="50"/>
+                        <DataGridTextColumn Header="Код номенклатури" Binding="{Binding NomenclatureCode}" 
+                                            ElementStyle="{StaticResource DataGridTextBlockStyle}"
+                                            Width="70" />
+                        <DataGridTextColumn Header="Ціна" Binding="{Binding Price}" />
+                        <DataGridTemplateColumn Header="Взято на облік" 
+                                                Width="*" MinWidth="90" MaxWidth="110">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DatePicker SelectedDate="{Binding StartDate, StringFormat=d, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                Language="uk-UA"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Гарантія (р.)" Binding="{Binding WarrantyPeriodYears}" 
+                                            ElementStyle="{StaticResource DataGridTextBlockStyle}"
+                                            Width="70" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </DataTemplate>
+
+        <Style x:Key="SquareButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Width" Value="70" />
+            <Setter Property="Height" Value="70" />
+            <Setter Property="Margin" Value="15" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="ContentTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Content, RelativeSource={RelativeSource Mode=TemplatedParent}}" 
+                                   TextWrapping="Wrap" 
+                                   TextAlignment="Center"/>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
         <DataTemplate DataType="{x:Type viewModels:HomePageViewModel}">
             <Grid>
                 <Grid.RowDefinitions>
@@ -61,27 +141,26 @@
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Grid Width="100" Height="100" Background="LightGray" Margin="5">
-                                <Button HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                        Width="70" Height="70"
+                            <Grid Background="LightGray" Margin="5">
+                                <Button Content="{Binding Text}" 
                                         Command="{Binding DataContext.CreateReportCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
-                                        CommandParameter="{Binding DocumentType}">
-                                    <Button.Content>
-                                        <TextBlock Text="{Binding Text}" TextWrapping="Wrap" 
-                                                   TextAlignment="Center"/>
-                                    </Button.Content>
-                                </Button>
+                                        CommandParameter="{Binding DocumentType}" 
+                                        Style="{StaticResource SquareButtonStyle}"/>
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
-                <StackPanel Grid.Row="1" HorizontalAlignment="Left">
-                    <Grid Width="100" Height="100" Background="LightGray" Margin="5">
-                        <Button Content="SETTINGS" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                Width="70" Height="70"
-                                Command="{Binding OpenSettingsCommand}" />
-                    </Grid>
+                <StackPanel Grid.Row="1" HorizontalAlignment="Left" Background="LightGray"
+                            Orientation="Horizontal">
+                    
+                    <Button Content="Довідник майна"
+                            Command="{Binding OpenProductsDictionaryCommand}" 
+                            Style="{StaticResource SquareButtonStyle}"/>
+
+                    <Button Content="Налаштування" 
+                            Style="{StaticResource SquareButtonStyle}"
+                            Command="{Binding OpenSettingsCommand}" />
                 </StackPanel>
             </Grid>
         </DataTemplate>
