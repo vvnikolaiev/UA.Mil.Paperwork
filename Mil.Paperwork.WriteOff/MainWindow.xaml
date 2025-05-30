@@ -1,17 +1,37 @@
 ﻿<Window x:Class="Mil.Paperwork.WriteOff.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Mil.Paperwork.WriteOff" 
         xmlns:views="clr-namespace:Mil.Paperwork.WriteOff.Views"
         xmlns:viewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels"
+        xmlns:tabViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels.Tabs"
+        xmlns:reportViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels.Reports"
+        xmlns:converters="clr-namespace:Mil.Paperwork.Infrastructure.Converters;assembly=Mil.Paperwork.Infrastructure"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="1000"
         d:DataContext="{d:DesignInstance Type=viewModels:MainViewModel}">
     <Window.Resources>
+        <Style x:Key="SquareButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Width" Value="70" />
+            <Setter Property="Height" Value="70" />
+            <Setter Property="Margin" Value="15" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="ContentTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Content, RelativeSource={RelativeSource Mode=TemplatedParent}}" 
+                                   TextWrapping="Wrap" 
+                                   TextAlignment="Center"/>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-        <DataTemplate DataType="{x:Type viewModels:SettingsViewModel}">
+        <DataTemplate DataType="{x:Type tabViewModels:SettingsViewModel}">
             <Grid Margin="10" Background="LightGray">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -31,11 +51,10 @@
                            VerticalAlignment="Center"/>
                 <ComboBox Grid.Row="0" Grid.Column="3"
                           ItemsSource="{Binding AssetTypes}" 
-                          SelectedValue="{Binding SelectedAssetType}"
-                          IsEditable="False"
-                          SelectedValuePath="Value"
+                          SelectedItem="{Binding SelectedAssetType}"
+                          Style="{StaticResource EnumDescriptionComboBox}"
                           HorizontalAlignment="Stretch"
-                          VerticalAlignment="Center"/>
+                          VerticalAlignment="Center" />
 
                 <Button Grid.Row="1" Grid.Column="3"
                         HorizontalAlignment="Right"
@@ -45,7 +64,7 @@
             </Grid>
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type viewModels:ProductsDictionaryViewModel}">
+        <DataTemplate DataType="{x:Type tabViewModels:ProductsDictionaryViewModel}">
             <DockPanel>
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
                     <Button Content="Add" Command="{Binding AddItemCommand}" Margin="0,0,5,0"/>
@@ -74,7 +93,7 @@
                     <Button Content="Refresh" Command="{Binding RefreshCommand}" Margin="0,0,5,0"/>
                     <Button Content="Close" Command="{Binding CloseCommand}" Margin="0,0,5,0"/>
                 </StackPanel>
-                
+
                 <DataGrid x:Name="ProductsTable" 
                           ItemsSource="{Binding Products}"
                           AutoGenerateColumns="False" CanUserAddRows="False" Margin="5">
@@ -90,7 +109,8 @@
                         <DataGridTextColumn Header="Код номенклатури" Binding="{Binding NomenclatureCode}" 
                                             ElementStyle="{StaticResource DataGridTextBlockStyle}"
                                             Width="70" />
-                        <DataGridTextColumn Header="Ціна" Binding="{Binding Price}" />
+                        <DataGridTextColumn Header="Ціна" Binding="{Binding Price}"
+                                            ElementStyle="{StaticResource DataGridTextBlockStyle}" />
                         <DataGridTemplateColumn Header="Взято на облік" 
                                                 Width="*" MinWidth="90" MaxWidth="110">
                             <DataGridTemplateColumn.CellTemplate>
@@ -108,24 +128,57 @@
             </DockPanel>
         </DataTemplate>
 
-        <Style x:Key="SquareButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-            <Setter Property="Width" Value="70" />
-            <Setter Property="Height" Value="70" />
-            <Setter Property="Margin" Value="15" />
-            <Setter Property="HorizontalAlignment" Value="Center" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="ContentTemplate">
-                <Setter.Value>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Content, RelativeSource={RelativeSource Mode=TemplatedParent}}" 
-                                   TextWrapping="Wrap" 
-                                   TextAlignment="Center"/>
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        
-        <DataTemplate DataType="{x:Type viewModels:HomePageViewModel}">
+        <DataTemplate DataType="{x:Type tabViewModels:ReportConfigViewModel}">
+            <DockPanel>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
+                    <Button Content="Save" Command="{Binding SaveCommand}" Margin="0,0,5,0"/>
+                    
+                    <Button Content="Export" Margin="0,0,5,0">
+                        <Button.ContextMenu>
+                            <ContextMenu ItemsSource="{Binding ExportTypes}">
+                                <ContextMenu.ItemContainerStyle>
+                                    <Style TargetType="MenuItem">
+                                        <Setter Property="Header" Value="{Binding Title}" />
+                                        <Setter Property="Command" Value="{Binding DataContext.ExportDataCommand, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                        <Setter Property="CommandParameter" Value="{Binding Value}" />
+                                    </Style>
+                                </ContextMenu.ItemContainerStyle>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                <EventSetter Event="Click" Handler="ExportButton_Click"/>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    
+                    <Button Content="Import" Command="{Binding ImportCommand}" Margin="0,0,5,0" IsEnabled="False"/>
+                    <Button Content="Refresh" Command="{Binding RefreshCommand}" Margin="0,0,5,0"/>
+                    <Button Content="Close" Command="{Binding CloseCommand}" Margin="0,0,5,0"/>
+                </StackPanel>
+                
+                <ComboBox ItemsSource="{Binding ReportTypes}"
+                            DockPanel.Dock="Top"
+                            SelectedItem="{Binding SelectedReportType}"
+                            Style="{StaticResource EnumDescriptionComboBox}">
+                    <Behaviors:Interaction.Triggers>
+                        <Behaviors:EventTrigger EventName="SelectionChanged">
+                            <Behaviors:InvokeCommandAction Command="{Binding ReportTypeSelectedCommand}" />
+                        </Behaviors:EventTrigger>
+                    </Behaviors:Interaction.Triggers>
+                </ComboBox>
+
+                <DataGrid ItemsSource="{Binding CurrentConfig}" AutoGenerateColumns="False" Margin="0,5,0,0">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Ідентифікатор" Binding="{Binding Name}" Width=".7*" />
+                        <DataGridTextColumn Header="Значення" Binding="{Binding Value}" Width="*" />
+                        <DataGridTextColumn Header="Коментар" Binding="{Binding Comment}" Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type tabViewModels:HomePageViewModel}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
@@ -153,9 +206,13 @@
 
                 <StackPanel Grid.Row="1" HorizontalAlignment="Left" Background="LightGray"
                             Orientation="Horizontal">
-                    
+
                     <Button Content="Довідник майна"
                             Command="{Binding OpenProductsDictionaryCommand}" 
+                            Style="{StaticResource SquareButtonStyle}"/>
+
+                    <Button Content="Конфігурація звітів"
+                            Command="{Binding OpenReportConfigurationCommand}" 
                             Style="{StaticResource SquareButtonStyle}"/>
 
                     <Button Content="Налаштування" 
@@ -165,19 +222,19 @@
             </Grid>
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type viewModels:WriteOffReportViewModel}">
+        <DataTemplate DataType="{x:Type reportViewModels:WriteOffReportViewModel}">
             <views:WriteOffReportView />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type viewModels:AssetInitialTechnicalStateViewModel}">
+        <DataTemplate DataType="{x:Type reportViewModels:AssetInitialTechnicalStateViewModel}">
             <views:TechnicalStateReportView />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type viewModels:AssetTechnicalStateViewModel}">
+        <DataTemplate DataType="{x:Type reportViewModels:AssetTechnicalStateViewModel}">
             <views:TechnicalStateReportView />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type viewModels:AssetValuationViewModel}">
+        <DataTemplate DataType="{x:Type reportViewModels:AssetValuationViewModel}">
 
             <Grid Grid.IsSharedSizeScope="True">
                 <Grid.RowDefinitions>
@@ -196,7 +253,7 @@
             </Grid>
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type viewModels:AssetDismantlingViewModel}">
+        <DataTemplate DataType="{x:Type reportViewModels:AssetDismantlingViewModel}">
             <Grid Grid.IsSharedSizeScope="True">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />

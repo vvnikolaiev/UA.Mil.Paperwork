@@ -53,7 +53,7 @@ namespace Mil.Paperwork.Domain.Reports
 
         private void FillTheFields(IAssetInfo asset, EventType eventType, string reason, Document document)
         {
-            var reportConfig = _reportDataService.GetReportConfig(ReportType.TechnicalStateReport);
+            var reportConfig = _reportDataService.GetReportParametersDictionary(ReportType.TechnicalStateReport);
             var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
             var category = ReportHelper.ConvertEventTypeToCategoryText(asset.InitialCategory, eventType);
 

@@ -1,6 +1,6 @@
 ﻿using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.WriteOff.Providers;
-using Mil.Paperwork.WriteOff.ViewModels;
+using Mil.Paperwork.WriteOff.ViewModels.Reports;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;

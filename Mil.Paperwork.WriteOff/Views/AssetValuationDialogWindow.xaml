@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Mil.Paperwork.WriteOff.Views"
         xmlns:converters="clr-namespace:Mil.Paperwork.Infrastructure.Converters;assembly=Mil.Paperwork.Infrastructure"
         mc:Ignorable="d"
-        xmlns:ViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels" 
+        xmlns:ViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels.Reports" 
         xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
         d:DataContext="{d:DesignInstance Type=ViewModels:AssetValuationViewModel}"
         Title="Asset Valuation"

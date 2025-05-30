@@ -8,7 +8,7 @@ namespace Mil.Paperwork.Infrastructure.Helpers
         /// <summary>
         /// Gets the description of an enum value, or its name if no description is set.
         /// </summary>
-        public static string GetDescription(Enum value)
+        public static string GetDescription(this Enum value)
         {
             var field = value.GetType().GetField(value.ToString());
 
@@ -16,6 +16,11 @@ namespace Mil.Paperwork.Infrastructure.Helpers
             var result = attr?.Description ?? value.ToString();
 
             return result;
+        }
+
+        public static IEnumerable<T> GetValues<T>() where T : Enum
+        {
+            return Enum.GetValues(typeof(T)).Cast<T>();
         }
 
         /// <summary>

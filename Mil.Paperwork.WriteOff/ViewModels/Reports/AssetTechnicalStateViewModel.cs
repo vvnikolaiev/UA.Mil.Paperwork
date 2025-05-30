@@ -4,7 +4,7 @@ using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Factories;
 using Mil.Paperwork.Domain.DataModels.Assets;
 
-namespace Mil.Paperwork.WriteOff.ViewModels
+namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {
     internal class AssetTechnicalStateViewModel : AssetInitialTechnicalStateViewModel
     {

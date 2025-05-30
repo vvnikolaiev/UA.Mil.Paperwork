@@ -9,7 +9,7 @@ using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.WriteOff.Memento;
 using System.Windows.Input;
 
-namespace Mil.Paperwork.WriteOff.ViewModels
+namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {
     internal class AssetDismantlingViewModel : AssetValuationViewModel
     {
@@ -22,7 +22,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private string _documentNumber;
         private string _dismantlingReason;
         private string _finalReportReasonText;
-
 
         public override string Header => "Акт розукомплектації";
 
@@ -162,17 +161,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         protected override void ApplyTemplateData(IAssetValuationData valuationDataTemplate)
         {
-            // ?? do we need this when we have a combobox?
-
-            //if (IsDismantling)
-            //{
-            //    // take name, price, date, etc.
-            //    Name = valuationDataTemplate.Name;
-            //    TotalPrice = valuationDataTemplate.TotalPrice;
-            //    DataSource = valuationDataTemplate.Description;
-            //    SerialNumber = valuationDataTemplate.SerialNumber;
-            //    ValuationDate = valuationDataTemplate.ValuationDate;
-            //}
             Description = valuationDataTemplate.Description;
             ValuationDate = valuationDataTemplate.ValuationDate;
 

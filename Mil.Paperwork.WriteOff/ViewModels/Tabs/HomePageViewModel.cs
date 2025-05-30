@@ -5,8 +5,9 @@ using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Enums;
 using Mil.Paperwork.WriteOff.Factories;
 using System.Windows.Input;
+using Mil.Paperwork.WriteOff.ViewModels.Reports;
 
-namespace Mil.Paperwork.WriteOff.ViewModels
+namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 {
     internal class HomePageViewModel : ObservableItem, ITabViewModel
     {
@@ -16,8 +17,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private readonly IReportDataService _reportDataService;
         private readonly IExportService _exportService;
         private readonly INavigationService _navigationService;
-        private ITabViewModel _settingsViewModel;
-        private ITabViewModel _productsDictionaryViewModel;
+
+        private readonly Dictionary<SettingsTabType, ISettingsTabViewModel> _settingTabViewModels;
 
         public event EventHandler<ITabViewModel> TabAdded;
         public event EventHandler<ITabViewModel> TabSelectionRequested;
@@ -33,6 +34,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         public ICommand OpenSettingsCommand { get; }
         public ICommand OpenProductsDictionaryCommand { get; }
+        public ICommand OpenReportConfigurationCommand { get; }
 
         public HomePageViewModel(
             ReportManager reportManager,
@@ -49,11 +51,13 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             _exportService = exportService;
             _navigationService = navigationService;
 
+            _settingTabViewModels = [];
             DocumentTypes = [.. GetAllReportTypes()];
 
             CreateReportCommand = new DelegateCommand<DocumentTypeEnum>(AddWriteOffReport);
             OpenSettingsCommand = new DelegateCommand(OpenSettingsExecute);
             OpenProductsDictionaryCommand = new DelegateCommand(OpenProductsDictionaryCommandExecute);
+            OpenReportConfigurationCommand = new DelegateCommand(OpenReportConfigurationCommandExecute);
         }
 
         private IList<ReportItemViewModel> GetAllReportTypes()
@@ -72,7 +76,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void AddWriteOffReport(DocumentTypeEnum documentType)
         {
-            ITabViewModel? createdTab;
+            IReportTabViewModel? createdTab;
             switch (documentType)
             {
                 case DocumentTypeEnum.WriteOff:
@@ -98,33 +102,52 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
             if (createdTab != null)
             {
+                createdTab.SettingsTabOpenRequested += OnSettingsTabOpenRequested;
+
                 TabAdded?.Invoke(this, createdTab);
             }
         }
 
+        private void OnSettingsTabOpenRequested(object? sender, SettingsTabType settingsTabType)
+        {
+            OpenSettingsTab(settingsTabType);
+        }
+
         private void OpenSettingsExecute()
         {
-            if (_settingsViewModel?.IsClosed == false)
-            {
-                TabSelectionRequested?.Invoke(this, _settingsViewModel);
-            }
-            else
-            {
-                _settingsViewModel = new SettingsViewModel(_reportDataService);
-                TabAdded?.Invoke(this, _settingsViewModel);
-            }
+            OpenSettingsTab(SettingsTabType.Settings);
         }
 
         private void OpenProductsDictionaryCommandExecute()
         {
-            if (_productsDictionaryViewModel?.IsClosed == false)
+            OpenSettingsTab(SettingsTabType.ProductDictionary);
+        }
+
+        private void OpenReportConfigurationCommandExecute()
+        {
+            OpenSettingsTab(SettingsTabType.ReportsConfiguration);
+        }
+
+        private void OpenSettingsTab(SettingsTabType settingsTabType)
+        {
+            _settingTabViewModels.TryGetValue(settingsTabType, out var tabViewModel);
+
+            if (tabViewModel?.IsClosed == false)
             {
-                TabSelectionRequested?.Invoke(this, _productsDictionaryViewModel);
+                TabSelectionRequested?.Invoke(this, tabViewModel);
             }
             else
             {
-                _productsDictionaryViewModel = new ProductsDictionaryViewModel(_dataService, _exportService);
-                TabAdded?.Invoke(this, _productsDictionaryViewModel);
+                tabViewModel = settingsTabType switch
+                {
+                    SettingsTabType.Settings => new SettingsViewModel(_reportDataService),
+                    SettingsTabType.ReportsConfiguration => new ReportConfigViewModel(_reportDataService, _exportService),
+                    SettingsTabType.ProductDictionary => new ProductsDictionaryViewModel(_dataService, _exportService),
+                    _ => throw new NotImplementedException()
+                };
+
+                _settingTabViewModels[settingsTabType] = tabViewModel;
+                TabAdded?.Invoke(this, tabViewModel);
             }
         }
     }

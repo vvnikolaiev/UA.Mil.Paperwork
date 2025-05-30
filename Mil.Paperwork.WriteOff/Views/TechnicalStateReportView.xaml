@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Mil.Paperwork.WriteOff.Views"
-             xmlns:ViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels" 
+             xmlns:ViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels.Reports" 
              xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Grid.IsSharedSizeScope="True">
@@ -76,12 +76,11 @@
 
                 <TextBlock Grid.Row="3" Grid.Column="2" Text="Статус" />
                 <ComboBox Grid.Row="3" Grid.Column="3"
-                      ItemsSource="{Binding EventTypes}" 
-                      SelectedValue="{Binding EventType}"
-                      IsEditable="False"
-                      SelectedValuePath="Value"
-                      HorizontalAlignment="Stretch"
-                      VerticalAlignment="Center"/>
+                          ItemsSource="{Binding EventTypes}" 
+                          SelectedItem="{Binding EventType}"
+                          Style="{StaticResource EnumDescriptionComboBox}"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Center"/>
 
                 <TextBlock Grid.Row="4" Grid.Column="0" Text="Реєстр. номер"/>
                 <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Asset.TSRegisterNumber}" TextWrapping="Wrap"/>
@@ -151,6 +150,7 @@
         <ContentControl Grid.Row="0" Content="{Binding}" />
 
         <StackPanel Grid.Row="100" Grid.ColumnSpan="9" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Content="Відкрити конфігурацію" Command="{Binding OpenConfigurationCommand}"/>
             <Button Content="Створити документ" Command="{Binding GenerateReportCommand}"/>
             <Button Content="Закрити" Command="{Binding CloseCommand}"/>
         </StackPanel>

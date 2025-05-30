@@ -62,7 +62,7 @@ namespace Mil.Paperwork.Domain.Reports
 
             FillTheTable(reportData, sheet);
 
-            var fieldsMap = _reportDataService.GetReportConfig(ReportType.ResidualValueReport);
+            var fieldsMap = _reportDataService.GetReportParametersDictionary(ReportType.ResidualValueReport);
             fieldsMap.Add(ResidualValueReportHelper.REPORT_DATE_PLACEHOLDER, reportData.ReportDate.ToString(ReportHelper.DATE_FORMAT));
             fieldsMap.Add(ResidualValueReportHelper.TOTAL_RESIDUAL_SUM_PLACEHOLDER, CalculateTotalResidualValue(reportData.Assets).ToString("F2"));
             sheet.MadDataToTheNamedFields(fieldsMap);

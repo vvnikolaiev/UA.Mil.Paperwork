@@ -30,6 +30,18 @@ namespace Mil.Paperwork.Infrastructure.Services
             return data.ValuationData;
         }
 
+        public void SaveProductsData(IList<ProductDTO> products)
+        {
+            if (products == null)
+                return;
+
+            // Sort the list alphabetically by name
+            var sortedProducts = products?.OrderBy(p => p.Name).ToList();
+            _storageData.ProductsData = sortedProducts ?? [];
+
+            Save();
+        }
+
         public void RemoveProductsData(IList<ProductDTO> productsToRemove)
         {
             if (productsToRemove == null || productsToRemove.Count == 0)
@@ -40,7 +52,7 @@ namespace Mil.Paperwork.Infrastructure.Services
             Save();
         }
 
-        public void SaveProductsData(IList<ProductDTO> newProducts)
+        public void AlterProductsData(IList<ProductDTO> newProducts)
         {
             var productsDict = _storageData.ProductsData?.ToDictionary(p => p.Name, p => p) ?? [];
 
@@ -69,11 +81,7 @@ namespace Mil.Paperwork.Infrastructure.Services
                 }
             }
 
-            // Sort the list alphabetically by name
-            var sortedProducts = _storageData.ProductsData?.OrderBy(p => p.Name).ToList();
-            _storageData.ProductsData = sortedProducts ?? [];
-
-            Save();
+            SaveProductsData(_storageData.ProductsData);
         }
 
         public void SaveValuationData(IList<IAssetValuationData?> valuationData)

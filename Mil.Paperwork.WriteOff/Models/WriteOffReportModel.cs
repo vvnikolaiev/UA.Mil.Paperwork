@@ -25,7 +25,7 @@ namespace Mil.Paperwork.WriteOff.Models
             }
 
             var productInfos = reportData.Assets.Select(DTOConvertionHelper.ConvertToProductDTO).ToList();
-            _dataService.SaveProductsData(productInfos);
+            _dataService.AlterProductsData(productInfos);
             
             var valuationData = ReportDataHelper.GetValuationDataCollection(reportData);
             reportData.ValuationData = valuationData;

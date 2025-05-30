@@ -1,12 +1,26 @@
-﻿namespace Mil.Paperwork.Infrastructure.DataModels
+﻿using Mil.Paperwork.Infrastructure.Attributes;
+using Mil.Paperwork.Infrastructure.Enums;
+
+namespace Mil.Paperwork.Infrastructure.DataModels
 {
+
     public class ReportDataConfigDTO
     {
         public CommonConfigSection Common { get; set; }
-        public Dictionary<string, string> QualityStateReport { get; set; }
-        public Dictionary<string, string> TechnicalStateReport { get; set; }
-        public Dictionary<string, string> ResidualValueReport { get; set; }
-        public Dictionary<string, string> AssetValuationReport { get; set; }
-        public Dictionary<string, string> AssetDismantlingReport { get; set; }
+        
+        [ReportTypeMapping(ReportType.QualityStateReport)]
+        public List<ReportParameter> QualityStateReport { get; set; }
+
+        [ReportTypeMapping(ReportType.TechnicalStateReport)]
+        public List<ReportParameter> TechnicalStateReport { get; set; }
+
+        [ReportTypeMapping(ReportType.ResidualValueReport)]
+        public List<ReportParameter> ResidualValueReport { get; set; }
+        
+        [ReportTypeMapping(ReportType.AssetValuationReport)]
+        public List<ReportParameter> AssetValuationReport { get; set; }
+        
+        [ReportTypeMapping(ReportType.AssetDismantlingReport)]
+        public List<ReportParameter> AssetDismantlingReport { get; set; }
     }
 }

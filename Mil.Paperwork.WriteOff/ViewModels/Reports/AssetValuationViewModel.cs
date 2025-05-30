@@ -7,13 +7,14 @@ using Mil.Paperwork.Infrastructure.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.WriteOff.Memento;
+using Mil.Paperwork.WriteOff.ViewModels.Tabs;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 
-namespace Mil.Paperwork.WriteOff.ViewModels
+namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {
-    internal class AssetValuationViewModel : ObservableItem, ITabViewModel
+    internal class AssetValuationViewModel : BaseReportTabViewModel
     {
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
@@ -37,11 +38,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private IAssetValuationData _selectedValuationTemplate;
         private ObservableCollection<IAssetValuationData> _valuationDataTemplates = [];
 
-        public event EventHandler<ITabViewModel> TabCloseRequested;
-
-        public virtual string Header => "Акт оцінки";
-
-        public bool IsClosed { get; private set; }
+        public override string Header => "Акт оцінки";
 
         public string Description
         {
@@ -129,6 +126,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         public ICommand CancelCommand { get; }
         public ICommand CloseTabCommand { get; }
         public ICommand GenerateReportCommand { get; }
+        public ICommand OpenConfigurationCommand { get; }
 
         public AssetValuationViewModel(ReportManager reportManager, IDataService dataService, INavigationService navigationService)
         {
@@ -148,6 +146,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             CancelCommand = new DelegateCommand(Cancel);
             CloseTabCommand = new DelegateCommand(CloseTabCommandExecute);
             GenerateReportCommand = new DelegateCommand(GenerateReportCommandExecute);
+            OpenConfigurationCommand = new DelegateCommand(OpenConfigurationCommandExecute);
 
             SaveState();
         }
@@ -187,7 +186,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         {
             var isValid = true;
 
-            isValid &= !String.IsNullOrEmpty(Name);
+            isValid &= !string.IsNullOrEmpty(Name);
             isValid &= Components.Any(x => x.IsValid);
             isValid &= Price > 0;
 
@@ -293,6 +292,11 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             }
         }
 
+        private void OpenConfigurationCommandExecute()
+        {
+            OpenSettings(Enums.SettingsTabType.ReportsConfiguration);
+        }
+
         protected virtual void GenerateReport(string folderName)
         {
             var assetValuationData = ToAssetValuationData();
@@ -323,11 +327,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void CloseTabCommandExecute()
         {
-            if (MessageBox.Show("Are you sure you want to close this tab?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                TabCloseRequested.Invoke(this, this);
-                IsClosed = true;
-            }
+            Close();
         }
 
         protected void CalculatePrices()
@@ -345,7 +345,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             {
                 if (item.IsValid)
                 {
-                    sumLeft -= (item.Price * item.Quantity);
+                    sumLeft -= item.Price * item.Quantity;
                     if (item.Price == 0)
                     {
                         zeroPriceItems.Add(item);

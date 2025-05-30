@@ -58,7 +58,7 @@ namespace Mil.Paperwork.Domain.Reports
 
         private void FillTheFields(IAssetValuationData assetValuationData, Document document)
         {
-            var reportConfig = _reportDataService.GetReportConfig(ReportType.AssetValuationReport);
+            var reportConfig = _reportDataService.GetReportParametersDictionary(ReportType.AssetValuationReport);
             var assetName = ReportHelper.GetFullAssetName(assetValuationData.Name, assetValuationData.SerialNumber);
             var valuatuionDate = assetValuationData.ValuationDate.ToString(ReportHelper.DATE_FORMAT);
 

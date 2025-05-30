@@ -14,10 +14,11 @@ using Mil.Paperwork.WriteOff.Factories;
 using Mil.Paperwork.WriteOff.DataModels;
 using Mil.Paperwork.Infrastructure.Helpers;
 using Mil.Paperwork.Domain.Enums;
+using Mil.Paperwork.WriteOff.ViewModels.Tabs;
 
-namespace Mil.Paperwork.WriteOff.ViewModels
+namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {
-    internal class WriteOffReportViewModel : ObservableItem, ITabViewModel
+    internal class WriteOffReportViewModel : BaseReportTabViewModel
     {
         private readonly IAssetFactory _assetFactory;
         private readonly INavigationService _navigationService;
@@ -37,11 +38,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private ObservableCollection<AssetDismantlingViewModel> _dismantleCollection = [];
         private AssetType _selectedAssetType;
 
-        public event EventHandler<ITabViewModel> TabCloseRequested;
-
-        public string Header => "Списання";
-
-        public bool IsClosed { get; private set; }
+        public override string Header => "Списання";
 
         public ProductSelectionViewModel ProductsSelector { get; }
 
@@ -126,7 +123,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _selectedAssetType, value);
         }
 
-        public ObservableCollection<EnumItemDataModel<EventType>> EventTypes { get; private set; }
+        public ObservableCollection<EventType> EventTypes { get; private set; }
 
         public ICommand<AssetValuationViewModel> OpenValuationItemCommand { get; }
         public ICommand<AssetDismantlingViewModel> OpenDismatlingItemCommand { get; }
@@ -193,8 +190,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void FillAssetTypesCollection()
         {
-            var eventTypes = EnumHelper.GetValuesWithDescriptions<EventType>().Select(x => new EnumItemDataModel<EventType>(x.Value, x.Description));
-            EventTypes = [.. eventTypes];
+            EventTypes = [.. EnumHelper.GetValues<EventType>()];
         }
 
         private void ClearTable()
@@ -273,11 +269,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void CloseCommandExecute()
         {
-            if (MessageBox.Show("Are you sure you want to close this tab?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                TabCloseRequested.Invoke(this, this);
-                IsClosed = true;
-            }
+            Close();
         }
 
         private void UpdateProductsCollection()
