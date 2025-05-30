@@ -2,13 +2,12 @@
 using Mil.Paperwork.Infrastructure.Helpers;
 using Mil.Paperwork.Infrastructure.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
-using Mil.Paperwork.WriteOff.DataModels;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
-namespace Mil.Paperwork.WriteOff.ViewModels
+namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 {
-    internal class SettingsViewModel : ObservableItem, ITabViewModel
+    internal class SettingsViewModel : ObservableItem, ISettingsTabViewModel
     {
         private readonly IReportDataService _reportDataService;
 

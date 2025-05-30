@@ -7,7 +7,7 @@ using Mil.Paperwork.WriteOff.Factories;
 using System.Windows.Input;
 using Mil.Paperwork.WriteOff.ViewModels.Reports;
 
-namespace Mil.Paperwork.WriteOff.ViewModels
+namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 {
     internal class HomePageViewModel : ObservableItem, ITabViewModel
     {
@@ -17,9 +17,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private readonly IReportDataService _reportDataService;
         private readonly IExportService _exportService;
         private readonly INavigationService _navigationService;
-        private ITabViewModel _settingsViewModel;
-        private ITabViewModel _productsDictionaryViewModel;
-        private ITabViewModel _reportConfigViewModel;
+
+        private readonly Dictionary<SettingsTabType, ISettingsTabViewModel> _settingTabViewModels;
 
         public event EventHandler<ITabViewModel> TabAdded;
         public event EventHandler<ITabViewModel> TabSelectionRequested;
@@ -52,6 +51,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             _exportService = exportService;
             _navigationService = navigationService;
 
+            _settingTabViewModels = [];
             DocumentTypes = [.. GetAllReportTypes()];
 
             CreateReportCommand = new DelegateCommand<DocumentTypeEnum>(AddWriteOffReport);
@@ -76,7 +76,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void AddWriteOffReport(DocumentTypeEnum documentType)
         {
-            ITabViewModel? createdTab;
+            IReportTabViewModel? createdTab;
             switch (documentType)
             {
                 case DocumentTypeEnum.WriteOff:
@@ -102,46 +102,52 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
             if (createdTab != null)
             {
+                createdTab.SettingsTabOpenRequested += OnSettingsTabOpenRequested;
+
                 TabAdded?.Invoke(this, createdTab);
             }
         }
 
+        private void OnSettingsTabOpenRequested(object? sender, SettingsTabType settingsTabType)
+        {
+            OpenSettingsTab(settingsTabType);
+        }
+
         private void OpenSettingsExecute()
         {
-            if (_settingsViewModel?.IsClosed == false)
-            {
-                TabSelectionRequested?.Invoke(this, _settingsViewModel);
-            }
-            else
-            {
-                _settingsViewModel = new SettingsViewModel(_reportDataService);
-                TabAdded?.Invoke(this, _settingsViewModel);
-            }
+            OpenSettingsTab(SettingsTabType.Settings);
         }
 
         private void OpenProductsDictionaryCommandExecute()
         {
-            if (_productsDictionaryViewModel?.IsClosed == false)
-            {
-                TabSelectionRequested?.Invoke(this, _productsDictionaryViewModel);
-            }
-            else
-            {
-                _productsDictionaryViewModel = new ProductsDictionaryViewModel(_dataService, _exportService);
-                TabAdded?.Invoke(this, _productsDictionaryViewModel);
-            }
+            OpenSettingsTab(SettingsTabType.ProductDictionary);
         }
 
         private void OpenReportConfigurationCommandExecute()
         {
-            if (_reportConfigViewModel?.IsClosed == false)
+            OpenSettingsTab(SettingsTabType.ReportsConfiguration);
+        }
+
+        private void OpenSettingsTab(SettingsTabType settingsTabType)
+        {
+            _settingTabViewModels.TryGetValue(settingsTabType, out var tabViewModel);
+
+            if (tabViewModel?.IsClosed == false)
             {
-                TabSelectionRequested?.Invoke(this, _reportConfigViewModel);
+                TabSelectionRequested?.Invoke(this, tabViewModel);
             }
             else
             {
-                _reportConfigViewModel = new ReportConfigViewModel(_reportDataService, _exportService);
-                TabAdded?.Invoke(this, _reportConfigViewModel);
+                tabViewModel = settingsTabType switch
+                {
+                    SettingsTabType.Settings => new SettingsViewModel(_reportDataService),
+                    SettingsTabType.ReportsConfiguration => new ReportConfigViewModel(_reportDataService, _exportService),
+                    SettingsTabType.ProductDictionary => new ProductsDictionaryViewModel(_dataService, _exportService),
+                    _ => throw new NotImplementedException()
+                };
+
+                _settingTabViewModels[settingsTabType] = tabViewModel;
+                TabAdded?.Invoke(this, tabViewModel);
             }
         }
     }

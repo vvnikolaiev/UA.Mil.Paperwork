@@ -4,6 +4,7 @@ using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.Infrastructure.Services;
 using System.Collections.ObjectModel;
 using Mil.Paperwork.WriteOff.Factories;
+using Mil.Paperwork.WriteOff.ViewModels.Tabs;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {

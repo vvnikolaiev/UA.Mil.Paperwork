@@ -11,10 +11,11 @@ using Mil.Paperwork.WriteOff.Factories;
 using Mil.Paperwork.Domain.DataModels.Assets;
 using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
+using Mil.Paperwork.WriteOff.ViewModels.Tabs;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {
-    internal class AssetInitialTechnicalStateViewModel : ObservableItem, ITabViewModel
+    internal class AssetInitialTechnicalStateViewModel : BaseReportTabViewModel
     {
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
@@ -22,11 +23,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         private AssetViewModel _assetViewModel;
         private EventType _eventType;
         
-        public event EventHandler<ITabViewModel> TabCloseRequested;
-
-        public virtual string Header => "Тех. стан (№7)";
-
-        public bool IsClosed { get; private set; }
+        public override string Header => "Тех. стан (№7)";
 
         public EventType EventType
         {
@@ -47,6 +44,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         public ICommand ProductSelectedCommand { get; }
         public ICommand GenerateReportCommand { get; }
         public ICommand CloseCommand { get; }
+        public ICommand OpenConfigurationCommand { get; }
 
         public AssetInitialTechnicalStateViewModel(ReportManager reportManager, IAssetFactory assetFactory, IDataService dataService)
         {
@@ -62,6 +60,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             ProductSelectedCommand = new DelegateCommand(ProductSelectedExecute);
             GenerateReportCommand = new DelegateCommand(GenerateReport);
             CloseCommand = new DelegateCommand(CloseCommandExecute);
+            OpenConfigurationCommand = new DelegateCommand(OpenConfigurationCommandExecute);
         }
 
         private void GenerateReport()
@@ -123,12 +122,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
         private void CloseCommandExecute()
         {
-            if (MessageBox.Show("Are you sure you want to close this tab?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                TabCloseRequested.Invoke(this, this);
-                IsClosed = true;
-            }
+            Close();
         }
 
+        private void OpenConfigurationCommandExecute()
+        {
+            OpenSettings(Enums.SettingsTabType.ReportsConfiguration);
+        }
     }
 }

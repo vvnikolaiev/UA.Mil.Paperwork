@@ -12,9 +12,9 @@ using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.DataModels;
 using Mil.Paperwork.WriteOff.Enums;
 
-namespace Mil.Paperwork.WriteOff.ViewModels
+namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 {
-    internal class ProductsDictionaryViewModel : ITabViewModel
+    internal class ProductsDictionaryViewModel : ISettingsTabViewModel
     {
         private readonly IDataService _dataService;
         private readonly IExportService _exportService;

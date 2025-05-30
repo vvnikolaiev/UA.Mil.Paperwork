@@ -11,9 +11,9 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 
-namespace Mil.Paperwork.WriteOff.ViewModels
+namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 {
-    internal class ReportConfigViewModel : ObservableItem, ITabViewModel
+    internal class ReportConfigViewModel : ObservableItem, ISettingsTabViewModel
     {
         private ReportType _selectedReportType;
         private ObservableCollection<ReportParameter> _currentConfig;

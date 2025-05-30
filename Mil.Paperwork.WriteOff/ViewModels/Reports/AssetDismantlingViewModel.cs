@@ -23,7 +23,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         private string _dismantlingReason;
         private string _finalReportReasonText;
 
-
         public override string Header => "Акт розукомплектації";
 
         public string RegistrationNumber
@@ -162,17 +161,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
         protected override void ApplyTemplateData(IAssetValuationData valuationDataTemplate)
         {
-            // ?? do we need this when we have a combobox?
-
-            //if (IsDismantling)
-            //{
-            //    // take name, price, date, etc.
-            //    Name = valuationDataTemplate.Name;
-            //    TotalPrice = valuationDataTemplate.TotalPrice;
-            //    DataSource = valuationDataTemplate.Description;
-            //    SerialNumber = valuationDataTemplate.SerialNumber;
-            //    ValuationDate = valuationDataTemplate.ValuationDate;
-            //}
             Description = valuationDataTemplate.Description;
             ValuationDate = valuationDataTemplate.ValuationDate;
 

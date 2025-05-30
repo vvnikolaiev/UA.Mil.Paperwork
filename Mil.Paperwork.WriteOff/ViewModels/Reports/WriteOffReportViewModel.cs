@@ -14,10 +14,11 @@ using Mil.Paperwork.WriteOff.Factories;
 using Mil.Paperwork.WriteOff.DataModels;
 using Mil.Paperwork.Infrastructure.Helpers;
 using Mil.Paperwork.Domain.Enums;
+using Mil.Paperwork.WriteOff.ViewModels.Tabs;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {
-    internal class WriteOffReportViewModel : ObservableItem, ITabViewModel
+    internal class WriteOffReportViewModel : BaseReportTabViewModel
     {
         private readonly IAssetFactory _assetFactory;
         private readonly INavigationService _navigationService;
@@ -37,11 +38,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         private ObservableCollection<AssetDismantlingViewModel> _dismantleCollection = [];
         private AssetType _selectedAssetType;
 
-        public event EventHandler<ITabViewModel> TabCloseRequested;
-
-        public string Header => "Списання";
-
-        public bool IsClosed { get; private set; }
+        public override string Header => "Списання";
 
         public ProductSelectionViewModel ProductsSelector { get; }
 
@@ -272,11 +269,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
         private void CloseCommandExecute()
         {
-            if (MessageBox.Show("Are you sure you want to close this tab?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                TabCloseRequested.Invoke(this, this);
-                IsClosed = true;
-            }
+            Close();
         }
 
         private void UpdateProductsCollection()

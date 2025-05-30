@@ -1,11 +1,9 @@
-﻿namespace Mil.Paperwork.WriteOff.ViewModels
+﻿namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 {
     public interface ITabViewModel
     {
         event EventHandler<ITabViewModel> TabCloseRequested;
 
         string Header { get; }
-
-        bool IsClosed { get; }
     }
 }

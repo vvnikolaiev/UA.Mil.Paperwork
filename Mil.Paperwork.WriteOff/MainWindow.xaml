@@ -7,6 +7,7 @@
         xmlns:local="clr-namespace:Mil.Paperwork.WriteOff" 
         xmlns:views="clr-namespace:Mil.Paperwork.WriteOff.Views"
         xmlns:viewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels"
+        xmlns:tabViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels.Tabs"
         xmlns:reportViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels.Reports"
         xmlns:converters="clr-namespace:Mil.Paperwork.Infrastructure.Converters;assembly=Mil.Paperwork.Infrastructure"
         mc:Ignorable="d"
@@ -30,7 +31,7 @@
             </Setter>
         </Style>
 
-        <DataTemplate DataType="{x:Type viewModels:SettingsViewModel}">
+        <DataTemplate DataType="{x:Type tabViewModels:SettingsViewModel}">
             <Grid Margin="10" Background="LightGray">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -63,7 +64,7 @@
             </Grid>
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type viewModels:ProductsDictionaryViewModel}">
+        <DataTemplate DataType="{x:Type tabViewModels:ProductsDictionaryViewModel}">
             <DockPanel>
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
                     <Button Content="Add" Command="{Binding AddItemCommand}" Margin="0,0,5,0"/>
@@ -127,7 +128,7 @@
             </DockPanel>
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type viewModels:ReportConfigViewModel}">
+        <DataTemplate DataType="{x:Type tabViewModels:ReportConfigViewModel}">
             <DockPanel>
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
                     <Button Content="Save" Command="{Binding SaveCommand}" Margin="0,0,5,0"/>
@@ -177,7 +178,7 @@
             </DockPanel>
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type viewModels:HomePageViewModel}">
+        <DataTemplate DataType="{x:Type tabViewModels:HomePageViewModel}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
