@@ -6,7 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Mil.Paperwork.WriteOff.Views"
-             xmlns:ViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels"
+             xmlns:ViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels.Reports"
              xmlns:DTO="clr-namespace:Mil.Paperwork.Domain.DataModels;assembly=Mil.Paperwork.Domain" 
              d:DataContext="{d:DesignInstance Type=ViewModels:WriteOffReportViewModel}"
              mc:Ignorable="d"
@@ -83,9 +83,8 @@
             <ComboBox Grid.Row="2" Grid.Column="5"
                       Width="100"
                       ItemsSource="{Binding EventTypes}" 
-                      SelectedValue="{Binding EventType}"
-                      IsEditable="False"
-                      SelectedValuePath="Value"
+                      SelectedItem="{Binding EventType}"
+                      Style="{StaticResource EnumDescriptionComboBox}"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Center"/>
             

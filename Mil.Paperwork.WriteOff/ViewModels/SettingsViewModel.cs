@@ -23,7 +23,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _selectedAssetType, value);
         }
 
-        public ObservableCollection<EnumItemDataModel<AssetType>> AssetTypes { get; private set; }
+        public ObservableCollection<AssetType> AssetTypes { get; private set; }
 
         public event EventHandler<ITabViewModel> TabCloseRequested;
 
@@ -43,8 +43,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void FillAssetTypesCollection()
         {
-            var assetTypes = EnumHelper.GetValuesWithDescriptions<AssetType>().Select(x => new EnumItemDataModel<AssetType>(x.Value, x.Description));
-            AssetTypes = [.. assetTypes];
+            AssetTypes = [.. EnumHelper.GetValues<AssetType>()];
         }
 
         private void CloseTabCommandExecute()

@@ -1,10 +1,15 @@
-﻿using Mil.Paperwork.Infrastructure.Enums;
+﻿using Mil.Paperwork.Infrastructure.DataModels;
+using Mil.Paperwork.Infrastructure.Enums;
 
 namespace Mil.Paperwork.Infrastructure.Services
 {
     public interface IReportDataService
     {
-        Dictionary<string, string> GetReportConfig(ReportType reportType);
+        void SaveReportConfig(IReadOnlyCollection<ReportParameter> parameters, ReportType reportType);
+
+        Dictionary<string, string> GetReportParametersDictionary(ReportType reportType);
+
+        List<ReportParameter> GetReportParameters(ReportType reportType);
 
         AssetType GetAssetType();
 

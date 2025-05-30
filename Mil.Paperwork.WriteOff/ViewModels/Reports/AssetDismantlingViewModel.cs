@@ -9,7 +9,7 @@ using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.WriteOff.Memento;
 using System.Windows.Input;
 
-namespace Mil.Paperwork.WriteOff.ViewModels
+namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {
     internal class AssetDismantlingViewModel : AssetValuationViewModel
     {

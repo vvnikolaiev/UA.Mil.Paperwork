@@ -5,6 +5,7 @@ using Mil.Paperwork.WriteOff.Views;
 using Mil.Paperwork.Infrastructure;
 using Mil.Paperwork.Domain;
 using Mil.Paperwork.WriteOff.Factories;
+using Mil.Paperwork.WriteOff.ViewModels.Reports;
 
 namespace Mil.Paperwork.WriteOff.Configuration
 {

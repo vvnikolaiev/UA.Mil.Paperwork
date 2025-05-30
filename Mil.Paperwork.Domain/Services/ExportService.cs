@@ -17,11 +17,11 @@ namespace Mil.Paperwork.Domain.Services
             _fileStorage = fileStorage;
         }
 
-        public bool TryExportToJson<T>(IEnumerable<T> data, string folderName)
+        public bool TryExportToJson<T>(IEnumerable<T> data, string folderName, string fileNameFormat)
         {
             try
             {
-                var fileName = string.Format(ExportHelper.FILE_NAME_JSON_FORMAT, DateTime.Now.ToString(ExportHelper.DATE_FORMAT));
+                var fileName = string.Format(fileNameFormat, DateTime.Now.ToString(ExportHelper.DATE_FORMAT));
                 var filePath = Path.Combine(folderName, fileName);
 
                 var json = JsonHelper.WriteJson(data);
@@ -37,7 +37,7 @@ namespace Mil.Paperwork.Domain.Services
             }
         }
 
-        public bool TryExportToExcel<T>(IEnumerable<T> data, string folderName)
+        public bool TryExportToExcel<T>(IEnumerable<T> data, string folderName, string fileNameFormat)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             try
@@ -69,7 +69,8 @@ namespace Mil.Paperwork.Domain.Services
                     row++;
                 }
 
-                var fileName = string.Format(ExportHelper.FILE_NAME_XLSX_FORMAT, DateTime.Now.ToString(ExportHelper.DATE_FORMAT));
+                var fileName = string.Format(fileNameFormat, DateTime.Now.ToString(ExportHelper.DATE_FORMAT));
+                fileName = PathsHelper.SanitizeFileName(fileName);
                 var filePath = Path.Combine(folderName, fileName);
 
                 using var reportStream = new MemoryStream();

@@ -4,7 +4,6 @@ using Mil.Paperwork.WriteOff.Managers;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
-using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Helpers;
 using Microsoft.Win32;
@@ -12,9 +11,8 @@ using Mil.Paperwork.WriteOff.Factories;
 using Mil.Paperwork.Domain.DataModels.Assets;
 using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
-using Mil.Paperwork.WriteOff.DataModels;
 
-namespace Mil.Paperwork.WriteOff.ViewModels
+namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {
     internal class AssetInitialTechnicalStateViewModel : ObservableItem, ITabViewModel
     {
@@ -44,7 +42,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         public ProductSelectionViewModel ProductSelector { get; }
 
-        public ObservableCollection<EnumItemDataModel<EventType>> EventTypes { get; private set; }
+        public ObservableCollection<EventType> EventTypes { get; private set; }
 
         public ICommand ProductSelectedCommand { get; }
         public ICommand GenerateReportCommand { get; }
@@ -78,7 +76,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
                 GenerateReport(assets, folderName);
                 
                 var productInfos = assets.Select(DTOConvertionHelper.ConvertToProductDTO).ToList();
-                _dataService.SaveProductsData(productInfos);
+                _dataService.AlterProductsData(productInfos);
             }
         }
 
@@ -96,8 +94,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void FillAssetTypesCollection()
         {
-            var eventTypes = EnumHelper.GetValuesWithDescriptions<EventType>().Select(x => new EnumItemDataModel<EventType>(x.Value, x.Description));
-            EventTypes = [.. eventTypes];
+            EventTypes = [.. EnumHelper.GetValues<EventType>()];
         }
 
         private void ProductSelectedExecute()

@@ -58,7 +58,7 @@ namespace Mil.Paperwork.Domain.Reports
 
         private void FillTheFields(AssetDismantlingData assetDismantlingDate, Document document)
         {
-            var reportConfig = _reportDataService.GetReportConfig(ReportType.AssetDismantlingReport);
+            var reportConfig = _reportDataService.GetReportParametersDictionary(ReportType.AssetDismantlingReport);
             var assetName = ReportHelper.GetFullAssetName(assetDismantlingDate.Name, assetDismantlingDate.SerialNumber);
             var valuatuionDate = assetDismantlingDate.ValuationDate.ToString(ReportHelper.DATE_FORMAT);
 

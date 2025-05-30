@@ -15,7 +15,7 @@ using Mil.Paperwork.WriteOff.DataModels;
 using Mil.Paperwork.Infrastructure.Helpers;
 using Mil.Paperwork.Domain.Enums;
 
-namespace Mil.Paperwork.WriteOff.ViewModels
+namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {
     internal class WriteOffReportViewModel : ObservableItem, ITabViewModel
     {
@@ -126,7 +126,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _selectedAssetType, value);
         }
 
-        public ObservableCollection<EnumItemDataModel<EventType>> EventTypes { get; private set; }
+        public ObservableCollection<EventType> EventTypes { get; private set; }
 
         public ICommand<AssetValuationViewModel> OpenValuationItemCommand { get; }
         public ICommand<AssetDismantlingViewModel> OpenDismatlingItemCommand { get; }
@@ -193,8 +193,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void FillAssetTypesCollection()
         {
-            var eventTypes = EnumHelper.GetValuesWithDescriptions<EventType>().Select(x => new EnumItemDataModel<EventType>(x.Value, x.Description));
-            EventTypes = [.. eventTypes];
+            EventTypes = [.. EnumHelper.GetValues<EventType>()];
         }
 
         private void ClearTable()

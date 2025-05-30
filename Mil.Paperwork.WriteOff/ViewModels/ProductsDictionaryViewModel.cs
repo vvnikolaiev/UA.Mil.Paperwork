@@ -4,6 +4,7 @@ using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
+using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.Helpers;
 using Mil.Paperwork.Infrastructure.MVVM;
@@ -17,8 +18,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels
     {
         private readonly IDataService _dataService;
         private readonly IExportService _exportService;
-
-        private List<ProductViewModel> _removedProducts = [];
 
         public ObservableCollection<ProductViewModel> Products { get; }
         public ObservableCollection<EnumItemDataModel<ExportType>> ExportTypes { get; private set; }
@@ -88,20 +87,11 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             if (product != null && Products.Contains(product))
             {
                 Products.Remove(product);
-                _removedProducts.Add(product);
             }
         }
 
         private void SaveCommandExecute()
         {
-            // Remove deleted products from storage
-            if (_removedProducts.Any())
-            {
-                var toRemove = _removedProducts.Select(p => p.ToProductDTO()).ToList();
-                _dataService.RemoveProductsData(toRemove);
-                _removedProducts.Clear();
-            }
-
             var products = Products.Select(vm => vm.ToProductDTO()).ToArray();
             _dataService.SaveProductsData(products);
         }
@@ -122,8 +112,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
                 var result = exportType switch
                 {
-                    ExportType.Json => _exportService.TryExportToJson(products, folderName),
-                    ExportType.Excel => _exportService.TryExportToExcel(products, folderName),
+                    ExportType.Json => _exportService.TryExportToJson(products, folderName, ExportHelper.PRODUCTS_FILE_NAME_JSON_FORMAT),
+                    ExportType.Excel => _exportService.TryExportToExcel(products, folderName, ExportHelper.PRODUCTS_FILE_NAME_XLSX_FORMAT),
                     _ => throw new ArgumentOutOfRangeException(nameof(exportType), exportType, null)
                 };
 

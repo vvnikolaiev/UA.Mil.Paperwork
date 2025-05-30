@@ -1,7 +1,7 @@
 ﻿using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.MVVM;
 
-namespace Mil.Paperwork.WriteOff.ViewModels
+namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {
     public class AssetValuationItemViewModel : ObservableItem
     {
@@ -55,7 +55,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _price, value);
         }
 
-        public virtual bool IsValid => Quantity > 0 && !String.IsNullOrEmpty(Name) && !String.IsNullOrEmpty(MeasurementUnit);
+        public virtual bool IsValid => Quantity > 0 && !string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(MeasurementUnit);
 
         public event EventHandler AssetComponentExcludedChanged;
 

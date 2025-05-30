@@ -58,7 +58,7 @@ namespace Mil.Paperwork.Domain.Reports
 
         private void FillTheFields(WriteOffReportData reportData, Document document)
         {
-            var reportConfig = _reportDataService.GetReportConfig(ReportType.QualityStateReport);
+            var reportConfig = _reportDataService.GetReportParametersDictionary(ReportType.QualityStateReport);
 
             document.ReplaceFields(reportConfig);
 

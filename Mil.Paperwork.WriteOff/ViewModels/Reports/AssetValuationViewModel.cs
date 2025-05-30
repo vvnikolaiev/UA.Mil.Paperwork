@@ -11,7 +11,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 
-namespace Mil.Paperwork.WriteOff.ViewModels
+namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {
     internal class AssetValuationViewModel : ObservableItem, ITabViewModel
     {
@@ -187,7 +187,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         {
             var isValid = true;
 
-            isValid &= !String.IsNullOrEmpty(Name);
+            isValid &= !string.IsNullOrEmpty(Name);
             isValid &= Components.Any(x => x.IsValid);
             isValid &= Price > 0;
 
@@ -345,7 +345,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             {
                 if (item.IsValid)
                 {
-                    sumLeft -= (item.Price * item.Quantity);
+                    sumLeft -= item.Price * item.Quantity;
                     if (item.Price == 0)
                     {
                         zeroPriceItems.Add(item);

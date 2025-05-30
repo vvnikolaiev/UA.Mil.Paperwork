@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Services;
+using Mil.Paperwork.WriteOff.ViewModels.Reports;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {

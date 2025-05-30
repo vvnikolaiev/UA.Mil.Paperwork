@@ -1,6 +1,5 @@
 ﻿using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
-using System.Security.Permissions;
 
 namespace Mil.Paperwork.Infrastructure.Services
 {
@@ -17,26 +16,63 @@ namespace Mil.Paperwork.Infrastructure.Services
             _config = _fileStorageService.ReadJsonFile<ReportDataConfigDTO>(ReportDataConfigFileName);
         }
 
-        public Dictionary<string, string> GetReportConfig(ReportType reportType)
+        public void SaveReportConfig(IReadOnlyCollection<ReportParameter> parameters, ReportType reportType)
+        {
+            if (_config == null)
+                return;
+
+            switch (reportType)
+            {
+                case ReportType.QualityStateReport:
+                    _config.QualityStateReport = [.. parameters];
+                    break;
+                case ReportType.TechnicalStateReport:
+                    _config.TechnicalStateReport = [.. parameters];
+                    break;
+                case ReportType.ResidualValueReport:
+                    _config.ResidualValueReport = [.. parameters];
+                    break;
+                case ReportType.AssetValuationReport:
+                    _config.AssetValuationReport = [.. parameters];
+                    break;
+                case ReportType.AssetDismantlingReport:
+                    _config.AssetDismantlingReport = [.. parameters];
+                    break;
+                default:
+                    return;
+            }
+
+            Save();
+        }
+
+        public List<ReportParameter> GetReportParameters(ReportType reportType)
         {
             var config = _config;
-            var emptyDict = new Dictionary<string, string>();
             if (config == null)
             {
-                return emptyDict;
-            } 
+                return [];
+            }
 
-            var fieldsMap = reportType switch
+            var result = reportType switch
             {
-                ReportType.QualityStateReport => config.QualityStateReport.ToDictionary(),
-                ReportType.TechnicalStateReport => config.TechnicalStateReport.ToDictionary(),
-                ReportType.ResidualValueReport => config.ResidualValueReport.ToDictionary(),
-                ReportType.AssetValuationReport => config.AssetValuationReport.ToDictionary(),
-                ReportType.AssetDismantlingReport => config.AssetDismantlingReport.ToDictionary(),
-                _ => new Dictionary<string, string>()
+                ReportType.QualityStateReport => config.QualityStateReport,
+                ReportType.TechnicalStateReport => config.TechnicalStateReport,
+                ReportType.ResidualValueReport => config.ResidualValueReport,
+                ReportType.AssetValuationReport => config.AssetValuationReport,
+                ReportType.AssetDismantlingReport => config.AssetDismantlingReport,
+                _ => []
             };
 
-            return fieldsMap;
+            return [.. result];
+        }
+
+
+        public Dictionary<string, string> GetReportParametersDictionary(ReportType reportType)
+        {
+            var list = GetReportParameters(reportType);
+            var result = list.ToDictionary(x => x.Name, y => y.Value);
+
+            return result;
         }
 
         public AssetType GetAssetType()
@@ -56,8 +92,13 @@ namespace Mil.Paperwork.Infrastructure.Services
             if (_config != null)
             {
                 _config.Common.AssetType = assetType.ToString();
-                _fileStorageService.WriteJsonToFile(_config, ReportDataConfigFileName);
+                Save();
             }
+        }
+
+        private void Save()
+        {
+            _fileStorageService.WriteJsonToFile(_config, ReportDataConfigFileName);
         }
     }
 }

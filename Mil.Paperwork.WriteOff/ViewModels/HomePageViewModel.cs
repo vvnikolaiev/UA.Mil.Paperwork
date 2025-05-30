@@ -5,6 +5,7 @@ using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Enums;
 using Mil.Paperwork.WriteOff.Factories;
 using System.Windows.Input;
+using Mil.Paperwork.WriteOff.ViewModels.Reports;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
@@ -18,6 +19,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private readonly INavigationService _navigationService;
         private ITabViewModel _settingsViewModel;
         private ITabViewModel _productsDictionaryViewModel;
+        private ITabViewModel _reportConfigViewModel;
 
         public event EventHandler<ITabViewModel> TabAdded;
         public event EventHandler<ITabViewModel> TabSelectionRequested;
@@ -33,6 +35,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         public ICommand OpenSettingsCommand { get; }
         public ICommand OpenProductsDictionaryCommand { get; }
+        public ICommand OpenReportConfigurationCommand { get; }
 
         public HomePageViewModel(
             ReportManager reportManager,
@@ -54,6 +57,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             CreateReportCommand = new DelegateCommand<DocumentTypeEnum>(AddWriteOffReport);
             OpenSettingsCommand = new DelegateCommand(OpenSettingsExecute);
             OpenProductsDictionaryCommand = new DelegateCommand(OpenProductsDictionaryCommandExecute);
+            OpenReportConfigurationCommand = new DelegateCommand(OpenReportConfigurationCommandExecute);
         }
 
         private IList<ReportItemViewModel> GetAllReportTypes()
@@ -125,6 +129,19 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             {
                 _productsDictionaryViewModel = new ProductsDictionaryViewModel(_dataService, _exportService);
                 TabAdded?.Invoke(this, _productsDictionaryViewModel);
+            }
+        }
+
+        private void OpenReportConfigurationCommandExecute()
+        {
+            if (_reportConfigViewModel?.IsClosed == false)
+            {
+                TabSelectionRequested?.Invoke(this, _reportConfigViewModel);
+            }
+            else
+            {
+                _reportConfigViewModel = new ReportConfigViewModel(_reportDataService, _exportService);
+                TabAdded?.Invoke(this, _reportConfigViewModel);
             }
         }
     }
