@@ -8,7 +8,7 @@
         public string NomenclatureCode { get; set; }
         public decimal Price { get; set; }
         public DateTime StartDate { get; set; }
-        public int WarrantyPeriodYears { get; set; }
+        public int WarrantyPeriodMonths { get; set; }
 
         public string AlmostUniqueID => $"{Name}{MeasurementUnit}{Price}{NomenclatureCode}";
 

@@ -13,9 +13,10 @@ namespace Mil.Paperwork.Domain.Helpers
             return Path.Combine(baseDirectory, TEMPLATES_DIRECTORY, templateName);
         }
 
-        public static string GetDestinationPath(string destinationFolder, DateTime reportDate)
+        public static string GetDestinationPath(string destinationFolder, int? reportNumber, DateTime reportDate)
         {
-            var folderName = $"{reportDate:yyyy.MM.dd} Рапорт";
+            var sNumber = reportNumber != null ? $" {reportNumber.Value}" : string.Empty; 
+            var folderName = $"{reportDate:yyyy.MM.dd} Рапорт{sNumber}";
             var path = Path.Combine(destinationFolder, folderName);
             if (!Directory.Exists(path))
             {

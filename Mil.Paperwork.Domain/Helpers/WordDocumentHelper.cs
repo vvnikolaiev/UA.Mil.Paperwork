@@ -24,7 +24,9 @@ namespace Mil.Paperwork.Domain.Helpers
 
         public static void ReplaceField(this Document document, string fieldName, string value)
         {
-            if (!string.IsNullOrEmpty(fieldName) && value != null)
+            value ??= string.Empty;
+
+            if (!string.IsNullOrEmpty(fieldName))
             {
                 if (!fieldName.StartsWith(StartFieldSymbol))
                 {

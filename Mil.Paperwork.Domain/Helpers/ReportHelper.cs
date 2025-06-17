@@ -5,20 +5,6 @@ namespace Mil.Paperwork.Domain.Helpers
 {
     public static class ReportHelper
     {
-        enum GenderOfNoun
-        {
-            Masculine,
-            Feminine,
-            Neuter,
-        }
-
-        enum NounCases
-        {
-            Empty,
-            Nominative,
-            Genitive,
-            Accusative
-        }
 
         class Words
         {
@@ -46,11 +32,11 @@ namespace Mil.Paperwork.Domain.Helpers
             { NounCases.Accusative, AccusativeWords },
         };
 
-        private static Dictionary<GenderOfNoun, string[]> Units = new()
+        private static Dictionary<NounGender, string[]> Units = new()
         {
-            { GenderOfNoun.Neuter, new[] { "нуль", "одне", "два", "три", "чотири", "п'ять", "шість", "сім", "вісім", "дев'ять" }},
-            { GenderOfNoun.Masculine, new[] { "нуль", "один", "два", "три", "чотири", "п'ять", "шість", "сім", "вісім", "дев'ять" }},
-            { GenderOfNoun.Feminine, new[] { "нуль", "одна", "дві", "три", "чотири", "п'ять", "шість", "сім", "вісім", "дев'ять" }},
+            { NounGender.Neuter, new[] { "нуль", "одне", "два", "три", "чотири", "п'ять", "шість", "сім", "вісім", "дев'ять" }},
+            { NounGender.Masculine, new[] { "нуль", "один", "два", "три", "чотири", "п'ять", "шість", "сім", "вісім", "дев'ять" }},
+            { NounGender.Feminine, new[] { "нуль", "одна", "дві", "три", "чотири", "п'ять", "шість", "сім", "вісім", "дев'ять" }},
         };
 
         private static readonly string[] Teens = { "десять", "одинадцять", "дванадцять", "тринадцять", "чотирнадцять", "п'ятнадцять", "шістнадцять", "сімнадцять", "вісімнадцять", "дев'ятнадцять" };
@@ -153,7 +139,7 @@ namespace Mil.Paperwork.Domain.Helpers
 
             var nounForm = GetNounFormFromNumber(number);
             var numberString = number.ToString();
-            var wordNumber = ConvertNumberToWords(number, GenderOfNoun.Neuter);
+            var wordNumber = ConvertNumberToWords(number, NounGender.Neuter);
             var namesText = NounCasesWords[nounForm].Names;
             var result = String.Format(NamesNumberStringFormat, numberString, wordNumber, namesText);
 
@@ -168,8 +154,8 @@ namespace Mil.Paperwork.Domain.Helpers
             var caseHryvnas = GetNounFormFromNumber(integerPart);
             var caseKopiykas = GetNounFormFromNumber(fractionalPart);
 
-            var sumInWords = ConvertNumberToWords(integerPart, GenderOfNoun.Feminine);
-            var kopInWords = ConvertNumberToWords(fractionalPart, GenderOfNoun.Feminine);
+            var sumInWords = ConvertNumberToWords(integerPart, NounGender.Feminine);
+            var kopInWords = ConvertNumberToWords(fractionalPart, NounGender.Feminine);
             var hryvnasText = NounCasesWords[caseHryvnas].Hryvna;
             var kopiykasText = NounCasesWords[caseKopiykas].Kopiyka;
 
@@ -215,7 +201,7 @@ namespace Mil.Paperwork.Domain.Helpers
             return result;
         }
 
-        private static NounCases GetNounFormFromNumber(int number)
+        public static NounCases GetNounFormFromNumber(int number)
         {
             var nounCase = NounCases.Genitive; // most cases (гривень, копійок, найменувань)
 
@@ -235,7 +221,7 @@ namespace Mil.Paperwork.Domain.Helpers
             return nounCase;
         }
 
-        private static string ConvertNumberToWords(int number, GenderOfNoun gender)
+        public static string ConvertNumberToWords(int number, NounGender gender)
         {
             if (number == 0)
                 return Units[gender][0];
@@ -251,15 +237,15 @@ namespace Mil.Paperwork.Domain.Helpers
             else if (number < 1000)
                 return Hundreds[number / 100] + (number % 100 > 0 ? " " + ConvertNumberToWords(number % 100, gender) : "");
             else if (number < 1000000)
-                return ConvertLargeNumberToWords(number, 1000, Thousands, GenderOfNoun.Feminine);
+                return ConvertLargeNumberToWords(number, 1000, Thousands, NounGender.Feminine);
             else if (number < 1000000000)
-                return ConvertLargeNumberToWords(number, 1000000, Millions, GenderOfNoun.Masculine);
+                return ConvertLargeNumberToWords(number, 1000000, Millions, NounGender.Masculine);
             else
-                return ConvertLargeNumberToWords(number, 1000000000, Billions, GenderOfNoun.Masculine);
+                return ConvertLargeNumberToWords(number, 1000000000, Billions, NounGender.Masculine);
         }
 
         // TODO: refactor later?
-        private static string ConvertLargeNumberToWords(int number, int divisor, string[] forms, GenderOfNoun gender)
+        private static string ConvertLargeNumberToWords(int number, int divisor, string[] forms, NounGender gender)
         {
             int quotient = number / divisor;
             int remainder = number % divisor;

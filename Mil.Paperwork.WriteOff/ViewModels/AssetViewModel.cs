@@ -22,7 +22,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private DateTime _startDate = new DateTime(2023, 01, 01);
         private string _tsRegisterNumber = string.Empty;
         private string _tsDocumentNumber = string.Empty;
-        private int _warrantyPeriodYears = 5;
+        private int _warrantyPeriodMonths = 12;
 
         internal abstract IAssetInfo AssetInfo { get; }
 
@@ -98,10 +98,10 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _tsDocumentNumber, value);
         }
 
-        public int WarrantyPeriodYears
+        public int WarrantyPeriodMonths
         {
-            get => _warrantyPeriodYears;
-            set => SetProperty(ref _warrantyPeriodYears, value);
+            get => _warrantyPeriodMonths;
+            set => SetProperty(ref _warrantyPeriodMonths, value);
         }
 
         public ICommand<ProductDTO> ProductSelectedCommand { get; }
@@ -124,7 +124,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             AssetInfo.StartDate = _startDate;
             AssetInfo.TSRegisterNumber = _tsRegisterNumber;
             AssetInfo.TSDocumentNumber = _tsDocumentNumber;
-            AssetInfo.WarrantyPeriodYears = _warrantyPeriodYears;
+            AssetInfo.WarrantyPeriodMonths = _warrantyPeriodMonths;
             AssetInfo.EventType = eventType;
 
             if (reportDate != null)
@@ -149,7 +149,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
                 NomenclatureCode = product.NomenclatureCode;
                 Price = product.Price;
                 StartDate = product.StartDate;
-                WarrantyPeriodYears = product.WarrantyPeriodYears;
+                WarrantyPeriodMonths = product.WarrantyPeriodMonths;
             }
             else
             {

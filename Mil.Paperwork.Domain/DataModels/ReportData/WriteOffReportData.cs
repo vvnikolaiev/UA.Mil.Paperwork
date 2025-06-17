@@ -5,7 +5,7 @@ using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
 using System.Security.Policy;
 
-namespace Mil.Paperwork.Domain.DataModels
+namespace Mil.Paperwork.Domain.DataModels.ReportData
 {
     public class WriteOffReportData : ITechnicalStateReportData, IDismantlingReportData, IAssetValuationReportData
     {
@@ -33,7 +33,7 @@ namespace Mil.Paperwork.Domain.DataModels
 
         public string GetDestinationPath()
         {
-            var destinationPath = PathsHelper.GetDestinationPath(DestinationFolder, ReportDate);
+            var destinationPath = PathsHelper.GetDestinationPath(DestinationFolder, EventReportNumber, ReportDate);
             return destinationPath;
         }
 

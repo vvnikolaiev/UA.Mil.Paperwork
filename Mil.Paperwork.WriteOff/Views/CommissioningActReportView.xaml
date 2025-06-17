@@ -1,0 +1,172 @@
+﻿<UserControl x:Class="Mil.Paperwork.WriteOff.Views.CommissioningActReportView"
+             xmlns:ViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels.Reports" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=ViewModels:CommissioningActReportViewModel}">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="Wheat">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Акт введення в експлуатацію. Номер документу*:" FontWeight="Bold" FontSize="16"/>
+
+            <TextBox Text="{Binding DocumentNumber}" Width="60" />
+
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <Grid Grid.Row="1" VerticalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="125" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="125" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="125" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Найменування*:" />
+                <ComboBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3"
+                          ItemsSource="{Binding ProductSelector.Products}" 
+                          Text="{Binding ProductName}"
+                          SelectedItem="{Binding ProductSelector.SelectedProduct, UpdateSourceTrigger=PropertyChanged}" 
+                          IsEditable="True"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Center">
+                    <Behaviors:Interaction.Triggers>
+                        <Behaviors:EventTrigger EventName="SelectionChanged">
+                            <Behaviors:InvokeCommandAction Command="{Binding ProductSelectedCommand}" />
+                        </Behaviors:EventTrigger>
+                    </Behaviors:Interaction.Triggers>
+                </ComboBox>
+
+                <TextBlock Grid.Row="1" Grid.Column="4" Text="Коротка назва:"/>
+                <TextBox Grid.Row="1" Grid.Column="5" Text="{Binding ShortName, UpdateSourceTrigger=PropertyChanged}" />
+
+                <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4"
+                            Orientation="Horizontal">
+
+                    <TextBlock Text="Ціна*:"/>
+                    <TextBox Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}"
+                             Width="60" />
+
+                    <TextBlock Text="Гарантія, міс.*:"/>
+                    <TextBox Text="{Binding WarrantyPeriodMonths, UpdateSourceTrigger=PropertyChanged}"
+                             Width="30" />
+
+                    <TextBlock Text="Кількість:"/>
+                    <TextBox Text="{Binding Count, UpdateSourceTrigger=PropertyChanged}"
+                             Width="30"/>
+
+                    <TextBlock Text="Од. виміру*:"/>
+                    <TextBox Text="{Binding MeasurementUnit, UpdateSourceTrigger=PropertyChanged}"
+                             Width="30"/>
+
+                </StackPanel>
+
+                <Expander Grid.Row="2" Grid.Column="4" 
+                          Grid.RowSpan="11" Grid.ColumnSpan="2" BorderBrush="Black"
+                          Header="Серійні та інвентарні номери:">
+                    <DataGrid ItemsSource="{Binding ProductIdentifiers}" AutoGenerateColumns="False" Margin="5"
+                              MaxHeight="240">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Серійний номер" Binding="{Binding SerialNumber}" 
+                                                ElementStyle="{StaticResource DataGridTextBlockStyle}"
+                                                Width="*" />
+                            <DataGridTextColumn Header="Інвентарний номер" Binding="{Binding InventoryNumber}"
+                                                ElementStyle="{StaticResource DataGridTextBlockStyle}" 
+                                                Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Expander>
+                
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="К-сть прописом*:"/>
+                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding CountText, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Grid.Row="3" Grid.Column="2" Text="Знаходиться у*:"/>
+                <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding CommissioningLocation, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Відпов. тех. умовам*:"/>
+                <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding AssetCompliance, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Grid.Row="4" Grid.Column="2" Text="Необх. доробки*:"/>
+                <TextBox Grid.Row="4" Grid.Column="3" Text="{Binding CompletionState, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="Коротка хар-ка:"/>
+                <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding ShortCharacteristic, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Grid.Row="5" Grid.Column="2" Text="Рез-ти випроб.:"/>
+                <TextBox Grid.Row="5" Grid.Column="3" Text="{Binding TestResults, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Grid.Row="6" Grid.Column="0" Text="Інші відомості:"/>
+                <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding OtherInfo, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Grid.Row="6" Grid.Column="2" Text="Дод. док-ція:"/>
+                <TextBox Grid.Row="6" Grid.Column="3" Text="{Binding AttachedDocumentation, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Grid.Row="7" Grid.Column="0" Text="Висновок комісії*:"/>
+                <TextBox Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="3"
+                         Text="{Binding Conclusion, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Grid.Row="9" Grid.Column="1" Text="Прийняв*:" FontWeight="Bold" />
+                <TextBlock Grid.Row="9" Grid.Column="3" Text="Здав*:" FontWeight="Bold" />
+
+
+                <TextBlock Grid.Row="10" Grid.Column="0" Text="Посада*:" 
+                           HorizontalAlignment="Right" />
+                <TextBlock Grid.Row="11" Grid.Column="0" Text="Звання*:"
+                           HorizontalAlignment="Right" />
+                <TextBlock Grid.Row="12" Grid.Column="0" Text="Ім'я та прізвище*:"
+                           HorizontalAlignment="Right" />
+
+                <TextBox Grid.Row="10" Grid.Column="1" Text="{Binding PersonAcceptedPosition, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding PersonAcceptedRank, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Grid.Row="12" Grid.Column="1" Text="{Binding PersonAcceptedName, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBox Grid.Row="10" Grid.Column="3" Text="{Binding PersonHandedPosition, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Grid.Row="11" Grid.Column="3" Text="{Binding PersonHandedRank, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Grid.Row="12" Grid.Column="3" Text="{Binding PersonHandedName, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Згенерувати" Command="{Binding GenerateReportCommand}" />
+            <Button Content="Налаштування" Command="{Binding OpenConfigurationCommand}" />
+            <Button Content="Закрити" Command="{Binding CloseTabCommand}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

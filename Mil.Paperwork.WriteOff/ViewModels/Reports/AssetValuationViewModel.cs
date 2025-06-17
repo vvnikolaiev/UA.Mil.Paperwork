@@ -1,8 +1,9 @@
 ﻿using Microsoft.Win32;
-using Mil.Paperwork.Domain.DataModels;
 using Mil.Paperwork.Domain.DataModels.Assets;
+using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.DataModels;
+using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Managers;
@@ -294,7 +295,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
         private void OpenConfigurationCommandExecute()
         {
-            OpenSettings(Enums.SettingsTabType.ReportsConfiguration);
+            OpenSettings(ReportType.AssetValuationReport);
         }
 
         protected virtual void GenerateReport(string folderName)

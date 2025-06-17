@@ -22,7 +22,7 @@ namespace Mil.Paperwork.Domain.DataModels.Assets
         public string TSRegisterNumber { get; set; }
         public string TSDocumentNumber { get; set; }
 
-        public int WarrantyPeriodYears { get; set; } = 1;
+        public int WarrantyPeriodMonths { get; set; } = 1;
 
         public abstract decimal TotalWearCoefficient { get; }
 

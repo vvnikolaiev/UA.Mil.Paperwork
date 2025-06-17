@@ -1,5 +1,5 @@
-﻿using Mil.Paperwork.Infrastructure.MVVM;
-using Mil.Paperwork.WriteOff.Enums;
+﻿using Mil.Paperwork.Infrastructure.Enums;
+using Mil.Paperwork.Infrastructure.MVVM;
 using System.Windows;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
@@ -8,7 +8,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
     {
         public event EventHandler<ITabViewModel> TabCloseRequested;
 
-        public event EventHandler<SettingsTabType> SettingsTabOpenRequested;
+        public event EventHandler<ReportType> OpenReportSettingsRequested;
 
         public abstract string Header { get; }
 
@@ -20,9 +20,9 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             }
         }
 
-        protected void OpenSettings(SettingsTabType settingsTabType)
+        protected void OpenSettings(ReportType reportType)
         {
-            SettingsTabOpenRequested?.Invoke(this, settingsTabType);
+            OpenReportSettingsRequested?.Invoke(this, reportType);
         }
     }
 }

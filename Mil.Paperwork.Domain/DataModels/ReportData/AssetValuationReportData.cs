@@ -1,6 +1,6 @@
 ﻿using Mil.Paperwork.Infrastructure.DataModels;
 
-namespace Mil.Paperwork.Domain.DataModels
+namespace Mil.Paperwork.Domain.DataModels.ReportData
 {
     public class AssetValuationReportData : IAssetValuationReportData
     {

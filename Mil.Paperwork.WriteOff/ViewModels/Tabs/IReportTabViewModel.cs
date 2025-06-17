@@ -1,9 +1,9 @@
-﻿using Mil.Paperwork.WriteOff.Enums;
+﻿using Mil.Paperwork.Infrastructure.Enums;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 {
     internal interface IReportTabViewModel : ITabViewModel
     {
-        event EventHandler<SettingsTabType> SettingsTabOpenRequested;
+        event EventHandler<ReportType> OpenReportSettingsRequested;
     }
 }

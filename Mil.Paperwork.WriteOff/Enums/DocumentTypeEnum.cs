@@ -1,11 +1,22 @@
-﻿namespace Mil.Paperwork.WriteOff.Enums
+﻿using System.ComponentModel;
+
+namespace Mil.Paperwork.WriteOff.Enums
 {
     internal enum DocumentTypeEnum
     {
+        [Description("Списання майна")]
         WriteOff,
+        [Description("Акт тех. стану (№11)")]
         TechnicalState11,
+        [Description("Акт тех. стану (№7)")]
         TechnicalState7,
+        [Description("Акт оцінки")]
         Valuation,
-        Dismantling
+        [Description("Розукомплектування")]
+        Dismantling,
+        //[Description("Накладна (вимога)")]
+        //Invoice,
+        [Description("Акт введення в експлуатацію")]
+        CommisioningAct,
     }
 }
