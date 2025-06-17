@@ -7,7 +7,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Mil.Paperwork.WriteOff.Views"
              xmlns:ViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels.Reports"
-             xmlns:DTO="clr-namespace:Mil.Paperwork.Domain.DataModels;assembly=Mil.Paperwork.Domain" 
              d:DataContext="{d:DesignInstance Type=ViewModels:WriteOffReportViewModel}"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -185,6 +184,18 @@
                 <DataGridTextColumn Header="Од. виміру" Binding="{Binding MeasurementUnit}" Width="50"
                                     ElementStyle="{StaticResource DataGridTextBlockStyle}">
                 </DataGridTextColumn>
+                <DataGridTemplateColumn Header="Од. виміру" Width="60">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding DataContext.MeasurementUnits, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                      Text="{Binding MeasurementUnit}"
+                                      DisplayMemberPath="ShortName"
+                                      IsEditable="True"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="К-сть" Binding="{Binding Count}" Width="40"
                                     ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
                 <DataGridTextColumn Header="Ціна" Binding="{Binding Price}" Width="60"

@@ -112,7 +112,7 @@ namespace Mil.Paperwork.Domain.Reports
                 var identifier = identifiers?.Count >= i ? identifiers[i] : new ProductIdentification();
                 var totalSum = productData.Price * count;
 
-                row.Cells[CommissioningActHelper.COLUMN_InventoryNumber].AddText(identifier.InventoryNumber);
+                row.Cells[CommissioningActHelper.COLUMN_InventoryNumber].AddText(identifier.InventoryNumber, fontSize);
                 row.Cells[CommissioningActHelper.COLUMN_Count].AddNumber(count, fontSize);
                 row.Cells[CommissioningActHelper.COLUMN_Price].AddPrice(productData.Price, fontSize);
                 row.Cells[CommissioningActHelper.COLUMN_TotalPrice].AddPrice(totalSum, fontSize);

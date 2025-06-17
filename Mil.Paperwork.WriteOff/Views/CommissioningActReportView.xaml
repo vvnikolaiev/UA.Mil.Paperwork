@@ -93,8 +93,15 @@
                              Width="30"/>
 
                     <TextBlock Text="Од. виміру*:"/>
-                    <TextBox Text="{Binding MeasurementUnit, UpdateSourceTrigger=PropertyChanged}"
-                             Width="30"/>
+                    <ComboBox Grid.Row="1" Grid.Column="3" 
+                              Text="{Binding MeasurementUnitName}"
+                              ItemsSource="{Binding MeasurementUnits}" 
+                              SelectedItem="{Binding MeasurementUnit}"
+                              DisplayMemberPath="ShortName"
+                              IsEditable="True"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Center" 
+                              MinWidth="50"/>
 
                 </StackPanel>
 
@@ -146,20 +153,46 @@
                 <TextBlock Grid.Row="9" Grid.Column="3" Text="Здав*:" FontWeight="Bold" />
 
 
-                <TextBlock Grid.Row="10" Grid.Column="0" Text="Посада*:" 
+                <TextBlock Grid.Row="10" Grid.Column="0" Text="Ім'я та прізвище*:"
                            HorizontalAlignment="Right" />
-                <TextBlock Grid.Row="11" Grid.Column="0" Text="Звання*:"
+                <TextBlock Grid.Row="11" Grid.Column="0" Text="Посада*:" 
                            HorizontalAlignment="Right" />
-                <TextBlock Grid.Row="12" Grid.Column="0" Text="Ім'я та прізвище*:"
+                <TextBlock Grid.Row="12" Grid.Column="0" Text="Звання*:"
                            HorizontalAlignment="Right" />
 
-                <TextBox Grid.Row="10" Grid.Column="1" Text="{Binding PersonAcceptedPosition, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding PersonAcceptedRank, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox Grid.Row="12" Grid.Column="1" Text="{Binding PersonAcceptedName, UpdateSourceTrigger=PropertyChanged}"/>
+                <ComboBox Grid.Row="10" Grid.Column="1"
+                          ItemsSource="{Binding People}" 
+                          Text="{Binding PersonAcceptedName}"
+                          DisplayMemberPath="Name"
+                          SelectedItem="{Binding SelectedPersonAccepted, UpdateSourceTrigger=PropertyChanged}" 
+                          IsEditable="True"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Center">
+                    <Behaviors:Interaction.Triggers>
+                        <Behaviors:EventTrigger EventName="SelectionChanged">
+                            <Behaviors:InvokeCommandAction Command="{Binding PersonAccSelectedCommand}" />
+                        </Behaviors:EventTrigger>
+                    </Behaviors:Interaction.Triggers>
+                </ComboBox>
+                <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding PersonAcceptedPosition, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Grid.Row="12" Grid.Column="1" Text="{Binding PersonAcceptedRank, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <TextBox Grid.Row="10" Grid.Column="3" Text="{Binding PersonHandedPosition, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox Grid.Row="11" Grid.Column="3" Text="{Binding PersonHandedRank, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox Grid.Row="12" Grid.Column="3" Text="{Binding PersonHandedName, UpdateSourceTrigger=PropertyChanged}"/>
+                <ComboBox Grid.Row="10" Grid.Column="3"
+                          ItemsSource="{Binding People}" 
+                          Text="{Binding PersonHandedName}"
+                          DisplayMemberPath="Name"
+                          SelectedItem="{Binding SelectedPersonHanded, UpdateSourceTrigger=PropertyChanged}" 
+                          IsEditable="True"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Center">
+                    <Behaviors:Interaction.Triggers>
+                        <Behaviors:EventTrigger EventName="SelectionChanged">
+                            <Behaviors:InvokeCommandAction Command="{Binding PersonHanSelectedCommand}" />
+                        </Behaviors:EventTrigger>
+                    </Behaviors:Interaction.Triggers>
+                </ComboBox>
+                <TextBox Grid.Row="11" Grid.Column="3" Text="{Binding PersonHandedPosition, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Grid.Row="12" Grid.Column="3" Text="{Binding PersonHandedRank, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
         </ScrollViewer>
 

@@ -11,6 +11,7 @@ using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
 using Mil.Paperwork.WriteOff.ViewModels.Tabs;
 using Mil.Paperwork.Domain.DataModels.ReportData;
+using Mil.Paperwork.WriteOff.ViewModels.Dictionaries;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {
@@ -40,6 +41,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
         public ObservableCollection<EventType> EventTypes { get; private set; }
 
+        public ObservableCollection<MeasurementUnitViewModel> MeasurementUnits { get; }
+
         public ICommand ProductSelectedCommand { get; }
         public ICommand GenerateReportCommand { get; }
         public ICommand CloseCommand { get; }
@@ -55,6 +58,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             ProductSelector = new ProductSelectionViewModel(_dataService);
 
             FillAssetTypesCollection();
+            MeasurementUnits = [.. _dataService.LoadMeasurementUnitsData().Select(x => new MeasurementUnitViewModel(x))];
 
             ProductSelectedCommand = new DelegateCommand(ProductSelectedExecute);
             GenerateReportCommand = new DelegateCommand(GenerateReport);

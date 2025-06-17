@@ -61,8 +61,13 @@
              IsReadOnly="{Binding IsReadOnly}" />
 
         <TextBlock Grid.Row="1" Grid.Column="2" Text="Одиниця вимірювання" />
-        <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding MeasurementUnit}" 
-                 IsReadOnly="{Binding IsReadOnly}" />
+        <ComboBox Grid.Row="1" Grid.Column="3" 
+                  ItemsSource="{Binding MeasurementUnits}" 
+                  Text="{Binding MeasurementUnit}"
+                  DisplayMemberPath="ShortName"
+                  IsEditable="True"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Center" />
 
         <TextBlock Grid.Row="2" Grid.Column="0" Text="Дата оцінки" />
         <DatePicker Grid.Row="2" Grid.Column="1" SelectedDate="{Binding ValuationDate}" Width="100" 

@@ -14,6 +14,8 @@ using Mil.Paperwork.Infrastructure.Helpers;
 using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.WriteOff.ViewModels.Tabs;
 using Mil.Paperwork.Domain.DataModels.ReportData;
+using Mil.Paperwork.Infrastructure.DataModels;
+using Mil.Paperwork.WriteOff.ViewModels.Dictionaries;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {
@@ -21,6 +23,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
     {
         private readonly IAssetFactory _assetFactory;
         private readonly INavigationService _navigationService;
+        private readonly IDataService _dataService;
         private readonly WriteOffReportModel _model;
 
         private int? _eventReportNumber = null;
@@ -40,6 +43,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         public override string Header => "Списання";
 
         public ProductSelectionViewModel ProductsSelector { get; }
+
+        public ObservableCollection<MeasurementUnitViewModel> MeasurementUnits { get; }
 
         public ObservableCollection<AssetViewModel> AssetsCollection { get; set; }
 
@@ -144,12 +149,15 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         {
             _assetFactory = assetFactory;
             _navigationService = navigationService;
+            _dataService = dataService;
 
             _model = new WriteOffReportModel(reportManager, dataService);
             ProductsSelector = new ProductSelectionViewModel(dataService);
             AssetsCollection = new ObservableCollection<AssetViewModel>();
 
             FillAssetTypesCollection();
+
+            MeasurementUnits = [.. _dataService.LoadMeasurementUnitsData().Select(x => new MeasurementUnitViewModel(x))];
 
             SelectedAssetType = reportDataService.GetAssetType();
 

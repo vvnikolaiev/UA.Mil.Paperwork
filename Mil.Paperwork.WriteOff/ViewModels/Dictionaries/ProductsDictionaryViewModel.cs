@@ -1,6 +1,4 @@
-﻿using System.CodeDom.Compiler;
-using System.Collections.ObjectModel;
-using System.Reflection.Metadata;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
@@ -11,8 +9,9 @@ using Mil.Paperwork.Infrastructure.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.DataModels;
 using Mil.Paperwork.WriteOff.Enums;
+using Mil.Paperwork.WriteOff.ViewModels.Tabs;
 
-namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
+namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
 {
     internal class ProductsDictionaryViewModel : ISettingsTabViewModel
     {
@@ -21,6 +20,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 
         public ObservableCollection<ProductViewModel> Products { get; }
         public ObservableCollection<EnumItemDataModel<ExportType>> ExportTypes { get; private set; }
+        public ObservableCollection<MeasurementUnitViewModel> MeasurementUnits { get; }
 
         public string Header => "Довідник майна";
         public bool IsClosed { get; private set; }
@@ -43,6 +43,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 
             Products = [.. GetProductsData()];
             FillExportTypesCollection();
+            MeasurementUnits = [.. _dataService.LoadMeasurementUnitsData().Select(x => new MeasurementUnitViewModel(x))];
 
             AddItemCommand = new DelegateCommand(AddItemCommandExecute);
             RemoveItemCommand = new DelegateCommand<ProductViewModel>(RemoveItemCommandExecute);

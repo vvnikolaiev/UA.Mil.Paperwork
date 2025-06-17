@@ -8,6 +8,7 @@ using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Managers;
+using Mil.Paperwork.WriteOff.ViewModels.Dictionaries;
 using Mil.Paperwork.WriteOff.ViewModels.Tabs;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -24,7 +25,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         private string _shortName;
         private decimal _price;
         private int _warrantyPeriodMonths;
-        private string _measurementUnit;
+        private string _measurementUnitName;
+        private MeasurementUnitViewModel _measurementUnit;
         private string _assetState;
 
         private string _serialNumber;
@@ -40,6 +42,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         private string _conclusion;
         private string _attachedDocumentation;
 
+        private PersonViewModel _selectedPersonAccepted;
+        private PersonViewModel _selectedPersonHanded;
         private string _personAcceptedName;
         private string _personAcceptedRank;
         private string _personAcceptedPosition;
@@ -67,7 +71,13 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             set => SetProperty(ref _price, value);
         }
 
-        public string MeasurementUnit
+        public string MeasurementUnitName
+        {
+            get => _measurementUnitName;
+            set => SetProperty(ref _measurementUnitName, value);
+        }
+
+        public MeasurementUnitViewModel MeasurementUnit
         {
             get => _measurementUnit;
             set => SetProperty(ref _measurementUnit, value);
@@ -151,6 +161,18 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             set => SetProperty(ref _attachedDocumentation, value);
         }
 
+        public PersonViewModel SelectedPersonAccepted
+        {
+            get => _selectedPersonAccepted;
+            set => SetProperty(ref _selectedPersonAccepted, value);
+        }
+
+        public PersonViewModel SelectedPersonHanded
+        {
+            get => _selectedPersonHanded;
+            set => SetProperty(ref _selectedPersonHanded, value);
+        }
+
         public string PersonAcceptedName
         {
             get => _personAcceptedName;
@@ -187,11 +209,17 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             set => SetProperty(ref _personHandedPosition, value);
         }
 
+        public ObservableCollection<MeasurementUnitViewModel> MeasurementUnits { get; }
+
+        public ObservableCollection<PersonViewModel> People { get; }
+
         public ObservableCollection<ProductIdentification> ProductIdentifiers { get; } = [];
-            
+
         public ProductSelectionViewModel ProductSelector { get; }
 
         public ICommand ProductSelectedCommand { get; }
+        public ICommand PersonAccSelectedCommand { get; }
+        public ICommand PersonHanSelectedCommand { get; }
         public ICommand GenerateReportCommand { get; }
         public ICommand CloseTabCommand { get; }
         public ICommand OpenConfigurationCommand { get; }
@@ -206,8 +234,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             _reportDataService = reportDataService;
 
             ProductSelector = new ProductSelectionViewModel(dataService);
+            MeasurementUnits = [.. _dataService.LoadMeasurementUnitsData().Select(x => new MeasurementUnitViewModel(x))];
+            People = [.. _dataService.LoadPeopleData().Select(x => new PersonViewModel(x))];
 
             ProductSelectedCommand = new DelegateCommand(ProductSelectedExecute);
+            PersonAccSelectedCommand = new DelegateCommand(PersonAccSelectedExecute);
+            PersonHanSelectedCommand = new DelegateCommand(PersonHanSelectedExecute);
             GenerateReportCommand = new DelegateCommand(GenerateReportCommandExecute);
             CloseTabCommand = new DelegateCommand(CloseTabCommandExecute);
             OpenConfigurationCommand = new DelegateCommand(OpenConfigurationCommandExecute);
@@ -240,6 +272,38 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             FillProductDetails();
         }
 
+        private void PersonAccSelectedExecute()
+        {
+            var person = SelectedPersonAccepted;
+
+            if (person != null)
+            {
+                PersonAcceptedName = person.Name;
+                PersonAcceptedPosition = person.Position;
+                PersonAcceptedRank = person.Rank;
+            }
+            else
+            {
+                OnPropertyChanged(nameof(PersonAcceptedName));
+            }
+        }
+
+        private void PersonHanSelectedExecute()
+        {
+            var person = SelectedPersonHanded;
+
+            if (person != null)
+            {
+                PersonHandedName = person.Name;
+                PersonHandedPosition = person.Position;
+                PersonHandedRank = person.Rank;
+            }
+            else
+            {
+                OnPropertyChanged(nameof(PersonHandedName));
+            }
+        }
+
         private void FillProductDetails()
         {
             var product = ProductSelector?.SelectedProduct;
@@ -249,7 +313,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
                 ProductName = product.Name;
                 ShortName = product.ShortName;
                 Price = product.Price;
-                MeasurementUnit = product.MeasurementUnit;
+                MeasurementUnitName = product.MeasurementUnit;
                 WarrantyPeriodMonths = product.WarrantyPeriodMonths;
             }
             else
@@ -266,13 +330,13 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             Conclusion = "ввести в експлуатацію";
 
             var reportParameters = _reportDataService.GetReportParametersDictionary(ReportType.CommissioningAct);
-            
-            PersonAcceptedName = reportParameters.GetValueOrDefault(CommissioningActHelper.FIELD_ACCEPTED_PERSON_NAME, string.Empty);
-            PersonAcceptedPosition = reportParameters.GetValueOrDefault(CommissioningActHelper.FIELD_ACCEPTED_PERSON_POSITION, string.Empty);
-            PersonAcceptedRank = reportParameters.GetValueOrDefault(CommissioningActHelper.FIELD_ACCEPTED_PERSON_RANK, string.Empty);
-            PersonHandedName = reportParameters.GetValueOrDefault(CommissioningActHelper.FIELD_HANDED_PERSON_NAME, string.Empty);
-            PersonHandedPosition = reportParameters.GetValueOrDefault(CommissioningActHelper.FIELD_HANDED_PERSON_POSITION, string.Empty);
-            PersonHandedRank = reportParameters.GetValueOrDefault(CommissioningActHelper.FIELD_HANDED_PERSON_RANK, string.Empty);
+
+            //PersonAcceptedName = reportParameters.GetValueOrDefault(CommissioningActHelper.FIELD_ACCEPTED_PERSON_NAME, string.Empty);
+            //PersonAcceptedPosition = reportParameters.GetValueOrDefault(CommissioningActHelper.FIELD_ACCEPTED_PERSON_POSITION, string.Empty);
+            //PersonAcceptedRank = reportParameters.GetValueOrDefault(CommissioningActHelper.FIELD_ACCEPTED_PERSON_RANK, string.Empty);
+            //PersonHandedName = reportParameters.GetValueOrDefault(CommissioningActHelper.FIELD_HANDED_PERSON_NAME, string.Empty);
+            //PersonHandedPosition = reportParameters.GetValueOrDefault(CommissioningActHelper.FIELD_HANDED_PERSON_POSITION, string.Empty);
+            //PersonHandedRank = reportParameters.GetValueOrDefault(CommissioningActHelper.FIELD_HANDED_PERSON_RANK, string.Empty);
 
             CommissioningLocation = reportParameters.GetValueOrDefault(CommissioningActHelper.FIELD_COMMISSIONED_LOCATIONN, string.Empty);
         }
@@ -302,11 +366,14 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
                 Name = ProductName,
                 Price = Price,
                 ShortName = ShortName,
-                MeasurementUnit = MeasurementUnit,
+                MeasurementUnit = MeasurementUnitName,
                 WarrantyPeriodMonths = WarrantyPeriodMonths
             };
 
             var identifiers = ProductIdentifiers.Cast<IProductIdentification>().ToList();
+
+            var personAccepted = new PersonDTO(_personAcceptedName, _personAcceptedPosition, _personAcceptedRank);
+            var personHanded = new PersonDTO(_personHandedName, _personAcceptedPosition, _personHandedRank);
 
             var reportData = new CommissioningActReportData
             {
@@ -326,12 +393,11 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
                 OtherInfo = OtherInfo,
                 Conclusion = Conclusion,
                 AttachedDocumentation = AttachedDocumentation,
-                PersonAccepted = new Person(_personAcceptedName, _personAcceptedPosition, _personAcceptedRank),
-                PersonHanded = new Person(_personHandedName, _personAcceptedPosition, _personHandedRank)
+                PersonAccepted = personAccepted,
+                PersonHanded = personHanded
             };
 
-            // Save data if needed
-            // _dataService.SaveCommissioningActData(reportData);
+            _dataService.AlterPeople([personAccepted, personHanded]);
 
             // Generate report
             _reportManager.GenerateCommissioningAct(reportData);
@@ -349,10 +415,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
         private void GenerateCountText()
         {
-            // TODO: CREATE Enum/Dictionary of measurement units!!!
-
-            var countText = ReportHelper.ConvertNumberToWords(_count, NounGender.Masculine);
-            var result = $"{_count} ({countText}) {_measurementUnit}";
+            var countText = ReportHelper.ConvertNumberToWords(_count, _measurementUnit.Gender);
+            var result = $"{_count} ({countText}) {_measurementUnit.Name}";
             CountText = result;
         }
     }
