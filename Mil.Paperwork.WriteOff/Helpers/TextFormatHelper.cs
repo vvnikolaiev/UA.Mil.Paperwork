@@ -11,6 +11,7 @@
         public const string TechnicalStateReportName = "Акт технічного стану (№11)";
         public const string ValuationReportName = "Акт оцінки майна";
         public const string DismantlingReportName = "Акт зміни якісного стану - РОЗУКОМПЛЕКТАЦІЇ - майна";
+        public const string CommisioninaActName = "Акт введення в експлуатацію";
 
         private const string DismantlingReasonP1TextFormat = "У зв’язку із втратою {0} для {1}, {2},";
         private const string DismantlingReasonP2TextFormat = "необхідно вилучити {0} {1} для {2} подальшого списання";

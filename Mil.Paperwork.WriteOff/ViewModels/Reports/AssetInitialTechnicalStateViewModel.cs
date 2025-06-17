@@ -1,8 +1,6 @@
 ﻿using Mil.Paperwork.Infrastructure.MVVM;
-using Mil.Paperwork.Domain.DataModels;
 using Mil.Paperwork.WriteOff.Managers;
 using System.Collections.ObjectModel;
-using System.Windows;
 using System.Windows.Input;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Helpers;
@@ -12,6 +10,7 @@ using Mil.Paperwork.Domain.DataModels.Assets;
 using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
 using Mil.Paperwork.WriteOff.ViewModels.Tabs;
+using Mil.Paperwork.Domain.DataModels.ReportData;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {
@@ -112,7 +111,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
                 Asset.Price = product.Price;
                 Asset.MeasurementUnit = product.MeasurementUnit;
                 Asset.StartDate = product.StartDate;
-                Asset.WarrantyPeriodYears = product.WarrantyPeriodYears;
+                Asset.WarrantyPeriodMonths = product.WarrantyPeriodMonths;
             }
             else
             {
@@ -127,7 +126,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
         private void OpenConfigurationCommandExecute()
         {
-            OpenSettings(Enums.SettingsTabType.ReportsConfiguration);
+            OpenSettings(Infrastructure.Enums.ReportType.TechnicalStateReport);
         }
     }
 }

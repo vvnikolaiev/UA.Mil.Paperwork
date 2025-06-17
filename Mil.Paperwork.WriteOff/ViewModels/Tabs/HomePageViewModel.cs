@@ -6,6 +6,7 @@ using Mil.Paperwork.WriteOff.Enums;
 using Mil.Paperwork.WriteOff.Factories;
 using System.Windows.Input;
 using Mil.Paperwork.WriteOff.ViewModels.Reports;
+using Mil.Paperwork.Infrastructure.Enums;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 {
@@ -54,27 +55,29 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             _settingTabViewModels = [];
             DocumentTypes = [.. GetAllReportTypes()];
 
-            CreateReportCommand = new DelegateCommand<DocumentTypeEnum>(AddWriteOffReport);
+            CreateReportCommand = new DelegateCommand<DocumentTypeEnum>(OpenNewReportTab);
             OpenSettingsCommand = new DelegateCommand(OpenSettingsExecute);
             OpenProductsDictionaryCommand = new DelegateCommand(OpenProductsDictionaryCommandExecute);
             OpenReportConfigurationCommand = new DelegateCommand(OpenReportConfigurationCommandExecute);
         }
 
-        private IList<ReportItemViewModel> GetAllReportTypes()
+        private static IList<ReportItemViewModel> GetAllReportTypes()
         {
             var reportTypes = new List<ReportItemViewModel>()
             {
-                new ReportItemViewModel("Списання", DocumentTypeEnum.WriteOff),
-                new ReportItemViewModel("Акт тех. стану (№11)", DocumentTypeEnum.TechnicalState11),
-                new ReportItemViewModel("Акт тех. стану (№7)", DocumentTypeEnum.TechnicalState7),
-                new ReportItemViewModel("Оцінка", DocumentTypeEnum.Valuation),
-                new ReportItemViewModel("Розукомплектація", DocumentTypeEnum.Dismantling),
+                new(DocumentTypeEnum.WriteOff),
+                new(DocumentTypeEnum.TechnicalState11),
+                new(DocumentTypeEnum.TechnicalState7),
+                new(DocumentTypeEnum.Valuation),
+                new(DocumentTypeEnum.Dismantling),
+                //new(DocumentTypeEnum.Invoice),
+                new(DocumentTypeEnum.CommisioningAct),
             };
 
             return reportTypes;
         }
 
-        private void AddWriteOffReport(DocumentTypeEnum documentType)
+        private void OpenNewReportTab(DocumentTypeEnum documentType)
         {
             IReportTabViewModel? createdTab;
             switch (documentType)
@@ -94,6 +97,13 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
                 case DocumentTypeEnum.TechnicalState11:
                     createdTab = new AssetTechnicalStateViewModel(_reportManager, _assetFactory, _dataService);
                     break;
+                //case DocumentTypeEnum.Invoice:
+                //    createdTab = null;
+                //    break;
+                case DocumentTypeEnum.CommisioningAct:
+                    createdTab = null;
+                    createdTab = new CommissioningActReportViewModel(_reportManager, _dataService, _reportDataService);
+                    break;
                 default:
                     createdTab = null;
                     break;
@@ -102,15 +112,22 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 
             if (createdTab != null)
             {
-                createdTab.SettingsTabOpenRequested += OnSettingsTabOpenRequested;
+                createdTab.OpenReportSettingsRequested += OnOpenReportSettingsRequested;
 
                 TabAdded?.Invoke(this, createdTab);
             }
         }
 
-        private void OnSettingsTabOpenRequested(object? sender, SettingsTabType settingsTabType)
+        private void OnOpenReportSettingsRequested(object? sender, ReportType reportType)
         {
-            OpenSettingsTab(settingsTabType);
+            OpenSettingsTab(SettingsTabType.ReportsConfiguration);
+            if (_settingTabViewModels.TryGetValue(SettingsTabType.ReportsConfiguration, out var tabViewModel))
+            {
+                if (tabViewModel is ReportConfigViewModel reportConfigViewModel)
+                {
+                    reportConfigViewModel.SelectReportType(reportType);
+                }
+            }
         }
 
         private void OpenSettingsExecute()

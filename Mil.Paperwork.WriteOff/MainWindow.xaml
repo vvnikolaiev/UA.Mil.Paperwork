@@ -70,7 +70,7 @@
                     <Button Content="Add" Command="{Binding AddItemCommand}" Margin="0,0,5,0"/>
                     <Button Content="Remove" Command="{Binding RemoveItemCommand}" 
                             CommandParameter="{Binding SelectedItem, ElementName=ProductsTable}" Margin="0,0,5,0"/>
-                    <Button Content="Save" Command="{Binding SaveCommand}" Margin="0,0,5,0"/>
+                    <Button Content="Зберегти" Command="{Binding SaveCommand}" Margin="0,0,5,0"/>
                     <Button Content="Import" Command="{Binding ImportCommand}" Margin="0,0,5,0" IsEnabled="False"/>
                     <Button Content="Export" Margin="0,0,5,0">
                         <Button.ContextMenu>
@@ -120,7 +120,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="Гарантія (р.)" Binding="{Binding WarrantyPeriodYears}" 
+                        <DataGridTextColumn Header="Гарантія (р.)" Binding="{Binding WarrantyPeriodMonths}" 
                                             ElementStyle="{StaticResource DataGridTextBlockStyle}"
                                             Width="70" />
                     </DataGrid.Columns>
@@ -131,9 +131,11 @@
         <DataTemplate DataType="{x:Type tabViewModels:ReportConfigViewModel}">
             <DockPanel>
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
-                    <Button Content="Save" Command="{Binding SaveCommand}" Margin="0,0,5,0"/>
+                    <Button Content="Зберегти" Command="{Binding SaveCommand}" Margin="0,0,5,0"/>
+                    <Button Content="Зберегти тимчасово" Command="{Binding SaveLocalCommand}" Margin="0,0,5,0"
+                            ToolTip="Після перезавантаження програми або натискання кнопки 'Оновити' налаштування будуть повернені "/>
                     
-                    <Button Content="Export" Margin="0,0,5,0">
+                    <Button Content="Експортувати" Margin="0,0,5,0">
                         <Button.ContextMenu>
                             <ContextMenu ItemsSource="{Binding ExportTypes}">
                                 <ContextMenu.ItemContainerStyle>
@@ -153,8 +155,8 @@
                     </Button>
                     
                     <Button Content="Import" Command="{Binding ImportCommand}" Margin="0,0,5,0" IsEnabled="False"/>
-                    <Button Content="Refresh" Command="{Binding RefreshCommand}" Margin="0,0,5,0"/>
-                    <Button Content="Close" Command="{Binding CloseCommand}" Margin="0,0,5,0"/>
+                    <Button Content="Оновити" Command="{Binding RefreshCommand}" Margin="0,0,5,0"/>
+                    <Button Content="Закрити" Command="{Binding CloseCommand}" Margin="0,0,5,0"/>
                 </StackPanel>
                 
                 <ComboBox ItemsSource="{Binding ReportTypes}"
@@ -232,6 +234,10 @@
 
         <DataTemplate DataType="{x:Type reportViewModels:AssetTechnicalStateViewModel}">
             <views:TechnicalStateReportView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type reportViewModels:CommissioningActReportViewModel}">
+            <views:CommissioningActReportView />
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type reportViewModels:AssetValuationViewModel}">

@@ -37,6 +37,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 
         public ICommand ReportTypeSelectedCommand { get; }
         public ICommand SaveCommand { get; }
+        public ICommand SaveLocalCommand { get; }
         public ICommand<ExportType> ExportDataCommand { get; }
         public ICommand ImportCommand { get; }
         public ICommand RefreshCommand { get; }
@@ -62,10 +63,24 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             ReportTypeSelectedCommand = new DelegateCommand(ReportTypeSelectedCommandExecute);
 
             SaveCommand = new DelegateCommand(SaveCommandExecute);
+            SaveLocalCommand = new DelegateCommand(SaveLocalCommandExecute);
             ExportDataCommand = new DelegateCommand<ExportType>(ExportDataCommandExecute);
             ImportCommand = new DelegateCommand(ImportCommandExecute, () => false);
             RefreshCommand = new DelegateCommand(RefreshCommandExecute);
             CloseCommand = new DelegateCommand(CloseCommandExecute);
+        }
+
+        public void SelectReportType(ReportType reportType)
+        {
+            if (ReportTypes.Contains(reportType))
+            {
+                SelectedReportType = reportType;
+                UpdateCurrentConfig(SelectedReportType);
+            }
+            else
+            {
+                MessageBox.Show("Невідомий тип звіту.");
+            }
         }
 
         private void ReportTypeSelectedCommandExecute()
@@ -73,11 +88,11 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             UpdateCurrentConfig(SelectedReportType);
         }
 
-        private void UpdateCurrentConfig(ReportType? reportType)
+        private void UpdateCurrentConfig(ReportType? reportType, bool withReload = false)
         {
             if (reportType != null)
             {
-                var reportConfig = _reportDataService.GetReportParameters(reportType.Value);
+                var reportConfig = _reportDataService.GetReportParameters(reportType.Value, withReload);
 
                 CurrentConfig = [.. reportConfig ?? []];
             }
@@ -95,7 +110,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 
         private void SaveCommandExecute()
         {
-            _reportDataService.SaveReportConfig(CurrentConfig.ToList(), SelectedReportType);
+            _reportDataService.SaveReportConfig([.. CurrentConfig], SelectedReportType);
+        }
+
+        private void SaveLocalCommandExecute()
+        {
+            _reportDataService.SaveReportConfigTemprorary([.. CurrentConfig], SelectedReportType);
         }
 
         private void ExportDataCommandExecute(ExportType exportType)
@@ -140,7 +160,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             var result = MessageBox.Show("Ви впевнені що бажаєте перезавантажити таблицю?", "Підтвердження", MessageBoxButton.YesNo);
             if (result == MessageBoxResult.Yes)
             {
-                UpdateCurrentConfig(SelectedReportType);
+                UpdateCurrentConfig(SelectedReportType, withReload: true);
             }
         }
 

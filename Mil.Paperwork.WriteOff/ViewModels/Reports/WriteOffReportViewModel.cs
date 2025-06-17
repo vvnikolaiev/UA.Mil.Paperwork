@@ -1,5 +1,4 @@
 ﻿using Mil.Paperwork.Infrastructure.MVVM;
-using Mil.Paperwork.Domain.DataModels;
 using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.WriteOff.Models;
 using System.Collections.ObjectModel;
@@ -11,10 +10,10 @@ using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.WriteOff.Views;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.WriteOff.Factories;
-using Mil.Paperwork.WriteOff.DataModels;
 using Mil.Paperwork.Infrastructure.Helpers;
 using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.WriteOff.ViewModels.Tabs;
+using Mil.Paperwork.Domain.DataModels.ReportData;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {
@@ -279,7 +278,10 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             ProductsSelector.UpdateProductsCollection(DismantleCollection);
 
             // restore selected values
-            var products = ProductsSelector.Products.ToDictionary(x => x.AlmostUniqueID, x => x);
+            var products = ProductsSelector.Products
+                .GroupBy(x => x.AlmostUniqueID)
+                .ToDictionary(g => g.Key, g => g.Last());
+
             foreach (var item in assetsWithProdId)
             {
                 // If asset.SelectedProductId is not in the new Products, set it to null or a default value

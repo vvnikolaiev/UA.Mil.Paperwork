@@ -1,7 +1,7 @@
 ﻿using Mil.Paperwork.Domain.DataModels.Assets;
 using Mil.Paperwork.Domain.Enums;
 
-namespace Mil.Paperwork.Domain.DataModels
+namespace Mil.Paperwork.Domain.DataModels.ReportData
 {
     public class InitialTechnicalStateReportData : IInitialTechnicalStateReportData
     {

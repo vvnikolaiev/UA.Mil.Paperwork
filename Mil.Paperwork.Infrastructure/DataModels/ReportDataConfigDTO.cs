@@ -22,5 +22,8 @@ namespace Mil.Paperwork.Infrastructure.DataModels
         
         [ReportTypeMapping(ReportType.AssetDismantlingReport)]
         public List<ReportParameter> AssetDismantlingReport { get; set; }
+        
+        [ReportTypeMapping(ReportType.CommissioningAct)]
+        public List<ReportParameter> CommissioningAct { get; set; }
     }
 }

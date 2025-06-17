@@ -126,10 +126,10 @@ namespace Mil.Paperwork.Domain.Reports
                 var cellIncompletenessWarrantyResource = table.Rows[TechnicalStateReportHelper.ROW_INCOMPLETENESS_WARRANTY_RESOURCE].Cells[columnNumber];
                 var cellIncompletenessWarrantyTerm = table.Rows[TechnicalStateReportHelper.ROW_INCOMPLETENESS_WARRANTY_TERM].Cells[columnNumber];
 
-                var warrantyPeriodMonths = ReportHelper.GetMonthsText(asset.WarrantyPeriodYears * 12);
-                var warrantyPeriodYears = ReportHelper.GetWarrantyPeriodText(asset.WarrantyPeriodYears);
+                var warrantyPeriodMonths = ReportHelper.GetMonthsText(asset.WarrantyPeriodMonths);
+                var warrantyPeriodYears = ReportHelper.GetWarrantyPeriodText(asset.WarrantyPeriodMonths / 12);
 
-                // add feminine/maasculine/neutral form????
+                // add feminine/masculine/neutral form????
 
                 cellTechnicalResource.AddText("-");
                 cellTechnicalOperationalTerm.AddText(warrantyPeriodMonths);

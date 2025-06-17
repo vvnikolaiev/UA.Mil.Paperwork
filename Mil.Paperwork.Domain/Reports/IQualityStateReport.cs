@@ -1,4 +1,4 @@
-﻿using Mil.Paperwork.Domain.DataModels;
+﻿using Mil.Paperwork.Domain.DataModels.ReportData;
 
 namespace Mil.Paperwork.Domain.Reports
 {

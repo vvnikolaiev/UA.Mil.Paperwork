@@ -1,4 +1,4 @@
-﻿using Mil.Paperwork.Domain.DataModels;
+﻿using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.WriteOff.Helpers;
 using System.Windows;
@@ -13,13 +13,15 @@ namespace Mil.Paperwork.WriteOff.Managers
         private readonly IReportService<IInitialTechnicalStateReportData> _initialTechnicalStateReportService;
         private readonly IReportService<IAssetValuationReportData> _valuationReportService;
         private readonly IReportService<IDismantlingReportData> _dismantlingReportService;
+        private readonly IReportService<ICommissioningActReportData> _commissioningActService;
 
         public ReportManager(
             QualityStateReportService qualityStateReportService,
             TechnicalStateReportService technicalStateReportService,
             ResidualValueReportService residualValueService,
             AssetValuationReportService valuationReportService,
-            AssetDismantlingReportService dismantlingReportService)
+            AssetDismantlingReportService dismantlingReportService,
+            CommissioningActService commissioningActService)
         {
             _qualityStateReportService = qualityStateReportService;
             _technicalStateReportService = technicalStateReportService;
@@ -27,6 +29,7 @@ namespace Mil.Paperwork.WriteOff.Managers
             _residualValueReportService = residualValueService;
             _valuationReportService = valuationReportService;
             _dismantlingReportService = dismantlingReportService;
+            _commissioningActService = commissioningActService;
         }
 
         public void GenerateWriteOffReport(WriteOffReportData reportData)
@@ -80,6 +83,14 @@ namespace Mil.Paperwork.WriteOff.Managers
             var assetValuationReportResult = _valuationReportService.TryGenerateReport(reportData);
             
             var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.DismantlingReportName, assetDismantlingReportResult);
+            MessageBox.Show(status);
+        }
+
+        public void GenerateCommissioningAct(ICommissioningActReportData reportData)
+        {
+            var commissioningActResult = _commissioningActService.TryGenerateReport(reportData);
+
+            var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.CommisioninaActName, commissioningActResult);
             MessageBox.Show(status);
         }
     }

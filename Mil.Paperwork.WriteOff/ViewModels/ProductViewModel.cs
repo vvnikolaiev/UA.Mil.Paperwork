@@ -11,7 +11,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private string _nomenclatureCode = string.Empty;
         private decimal _price = 0;
         private DateTime _startDate = DateTime.Today;
-        private int _warrantyPeriodYears = 1;
+        private int _warrantyPeriodMonths = 12;
 
         public string Name
         {
@@ -49,10 +49,10 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _startDate, value);
         }
 
-        public int WarrantyPeriodYears
+        public int WarrantyPeriodMonths
         {
-            get => _warrantyPeriodYears;
-            set => SetProperty(ref _warrantyPeriodYears, value);
+            get => _warrantyPeriodMonths;
+            set => SetProperty(ref _warrantyPeriodMonths, value);
         }
 
         public ProductViewModel() { }
@@ -65,7 +65,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             NomenclatureCode = dto.NomenclatureCode;
             Price = dto.Price;
             StartDate = dto.StartDate;
-            WarrantyPeriodYears = dto.WarrantyPeriodYears;
+            WarrantyPeriodMonths = dto.WarrantyPeriodMonths;
         }
 
         public ProductDTO ToProductDTO()
@@ -78,7 +78,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
                 NomenclatureCode = this.NomenclatureCode,
                 Price = this.Price,
                 StartDate = this.StartDate,
-                WarrantyPeriodYears = this.WarrantyPeriodYears
+                WarrantyPeriodMonths = this.WarrantyPeriodMonths
             };
         }
     }

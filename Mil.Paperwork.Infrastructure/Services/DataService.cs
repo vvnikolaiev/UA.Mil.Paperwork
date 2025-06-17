@@ -75,7 +75,7 @@ namespace Mil.Paperwork.Infrastructure.Services
                     existingProduct.ShortName = newProduct.ShortName;
                     existingProduct.StartDate = newProduct.StartDate;
                     existingProduct.Price = newProduct.Price;
-                    existingProduct.WarrantyPeriodYears = newProduct.WarrantyPeriodYears;
+                    existingProduct.WarrantyPeriodMonths = newProduct.WarrantyPeriodMonths;
                     existingProduct.MeasurementUnit = newProduct.MeasurementUnit;
                     existingProduct.NomenclatureCode = newProduct.NomenclatureCode;
                 }

@@ -1,4 +1,4 @@
-﻿using Mil.Paperwork.Domain.DataModels;
+﻿using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;

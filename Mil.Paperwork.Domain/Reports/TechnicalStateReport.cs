@@ -124,7 +124,7 @@ namespace Mil.Paperwork.Domain.Reports
                 var comissioningDate = asset.StartDate.ToString(ReportHelper.DATE_FORMAT);
                 var monthsOperatedText = ReportHelper.GetMonthsOperatedText(asset.StartDate, writeOffDate);
                 var hoursOperatedText = ReportHelper.GetHoursOperatedText(asset.StartDate, writeOffDate); // годин
-                var warrantyPeriodYears = ReportHelper.GetWarrantyPeriodText(asset.WarrantyPeriodYears);
+                var warrantyPeriodYears = ReportHelper.GetWarrantyPeriodText(asset.WarrantyPeriodMonths / 12);
 
                 cellCommisioningYear.AddText(comissioningDate);
                 cellMonthsOperated.AddText(monthsOperatedText);

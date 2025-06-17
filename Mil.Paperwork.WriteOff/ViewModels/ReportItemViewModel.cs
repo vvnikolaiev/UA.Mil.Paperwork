@@ -1,4 +1,5 @@
-﻿using Mil.Paperwork.Infrastructure.MVVM;
+﻿using Mil.Paperwork.Infrastructure.Helpers;
+using Mil.Paperwork.Infrastructure.MVVM;
 using Mil.Paperwork.WriteOff.Enums;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
@@ -9,9 +10,9 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         public DocumentTypeEnum DocumentType { get; set; }
 
-        public ReportItemViewModel(string text, DocumentTypeEnum documentType)
+        public ReportItemViewModel(DocumentTypeEnum documentType)
         {
-            Text = text;
+            Text = documentType.GetDescription();
             DocumentType = documentType;
         }
     }

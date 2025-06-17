@@ -1,8 +1,8 @@
-﻿using Mil.Paperwork.Domain.DataModels;
-using Mil.Paperwork.WriteOff.Managers;
+﻿using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Factories;
 using Mil.Paperwork.Domain.DataModels.Assets;
+using Mil.Paperwork.Domain.DataModels.ReportData;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {
