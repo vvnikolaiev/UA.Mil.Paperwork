@@ -1,4 +1,4 @@
-﻿namespace Mil.Paperwork.Domain.DataModels
+﻿namespace Mil.Paperwork.Infrastructure.DataModels
 {
     public interface IPerson
     {

@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="Mil.Paperwork.WriteOff.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Mil.Paperwork.WriteOff.Views"
+             mc:Ignorable="d" 
+             xmlns:viewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels.Tabs"
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance Type=viewModels:SettingsViewModel}">
+    <Grid Margin="10" Background="LightGray">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="5" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="1" Text="Служба"
+               VerticalAlignment="Center"/>
+        <ComboBox Grid.Row="0" Grid.Column="3"
+              ItemsSource="{Binding AssetTypes}" 
+              SelectedItem="{Binding SelectedAssetType}"
+              Style="{StaticResource EnumDescriptionComboBox}"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Center" />
+
+        <Button Grid.Row="1" Grid.Column="3"
+            HorizontalAlignment="Right"
+            Width="80" Content="Save" 
+            Command="{Binding SaveSettingsCommand}" />
+
+    </Grid>
+</UserControl>

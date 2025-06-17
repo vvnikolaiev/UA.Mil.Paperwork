@@ -7,6 +7,7 @@ using Mil.Paperwork.WriteOff.Factories;
 using System.Windows.Input;
 using Mil.Paperwork.WriteOff.ViewModels.Reports;
 using Mil.Paperwork.Infrastructure.Enums;
+using Mil.Paperwork.WriteOff.ViewModels.Dictionaries;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 {
@@ -35,6 +36,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 
         public ICommand OpenSettingsCommand { get; }
         public ICommand OpenProductsDictionaryCommand { get; }
+        public ICommand OpenPeopleDictionaryCommand { get; }
+        public ICommand OpenMeasurementUnitsDictionaryCommand { get; }
         public ICommand OpenReportConfigurationCommand { get; }
 
         public HomePageViewModel(
@@ -58,6 +61,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             CreateReportCommand = new DelegateCommand<DocumentTypeEnum>(OpenNewReportTab);
             OpenSettingsCommand = new DelegateCommand(OpenSettingsExecute);
             OpenProductsDictionaryCommand = new DelegateCommand(OpenProductsDictionaryCommandExecute);
+            OpenPeopleDictionaryCommand = new DelegateCommand(OpenPeopleDictionaryCommandExecute);
+            OpenMeasurementUnitsDictionaryCommand = new DelegateCommand(OpenMeasurementUnitsDictionaryCommandExecute);
             OpenReportConfigurationCommand = new DelegateCommand(OpenReportConfigurationCommandExecute);
         }
 
@@ -140,6 +145,16 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             OpenSettingsTab(SettingsTabType.ProductDictionary);
         }
 
+        private void OpenPeopleDictionaryCommandExecute()
+        {
+            OpenSettingsTab(SettingsTabType.PeopleDictionary);
+        }
+
+        private void OpenMeasurementUnitsDictionaryCommandExecute()
+        {
+            OpenSettingsTab(SettingsTabType.MeasurementUnitsDictionary);
+        }
+
         private void OpenReportConfigurationCommandExecute()
         {
             OpenSettingsTab(SettingsTabType.ReportsConfiguration);
@@ -160,6 +175,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
                     SettingsTabType.Settings => new SettingsViewModel(_reportDataService),
                     SettingsTabType.ReportsConfiguration => new ReportConfigViewModel(_reportDataService, _exportService),
                     SettingsTabType.ProductDictionary => new ProductsDictionaryViewModel(_dataService, _exportService),
+                    SettingsTabType.PeopleDictionary => new PeopleDictionaryViewModel(_dataService),
+                    SettingsTabType.MeasurementUnitsDictionary => new MeasurementUnitsDictionaryViewModel(_dataService),
                     _ => throw new NotImplementedException()
                 };
 

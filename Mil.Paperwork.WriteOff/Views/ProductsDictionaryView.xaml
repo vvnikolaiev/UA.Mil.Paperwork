@@ -1,0 +1,78 @@
+﻿<UserControl x:Class="Mil.Paperwork.WriteOff.Views.ProductsDictionaryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:controls="clr-namespace:Mil.Paperwork.WriteOff.Controls"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Mil.Paperwork.WriteOff.Views"
+             mc:Ignorable="d" 
+             xmlns:viewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels.Dictionaries"
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance Type=viewModels:ProductsDictionaryViewModel}">
+    <DockPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
+            <Button Content="Додати" Command="{Binding AddItemCommand}" Margin="0,0,5,0"/>
+            <Button Content="Видалити" Command="{Binding RemoveItemCommand}" 
+                CommandParameter="{Binding SelectedItem, ElementName=ProductsTable}" Margin="0,0,5,0"/>
+            <Button Content="Зберегти" Command="{Binding SaveCommand}" Margin="0,0,5,0"/>
+            <Button Content="Import" Command="{Binding ImportCommand}" Margin="0,0,5,0" IsEnabled="False"/>
+
+            <controls:DropDownButton Content="Експортувати" Margin="0,0,5,0">
+                <controls:DropDownButton.ContextMenu>
+                    <ContextMenu ItemsSource="{Binding ExportTypes}">
+                        <ContextMenu.ItemContainerStyle>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="Header" Value="{Binding Title}" />
+                                <Setter Property="Command" Value="{Binding DataContext.ExportDataCommand, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                <Setter Property="CommandParameter" Value="{Binding Value}" />
+                            </Style>
+                        </ContextMenu.ItemContainerStyle>
+                    </ContextMenu>
+                </controls:DropDownButton.ContextMenu>
+            </controls:DropDownButton>
+            <Button Content="Оновити" Command="{Binding RefreshCommand}" Margin="0,0,5,0"/>
+            <Button Content="Закрити" Command="{Binding CloseCommand}" Margin="0,0,5,0"/>
+        </StackPanel>
+
+        <DataGrid x:Name="ProductsTable" 
+              ItemsSource="{Binding Products}"
+              AutoGenerateColumns="False" CanUserAddRows="False" Margin="5">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Назва" Binding="{Binding Name}" 
+                                ElementStyle="{StaticResource DataGridNameTextBlockStyle}"
+                                Width="*" />
+                <DataGridTextColumn Header="Коротка назва" Binding="{Binding ShortName}"
+                                ElementStyle="{StaticResource DataGridTextBlockStyle}" />
+                <DataGridTemplateColumn Header="Од. виміру" Width="60">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding DataContext.MeasurementUnits, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                      Text="{Binding MeasurementUnit}"
+                                      DisplayMemberPath="ShortName"
+                                      IsEditable="True"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Код номенклатури" Binding="{Binding NomenclatureCode}" 
+                                ElementStyle="{StaticResource DataGridTextBlockStyle}"
+                                Width="70" />
+                <DataGridTextColumn Header="Ціна" Binding="{Binding Price}"
+                                ElementStyle="{StaticResource DataGridTextBlockStyle}" />
+                <DataGridTemplateColumn Header="Взято на облік" 
+                                    Width="*" MinWidth="90" MaxWidth="110">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DatePicker SelectedDate="{Binding StartDate, StringFormat=d, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                    Language="uk-UA"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Гарантія (р.)" Binding="{Binding WarrantyPeriodMonths}" 
+                                ElementStyle="{StaticResource DataGridTextBlockStyle}"
+                                Width="70" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

@@ -1,4 +1,5 @@
 ﻿using Mil.Paperwork.Domain.Enums;
+using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
 
 namespace Mil.Paperwork.Domain.Helpers

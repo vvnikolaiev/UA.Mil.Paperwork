@@ -1,7 +1,7 @@
 ﻿using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.MVVM;
 
-namespace Mil.Paperwork.WriteOff.ViewModels
+namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
 {
     public class ProductViewModel : ObservableItem
     {
@@ -72,13 +72,13 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         {
             return new ProductDTO
             {
-                Name = this.Name,
-                ShortName = this.ShortName,
-                MeasurementUnit = this.MeasurementUnit,
-                NomenclatureCode = this.NomenclatureCode,
-                Price = this.Price,
-                StartDate = this.StartDate,
-                WarrantyPeriodMonths = this.WarrantyPeriodMonths
+                Name = Name,
+                ShortName = ShortName,
+                MeasurementUnit = MeasurementUnit,
+                NomenclatureCode = NomenclatureCode,
+                Price = Price,
+                StartDate = StartDate,
+                WarrantyPeriodMonths = WarrantyPeriodMonths
             };
         }
     }

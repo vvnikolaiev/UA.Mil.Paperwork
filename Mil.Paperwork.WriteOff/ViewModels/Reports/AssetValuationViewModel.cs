@@ -8,7 +8,9 @@ using Mil.Paperwork.Infrastructure.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.WriteOff.Memento;
+using Mil.Paperwork.WriteOff.ViewModels.Dictionaries;
 using Mil.Paperwork.WriteOff.ViewModels.Tabs;
+using OfficeOpenXml.Drawing.Controls;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
@@ -97,6 +99,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
         public ProductSelectionViewModel ProductSelector { get; }
 
+        public ObservableCollection<MeasurementUnitViewModel> MeasurementUnits { get; }
+
         public virtual ObservableCollection<AssetValuationItemViewModel> Components
         {
             get => _components;
@@ -117,8 +121,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             set => SetProperty(ref _valuationDataTemplates, value);
         }
 
-        public bool IsReadOnly { get; }
-
         public ICommand ProductSelectedCommand { get; }
         public ICommand ApplyValuationTemplateCommand { get; }
         public ICommand AddRowCommand { get; }
@@ -138,6 +140,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             UpdateValuationTemplatesCollection();
 
             ProductSelector = new ProductSelectionViewModel(dataService);
+            MeasurementUnits = [.. _dataService.LoadMeasurementUnitsData().Select(x => new MeasurementUnitViewModel(x))];
 
             ProductSelectedCommand = new DelegateCommand(ProductSelectedExecute);
             ApplyValuationTemplateCommand = new DelegateCommand(ApplyValuationTemplateExecute);
@@ -148,20 +151,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             CloseTabCommand = new DelegateCommand(CloseTabCommandExecute);
             GenerateReportCommand = new DelegateCommand(GenerateReportCommandExecute);
             OpenConfigurationCommand = new DelegateCommand(OpenConfigurationCommandExecute);
-
-            SaveState();
-        }
-
-        public AssetValuationViewModel(IAssetInfo asset, ReportManager reportManager, IDataService dataService, INavigationService navigationService)
-            : this(reportManager, dataService, navigationService)
-        {
-            Name = asset.Name;
-            ShortName = asset.ShortName;
-            Price = asset.Price;
-            SerialNumber = asset.SerialNumber;
-            MeasurementUnit = asset.MeasurementUnit;
-
-            IsReadOnly = true;
 
             SaveState();
         }

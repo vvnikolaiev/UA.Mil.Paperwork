@@ -3,7 +3,9 @@
     internal enum SettingsTabType
     {
         Settings,
+        ReportsConfiguration,
         ProductDictionary,
-        ReportsConfiguration
+        PeopleDictionary,
+        MeasurementUnitsDictionary
     }
 }

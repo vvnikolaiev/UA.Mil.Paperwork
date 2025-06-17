@@ -30,6 +30,20 @@ namespace Mil.Paperwork.Infrastructure.Services
             return data.ValuationData;
         }
 
+        public IList<MeasurementUnitDTO> LoadMeasurementUnitsData()
+        {
+            var data = LoadDataStorageData();
+
+            return data.MeasurementUnits;
+        }
+
+        public IList<PersonDTO> LoadPeopleData()
+        {
+            var data = LoadDataStorageData();
+
+            return data.PeopleData;
+        }
+
         public void SaveProductsData(IList<ProductDTO> products)
         {
             if (products == null)
@@ -123,6 +137,59 @@ namespace Mil.Paperwork.Infrastructure.Services
             // Sort the list alphabetically by name
             var sortedValuationData = _storageData.ValuationData?.OrderBy(p => p.Name).ToList();
             _storageData.ValuationData = sortedValuationData ?? [];
+
+            Save();
+        }
+
+
+        public void SaveMeasurementUnitsData(IList<MeasurementUnitDTO> units)
+        {
+            if (units == null)
+                return;
+
+            // Sort the list alphabetically by name
+            var sortedUnits = units?.OrderBy(p => p.Name).ToList();
+            _storageData.MeasurementUnits = sortedUnits ?? [];
+
+            Save();
+        }
+
+        public void AlterPeople(IList<PersonDTO> people)
+        {
+            var peopleDict = _storageData.PeopleData?.ToDictionary(p => p.FullName, p => p) ?? [];
+
+            // Add new products if they don't already exist
+            foreach (var newPerson in people)
+            {
+                var personName = newPerson.FullName;
+                if (String.IsNullOrEmpty(personName))
+                {
+                    continue;
+                }
+
+                if (!peopleDict.TryGetValue(personName, out var existingPerson))
+                {
+                    peopleDict.Add(personName, newPerson);
+                    _storageData.PeopleData?.Add(newPerson);
+                }
+                else
+                {
+                    existingPerson.Rank = newPerson.Rank;
+                    existingPerson.Position = newPerson.Position;
+                }
+            }
+
+            SavePeopleData(_storageData.PeopleData);
+        }
+
+        public void SavePeopleData(IList<PersonDTO> people)
+        {
+            if (people == null)
+                return;
+
+            // Sort the list alphabetically by name
+            var sortedPeople = people?.OrderBy(p => p.FullName).ToList();
+            _storageData.PeopleData = sortedPeople ?? [];
 
             Save();
         }

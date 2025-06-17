@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="Mil.Paperwork.WriteOff.Views.MeasurementUnitsDictionaryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels.Dictionaries"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=viewModels:MeasurementUnitsDictionaryViewModel, IsDesignTimeCreatable=True}">
+    <DockPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
+            <Button Content="Додати" Command="{Binding AddItemCommand}" Margin="0,0,5,0"/>
+            <Button Content="Видалити" Command="{Binding RemoveItemCommand}" Margin="0,0,5,0" 
+                    CommandParameter="{Binding SelectedItem, ElementName=MeasurementUnitsDataGrid}" />
+            <Button Content="Зберегти" Command="{Binding SaveCommand}" Margin="0,0,5,0" />
+            <Button Content="Оновити" Command="{Binding RefreshCommand}" Margin="0,0,5,0" />
+            <Button Content="Закрити" Command="{Binding CloseCommand}" Margin="0,0,5,0" />
+        </StackPanel>
+
+        <DataGrid x:Name="MeasurementUnitsDataGrid"
+                  ItemsSource="{Binding Units}"
+                  AutoGenerateColumns="False" CanUserAddRows="False" Margin="5">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Назва" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="*"
+                                    ElementStyle="{StaticResource DataGridNameTextBlockStyle}"/>
+                <DataGridTextColumn Header="Коротка назва" Binding="{Binding ShortName, UpdateSourceTrigger=PropertyChanged}" Width="*"
+                                    ElementStyle="{StaticResource DataGridNameTextBlockStyle}"/>
+                <DataGridTemplateColumn Header="Рід" Width="100">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding DataContext.Genders, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                      SelectedItem="{Binding Gender, UpdateSourceTrigger=PropertyChanged}"
+                                      Style="{StaticResource EnumDescriptionComboBox}"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>
