@@ -1,4 +1,5 @@
 ﻿using Mil.Paperwork.Domain.Helpers;
+using Mil.Paperwork.Infrastructure.Attributes;
 using Mil.Paperwork.Infrastructure.Helpers;
 using Mil.Paperwork.Infrastructure.Services;
 using OfficeOpenXml;
@@ -8,6 +9,21 @@ using System.Text;
 
 namespace Mil.Paperwork.Domain.Services
 {
+    public class ImportColumnDefinition
+    {
+        public string Title { get; }
+        public bool IsRequired { get; }
+        public string? SelectedSourceColumn { get; set; }
+
+        public bool ImportColumn { get; set; } = true;
+
+        public ImportColumnDefinition(string title, bool isRequired)
+        {
+            Title = title;
+            IsRequired = isRequired;
+        }
+    }
+
     internal class ExportService : IExportService
     {
         private readonly IFileStorageService _fileStorage;
@@ -26,7 +42,7 @@ namespace Mil.Paperwork.Domain.Services
 
                 var json = JsonHelper.WriteJson(data);
                 var reportBytes = Encoding.UTF8.GetBytes(json);
-                
+
                 _fileStorage.SaveFile(filePath, reportBytes);
 
                 return true;

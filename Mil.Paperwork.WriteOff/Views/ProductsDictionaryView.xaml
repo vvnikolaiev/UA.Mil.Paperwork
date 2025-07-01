@@ -15,7 +15,8 @@
             <Button Content="Видалити" Command="{Binding RemoveItemCommand}" 
                 CommandParameter="{Binding SelectedItem, ElementName=ProductsTable}" Margin="0,0,5,0"/>
             <Button Content="Зберегти" Command="{Binding SaveCommand}" Margin="0,0,5,0"/>
-            <Button Content="Import" Command="{Binding ImportCommand}" Margin="0,0,5,0" IsEnabled="False"/>
+            <Button Content="Оновити" Command="{Binding RefreshCommand}" Margin="0,0,5,0"/>
+            <Button Content="Імпортувати" Command="{Binding ImportCommand}" Margin="0,0,5,0" />
 
             <controls:DropDownButton Content="Експортувати" Margin="0,0,5,0">
                 <controls:DropDownButton.ContextMenu>
@@ -30,7 +31,6 @@
                     </ContextMenu>
                 </controls:DropDownButton.ContextMenu>
             </controls:DropDownButton>
-            <Button Content="Оновити" Command="{Binding RefreshCommand}" Margin="0,0,5,0"/>
             <Button Content="Закрити" Command="{Binding CloseCommand}" Margin="0,0,5,0"/>
         </StackPanel>
 

@@ -17,7 +17,7 @@ namespace Mil.Paperwork.Domain
             services.AddSingleton<CommissioningActService>();
 
             services.AddSingleton<IExportService, ExportService>();
-            //services.AddSingleton<IImportService, ImportService>();
+            services.AddSingleton<IImportService, ImportService>();
         }
     }
 }

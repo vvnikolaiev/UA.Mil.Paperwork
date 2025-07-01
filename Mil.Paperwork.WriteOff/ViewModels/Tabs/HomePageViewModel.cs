@@ -174,8 +174,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
                 {
                     SettingsTabType.Settings => new SettingsViewModel(_reportDataService),
                     SettingsTabType.ReportsConfiguration => new ReportConfigViewModel(_reportDataService, _exportService),
-                    SettingsTabType.ProductDictionary => new ProductsDictionaryViewModel(_dataService, _exportService),
-                    SettingsTabType.PeopleDictionary => new PeopleDictionaryViewModel(_dataService),
+                    SettingsTabType.ProductDictionary => new ProductsDictionaryViewModel(_dataService, _exportService, _navigationService),
+                    SettingsTabType.PeopleDictionary => new PeopleDictionaryViewModel(_dataService, _navigationService),
                     SettingsTabType.MeasurementUnitsDictionary => new MeasurementUnitsDictionaryViewModel(_dataService),
                     _ => throw new NotImplementedException()
                 };

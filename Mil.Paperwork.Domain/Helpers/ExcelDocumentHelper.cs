@@ -84,7 +84,7 @@ namespace Mil.Paperwork.Domain.Helpers
                 }
 
                 var mergedCell = sheet.MergedCells[namedField.Start.Row, namedField.Start.Column];
-                var range = string.IsNullOrEmpty(mergedCell) ? sheet.Cells[namedField.Start.Row, namedField.Start.Column] 
+                var range = string.IsNullOrEmpty(mergedCell) ? sheet.Cells[namedField.Start.Row, namedField.Start.Column]
                                                              : sheet.Cells[mergedCell];
                 sheet.AutoFitRowHeight(range.Start.Row, range.Start.Column, range.End.Column);
             }
@@ -112,28 +112,6 @@ namespace Mil.Paperwork.Domain.Helpers
         {
             var сell = sheet.Cells[row, column];
             сell.Formula = formula;
-        }
-
-        private static IEnumerable<ExcelNamedRange> GetNamedFieldRanges(this ExcelWorksheet sheet)
-        {
-            var namedRangess = sheet.Names;
-            foreach (var namedRange in namedRangess)
-            {
-                var name = namedRange.Name;
-                if (Regex.IsMatch(name, FIELD_RANGE_PATTERN))
-                {
-                    yield return namedRange;
-                }
-            }
-        }
-
-        private static IEnumerable<string> GetFields(string text)
-        {
-            var matches = Regex.Matches(text, TEXT_FIELD_PATTERN);
-            foreach (Match match in matches)
-            {
-                yield return match.Groups[1].Value;
-            }
         }
 
         public static void ShrinkMergedNamedRange(this ExcelWorksheet sheet, string rangeTitleId, int endColumn)
@@ -210,6 +188,54 @@ namespace Mil.Paperwork.Domain.Helpers
                     // Remove and recreate with the new address
                     sheet.Names.Remove(matchingNamedRange.Name);
                     sheet.Names.Add(matchingNamedRange.Name, sheet.Cells[newAddr.Address]);
+                }
+            }
+        }
+
+        public static List<string> GetHeaders(int headerRow, ExcelWorksheet worksheet)
+        {
+            int lastCol = worksheet.Dimension.End.Column;
+
+            var headers = new List<string>();
+
+            for (int col = 1; col <= lastCol; col++)
+            {
+                string colName = string.Empty;
+                if (headerRow > 0)
+                {
+                    var cellValue = worksheet.Cells[headerRow, col].Text;
+                    colName = cellValue?.Trim() ?? string.Empty;
+                }
+
+                if (string.IsNullOrEmpty(colName))
+                {
+                    colName = $"Column{col}";
+                }
+
+                headers.Add(colName);
+            }
+
+            return headers;
+        }
+
+        private static IEnumerable<string> GetFields(string text)
+        {
+            var matches = Regex.Matches(text, TEXT_FIELD_PATTERN);
+            foreach (Match match in matches)
+            {
+                yield return match.Groups[1].Value;
+            }
+        }
+
+        private static IEnumerable<ExcelNamedRange> GetNamedFieldRanges(this ExcelWorksheet sheet)
+        {
+            var namedRangess = sheet.Names;
+            foreach (var namedRange in namedRangess)
+            {
+                var name = namedRange.Name;
+                if (Regex.IsMatch(name, FIELD_RANGE_PATTERN))
+                {
+                    yield return namedRange;
                 }
             }
         }

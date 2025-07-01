@@ -10,6 +10,7 @@ using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.DataModels;
 using Mil.Paperwork.WriteOff.Enums;
 using Mil.Paperwork.WriteOff.ViewModels.Tabs;
+using Mil.Paperwork.WriteOff.Views;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
 {
@@ -17,7 +18,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
     {
         private readonly IDataService _dataService;
         private readonly IExportService _exportService;
-
+        private readonly INavigationService _navigationService;
         public ObservableCollection<ProductViewModel> Products { get; }
         public ObservableCollection<EnumItemDataModel<ExportType>> ExportTypes { get; private set; }
         public ObservableCollection<MeasurementUnitViewModel> MeasurementUnits { get; }
@@ -36,10 +37,11 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
         public ICommand RefreshCommand { get; }
         public ICommand CloseCommand { get; }
 
-        public ProductsDictionaryViewModel(IDataService dataService, IExportService exportService)
+        public ProductsDictionaryViewModel(IDataService dataService, IExportService exportService, INavigationService navigationService)
         {
             _dataService = dataService;
             _exportService = exportService;
+            _navigationService = navigationService;
 
             Products = [.. GetProductsData()];
             FillExportTypesCollection();
@@ -48,7 +50,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
             AddItemCommand = new DelegateCommand(AddItemCommandExecute);
             RemoveItemCommand = new DelegateCommand<ProductViewModel>(RemoveItemCommandExecute);
             SaveCommand = new DelegateCommand(SaveCommandExecute);
-            ImportCommand = new DelegateCommand(ImportCommandExecute, () => false); // Disabled for now
+            ImportCommand = new DelegateCommand(ImportCommandExecute);
             ExportDataCommand = new DelegateCommand<ExportType>(ExportRawDataCommandExecute);
             RefreshCommand = new DelegateCommand(RefreshCommandExecute);
             CloseCommand = new DelegateCommand(CloseCommandExecute);
@@ -99,7 +101,15 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
 
         private void ImportCommandExecute()
         {
-            // To be implemented
+            var importViewModel = _navigationService.GetViewModel<ImportViewModel>();
+            importViewModel.SetImportType(ImportType.Products);
+
+            _navigationService.OpenWindow<ImportDialogWindow, ImportViewModel>(importViewModel);
+
+            if (importViewModel.IsValid)
+            {
+                ReloadProductsData();
+            }
         }
 
         private void ExportRawDataCommandExecute(ExportType exportType)
