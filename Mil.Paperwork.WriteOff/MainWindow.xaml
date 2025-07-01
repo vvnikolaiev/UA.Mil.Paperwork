@@ -70,6 +70,7 @@
                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Content="Створити документ" Command="{Binding GenerateReportCommand}" />
                     <Button Content="Додати рядок" Command="{Binding AddRowCommand}" />
+                    <Button Content="Імпортувати таблицю" Command="{Binding ImportRowsCommand}" />
                     <Button Content="Очистити таблицю" Command="{Binding ClearCommand}" />
                     <Button Content="Закрити" Command="{Binding CloseTabCommand}"/>
                 </StackPanel>
@@ -88,6 +89,7 @@
                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Content="Створити документ" Command="{Binding GenerateReportCommand}" />
                     <Button Content="Додати рядок" Command="{Binding AddRowCommand}" />
+                    <Button Content="Імпортувати таблицю" Command="{Binding ImportRowsCommand}" />
                     <Button Content="Очистити таблицю" Command="{Binding ClearCommand}" />
                     <Button Content="Закрити" Command="{Binding CloseTabCommand}"/>
                 </StackPanel>

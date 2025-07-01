@@ -14,6 +14,11 @@ namespace Mil.Paperwork.Domain.Services
             _serviceProvider = serviceProvider;
         }
 
+        public TViewModel GetViewModel<TViewModel>() where TViewModel : ObservableItem
+        {
+            return _serviceProvider.GetRequiredService<TViewModel>();
+        }
+
         public TViewModel OpenWindow<TWindow, TViewModel>(TViewModel viewModel = null, bool isDialog = true) 
             where TViewModel : ObservableItem
             where TWindow : Window

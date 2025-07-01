@@ -1,0 +1,128 @@
+﻿<Window x:Class="Mil.Paperwork.WriteOff.Views.ImportDialogWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Mil.Paperwork.WriteOff.Views"
+        xmlns:converters="clr-namespace:Mil.Paperwork.Infrastructure.Converters;assembly=Mil.Paperwork.Infrastructure"
+        mc:Ignorable="d"
+        xmlns:ViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels" 
+        xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
+        Title="Імпорт даних"
+        Height="450" Width="750"
+        d:DataContext="{d:DesignInstance Type=ViewModels:ImportViewModel}">
+    <Window.Resources>
+        <converters:InversedBoolConverter x:Key="InversedBoolConverter" />
+    </Window.Resources>
+    
+    <Grid Grid.IsSharedSizeScope="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="315" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+
+            <StackPanel Grid.Row="0" Grid.ColumnSpan="6" Orientation="Horizontal" Margin="10 5">
+                <TextBlock Text="Імпортувати з файлу: " VerticalAlignment="Center"/>
+                <TextBox Text="{Binding ImportFilePath}" Width="300" VerticalAlignment="Center" IsReadOnly="True" />
+                <Button Padding="0"
+                Content="..." Command="{Binding SelectFileCommand}" Width="30" VerticalAlignment="Center" />
+            </StackPanel>
+
+            <!-- Left: Mapping -->
+            <Grid Grid.Row="1" Grid.Column="0" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0 5">
+                    <CheckBox Content="Перший рядок містить заголовки" 
+                              IsChecked="{Binding IsFirstRowContainsHeaders}"
+                              Margin="5,0,0,0" VerticalAlignment="Center" >
+                        <Behaviors:Interaction.Triggers>
+                            <Behaviors:EventTrigger EventName="Checked">
+                                <Behaviors:InvokeCommandAction Command="{Binding DataContext.HeaderRowChangedCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+                            </Behaviors:EventTrigger>
+                            <Behaviors:EventTrigger EventName="Unchecked">
+                                <Behaviors:InvokeCommandAction Command="{Binding DataContext.HeaderRowChangedCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+                            </Behaviors:EventTrigger>
+                        </Behaviors:Interaction.Triggers>
+                    </CheckBox>
+                </StackPanel>
+                
+                <ItemsControl Grid.Row="1" 
+                              ItemsSource="{Binding ColumnsToMap}"
+                              Background="AliceBlue">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <DockPanel Margin="4">
+                                <TextBlock Text="{Binding Title}" Width="120" VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsRequired}" Value="True">
+                                                    <Setter Property="FontWeight" Value="Bold" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <ComboBox ItemsSource="{Binding DataContext.SourceHeaders, RelativeSource={RelativeSource AncestorType=Window}}"
+                                          SelectedItem="{Binding SelectedSourceColumn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          Width="150" Margin="8,0,0,0"
+                                          IsEnabled="{Binding ImportColumn}">
+                                    <Behaviors:Interaction.Triggers>
+                                        <Behaviors:EventTrigger EventName="SelectionChanged">
+                                            <Behaviors:InvokeCommandAction Command="{Binding DataContext.MappingChangedCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                        </Behaviors:EventTrigger>
+                                    </Behaviors:Interaction.Triggers>
+                                </ComboBox>
+
+                                <CheckBox IsChecked="{Binding ImportColumn}"
+                                          VerticalAlignment="Center" 
+                                          Margin="5 0"
+                                          IsEnabled="{Binding IsRequired, Converter={StaticResource InversedBoolConverter}}">
+                                    <Behaviors:Interaction.Triggers>
+                                        <Behaviors:EventTrigger EventName="Checked">
+                                            <Behaviors:InvokeCommandAction Command="{Binding DataContext.MappingChangedCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                        </Behaviors:EventTrigger>
+                                        <Behaviors:EventTrigger EventName="Unchecked">
+                                            <Behaviors:InvokeCommandAction Command="{Binding DataContext.MappingChangedCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                        </Behaviors:EventTrigger>
+                                    </Behaviors:Interaction.Triggers>
+                                </CheckBox>
+                            </DockPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+            
+            <!-- Right: Preview -->
+
+            <GroupBox Grid.Row="1" Grid.Column="1"
+                      Header="Попередній перегляд">
+                <DataGrid ItemsSource="{Binding PreviewTable.DefaultView}"
+                          AutoGenerateColumns="True"
+                          AutoGeneratingColumn="DataGrid_AutoGeneratingColumn"
+                          IsReadOnly="True"
+                          Margin="8,0,8,8"/>
+            </GroupBox>
+        </Grid>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="ОК" Command="{Binding OKCommand}" IsDefault="True" />
+            <Button Content="Відміна" Command="{Binding CancelCommand}" IsCancel="True" />
+        </StackPanel>
+    </Grid>
+</Window>

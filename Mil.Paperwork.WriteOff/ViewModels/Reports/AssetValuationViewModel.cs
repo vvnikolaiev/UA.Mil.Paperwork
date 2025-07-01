@@ -1,15 +1,16 @@
 ﻿using Microsoft.Win32;
-using Mil.Paperwork.Domain.DataModels.Assets;
 using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
+using Mil.Paperwork.WriteOff.Enums;
 using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.WriteOff.Memento;
 using Mil.Paperwork.WriteOff.ViewModels.Dictionaries;
 using Mil.Paperwork.WriteOff.ViewModels.Tabs;
+using Mil.Paperwork.WriteOff.Views;
 using OfficeOpenXml.Drawing.Controls;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -124,6 +125,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         public ICommand ProductSelectedCommand { get; }
         public ICommand ApplyValuationTemplateCommand { get; }
         public ICommand AddRowCommand { get; }
+        public ICommand ImportRowsCommand { get; }
         public ICommand ClearCommand { get; }
         public ICommand OkCommand { get; }
         public ICommand CancelCommand { get; }
@@ -144,10 +146,11 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
             ProductSelectedCommand = new DelegateCommand(ProductSelectedExecute);
             ApplyValuationTemplateCommand = new DelegateCommand(ApplyValuationTemplateExecute);
-            AddRowCommand = new DelegateCommand(AddRow);
-            ClearCommand = new DelegateCommand(Clear);
-            OkCommand = new DelegateCommand(Ok);
-            CancelCommand = new DelegateCommand(Cancel);
+            AddRowCommand = new DelegateCommand(AddRowExecute);
+            ImportRowsCommand = new DelegateCommand(ImportRowsCommandExecute);
+            ClearCommand = new DelegateCommand(ClearTableExecute);
+            OkCommand = new DelegateCommand(OKCommandExecute);
+            CancelCommand = new DelegateCommand(CancelCommandExecute);
             CloseTabCommand = new DelegateCommand(CloseTabCommandExecute);
             GenerateReportCommand = new DelegateCommand(GenerateReportCommandExecute);
             OpenConfigurationCommand = new DelegateCommand(OpenConfigurationCommandExecute);
@@ -185,12 +188,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
         protected virtual void ApplyTemplateData(IAssetValuationData valuationDataTemplate)
         {
-            var items = valuationDataTemplate.AssetComponents.Select(x => new AssetValuationItemViewModel(x));
-            ClearComponents();
-            foreach (var item in items)
-            {
-                AddComponent(item);
-            }
+            FillAssetComponentsTable(valuationDataTemplate.AssetComponents);
         }
 
         protected virtual void AddComponent(AssetValuationItemViewModel component)
@@ -236,6 +234,16 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             }
         }
 
+        private void FillAssetComponentsTable(IList<AssetComponent> assetComponents)
+        {
+            var items = assetComponents.Select(x => new AssetValuationItemViewModel(x));
+            ClearComponents();
+            foreach (var item in items)
+            {
+                AddComponent(item);
+            }
+        }
+
         private void UpdateValuationTemplatesCollection()
         {
             ValuationDataTemplates = [.. _dataService.LoadValuationData()];
@@ -254,12 +262,26 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             }
         }
 
-        private void AddRow()
+        private void AddRowExecute()
         {
             AddComponent(new AssetValuationItemViewModel());
         }
 
-        private void Clear()
+        private void ImportRowsCommandExecute()
+        {
+            var importViewModel = _navigationService.GetViewModel<ImportViewModel>();
+            importViewModel.SetImportType(ImportType.Valuation);
+
+            _navigationService.OpenWindow<ImportDialogWindow, ImportViewModel>(importViewModel);
+
+            if (importViewModel.IsValid)
+            {
+                var assetComponents = importViewModel.ImportDataResult.Rows.Cast<AssetComponent>().ToList();
+                FillAssetComponentsTable(assetComponents);
+            }
+        }
+
+        private void ClearTableExecute()
         {
             if (MessageBox.Show("Are you sure you want to clear the table?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
@@ -293,14 +315,14 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             var reportData = new AssetValuationReportData
             {
                 DestinationFolder = folderName,
-                ValuationData = new List<IAssetValuationData> { assetValuationData }
+                ValuationData = [assetValuationData]
             };
 
             _dataService.SaveValuationData([assetValuationData]);
             _reportManager.GenerateValuationReport(reportData);
         }
 
-        private void Ok()
+        private void OKCommandExecute()
         {
             CalculatePrices();
             ValidateData();
@@ -308,7 +330,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             CloseWindow();
         }
 
-        private void Cancel()
+        private void CancelCommandExecute()
         {
             // there will be a bug when User closes the window with "X" button.
             RestoreState();
