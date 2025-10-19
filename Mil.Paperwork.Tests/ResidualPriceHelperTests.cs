@@ -25,21 +25,19 @@ namespace Mil.Paperwork.Tests.Helpers
 
 
         [Theory]
-        [InlineData(1900, 2025, 5.768)]
-        [InlineData(1997, 2025, 5.768)]
-        [InlineData(1998, 2025, 3.438)]
+        [InlineData(1900, 2025, 3.438)]
+        [InlineData(1997, 2025, 3.438)]
+        [InlineData(1998, 2025, 3.435)]
         [InlineData(2015, 2015, 1.0)]
+        [InlineData(2008, 2019, 1.868)]
         [InlineData(2015, 2024, 1.65)]
+        [InlineData(2016, 2024, 1.238)]
         [InlineData(2023, 2025, 1.02)]
         [InlineData(2025, 2025, 1.0)]
         public void GetIndexationCoefficient_ReturnsExpectedValue(int startYear, int endYear, decimal expected)
         {
-            // Arrange
-            var startDate = new DateTime(startYear, 1, 1);
-            var endDate = new DateTime(endYear, 1, 1);
-
             // Act
-            var result = CoefficientsHelper.GetIndexationCoefficient(startDate, endDate);
+            var result = CoefficientsHelper.GetIndexationCoefficient(startYear, endYear);
 
             // Assert
             Assert.Equal(expected, result, 3);
@@ -49,38 +47,24 @@ namespace Mil.Paperwork.Tests.Helpers
         public void GetIndexationCoefficient_EndDateIsNull_Returns1()
         {
             // Arrange
-            var startDate = new DateTime(2010, 1, 1);
+            int startYear = 2010;
 
             // Act
-            var result = CoefficientsHelper.GetIndexationCoefficient(startDate, null);
+            var result = CoefficientsHelper.GetIndexationCoefficient(startYear, null);
 
             // Assert
             Assert.Equal(1.0m, result);
         }
 
         [Fact]
-        public void GetIndexationCoefficient_StartYearBelowMin_UsesMinYear()
-        {
-            // Arrange
-            var startDate = new DateTime(1980, 1, 1); // < 1997
-            var endDate = new DateTime(2025, 1, 1);
-
-            // Act
-            var result = CoefficientsHelper.GetIndexationCoefficient(startDate, endDate);
-
-            // Assert
-            Assert.Equal(5.768m, result); // 1997-2025
-        }
-
-        [Fact]
         public void GetIndexationCoefficient_YearNotInTable_Returns1()
         {
             // Arrange
-            var startDate = new DateTime(2050, 1, 1); // not in table
-            var endDate = new DateTime(2051, 1, 1);   // not in table
+            int startYear = 2050; // not in table
+            int endYear = 2051; // not in table
 
             // Act
-            var result = CoefficientsHelper.GetIndexationCoefficient(startDate, endDate);
+            var result = CoefficientsHelper.GetIndexationCoefficient(startYear, endYear);
 
             // Assert
             Assert.Equal(1.0m, result);

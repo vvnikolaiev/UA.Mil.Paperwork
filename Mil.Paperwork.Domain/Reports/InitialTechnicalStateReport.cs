@@ -74,10 +74,11 @@ namespace Mil.Paperwork.Domain.Reports
 
         private static void FillAssetTable(IAssetInfo asset, EventType eventType, Document document)
         {
-            var tables = document.Sections[0].Tables.Cast<Table>().ToList();
-            var table = tables.FirstOrDefault(x => x.Title == TechnicalStateReportHelper.TABLE_ASSET_NAME);
+            var table = document.GetTable(TechnicalStateReportHelper.TABLE_ASSET_NAME);
+
             if (table != null)
             {
+                var fontSize = TechnicalStateReportHelper.TABLE_FONT_SIZE;
                 // TODO: optimize. Make a mapper.
                 var row = table.LastRow;
 
@@ -89,26 +90,27 @@ namespace Mil.Paperwork.Domain.Reports
                 var totalPrice = asset.Price * asset.Count;
                 var nomenclatureCode = asset.NomenclatureCode?.ToUpper() ?? string.Empty;
 
-                row.Cells[TechnicalStateReportHelper.COLUMN_NAME].AddText(assetName, 12, HorizontalAlignment.Left);
-                row.Cells[TechnicalStateReportHelper.COLUMN_NOMENCLATURE_CODE].AddText(nomenclatureCode);
-                row.Cells[TechnicalStateReportHelper.COLUMN_MEAS_UNIT].AddText(asset.MeasurementUnit);
-                row.Cells[TechnicalStateReportHelper.COLUMN_COUNT].AddNumber(asset.Count);
-                row.Cells[TechnicalStateReportHelper.COLUMN_CATEGORY_INITIAL].AddText(initialCategory);
-                row.Cells[TechnicalStateReportHelper.COLUMN_CATEGORY_RESIDUAL].AddText(initialCategory);
-                row.Cells[TechnicalStateReportHelper.COLUMN_PRICE_INITIAL].AddPrice(asset.Price);
-                row.Cells[TechnicalStateReportHelper.COLUMN_PRICE_RESIDUAL].AddPrice(totalPrice);
-                row.Cells[TechnicalStateReportHelper.COLUMN_FACTORY_NUMBER].AddText(asset.SerialNumber);
-                row.Cells[TechnicalStateReportHelper.COLUMN_MANUFACTURER].AddText("-");
-                row.Cells[TechnicalStateReportHelper.COLUMN_PASSPORT_NUMBER].AddText("-");
+                row.Cells[TechnicalStateReportHelper.COLUMN_NAME].AddText(assetName, fontSize, HorizontalAlignment.Left);
+                row.Cells[TechnicalStateReportHelper.COLUMN_NOMENCLATURE_CODE].AddText(nomenclatureCode, fontSize);
+                row.Cells[TechnicalStateReportHelper.COLUMN_MEAS_UNIT].AddText(asset.MeasurementUnit, fontSize);
+                row.Cells[TechnicalStateReportHelper.COLUMN_COUNT].AddNumber(asset.Count, fontSize);
+                row.Cells[TechnicalStateReportHelper.COLUMN_CATEGORY_INITIAL].AddText(initialCategory, fontSize);
+                row.Cells[TechnicalStateReportHelper.COLUMN_CATEGORY_RESIDUAL].AddText(initialCategory, fontSize);
+                row.Cells[TechnicalStateReportHelper.COLUMN_PRICE_INITIAL].AddPrice(asset.Price, fontSize);
+                row.Cells[TechnicalStateReportHelper.COLUMN_PRICE_RESIDUAL].AddPrice(totalPrice, fontSize);
+                row.Cells[TechnicalStateReportHelper.COLUMN_FACTORY_NUMBER].AddText(asset.SerialNumber, fontSize);
+                //row.Cells[TechnicalStateReportHelper.COLUMN_MANUFACTURER].AddText("-");
+                //row.Cells[TechnicalStateReportHelper.COLUMN_PASSPORT_NUMBER].AddText("-");
             }
         }
 
         private static void FillOperationalTable(IAssetInfo asset, Document document)
         {
-            var tables = document.Sections[0].Tables.Cast<Table>().ToList();
-            var table = tables.FirstOrDefault(x => x.Title == TechnicalStateReportHelper.TABLE_OPERATIONAL_INDICATORS_NAME);
+            var table = document.GetTable(TechnicalStateReportHelper.TABLE_OPERATIONAL_INDICATORS_NAME);
+
             if (table != null)
             {
+                var fontSize = TechnicalStateReportHelper.TABLE_FONT_SIZE;
                 // TODO: optimize. Make a mapper.
                 var columnNumber = 1;
                 var cellCommisioningYear = table.Rows[TechnicalStateReportHelper.ROW_COMMISIONING_YEAR].Cells[columnNumber];
@@ -126,22 +128,22 @@ namespace Mil.Paperwork.Domain.Reports
                 var cellIncompletenessWarrantyResource = table.Rows[TechnicalStateReportHelper.ROW_INCOMPLETENESS_WARRANTY_RESOURCE].Cells[columnNumber];
                 var cellIncompletenessWarrantyTerm = table.Rows[TechnicalStateReportHelper.ROW_INCOMPLETENESS_WARRANTY_TERM].Cells[columnNumber];
 
-                var warrantyPeriodMonths = ReportHelper.GetMonthsText(asset.WarrantyPeriodMonths);
-                var warrantyPeriodYears = ReportHelper.GetWarrantyPeriodText(asset.WarrantyPeriodMonths / 12);
+                var warrantyPeriodYears = ReportHelper.GetYearsText(asset.WarrantyPeriodMonths / 12);
+                var operationalResource = ReportHelper.GetYearsText(asset.ResourceYears);
 
                 // add feminine/masculine/neutral form????
 
-                cellTechnicalResource.AddText("-");
-                cellTechnicalOperationalTerm.AddText(warrantyPeriodMonths);
-                cellWarrantyResource.AddText("-");
-                cellWarrantyPeriodYears.AddText(warrantyPeriodYears);
-                cellRepairDescriptionAndDate.AddText("-");
-                cellInOperatingSinceRepairMonths.AddText("-");
-                cellOperatingResourceSinceRepair.AddText("-");
-                cellIncompletenessResource.AddText("-");
-                cellIncompletenessOperationalTerm.AddText("-");
-                cellIncompletenessWarrantyResource.AddText("-");
-                cellIncompletenessWarrantyTerm.AddText("-");
+                cellTechnicalResource.AddText("-", fontSize);
+                cellTechnicalOperationalTerm.AddText(operationalResource, fontSize);
+                cellWarrantyResource.AddText("-", fontSize);
+                cellWarrantyPeriodYears.AddText(warrantyPeriodYears, fontSize);
+                cellRepairDescriptionAndDate.AddText("-", fontSize);
+                cellInOperatingSinceRepairMonths.AddText("-", fontSize);
+                cellOperatingResourceSinceRepair.AddText("-", fontSize);
+                cellIncompletenessResource.AddText("-", fontSize);
+                cellIncompletenessOperationalTerm.AddText("-", fontSize);
+                cellIncompletenessWarrantyResource.AddText("-", fontSize);
+                cellIncompletenessWarrantyTerm.AddText("-", fontSize);
             }
         }
     }

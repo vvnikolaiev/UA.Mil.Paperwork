@@ -1,7 +1,6 @@
 ﻿using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Domain.Reports;
-using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Services;
 using System.IO;
 
@@ -63,4 +62,3 @@ namespace Mil.Paperwork.Domain.Services
         }
     }
 }
-

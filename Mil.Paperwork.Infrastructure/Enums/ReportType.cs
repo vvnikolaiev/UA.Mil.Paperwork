@@ -14,9 +14,11 @@ namespace Mil.Paperwork.Infrastructure.Enums
         AssetValuationReport, 
         [Description("Акт зміни якісного (технічного) стану (розкомплектація)")]
         AssetDismantlingReport,
-        //[Description("Накладна (вимога)")]
-        //Invoice,
+        [Description("Накладна (вимога)")]
+        Invoice,
         [Description("Акт введення в експлуатацію")]
         CommissioningAct,
+        [Description("Пакет документів для списання")]
+        WriteOffPackage
     }
 }

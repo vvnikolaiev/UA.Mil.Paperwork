@@ -27,10 +27,10 @@
     { "Name": "RESPONSIBLE_FOR_STORAGE_POSITION", "Value": "Відповідальна особа за зберіганння й утримання військового майна служби правопорядку", "Comment": "" }
   ],
   "TechnicalStateReport": [
-    { "Name": "SERVICE_NAME", "Value": "правопорядок", "Comment": "" },
-    { "Name": "MILITARY_UNIT", "Value": "А1488", "Comment": "" },
-    { "Name": "UNIT_COMMANDER", "Value": "Іван ПЕТРЕНКО", "Comment": "" },
-    { "Name": "COMMANDER_RANK", "Value": "старший лейтенант", "Comment": "" },
+    { "Name": "SERVICE", "Value": "правопорядок", "Comment": "" },
+    { "Name": "MIL_UNIT", "Value": "А1488", "Comment": "" },
+    { "Name": "UNIT_COMM", "Value": "Іван ПЕТРЕНКО", "Comment": "" },
+    { "Name": "COMM_RANK", "Value": "старший лейтенант", "Comment": "" },
     { "Name": "COMMISION_HEAD_NAME", "Value": "Андрій КОВАЛЕНКО", "Comment": "" },
     { "Name": "COMMISION_HEAD_RANK", "Value": "ст. лейтенант", "Comment": "" },
     { "Name": "COMMISION_HEAD_POSITION", "Value": "Начальник групи логістики штабу", "Comment": "" },
@@ -129,5 +129,40 @@
     { "Name": "HANDED_PERSON_POSITION", "Value": "нач. складу", "Comment": "" },
     { "Name": "HANDED_PERSON_RANK", "Value": "солдат", "Comment": "" },
     { "Name": "HANDED_PERSON_NAME", "Value": "Григорій КВІТКА", "Comment": "" }
+  ],
+  "Invoice": [
+    { "Name": "MIL_UNIT", "Value": "А1488", "Comment": "" },
+    { "Name": "EDRPOU", "Value": "14881488", "Comment": "" },
+    { "Name": "SERVICE", "Value": "служби правопорядку", "Comment": "" }
+  ],
+  "WriteOffPackage": [
+    {
+      "Name": "MIL_UNIT",
+      "Value": "А1488",
+      "Comment": ""
+    },
+    {
+      "Name": "UNIT_CITY",
+      "Value": "пгт Білочервневе",
+      "Comment": ""
+    },
+    { "Name": "HEAD_OF_SERVICE_NAME", "Value": "Петро ГРИЩЕНКО", "Comment": "" },
+    { "Name": "HEAD_OF_SERVICE_RANK", "Value": "лейтенант", "Comment": "" },
+    { "Name": "HEAD_OF_SERVICE_POSITION", "Value": "Начальник групи правопорядку – начальник правопорядку", "Comment": "" },
+    {
+      "Name": "HEAD_OF_STAFF_NAME",
+      "Value": "Ігор Жокеєнко",
+      "Comment": ""
+    },
+    {
+      "Name": "HEAD_OF_STAFF_RANK",
+      "Value": "генерал",
+      "Comment": ""
+    },
+    {
+      "Name": "HEAD_OF_STAFF_POSITION",
+      "Value": "Начальник штабу",
+      "Comment": ""
+    }
   ]
 }

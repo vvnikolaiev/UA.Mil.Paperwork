@@ -72,6 +72,7 @@ namespace Mil.Paperwork.Domain.Reports
             var reportConfig = _reportDataService.GetReportParametersDictionary(ReportType.CommissioningAct);
 
             document.ReplaceField(CommissioningActHelper.FIELD_DOC_NUMBER, reportData.DocumentNumber);
+            document.ReplaceField(CommissioningActHelper.FIELD_DOC_DATE, reportData.DocumentDate.ToString(ReportHelper.DATE_FORMAT));
             document.ReplaceField(CommissioningActHelper.FIELD_ASSET_NAME, reportData.Asset.Name);
             document.ReplaceField(CommissioningActHelper.FIELD_ASSET_STATE, reportData.AssetState);
 
@@ -120,6 +121,11 @@ namespace Mil.Paperwork.Domain.Reports
                 {
                     row.Cells[CommissioningActHelper.COLUMN_WarrantyPeriod].AddNumber(productData.WarrantyPeriodMonths, fontSize);
                 }
+                if (productData.YearManufactured > 0)
+                {
+                    row.Cells[CommissioningActHelper.COLUMN_ManufacturedYear].AddNumber(productData.YearManufactured, fontSize);
+                }
+
                 row.Cells[CommissioningActHelper.COLUMN_SerialNumber].AddText(identifier.SerialNumber, fontSize);
 
                 totalCount += count;
@@ -140,7 +146,7 @@ namespace Mil.Paperwork.Domain.Reports
             var textSummaryRow = table.AddRow(false);
             textSummaryRow.Cells[0].AddText(SummaryRowTotalText, CommissioningActHelper.TABLE_FONT_SIZE, HorizontalAlignment.Right);
             textSummaryRow.Cells[CommissioningActHelper.COLUMN_Count].AddNumber(count, CommissioningActHelper.TABLE_FONT_SIZE);
-            textSummaryRow.Cells[CommissioningActHelper.COLUMN_Price].AddPrice(price, CommissioningActHelper.TABLE_FONT_SIZE);
+            textSummaryRow.Cells[CommissioningActHelper.COLUMN_Price].AddPrice(totalSum, CommissioningActHelper.TABLE_FONT_SIZE);
             textSummaryRow.Cells[CommissioningActHelper.COLUMN_TotalPrice].AddPrice(totalSum, CommissioningActHelper.TABLE_FONT_SIZE);
         }
     }

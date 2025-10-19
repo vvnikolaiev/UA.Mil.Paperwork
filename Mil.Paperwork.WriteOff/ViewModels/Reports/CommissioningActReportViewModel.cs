@@ -1,7 +1,5 @@
 ﻿using Microsoft.Win32;
-using Mil.Paperwork.Domain.DataModels;
 using Mil.Paperwork.Domain.DataModels.ReportData;
-using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
@@ -25,6 +23,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         private string _shortName;
         private decimal _price;
         private int _warrantyPeriodMonths;
+        private int _yearManufactured;
         private string _measurementUnitName;
         private MeasurementUnitViewModel _measurementUnit;
         private string _assetState;
@@ -33,6 +32,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         private int _count = 1;
         private string _countText = string.Empty;
         private string _documentNumber;
+        private DateTime _documentDate = DateTime.Now.Date;
         private string _commissioningLocation;
         private string _shortCharacteristic;
         private string _assetCompliance;
@@ -89,6 +89,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             set => SetProperty(ref _warrantyPeriodMonths, value);
         }
 
+        public int YearManufactured
+        {
+            get => _yearManufactured;
+            set => SetProperty(ref _yearManufactured, value);
+        }
+
         public string SerialNumber
         {
             get => _serialNumber;
@@ -111,6 +117,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         {
             get => _documentNumber;
             set => SetProperty(ref _documentNumber, value);
+        }
+
+        public DateTime DocumentDate
+        {
+            get => _documentDate;
+            set => SetProperty(ref _documentDate, value);
         }
 
         public string CommissioningLocation
@@ -278,7 +290,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
             if (person != null)
             {
-                PersonAcceptedName = person.Name;
+                PersonAcceptedName = person.FullName;
                 PersonAcceptedPosition = person.Position;
                 PersonAcceptedRank = person.Rank;
             }
@@ -294,7 +306,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
             if (person != null)
             {
-                PersonHandedName = person.Name;
+                PersonHandedName = person.FullName;
                 PersonHandedPosition = person.Position;
                 PersonHandedRank = person.Rank;
             }
@@ -315,6 +327,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
                 Price = product.Price;
                 MeasurementUnitName = product.MeasurementUnit;
                 WarrantyPeriodMonths = product.WarrantyPeriodMonths;
+                YearManufactured = product.YearManufactured;
             }
             else
             {
@@ -330,13 +343,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             Conclusion = "ввести в експлуатацію";
 
             var reportParameters = _reportDataService.GetReportParametersDictionary(ReportType.CommissioningAct);
-
-            //PersonAcceptedName = reportParameters.GetValueOrDefault(CommissioningActHelper.FIELD_ACCEPTED_PERSON_NAME, string.Empty);
-            //PersonAcceptedPosition = reportParameters.GetValueOrDefault(CommissioningActHelper.FIELD_ACCEPTED_PERSON_POSITION, string.Empty);
-            //PersonAcceptedRank = reportParameters.GetValueOrDefault(CommissioningActHelper.FIELD_ACCEPTED_PERSON_RANK, string.Empty);
-            //PersonHandedName = reportParameters.GetValueOrDefault(CommissioningActHelper.FIELD_HANDED_PERSON_NAME, string.Empty);
-            //PersonHandedPosition = reportParameters.GetValueOrDefault(CommissioningActHelper.FIELD_HANDED_PERSON_POSITION, string.Empty);
-            //PersonHandedRank = reportParameters.GetValueOrDefault(CommissioningActHelper.FIELD_HANDED_PERSON_RANK, string.Empty);
 
             CommissioningLocation = reportParameters.GetValueOrDefault(CommissioningActHelper.FIELD_COMMISSIONED_LOCATIONN, string.Empty);
         }
@@ -367,21 +373,22 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
                 Price = Price,
                 ShortName = ShortName,
                 MeasurementUnit = MeasurementUnitName,
-                WarrantyPeriodMonths = WarrantyPeriodMonths
+                WarrantyPeriodMonths = WarrantyPeriodMonths,
+                YearManufactured = YearManufactured,
             };
 
             var identifiers = ProductIdentifiers.Cast<IProductIdentification>().ToList();
 
             var personAccepted = new PersonDTO(_personAcceptedName, _personAcceptedPosition, _personAcceptedRank);
-            var personHanded = new PersonDTO(_personHandedName, _personAcceptedPosition, _personHandedRank);
+            var personHanded = new PersonDTO(_personHandedName, _personHandedPosition, _personHandedRank);
 
             var reportData = new CommissioningActReportData
             {
                 DocumentNumber = DocumentNumber,
+                DocumentDate = DocumentDate,
                 Asset = product,
                 DestinationFolder = folderName,
                 AssetIds = identifiers,
-                //SerialNumber = SerialNumber,
                 Count = Count,
                 CountText = CountText,
                 AssetState = _assetState,

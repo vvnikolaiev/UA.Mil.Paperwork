@@ -6,6 +6,8 @@ namespace Mil.Paperwork.WriteOff.Enums
     {
         [Description("Списання майна")]
         WriteOff,
+        [Description("Залишкова вартість")]
+        ResidualValue,
         [Description("Акт тех. стану (№11)")]
         TechnicalState11,
         [Description("Акт тех. стану (№7)")]
@@ -14,8 +16,8 @@ namespace Mil.Paperwork.WriteOff.Enums
         Valuation,
         [Description("Розукомплектування")]
         Dismantling,
-        //[Description("Накладна (вимога)")]
-        //Invoice,
+        [Description("Накладна (вимога)")]
+        Invoice,
         [Description("Акт введення в експлуатацію")]
         CommisioningAct,
     }

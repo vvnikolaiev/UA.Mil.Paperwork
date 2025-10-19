@@ -7,6 +7,7 @@
              xmlns:ViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels.Reports" 
              xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=ViewModels:AssetInitialTechnicalStateViewModel}"
              d:DesignHeight="450" d:DesignWidth="800" Grid.IsSharedSizeScope="True">
     <UserControl.Resources>
         <Style TargetType="TextBlock">
@@ -20,118 +21,186 @@
             <Grid Grid.IsSharedSizeScope="True">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="115" />
-                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
+                
+                <!--<TextBlock Grid.Row="1" Grid.Column="0" Text="Коротка назва"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Asset.ShortName}" TextWrapping="Wrap"/>-->
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Назва"/>
-
-                <ComboBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="5"
-                  ItemsSource="{Binding ProductSelector.Products}" 
-                  Text="{Binding Asset.Name}"
-                  SelectedItem="{Binding ProductSelector.SelectedProduct, UpdateSourceTrigger=PropertyChanged}" 
-                  IsEditable="True"
-                  HorizontalAlignment="Stretch"
-                  VerticalAlignment="Center">
-                    <Behaviors:Interaction.Triggers>
-                        <Behaviors:EventTrigger EventName="SelectionChanged">
-                            <Behaviors:InvokeCommandAction Command="{Binding ProductSelectedCommand}" />
-                        </Behaviors:EventTrigger>
-                    </Behaviors:Interaction.Triggers>
-                </ComboBox>
-
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Коротка назва"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Asset.ShortName}" TextWrapping="Wrap"/>
-
-                <TextBlock Grid.Row="1" Grid.Column="2" Text="Серійний номер"/>
-                <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding Asset.SerialNumber}" TextWrapping="Wrap"/>
-
-                <TextBlock Grid.Row="1" Grid.Column="4" Text="Код номенклатури"/>
-                <TextBox Grid.Row="1" Grid.Column="5" Text="{Binding Asset.NomenclatureCode}" TextWrapping="Wrap"/>
-
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Кількість"/>
-                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Asset.Count}" TextWrapping="Wrap"/>
-
-                <TextBlock Grid.Row="2" Grid.Column="2" Text="Ціна"/>
-                <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding Asset.Price}" TextWrapping="Wrap"/>
-
-                <TextBlock Grid.Row="2" Grid.Column="4" Text="Одиниця виміру"/>
-                <ComboBox Grid.Row="2" Grid.Column="5" 
-                          ItemsSource="{Binding MeasurementUnits}" 
-                          Text="{Binding Asset.MeasurementUnit}"
-                          DisplayMemberPath="ShortName"
-                          IsEditable="True"
-                          HorizontalAlignment="Stretch"
-                          VerticalAlignment="Center" />
-
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="Категорія"/>
-                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Asset.Category}" TextWrapping="Wrap"/>
-
-                <TextBlock Grid.Row="3" Grid.Column="2" Text="Статус" />
-                <ComboBox Grid.Row="3" Grid.Column="3"
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Категорія" />
+                <ComboBox Grid.Row="0" Grid.Column="1"
+                          Width="150"
                           ItemsSource="{Binding EventTypes}" 
                           SelectedItem="{Binding EventType}"
                           Style="{StaticResource EnumDescriptionComboBox}"
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Center"/>
 
-                <TextBlock Grid.Row="4" Grid.Column="0" Text="Реєстр. номер"/>
-                <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Asset.TSRegisterNumber}" TextWrapping="Wrap"/>
+                <DataGrid Grid.Row="1" Grid.ColumnSpan="99" 
+                          x:Name="AssetsDataGrid"
+                          DataContext="{Binding AssetsTable}"
+                          ItemsSource="{Binding AssetsCollection}" 
+                          SelectedItem="{Binding SelectedAsset}" 
+                          EnableRowVirtualization="False"
+                          AutoGenerateColumns="False" CanUserAddRows="False"
+                          Margin="5"
+                          Height="150">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Назва" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ComboBox ItemsSource="{Binding DataContext.ProductsSelector.Products, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                              Text="{Binding Name}"
+                                              SelectedValue="{Binding SelectedProductId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                              SelectedValuePath="AlmostUniqueID"
+                                              IsEditable="True"
+                                              HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Center">
+                                        <Behaviors:Interaction.Triggers>
+                                            <Behaviors:EventTrigger EventName="SelectionChanged">
+                                                <Behaviors:InvokeCommandAction Command="{Binding ProductSelectedCommand}" 
+                                                                               CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=ComboBox}}" />
+                                            </Behaviors:EventTrigger>
+                                        </Behaviors:Interaction.Triggers>
+                                    </ComboBox>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="С/Н" Binding="{Binding SerialNumber}" Width="80"
+                                            ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
+                        <DataGridTextColumn Header="Код ном." Binding="{Binding NomenclatureCode}" Width="70"
+                                            ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
+                        <DataGridTemplateColumn Header="Од. виміру" Width="60">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ComboBox ItemsSource="{Binding DataContext.MeasurementUnits, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                              Text="{Binding MeasurementUnit}"
+                                              DisplayMemberPath="ShortName"
+                                              IsEditable="True"
+                                              HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Center" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="К-сть" Binding="{Binding Count}" Width="40"
+                                            ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
+                        <DataGridTextColumn Header="Ціна" Binding="{Binding Price}" Width="60"
+                                            ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
+                        <DataGridTextColumn Header="Кат-ія" Binding="{Binding Category}" Width="50"
+                                            ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
 
-                <TextBlock Grid.Row="4" Grid.Column="2" Text="Код документу"/>
-                <TextBox Grid.Row="4" Grid.Column="3" Text="{Binding Asset.TSDocumentNumber}" TextWrapping="Wrap"/>
+                        <DataGridTemplateColumn Header="Взято на облік" Width="*" MaxWidth="110">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DatePicker SelectedDate="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Language="uk-UA"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTextColumn Header="Рік" Binding="{Binding YearManufacured}" Width="50"
+                                            ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
+
+                        <DataGridTextColumn Header="Ресурс, р." Binding="{Binding ResourceYears}" Width="65"
+                                            ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
+
+                        <DataGridTextColumn Header="№ док-та" Binding="{Binding TSRegisterNumber}" Width="50"
+                                    ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
+
+                        <DataGridTextColumn Header="Код д-та" Binding="{Binding TSDocumentNumber}" Width="50"
+                                    ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                
+                
             </Grid>
         </ContentControl>
 
         <ContentControl x:Key="TechnicalStateViewLayout"
                         d:DataContext="{d:DesignInstance Type=ViewModels:AssetTechnicalStateViewModel}">
-            <Grid Grid.Row="5" Grid.ColumnSpan="7">
+            <Grid Grid.Row="5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="115" />
                     <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="115" />
                     <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="115" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="115" />
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
+                
+                <!--<TextBlock Grid.Row="0" Grid.Column="4" Text="Коеф. зберігання"/>-->
+                <!--<TextBox Grid.Row="1" Grid.Column="5" Text="{Binding Asset.WearAndTearCoeff}" TextWrapping="Wrap"/>-->
 
-                <ContentControl Grid.Row="0" Grid.ColumnSpan="99"
-                                Content="{StaticResource InitialTechnicalStateViewLayout}"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Наказ списання №" 
+                           FontWeight="Bold"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding OrdenNumber}" TextWrapping="Wrap"/>
 
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Взято на облік"/>
-                <DatePicker Grid.Row="1" Grid.Column="1" SelectedDate="{Binding Asset.StartDate}" Language="uk-UA"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="від"/>
+                <DatePicker Grid.Row="0" Grid.Column="3" SelectedDate="{Binding OrdenDate}" Language="uk-UA"/>
 
-                <TextBlock Grid.Row="1" Grid.Column="2" Text="Дата звіту"/>
-                <DatePicker Grid.Row="1" Grid.Column="3" SelectedDate="{Binding ReportDate}" Language="uk-UA"/>
+                <TextBlock Grid.Row="0" Grid.Column="4" Text="Дата документу" />
+                <DatePicker Grid.Row="0" Grid.Column="5" SelectedDate="{Binding DocumentDate}" Language="uk-UA"/>
 
-                <TextBlock Grid.Row="1" Grid.Column="4" Text="Коеф. зберігання"/>
-                <TextBox Grid.Row="1" Grid.Column="5" Text="{Binding Asset.WearAndTearCoeff}" TextWrapping="Wrap"/>
+                <TextBlock Grid.Row="0" Grid.Column="6" Text="Дата події"/>
+                <DatePicker Grid.Row="0" Grid.Column="7" SelectedDate="{Binding EventDate}" Language="uk-UA"/>
 
-                <TextBlock Grid.Row="4" Grid.Column="0" Text="Причина"/>
-                <TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="5"
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Причина"/>
+                <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="5"
                          Text="{Binding Reason}" TextWrapping="Wrap"
                          Height="50"/>
 
+                <CheckBox Grid.Row="4" 
+                          Grid.ColumnSpan="5"
+                          Content="Формувати Акти Списання, якщо відсутній Серійний Номер"
+                          VerticalAlignment="Center"
+                          IsChecked="{Binding GenerateWriteOffActs}" 
+                          Margin="5"/>
+
+                <CheckBox Grid.Row="5" Grid.ColumnSpan="5" 
+                          Margin="5 5 5 0"
+                          Content="Сформувати пакет документів на списання" 
+                          IsChecked="{Binding GenerateWriteOffPackage}" />
+
+                <StackPanel Grid.Row="6" Grid.ColumnSpan="7"
+                            Orientation="Horizontal" Margin="5 0"
+                            IsEnabled="{Binding GenerateWriteOffPackage}">
+
+                    <TextBlock Text="Номер книги обліку втрат:" FontWeight="Bold"/>
+                    <TextBox Text="{Binding BookOfLossesNumber}" TextWrapping="Wrap"/>
+
+                    <TextBlock Text="рік:"/>
+                    <TextBox Text="{Binding BookOfLossesYear}" TextWrapping="Wrap"/>
+
+                    <TextBlock Text="сторінка:" />
+                    <TextBox Text="{Binding BookOfLossesPage}" TextWrapping="Wrap"/>
+
+                    <TextBlock Text="дата запису:"/>
+                    <DatePicker SelectedDate="{Binding BookOfLossesExtractDate}" Language="uk-UA"/>
+
+                </StackPanel>
+
+                <ContentControl Grid.Row="7" Grid.ColumnSpan="99"
+                                Content="{StaticResource InitialTechnicalStateViewLayout}"/>
+
+                
+                
             </Grid>
         </ContentControl>
 
@@ -146,18 +215,28 @@
 
     <Grid Background="Wheat" Grid.IsSharedSizeScope="True">
         <Grid.RowDefinitions>
+            <RowDefinition Height="5" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="5" />
+        </Grid.ColumnDefinitions>
 
+        <ContentControl Grid.Row="1" Grid.Column="1" 
+                        Content="{Binding}"/>
 
-        <ContentControl Grid.Row="0" Content="{Binding}" />
-
-        <StackPanel Grid.Row="100" Grid.ColumnSpan="9" Orientation="Horizontal" HorizontalAlignment="Center">
+        <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button Content="Відкрити конфігурацію" Command="{Binding OpenConfigurationCommand}"/>
             <Button Content="Створити документ" Command="{Binding GenerateReportCommand}"/>
+            <Button Content="Додати майно" Command="{Binding AssetsTable.AddRowCommand}" />
+            <Button Content="Видалити майно" Command="{Binding AssetsTable.RemoveRowCommand }" />
+            <Button Content="Очистити таблицю" Command="{Binding AssetsTable.ClearTableCommand}"/>
             <Button Content="Закрити" Command="{Binding CloseCommand}"/>
         </StackPanel>
     </Grid>

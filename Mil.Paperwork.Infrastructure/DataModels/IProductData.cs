@@ -7,6 +7,8 @@
         string MeasurementUnit { get; set; }
         string NomenclatureCode { get; set; }
         int WarrantyPeriodMonths { get; set; }
+        int YearManufactured { get; set; }
+        int ResourceYears { get; set; }
 
         // shouldn't be here. It simplifies creating reports but leads to make more mistakes
         decimal Price { get; set; }

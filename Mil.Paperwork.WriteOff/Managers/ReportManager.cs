@@ -7,32 +7,38 @@ namespace Mil.Paperwork.WriteOff.Managers
 {
     public class ReportManager
     {
-        private readonly IReportService<WriteOffReportData> _qualityStateReportService;
-        private readonly IReportService<WriteOffReportData> _residualValueReportService;
+        private readonly IReportService<IQualityStateReportData> _qualityStateReportService;
+        private readonly IReportService<IResidualValueReportData> _residualValueReportService;
         private readonly IReportService<ITechnicalStateReportData> _technicalStateReportService;
         private readonly IReportService<IInitialTechnicalStateReportData> _initialTechnicalStateReportService;
         private readonly IReportService<IAssetValuationReportData> _valuationReportService;
         private readonly IReportService<IDismantlingReportData> _dismantlingReportService;
         private readonly IReportService<ICommissioningActReportData> _commissioningActService;
+        private readonly IReportService<IInvoceReportData> _invoiceReportService;
+        private readonly IReportService<ITechnicalStateReportData> _writeOffReportsPackageService;
 
         public ReportManager(
             QualityStateReportService qualityStateReportService,
             TechnicalStateReportService technicalStateReportService,
+            WriteOffReportPackageService writeOffReportsPackageService,
             ResidualValueReportService residualValueService,
             AssetValuationReportService valuationReportService,
             AssetDismantlingReportService dismantlingReportService,
-            CommissioningActService commissioningActService)
+            CommissioningActService commissioningActService,
+            InvoiceReportService invoiceReportService)
         {
             _qualityStateReportService = qualityStateReportService;
             _technicalStateReportService = technicalStateReportService;
+            _writeOffReportsPackageService = writeOffReportsPackageService;
             _initialTechnicalStateReportService = technicalStateReportService;
             _residualValueReportService = residualValueService;
             _valuationReportService = valuationReportService;
             _dismantlingReportService = dismantlingReportService;
             _commissioningActService = commissioningActService;
+            _invoiceReportService = invoiceReportService;
         }
 
-        public void GenerateWriteOffReport(WriteOffReportData reportData)
+        public void GenerateWriteOffReport(ObsoleteWriteOffReportData reportData)
         {
             var qualityStateReportResult = _qualityStateReportService.TryGenerateReport(reportData);
             var technicalStateReportResult = _technicalStateReportService.TryGenerateReport(reportData);
@@ -53,6 +59,14 @@ namespace Mil.Paperwork.WriteOff.Managers
             MessageBox.Show(message);
         }
 
+        public void GenerateResidualValueReport(IResidualValueReportData reportData)
+        {
+            var residualValueReportResult = _residualValueReportService.TryGenerateReport(reportData);
+
+            var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.ResidualValueReportName, residualValueReportResult);
+            MessageBox.Show(status);
+        }
+
         public void GenerateInitialTechnicalStateReport(IInitialTechnicalStateReportData reportData)
         {
             var technicalStateReportResult = _initialTechnicalStateReportService.TryGenerateReport(reportData);
@@ -64,6 +78,11 @@ namespace Mil.Paperwork.WriteOff.Managers
         public void GenerateTechnicalStateReport(ITechnicalStateReportData reportData)
         {
             var technicalStateReportResult = _technicalStateReportService.TryGenerateReport(reportData);
+
+            if (reportData.BookOfLossesExtractData != null)
+            {
+                _writeOffReportsPackageService.TryGenerateReport(reportData);
+            }
 
             var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.TechnicalStateReportName, technicalStateReportResult);
             MessageBox.Show(status);
@@ -91,6 +110,14 @@ namespace Mil.Paperwork.WriteOff.Managers
             var commissioningActResult = _commissioningActService.TryGenerateReport(reportData);
 
             var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.CommisioninaActName, commissioningActResult);
+            MessageBox.Show(status);
+        }
+
+        public void GenerateInvoice(IInvoceReportData reportData)
+        {
+            var invocieResult = _invoiceReportService.TryGenerateReport(reportData);
+
+            var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.InvoiceName, invocieResult);
             MessageBox.Show(status);
         }
     }

@@ -1,10 +1,9 @@
 ﻿using Mil.Paperwork.Domain.Enums;
-using Mil.Paperwork.Infrastructure.DataModels;
+using Mil.Paperwork.Infrastructure.Enums;
 
 namespace Mil.Paperwork.Domain.DataModels.Assets
 {
-
-    public abstract class AssetInfo : IAssetInfo
+    public class AssetInfo : IAssetInfo
     {
         public string Name { get; set; }
         public string ShortName { get; set; }
@@ -15,18 +14,14 @@ namespace Mil.Paperwork.Domain.DataModels.Assets
         public decimal Price { get; set; }
         public int Count { get; set; } = 1;
         public DateTime StartDate { get; set; } = new DateTime(2023, 01, 01);
-
-        public DateTime? WriteOffDateTime { get; set; }
         public EventType EventType { get; set; }
+        public virtual AssetType Service => AssetType.Default;
 
         public string TSRegisterNumber { get; set; }
         public string TSDocumentNumber { get; set; }
 
         public int WarrantyPeriodMonths { get; set; } = 1;
-
-        public abstract decimal TotalWearCoefficient { get; }
-
-        // https://zakon.rada.gov.ua/laws/show/759-98-%D0%BF#n330
-        public abstract IList<decimal> GetCoefficients();
+        public int YearManufactured { get; set; } = 2023;
+        public int ResourceYears { get; set; } = 5;
     }
 }

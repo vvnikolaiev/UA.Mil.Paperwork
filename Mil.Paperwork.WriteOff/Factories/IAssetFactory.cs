@@ -5,6 +5,6 @@ namespace Mil.Paperwork.WriteOff.Factories
 {
     public interface IAssetFactory
     {
-        AssetViewModel CreateAssetViewModel();
+        WriteOffAssetViewModel CreateAssetViewModel();
     }
 }

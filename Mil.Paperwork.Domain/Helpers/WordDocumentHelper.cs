@@ -11,6 +11,21 @@ namespace Mil.Paperwork.Domain.Helpers
         private const string StartFieldSymbol = "«";
         private const string EndFieldSymbol = "»";
 
+
+        public static Table? GetTable(this Document document, string tableName)
+        {
+            if (document == null || string.IsNullOrEmpty(tableName))
+            {
+                throw new ArgumentException("Document or table name cannot be null or empty.");
+            }
+
+            var tables = document.Sections[0].Tables.Cast<Table>().ToList();
+
+            var table = tables.FirstOrDefault(x => x.Title == tableName);
+
+            return table;
+
+        }
         public static void ReplaceFields(this Document document, Dictionary<string, string> fieldsMap)
         {
             if (fieldsMap != null)
@@ -22,7 +37,7 @@ namespace Mil.Paperwork.Domain.Helpers
             }
         }
 
-        public static void ReplaceField(this Document document, string fieldName, string value)
+        public static void ReplaceField(this Document document, string fieldName, string? value)
         {
             value ??= string.Empty;
 
@@ -36,7 +51,6 @@ namespace Mil.Paperwork.Domain.Helpers
                 {
                     fieldName += EndFieldSymbol;
                 }
-
 
                 document.Replace(fieldName, value, false, true);
             }

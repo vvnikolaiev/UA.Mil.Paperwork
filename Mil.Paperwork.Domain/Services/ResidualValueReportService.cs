@@ -1,4 +1,5 @@
-﻿using Mil.Paperwork.Domain.DataModels.ReportData;
+﻿using Mil.Paperwork.Domain.DataModels.Assets;
+using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Domain.Reports;
 using Mil.Paperwork.Infrastructure.Services;
@@ -6,7 +7,7 @@ using System.IO;
 
 namespace Mil.Paperwork.Domain.Services
 {
-    public class ResidualValueReportService : IReportService<WriteOffReportData>
+    public class ResidualValueReportService : IReportService<IResidualValueReportData>
     {
         private readonly IFileStorageService _fileStorage;
         private readonly IReportDataService _reportDataService;
@@ -17,21 +18,27 @@ namespace Mil.Paperwork.Domain.Services
             _fileStorage = fileStorage;
         }
 
-        public bool TryGenerateReport(WriteOffReportData reportData)
+        public bool TryGenerateReport(IResidualValueReportData reportData)
         {
-            var result = false;
+            var result = true;
 
             try
             {
                 var report = new ResidualValueReport(_reportDataService);
-                if (report.TryCreate(reportData))
+
+                foreach (var asset in reportData.Assets)
                 {
-                    byte[] reportBytes = report.GetReportBytes();
+                    var residualReportData = new ResidualValueReportData();
 
-                    var outputPath = GetOutputReportFilePath(reportData);
-                    _fileStorage.SaveFile(outputPath, reportBytes);
+                    result &= report.TryCreate(asset, reportData.MetalCosts, reportData.AssetType, reportData.EventDate);
 
-                    result = true;
+                    if (result)
+                    {
+                        byte[] reportBytes = report.GetReportBytes();
+
+                        var outputPath = GetOutputReportFilePath(asset, reportData);
+                        _fileStorage.SaveFile(outputPath, reportBytes);
+                    }
                 }
 
                 Console.WriteLine("Дані додано успішно!");
@@ -44,13 +51,25 @@ namespace Mil.Paperwork.Domain.Services
             return result;
         }
 
-        private string GetOutputReportFilePath(WriteOffReportData reportData)
+        private string GetOutputReportFilePath(IAssetInfo asset, IResidualValueReportData reportData)
         {
+            const int MAX_NAME_LENGTH = 30;
             var destinationPath = reportData.GetDestinationPath();
             var addParam = (reportData.EventReportNumber ?? 0) > 0
                 ? reportData.EventReportNumber.ToString()
-                : reportData.ReportDate.ToString("dd-MM-yyyy");
-            var fileName = string.Format(ResidualValueReportHelper.OUTPUT_REPORT_NAME_FORMAT, addParam);
+                : reportData.EventDate.ToString("dd-MM-yyyy");
+
+
+            var serialNumber = string.IsNullOrEmpty(asset.SerialNumber) ? string.Empty: $"{asset.SerialNumber}";
+            var shortName = string.IsNullOrEmpty(asset.ShortName) ? serialNumber : $"{asset.ShortName} {serialNumber}";
+
+            var name = string.IsNullOrEmpty(shortName) ? asset.Name : shortName;
+
+            name = name.Length > MAX_NAME_LENGTH ? name.Substring(MAX_NAME_LENGTH) : name;
+
+            var rawFileName = string.Format(ResidualValueReportHelper.OUTPUT_REPORT_NAME_FORMAT, $"{addParam}, {name}");
+
+            var fileName = PathsHelper.SanitizeFileName(rawFileName);
             var outputPath = Path.Combine(destinationPath, fileName);
 
             return outputPath;

@@ -19,6 +19,7 @@ namespace Mil.Paperwork.WriteOff.Configuration
             services.AddTransient<AssetValuationViewModel>();
             services.AddTransient<AssetDismantlingViewModel>();
             services.AddTransient<CommissioningActReportViewModel>();
+            services.AddTransient<InvoiceReportViewModel>();
             services.AddTransient<ImportViewModel>();
 
             // Register Views

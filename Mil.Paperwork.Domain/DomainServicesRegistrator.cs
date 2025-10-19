@@ -11,10 +11,12 @@ namespace Mil.Paperwork.Domain
 
             services.AddSingleton<QualityStateReportService>();
             services.AddSingleton<TechnicalStateReportService>();
+            services.AddSingleton<WriteOffReportPackageService>();
             services.AddSingleton<ResidualValueReportService>();
             services.AddSingleton<AssetDismantlingReportService>();
             services.AddSingleton<AssetValuationReportService>();
             services.AddSingleton<CommissioningActService>();
+            services.AddSingleton<InvoiceReportService>();
 
             services.AddSingleton<IExportService, ExportService>();
             services.AddSingleton<IImportService, ImportService>();

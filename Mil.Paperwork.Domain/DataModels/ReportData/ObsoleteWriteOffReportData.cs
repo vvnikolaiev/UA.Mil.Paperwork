@@ -1,13 +1,14 @@
 ﻿using Mil.Paperwork.Domain.DataModels.Assets;
+using Mil.Paperwork.Domain.DataModels.Parameters;
 using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
-using System.Security.Policy;
 
 namespace Mil.Paperwork.Domain.DataModels.ReportData
 {
-    public class WriteOffReportData : ITechnicalStateReportData, IDismantlingReportData, IAssetValuationReportData
+    [Obsolete]
+    public class ObsoleteWriteOffReportData : ITechnicalStateReportData, IDismantlingReportData, IAssetValuationReportData, IResidualValueReportData, IQualityStateReportData
     {
         public int? EventReportNumber { get; set; }
 
@@ -23,17 +24,28 @@ namespace Mil.Paperwork.Domain.DataModels.ReportData
 
         public string Reason { get; set; }
         
-        public DateTime ReportDate { get; set; }
+        public DateTime DocumentDate { get; set; } = DateTime.Now.Date;
+
+        public DateTime EventDate { get; set; }
+
+        public int OrdenNumber { get; set; }
+
+        public DateTime OrdenDate { get; set; }
 
         public IList<IAssetInfo> Assets { get; set; }
 
+        public IDictionary<MetalType, decimal> MetalCosts { get; set; }
         public IList<AssetDismantlingData> Dismantlings { get; set; }
 
         public IList<IAssetValuationData?> ValuationData { get; set; }
 
+        public bool GenerateWriteOffActs { get; set; } = true;
+
+        public IBookExtractData BookOfLossesExtractData { get; set; }
+
         public string GetDestinationPath()
         {
-            var destinationPath = PathsHelper.GetDestinationPath(DestinationFolder, EventReportNumber, ReportDate);
+            var destinationPath = PathsHelper.GetDestinationPath(DestinationFolder, EventReportNumber, EventDate);
             return destinationPath;
         }
 

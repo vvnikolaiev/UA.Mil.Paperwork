@@ -20,9 +20,9 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
 
-        private AssetViewModel _assetViewModel;
+        private AssetsTableViewModel _assetsTable;
         private EventType _eventType;
-        
+
         public override string Header => "Тех. стан (№7)";
 
         public EventType EventType
@@ -31,19 +31,16 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             set => SetProperty(ref _eventType, value);
         }
 
-        public AssetViewModel Asset
+        public AssetsTableViewModel AssetsTable
         {
-            get => _assetViewModel;
-            set => SetProperty(ref _assetViewModel, value);
+            get => _assetsTable;
+            set => SetProperty(ref _assetsTable, value);
         }
-
-        public ProductSelectionViewModel ProductSelector { get; }
 
         public ObservableCollection<EventType> EventTypes { get; private set; }
 
         public ObservableCollection<MeasurementUnitViewModel> MeasurementUnits { get; }
 
-        public ICommand ProductSelectedCommand { get; }
         public ICommand GenerateReportCommand { get; }
         public ICommand CloseCommand { get; }
         public ICommand OpenConfigurationCommand { get; }
@@ -53,14 +50,11 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             _reportManager = reportManager;
             _dataService = dataService;
 
-            _assetViewModel = assetFactory.CreateAssetViewModel();
-
-            ProductSelector = new ProductSelectionViewModel(_dataService);
+            AssetsTable = new AssetsTableViewModel(assetFactory, dataService);
 
             FillAssetTypesCollection();
             MeasurementUnits = [.. _dataService.LoadMeasurementUnitsData().Select(x => new MeasurementUnitViewModel(x))];
 
-            ProductSelectedCommand = new DelegateCommand(ProductSelectedExecute);
             GenerateReportCommand = new DelegateCommand(GenerateReport);
             CloseCommand = new DelegateCommand(CloseCommandExecute);
             OpenConfigurationCommand = new DelegateCommand(OpenConfigurationCommandExecute);
@@ -73,7 +67,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             if (folderDialog.ShowDialog() == true)
             {
                 var folderName = folderDialog.FolderName;
-                var assets = new List<IAssetInfo>() { _assetViewModel.ToAssetInfo(EventType) };
+                var assets = AssetsTable.AssetsCollection.Select(x => x.ToAssetInfo(EventType)).ToArray();
 
                 GenerateReport(assets, folderName);
                 
@@ -97,30 +91,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         private void FillAssetTypesCollection()
         {
             EventTypes = [.. EnumHelper.GetValues<EventType>()];
-        }
-
-        private void ProductSelectedExecute()
-        {
-            FillProductDetails();
-        }
-
-        private void FillProductDetails()
-        {
-            var product = ProductSelector?.SelectedProduct;
-            if (product != null)
-            {
-                Asset.Name = product.Name;
-                Asset.ShortName = product.ShortName;
-                Asset.NomenclatureCode = product.NomenclatureCode;
-                Asset.Price = product.Price;
-                Asset.MeasurementUnit = product.MeasurementUnit;
-                Asset.StartDate = product.StartDate;
-                Asset.WarrantyPeriodMonths = product.WarrantyPeriodMonths;
-            }
-            else
-            {
-                OnPropertyChanged(nameof(Asset.Name));
-            }
         }
 
         private void CloseCommandExecute()

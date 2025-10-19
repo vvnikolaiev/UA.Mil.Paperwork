@@ -6,6 +6,7 @@
         ReportsConfiguration,
         ProductDictionary,
         PeopleDictionary,
-        MeasurementUnitsDictionary
+        MeasurementUnitsDictionary,
+        //CheckSum
     }
 }

@@ -12,7 +12,7 @@ namespace Mil.Paperwork.Infrastructure.Services
 
                 if (!fileInfo.Directory?.Exists ?? false)
                 {
-                    Directory.CreateDirectory(path);
+                    Directory.CreateDirectory(fileInfo.DirectoryName);
                 }
 
                 if (fileInfo.Exists)

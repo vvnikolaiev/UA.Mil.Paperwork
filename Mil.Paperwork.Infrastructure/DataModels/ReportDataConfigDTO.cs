@@ -25,5 +25,11 @@ namespace Mil.Paperwork.Infrastructure.DataModels
         
         [ReportTypeMapping(ReportType.CommissioningAct)]
         public List<ReportParameter> CommissioningAct { get; set; }
+
+        [ReportTypeMapping(ReportType.Invoice)]
+        public List<ReportParameter> Invoice { get; set; }
+
+        [ReportTypeMapping(ReportType.WriteOffPackage)]
+        public List<ReportParameter> WriteOffPackage { get; set; }
     }
 }

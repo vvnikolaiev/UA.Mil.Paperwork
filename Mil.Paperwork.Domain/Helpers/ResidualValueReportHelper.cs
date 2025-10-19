@@ -10,8 +10,11 @@ namespace Mil.Paperwork.Domain.Helpers
 
         public const string FIELD_TABLE_HEADER = "FIELD_HEADER_TITLE";
         public const string FIELD_TABLE_COLUMN_NUMBER = "FIELD_TABLE_COLUMN_NUMBER";
-        public const string FIELD_NUMBER_NAMES = "FIELD_NUMBER_NAMES";
         public const string FIELD_SUM = "FIELD_SUM";
+
+        public const string ASSET_NAME = "ASSET_NAME";
+        public const string ASSEMBLY_YEAR = "ASSEMBLY_YEAR";
+        public const string COMMISSIONED_YEAR = "COMMISSIONED_YEAR";
 
         public const string RANGE_TO_SHRINK_1_NAME = "FIELDS_TITLE";
         public const string RANGE_TO_SHRINK_2_NAME = "FIELD_RANGE_8";
@@ -29,12 +32,28 @@ namespace Mil.Paperwork.Domain.Helpers
         public const int TABLE_COLUMN_MEASUREMENT_UNIT = 3;
         public const int TABLE_COLUMN_COUNT = 4;
         public const int TABLE_COLUMN_PRICE = 5;
-        public const int TABLE_COLUMN_DATE_START = 6;
-        public const int TABLE_COLUMN_INDEXATION_COEFF = 7;
-        public const int TABLE_COLUMN_CURRENCY_CONVERSION_RATE = 9;
-        public const int TABLE_FIRST_COEFF_COLUMN = 10;
+        public const int TABLE_COLUMN_INDEXATION_COEFF = 6;
+        public const int TABLE_COLUMN_CURRENCY_CONVERSION_RATE = 8;
+        public const int TABLE_FIRST_COEFF_COLUMN = 9;
 
         public const string RESIDUAL_VALUE_SUM_FORMAT = "# ##0.00_₴";
+
+        public const string TABLE_METALS_NAME= "TableMetals";
+
+        public const int TABLE_METALS_COL_WEIGHT = 2;
+        public const int TABLE_METALS_COL_TOTAL_WEIGHT = 3;
+        public const int TABLE_METALS_COL_PRICE = 4;
+
+        public static readonly Dictionary<MetalType, int> TABLE_METALS_ROWS = new()
+        {
+            { MetalType.XAU, 0 },
+            { MetalType.XAG, 1 },
+            { MetalType.XPT, 2 },
+            { MetalType.XPD, 3 },
+            { MetalType.BLACK, 4 },
+            { MetalType.ALU, 5 },
+            { MetalType.CU, 6 }
+        };
 
         public static IList<string> GetCoefficientColumns(AssetType assetType)
         {

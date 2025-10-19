@@ -21,7 +21,9 @@
                   ItemsSource="{Binding People}"
                   AutoGenerateColumns="False" CanUserAddRows="False" Margin="5">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Ім'я та прізвище" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+                <DataGridTextColumn Header="Ім'я" Binding="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+                <DataGridTextColumn Header="Прізвище" Binding="{Binding LastName, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+                <DataGridTextColumn Header="По-батькові" Binding="{Binding Patronymic, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
                 <DataGridTextColumn Header="Звання" Binding="{Binding Rank, UpdateSourceTrigger=PropertyChanged}" Width=".25*"/>
                 <DataGridTextColumn Header="Посада" Binding="{Binding Position, UpdateSourceTrigger=PropertyChanged}" Width=".5*"/>
             </DataGrid.Columns>

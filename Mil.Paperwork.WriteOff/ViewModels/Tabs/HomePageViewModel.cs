@@ -35,6 +35,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
         public ICommand<DocumentTypeEnum> CreateReportCommand { get; }
 
         public ICommand OpenSettingsCommand { get; }
+        public ICommand CheckSumCommand { get; }
         public ICommand OpenProductsDictionaryCommand { get; }
         public ICommand OpenPeopleDictionaryCommand { get; }
         public ICommand OpenMeasurementUnitsDictionaryCommand { get; }
@@ -60,6 +61,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 
             CreateReportCommand = new DelegateCommand<DocumentTypeEnum>(OpenNewReportTab);
             OpenSettingsCommand = new DelegateCommand(OpenSettingsExecute);
+            CheckSumCommand = new DelegateCommand(CheckSumCommandExecute);
             OpenProductsDictionaryCommand = new DelegateCommand(OpenProductsDictionaryCommandExecute);
             OpenPeopleDictionaryCommand = new DelegateCommand(OpenPeopleDictionaryCommandExecute);
             OpenMeasurementUnitsDictionaryCommand = new DelegateCommand(OpenMeasurementUnitsDictionaryCommandExecute);
@@ -70,12 +72,13 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
         {
             var reportTypes = new List<ReportItemViewModel>()
             {
-                new(DocumentTypeEnum.WriteOff),
+                //new(DocumentTypeEnum.WriteOff),
+                new(DocumentTypeEnum.ResidualValue),
                 new(DocumentTypeEnum.TechnicalState11),
                 new(DocumentTypeEnum.TechnicalState7),
                 new(DocumentTypeEnum.Valuation),
                 new(DocumentTypeEnum.Dismantling),
-                //new(DocumentTypeEnum.Invoice),
+                new(DocumentTypeEnum.Invoice),
                 new(DocumentTypeEnum.CommisioningAct),
             };
 
@@ -90,6 +93,9 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
                 case DocumentTypeEnum.WriteOff:
                     createdTab = new WriteOffReportViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _navigationService);
                     break;
+                case DocumentTypeEnum.ResidualValue:
+                    createdTab = new ResidualValueReportViewModel(_reportManager, _assetFactory, _dataService, _reportDataService);
+                    break;
                 case DocumentTypeEnum.Valuation:
                     createdTab = new AssetValuationViewModel(_reportManager, _dataService, _navigationService);
                     break;
@@ -102,11 +108,10 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
                 case DocumentTypeEnum.TechnicalState11:
                     createdTab = new AssetTechnicalStateViewModel(_reportManager, _assetFactory, _dataService);
                     break;
-                //case DocumentTypeEnum.Invoice:
-                //    createdTab = null;
-                //    break;
+                case DocumentTypeEnum.Invoice:
+                    createdTab = new InvoiceReportViewModel(_reportManager, _dataService, _reportDataService);
+                    break;
                 case DocumentTypeEnum.CommisioningAct:
-                    createdTab = null;
                     createdTab = new CommissioningActReportViewModel(_reportManager, _dataService, _reportDataService);
                     break;
                 default:
@@ -138,6 +143,11 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
         private void OpenSettingsExecute()
         {
             OpenSettingsTab(SettingsTabType.Settings);
+        }
+
+        private void CheckSumCommandExecute()
+        {
+            //OpenSettingsTab(SettingsTabType.CheckSum);
         }
 
         private void OpenProductsDictionaryCommandExecute()

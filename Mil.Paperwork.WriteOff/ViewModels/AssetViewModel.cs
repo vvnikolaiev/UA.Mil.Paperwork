@@ -1,13 +1,40 @@
 ﻿using Mil.Paperwork.Domain.DataModels.Assets;
 using Mil.Paperwork.Domain.Enums;
-using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.MVVM;
-using Mil.Paperwork.Infrastructure.Services;
-using Mil.Paperwork.WriteOff.Managers;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
+    public class InvoiceAssetViewModel : AssetViewModel
+    {
+        private IAssetInfo _assetInfo;
+
+        internal override IAssetInfo AssetInfo => _assetInfo;
+
+        public InvoiceAssetViewModel() : base()
+        {
+            _assetInfo = new AssetInfo();
+        }
+    }
+
+    public abstract class WriteOffAssetViewModel : AssetViewModel
+    {
+        protected EventType eventType = EventType.Lost;
+        public EventType EventType
+        {
+            get => eventType;
+            set => SetProperty(ref eventType, value);
+        }
+
+        public virtual IAssetInfo ToAssetInfo(EventType eventType = EventType.None)
+        {
+            var assetInfo = base.ToAssetInfo();
+            assetInfo.EventType = eventType;
+
+            return assetInfo;
+        }
+    }
+
     public abstract class AssetViewModel : ObservableItem
     {
         private string _selectedProductId = string.Empty;
@@ -19,10 +46,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private int _category = 2;
         private decimal _price = 0;
         private int _count = 1;
+        private int _yearManufacured = 1;
         private DateTime _startDate = new DateTime(2023, 01, 01);
         private string _tsRegisterNumber = string.Empty;
         private string _tsDocumentNumber = string.Empty;
         private int _warrantyPeriodMonths = 12;
+        private int _resourceYears = 5;
 
         internal abstract IAssetInfo AssetInfo { get; }
 
@@ -104,14 +133,28 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             set => SetProperty(ref _warrantyPeriodMonths, value);
         }
 
+
+        public int YearManufacured
+        {
+            get => _yearManufacured;
+            set => SetProperty(ref _yearManufacured, value);
+        }
+
+
+        public int ResourceYears
+        {
+            get => _resourceYears;
+            set => SetProperty(ref _resourceYears, value);
+        }
+
         public ICommand<ProductDTO> ProductSelectedCommand { get; }
 
-        public AssetViewModel(ReportManager reportManager, IDataService dataService, INavigationService navigationService)
+        public AssetViewModel()
         {
             ProductSelectedCommand = new DelegateCommand<ProductDTO>(ProductSelectedExecute);
         }
 
-        public virtual IAssetInfo ToAssetInfo(EventType eventType = EventType.Lost, DateTime? reportDate = null)
+        public virtual IAssetInfo ToAssetInfo()
         {
             AssetInfo.Name = _name;
             AssetInfo.ShortName = _shortName;
@@ -125,12 +168,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             AssetInfo.TSRegisterNumber = _tsRegisterNumber;
             AssetInfo.TSDocumentNumber = _tsDocumentNumber;
             AssetInfo.WarrantyPeriodMonths = _warrantyPeriodMonths;
-            AssetInfo.EventType = eventType;
-
-            if (reportDate != null)
-            {
-                AssetInfo.WriteOffDateTime = (DateTime)reportDate;
-            }
+            AssetInfo.YearManufactured = _yearManufacured;
+            AssetInfo.ResourceYears = _resourceYears;
 
             return AssetInfo;
         }
@@ -150,6 +189,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels
                 Price = product.Price;
                 StartDate = product.StartDate;
                 WarrantyPeriodMonths = product.WarrantyPeriodMonths;
+                YearManufacured = product.YearManufactured;
+                ResourceYears = product.ResourceYears;
             }
             else
             {

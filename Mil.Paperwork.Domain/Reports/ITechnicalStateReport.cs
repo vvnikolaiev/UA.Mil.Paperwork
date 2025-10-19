@@ -1,10 +1,9 @@
-﻿using Mil.Paperwork.Domain.DataModels.Assets;
-using Mil.Paperwork.Domain.Enums;
+﻿using Mil.Paperwork.Domain.DataModels.Parameters;
 
 namespace Mil.Paperwork.Domain.Reports
 {
     public interface ITechnicalStateReport : IReport
     {
-        bool TryCreate(IAssetInfo assetInfo, EventType eventType, DateTime writeOffDate, string reason);
+        bool TryCreate(ITechnicalStateReportParameters reportParameters);
     }
 }
