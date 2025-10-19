@@ -1,4 +1,5 @@
 ﻿using Mil.Paperwork.Domain.Enums;
+using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
 
@@ -13,6 +14,7 @@ namespace Mil.Paperwork.Domain.Helpers
             public string Month { get; set; }
             public string Hour { get; set; }
             public string Names { get; set; }
+            public string Unit { get; set; }
             public string Hryvna { get; set; }
             public string Kopiyka { get; set; }
 
@@ -21,9 +23,9 @@ namespace Mil.Paperwork.Domain.Helpers
             public string Third { get; set; }
         }
 
-        private static readonly Words NominativeWords = new() { Year = "рік", Month = "місяць", Hour = "година", Names = "найменування", Hryvna = "гривня", Kopiyka = "копійка", First="перша", Second="друга", Third="третя" };
-        private static readonly Words GenitiveWords = new() { Year = "років", Month = "місяців", Hour = "годин", Names = "найменувань", Hryvna = "гривень", Kopiyka = "копійок", First = "першої", Second = "другої", Third = "третьої" };
-        private static readonly Words AccusativeWords = new() { Year = "роки", Month = "місяці", Hour = "години", Names = "найменування", Hryvna = "гривні", Kopiyka = "копійки", First = "першу", Second = "другу", Third = "третю" };
+        private static readonly Words NominativeWords = new() { Year = "рік", Month = "місяць", Hour = "година", Names = "найменування", Unit = "одиниця" ,Hryvna = "гривня", Kopiyka = "копійка", First="перша", Second="друга", Third="третя" };
+        private static readonly Words GenitiveWords = new() { Year = "років", Month = "місяців", Hour = "годин", Names = "найменувань", Unit = "одиниць", Hryvna = "гривень", Kopiyka = "копійок", First = "першої", Second = "другої", Third = "третьої" };
+        private static readonly Words AccusativeWords = new() { Year = "роки", Month = "місяці", Hour = "години", Names = "найменування", Unit = "одиниці", Hryvna = "гривні", Kopiyka = "копійки", First = "першу", Second = "другу", Third = "третю" };
 
         private static readonly Dictionary<NounCases, Words> NounCasesWords = new()
         {
@@ -51,6 +53,13 @@ namespace Mil.Paperwork.Domain.Helpers
         private const string NamesNumberStringFormat = "Всього: {0} ({1}) {2}";
 
         public const string DATE_FORMAT = "dd.MM.yyyy";
+        public const string DATE_FORMAT_Ex = "« {0:dd} »    {0:MM}    {0:yyyy} року";
+
+        public static string GetPersonNameWithRank(IPerson person)
+        {
+            var result = $"{person.Rank}      {person.FullName}"; 
+            return result;
+        }
 
         public static string ConvertEventTypeToText(EventType state)
         {
@@ -71,6 +80,7 @@ namespace Mil.Paperwork.Domain.Helpers
         {
             var result = state switch
             {
+                EventType.None => initialCategory,
                 EventType.Accounted => 2,
                 EventType.Lost => initialCategory,
                 EventType.Destroyed => 5,
@@ -168,8 +178,17 @@ namespace Mil.Paperwork.Domain.Helpers
         public static string GetMonthsOperatedText(DateTime startDate, DateTime endDate)
         {
             var monthsOperated = (int)((endDate - startDate).TotalDays / 30);
-
+            
             var result = GetMonthsText(monthsOperated);
+
+            return result;
+        }
+
+        public static string GetYearsOperatedText(DateTime startDate, DateTime endDate)
+        {
+            var monthsOperated = (int)((endDate - startDate).TotalDays / 30 / 12);
+
+            var result = GetYearsText(monthsOperated);
 
             return result;
         }
@@ -184,6 +203,14 @@ namespace Mil.Paperwork.Domain.Helpers
             return result;
         }
 
+        public static string GetUnitsText(int units)
+        {
+            var caseMonths = GetNounFormFromNumber(units);
+            var unitsText = NounCasesWords[caseMonths].Unit;
+
+            return unitsText;
+        }
+
         public static string GetHoursOperatedText(DateTime startDate, DateTime endDate)
         {
             var monthsOperated = (int)((endDate - startDate).TotalDays / 30);
@@ -194,7 +221,7 @@ namespace Mil.Paperwork.Domain.Helpers
             return result;
         }
 
-        public static string GetWarrantyPeriodText(int warrantyPeriodYears)
+        public static string GetYearsText(int warrantyPeriodYears)
         {
             var caseHours = GetNounFormFromNumber(warrantyPeriodYears);
             var yearsText = NounCasesWords[caseHours].Year;

@@ -1,21 +1,20 @@
-﻿using Mil.Paperwork.Infrastructure.MVVM;
+﻿using Microsoft.Win32;
+using Mil.Paperwork.Domain.DataModels.ReportData;
+using Mil.Paperwork.Domain.Enums;
+using Mil.Paperwork.Domain.Services;
+using Mil.Paperwork.Infrastructure.Enums;
+using Mil.Paperwork.Infrastructure.Helpers;
+using Mil.Paperwork.Infrastructure.MVVM;
+using Mil.Paperwork.Infrastructure.Services;
+using Mil.Paperwork.WriteOff.Factories;
 using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.WriteOff.Models;
+using Mil.Paperwork.WriteOff.ViewModels.Dictionaries;
+using Mil.Paperwork.WriteOff.ViewModels.Tabs;
+using Mil.Paperwork.WriteOff.Views;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
-using Microsoft.Win32;
-using Mil.Paperwork.Infrastructure.Services;
-using Mil.Paperwork.Domain.Services;
-using Mil.Paperwork.WriteOff.Views;
-using Mil.Paperwork.Infrastructure.Enums;
-using Mil.Paperwork.WriteOff.Factories;
-using Mil.Paperwork.Infrastructure.Helpers;
-using Mil.Paperwork.Domain.Enums;
-using Mil.Paperwork.WriteOff.ViewModels.Tabs;
-using Mil.Paperwork.Domain.DataModels.ReportData;
-using Mil.Paperwork.Infrastructure.DataModels;
-using Mil.Paperwork.WriteOff.ViewModels.Dictionaries;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {
@@ -33,7 +32,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         private string _reason = string.Empty;
         private EventType _eventType;
         private string _destinationFolderPath = "C:\\Work\\Temp";
-        private AssetViewModel? _selectedAsset;
+        private WriteOffAssetViewModel? _selectedAsset;
         private AssetValuationViewModel _selectedValuationItem;
         private ObservableCollection<AssetValuationViewModel> _valuationCollection = [];
         private AssetDismantlingViewModel _selectedDismantlingItem;
@@ -46,9 +45,9 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
         public ObservableCollection<MeasurementUnitViewModel> MeasurementUnits { get; }
 
-        public ObservableCollection<AssetViewModel> AssetsCollection { get; set; }
+        public ObservableCollection<WriteOffAssetViewModel> AssetsCollection { get; set; }
 
-        public AssetViewModel? SelectedAsset
+        public WriteOffAssetViewModel? SelectedAsset
         {
             get => _selectedAsset;
             set => SetProperty(ref _selectedAsset, value);
@@ -153,7 +152,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
             _model = new WriteOffReportModel(reportManager, dataService);
             ProductsSelector = new ProductSelectionViewModel(dataService);
-            AssetsCollection = new ObservableCollection<AssetViewModel>();
+            AssetsCollection = new ObservableCollection<WriteOffAssetViewModel>();
 
             FillAssetTypesCollection();
 
@@ -175,7 +174,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
         private void GenerateReport()
         {
-            var reportData = new WriteOffReportData
+            var reportData = new ObsoleteWriteOffReportData
             {
                 EventReportNumber = EventReportNumber,
                 AssetType = SelectedAssetType,
@@ -184,8 +183,10 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
                 DocumentNumber = DocumentNumber,
                 Reason = Reason,
                 EventType = EventType,
-                ReportDate = WriteOffDate,
-                Assets = [.. AssetsCollection.Select(x => x.ToAssetInfo(EventType, WriteOffDate))],
+                EventDate = WriteOffDate,
+                OrdenDate = WriteOffDate,
+                OrdenNumber = EventReportNumber ?? 0,
+                Assets = [.. AssetsCollection.Select(x => x.ToAssetInfo(EventType))],
                 Dismantlings = [.. DismantleCollection.Select(x => x.ToAssetDismantlingData())],
                 ValuationData = [.. ValuationCollection.Select(x => x.ToAssetValuationData())]
             };

@@ -1,5 +1,5 @@
-﻿using Mil.Paperwork.Domain.DataModels.Assets;
-using Mil.Paperwork.Domain.DataModels.ReportData;
+﻿using Mil.Paperwork.Domain.Calculators;
+using Mil.Paperwork.Domain.DataModels.Assets;
 using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Domain.Resources;
@@ -23,13 +23,13 @@ namespace Mil.Paperwork.Domain.Reports
             _reportDataService = reportDataService;
         }
 
-        public bool TryCreate(WriteOffReportData reportData)
+        public bool TryCreate(IAssetInfo asset, IDictionary<MetalType, decimal> metalCosts, AssetType assetType, DateTime reportDate)
         {
             bool result = false;
 
             try
             {
-                result = TryFillTheReport(reportData);
+                result = TryFillTheReport(asset, metalCosts, assetType, reportDate);
 
                 Console.WriteLine("Дані додано успішно!");
             }
@@ -46,9 +46,9 @@ namespace Mil.Paperwork.Domain.Reports
             return _reportBytes;
         }
 
-        private bool TryFillTheReport(WriteOffReportData reportData)
+        private bool TryFillTheReport(IAssetInfo asset, IDictionary<MetalType, decimal> metalCosts, AssetType assetType, DateTime reportDate)
         {
-            if (reportData.Assets.Count == 0)
+            if (asset == null)
             {
                 return false;
             }
@@ -58,14 +58,21 @@ namespace Mil.Paperwork.Domain.Reports
             using var package = new ExcelPackage(templatePath);
             var sheet = package.Workbook.Worksheets[0]; // Отримуємо перший аркуш
 
-            PrepareTheTemplate(reportData, sheet);
+            PrepareTheTemplate(assetType, sheet);
 
-            FillTheTable(reportData, sheet);
+            FillTheTable(asset, assetType, reportDate, sheet);
+
+            FillTableMetals(metalCosts, sheet);
 
             var fieldsMap = _reportDataService.GetReportParametersDictionary(ReportType.ResidualValueReport);
-            fieldsMap.Add(ResidualValueReportHelper.REPORT_DATE_PLACEHOLDER, reportData.ReportDate.ToString(ReportHelper.DATE_FORMAT));
-            fieldsMap.Add(ResidualValueReportHelper.TOTAL_RESIDUAL_SUM_PLACEHOLDER, CalculateTotalResidualValue(reportData.Assets).ToString("F2"));
-            sheet.MadDataToTheNamedFields(fieldsMap);
+            fieldsMap.Add(ResidualValueReportHelper.REPORT_DATE_PLACEHOLDER, reportDate.ToString(ReportHelper.DATE_FORMAT));
+            fieldsMap.Add(ResidualValueReportHelper.TOTAL_RESIDUAL_SUM_PLACEHOLDER, ResidualPriceHelper.CalculateResidualPriceForItem(asset, reportDate, asset.Count).ToString("F2"));
+            
+            fieldsMap.Add(ResidualValueReportHelper.ASSET_NAME, ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber));
+            fieldsMap.Add(ResidualValueReportHelper.ASSEMBLY_YEAR, asset.YearManufactured.ToString());
+            fieldsMap.Add(ResidualValueReportHelper.COMMISSIONED_YEAR, asset.StartDate.Year.ToString());
+
+            sheet.MapDataToTheNamedFields(fieldsMap);
 
             using var reportStream = new MemoryStream();
             package.SaveAs(reportStream);
@@ -74,22 +81,20 @@ namespace Mil.Paperwork.Domain.Reports
             return true;
         }
 
-        private void PrepareTheTemplate(WriteOffReportData reportData, ExcelWorksheet sheet)
+        private void PrepareTheTemplate(AssetType assetType, ExcelWorksheet sheet)
         {
             // update columns depending on coefficient count
             var names = sheet.Names;
-            var mapping = GetTableMapping(reportData.AssetType);
+            var mapping = GetTableMapping(assetType);
 
             var headerCell = names[ResidualValueReportHelper.FIELD_TABLE_HEADER];
             var columnNumberCell = names[ResidualValueReportHelper.FIELD_TABLE_COLUMN_NUMBER];
-            var cellCount = names[ResidualValueReportHelper.FIELD_NUMBER_NAMES];
 
             var headerRow1 = headerCell.Start.Row;
             var headerRow2 = headerRow1 + 1;
             var headerNumbersRow = columnNumberCell.Start.Row;
-            var countRowNumber = cellCount.Start.Row;
 
-            var coeffColumns = ResidualValueReportHelper.GetCoefficientColumns(reportData.AssetType);
+            var coeffColumns = ResidualValueReportHelper.GetCoefficientColumns(assetType);
 
             var width = 28;
 
@@ -107,7 +112,7 @@ namespace Mil.Paperwork.Domain.Reports
                     sheet.Column(columnNum).Width = subCoedffColumnWidth;
 
                     sheet.FillPseudoTableCell(columnHeaderText, headerRow2, columnNum);
-                    sheet.FillPseudoTableCell(string.Empty, countRowNumber, columnNum);
+                    //sheet.FillPseudoTableCell(string.Empty, countRowNumber, columnNum);
                 }
 
                 var endColumn = coeffStartColumn + coeffColumns.Count - 1;
@@ -118,16 +123,16 @@ namespace Mil.Paperwork.Domain.Reports
             }
 
             // Column Total Coefficient
-            AddTableHeaderColumn(reportData.AssetType, ResidualValueTableColumns.TotalWearCoefficient, sheet);
+            AddTableHeaderColumn(assetType, ResidualValueTableColumns.TotalWearCoefficient, sheet);
             // Column Total sum
-            AddTableHeaderColumn(reportData.AssetType, ResidualValueTableColumns.ResidualValue, sheet);
+            AddTableHeaderColumn(assetType, ResidualValueTableColumns.ResidualValue, sheet);
             // Column Total sum
-            AddTableHeaderColumn(reportData.AssetType, ResidualValueTableColumns.ValuationReportReference, sheet);
+            AddTableHeaderColumn(assetType, ResidualValueTableColumns.ValuationReportReference, sheet);
 
             // Виправити об'єднані клітинки над таблицею так, щоби вони займали таку ж кількість стовпців
             var lastColumn = mapping[ResidualValueTableColumns.ValuationReportReference];
             sheet.ShrinkMergedNamedRange(ResidualValueReportHelper.RANGE_TO_SHRINK_1_NAME, lastColumn.ColumnIndex);
-            sheet.ShrinkMergedNamedRange(ResidualValueReportHelper.RANGE_TO_SHRINK_2_NAME, lastColumn.ColumnIndex);
+            //sheet.ShrinkMergedNamedRange(ResidualValueReportHelper.RANGE_TO_SHRINK_2_NAME, lastColumn.ColumnIndex);
 
             // Перемістити верхню праву групу в залежності від кількості стовпців 
             var columnShift = coeffColumns.Count - 4;
@@ -142,13 +147,13 @@ namespace Mil.Paperwork.Domain.Reports
             var col = mapping[column];
             var headerCell = names[ResidualValueReportHelper.FIELD_TABLE_HEADER];
             var columnNumberCell = names[ResidualValueReportHelper.FIELD_TABLE_COLUMN_NUMBER];
-            var cellCount = names[ResidualValueReportHelper.FIELD_NUMBER_NAMES];
+            //var cellCount = names[ResidualValueReportHelper.FIELD_NUMBER_NAMES];
 
             var index = col.ColumnIndex;
             var title = col.ColumnTitle;
             var number = col.ColumnNumber;
 
-            var summaryRowNumber = cellCount.Start.Row;
+            //var summaryRowNumber = cellCount.Start.Row;
             var headerRow1 = headerCell.Start.Row;
             var headerRow2 = headerRow1 + 1;
             var headerNumbersRow = columnNumberCell.Start.Row;
@@ -156,63 +161,93 @@ namespace Mil.Paperwork.Domain.Reports
             sheet.Column(index).Width = 14;
             sheet.FillPseudoTableCell(title, headerRow1, index, headerRow2, index, true);
             sheet.FillPseudoTableCell(number.ToString(), headerNumbersRow, index);
-            var summaryCell = sheet.FillPseudoTableCell(string.Empty, summaryRowNumber, index);
-            summaryCell.Style.Font.Bold = true;
-            if (!string.IsNullOrEmpty(col.Format))
-            {
-                summaryCell.Style.Numberformat.Format = col.Format;
-            }
+            //var summaryCell = sheet.FillPseudoTableCell(string.Empty, summaryRowNumber, index);
+            //summaryCell.Style.Font.Bold = true;
+            //if (!string.IsNullOrEmpty(col.Format))
+            //{
+            //    summaryCell.Style.Numberformat.Format = col.Format;
+            //}
         }
 
-        private void FillTheTable(WriteOffReportData reportData, ExcelWorksheet sheet)
+        private void FillTheTable(IAssetInfo assetInfo, AssetType assetType, DateTime reportDate, ExcelWorksheet sheet)
         {
             var table = GetDataTable(sheet);
-            var columnsMapping = GetTableMapping(reportData.AssetType);
+            var columnsMapping = GetTableMapping(assetType);
 
-            var assets = reportData.Assets;
+            var asset = assetInfo;
 
             int firstRow = table.Address.Start.Row + 1; // Перший рядок таблиці
 
-            if (assets.Count > 1)
-            {
-                table.AddRow(assets.Count - 1);
-            }
+            RemoveUnneccessaryColumns(assetType, sheet);
 
-            RemoveUnneccessaryColumns(reportData.AssetType, sheet);
+            int i = 0;
+            
+            var newRow = firstRow + i; // Новий рядок
 
-            for (int i = 0; i < assets.Count; i++)
-            {
-                var asset = assets[i];
-                var newRow = firstRow + i; // Новий рядок
+            var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
+            var yearManufactured = asset.YearManufactured > 1900 ? asset.YearManufactured : asset.StartDate.Year;
+            var indexationCoefficient = CoefficientsHelper.GetIndexationCoefficient(yearManufactured, reportDate.Year);
+            var residualPrice = ResidualPriceHelper.CalculateResidualPriceForItem(asset, reportDate, asset.Count);
 
-                var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
-                var indexationCoefficient = CoefficientsHelper.GetIndexationCoefficient(asset.StartDate, reportData.ReportDate);
-                var residualPrice = ResidualPriceHelper.CalculateResidualPriceForItem(asset, asset.Count);
+            sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.Index].ColumnIndex].Value = i + 1; // number
+            sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.Name].ColumnIndex].Value = assetName;
+            sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.MeasurementUnit].ColumnIndex].Value = asset.MeasurementUnit;
+            sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.Count].ColumnIndex].Value = asset.Count;
+            sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.Price].ColumnIndex].Value = asset.Price;
 
-                sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.Index].ColumnIndex].Value = i + 1; // number
-                sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.Name].ColumnIndex].Value = assetName;
-                sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.MeasurementUnit].ColumnIndex].Value = asset.MeasurementUnit;
-                sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.Count].ColumnIndex].Value = asset.Count;
-                sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.Price].ColumnIndex].Value = asset.Price;
-                sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.DateStart].ColumnIndex].Value = asset.StartDate.ToString(ReportHelper.DATE_FORMAT);
+            sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.IndexationCoefficient].ColumnIndex].Value = indexationCoefficient;
+            sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.CurrencyConversionRate].ColumnIndex].Value = "-";
 
-                sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.IndexationCoefficient].ColumnIndex].Value = indexationCoefficient;
-                sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.CurrencyConversionRate].ColumnIndex].Value = "-";
+            FillCoefficients(asset, reportDate, newRow, sheet);
 
-                FillCoefficients(asset, newRow, sheet);
+            sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.ResidualValue].ColumnIndex].Value = residualPrice;
+            sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.ValuationReportReference].ColumnIndex].Value = "-";
 
-                sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.ResidualValue].ColumnIndex].Value = residualPrice;
-                sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.ValuationReportReference].ColumnIndex].Value = "-";
+            sheet.AutoFitRowHeight(newRow, ResidualValueReportHelper.TABLE_COLUMN_NAME);
+            
+            var names = sheet.Names;
+        }
 
-                sheet.AutoFitRowHeight(newRow, ResidualValueReportHelper.TABLE_COLUMN_NAME);
-            }
+        private void FillTableMetals(IDictionary<MetalType, decimal> metalCosts, ExcelWorksheet sheet)
+        {
+            // вводити руками. На жаль.
+            // але спробувати замапити таблицю кольорових металів
 
             var names = sheet.Names;
-            var cellCount = names[ResidualValueReportHelper.FIELD_NUMBER_NAMES];
-            cellCount.Value = ReportHelper.ConvertNamesNumberToReportString(assets.Count);
+            var table = names[ResidualValueReportHelper.TABLE_METALS_NAME];
 
-            var cellSum = sheet.Cells[cellCount.Start.Row, columnsMapping[ResidualValueTableColumns.ResidualValue].ColumnIndex];
-            cellSum.Value = CalculateTotalResidualValue(reportData.Assets);
+            var startRow = table.Start.Row;
+            var startCol = table.Start.Column;
+
+            var colWeight = startCol + ResidualValueReportHelper.TABLE_METALS_COL_WEIGHT;
+            var colTotalWeight = startCol + ResidualValueReportHelper.TABLE_METALS_COL_TOTAL_WEIGHT;
+            var colPrice = startCol + ResidualValueReportHelper.TABLE_METALS_COL_PRICE;
+
+            foreach (var metalCost in metalCosts)
+            {
+                if (ResidualValueReportHelper.TABLE_METALS_ROWS.TryGetValue(metalCost.Key, out var metalRow))
+                {
+                    var row = startRow + metalRow;
+                    sheet.Cells[row, colPrice].Value = metalCost.Value;
+                }
+            }
+
+            //// get actual prices
+            //var metals = await PreciousMetalsExchangeApiHelper.GetMetalRatesAsync(reportDate);
+
+            //foreach (var metal in metals)
+            //{
+            //    if (ResidualValueReportHelper.TABLE_METALS_ROWS.TryGetValue(metal.Key, out var metalRow))
+            //    {
+            //        var row = startRow + metalRow;
+            //        sheet.Cells[row, colPrice].Value = metal.Value.Rate;
+            //    }
+
+            //}
+
+            // get from the Product instance!
+            //Dictionary<MetalType, decimal> metalContent = new Dictionary<MetalType, decimal>();
+            // foreach (var metal in metalContent) ...
         }
 
         private Dictionary<ResidualValueTableColumns, BaseColumnInfo> GetTableMapping(AssetType assetType)
@@ -229,7 +264,6 @@ namespace Mil.Paperwork.Domain.Reports
                 { ResidualValueTableColumns.MeasurementUnit, new BaseColumnInfo(ResidualValueReportHelper.TABLE_COLUMN_MEASUREMENT_UNIT, 3) },
                 { ResidualValueTableColumns.Count, new BaseColumnInfo(ResidualValueReportHelper.TABLE_COLUMN_COUNT, 4) },
                 { ResidualValueTableColumns.Price, new BaseColumnInfo(ResidualValueReportHelper.TABLE_COLUMN_PRICE, 5) },
-                { ResidualValueTableColumns.DateStart, new BaseColumnInfo(ResidualValueReportHelper.TABLE_COLUMN_DATE_START, 5) },
                 { ResidualValueTableColumns.IndexationCoefficient, new BaseColumnInfo(ResidualValueReportHelper.TABLE_COLUMN_INDEXATION_COEFF, 6) },
                 { ResidualValueTableColumns.CurrencyConversionRate, new BaseColumnInfo(ResidualValueReportHelper.TABLE_COLUMN_CURRENCY_CONVERSION_RATE, 8) }
             };
@@ -269,28 +303,16 @@ namespace Mil.Paperwork.Domain.Reports
             }
         }
 
-        private static decimal CalculateTotalResidualValue(IList<IAssetInfo> assets)
-        {
-            var totalValue = 0m;
-
-            foreach (var asset in assets)
-            {
-                var residualPrice = ResidualPriceHelper.CalculateResidualPriceForItem(asset, asset.Count);
-                totalValue += residualPrice;
-            }
-
-            return totalValue;
-        }
-
         private static ExcelTable GetDataTable(ExcelWorksheet sheet)
         {
             var table = sheet.Tables[0];
             return table;
         }
 
-        private static void FillCoefficients(IAssetInfo asset, int row, ExcelWorksheet sheet)
+        private static void FillCoefficients(IAssetInfo asset, DateTime reportDate, int row, ExcelWorksheet sheet)
         {
-            var coefficients = asset.GetCoefficients();
+            var residualPriceCalculator = ResidualPriceCalculatorFactory.CreateCalculator(asset.Service);
+            var coefficients = residualPriceCalculator.GetCoefficients(asset, reportDate);
 
             var column = ResidualValueReportHelper.TABLE_FIRST_COEFF_COLUMN;
 
@@ -303,7 +325,8 @@ namespace Mil.Paperwork.Domain.Reports
                 }
             }
 
-            sheet.Cells[row, column].Value = asset.TotalWearCoefficient;
+            var totalWearCoefficient = residualPriceCalculator.CalculateTotalWearCoefficient(asset, reportDate);
+            sheet.Cells[row, column].Value = totalWearCoefficient;
         }
 
     }

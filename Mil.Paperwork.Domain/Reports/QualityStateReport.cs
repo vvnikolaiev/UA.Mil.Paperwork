@@ -8,7 +8,7 @@ using System.IO;
 
 namespace Mil.Paperwork.Domain.Reports
 {
-    internal class QualityStateReport : IReport
+    internal class QualityStateReport : IQualityStateReport
     {
         private readonly IReportDataService _reportDataService;
         
@@ -19,7 +19,7 @@ namespace Mil.Paperwork.Domain.Reports
             _reportDataService = reportDataService;
         }
 
-        public bool TryCreate(WriteOffReportData reportData)
+        public bool TryCreate(IQualityStateReportData reportData)
         {
             try
             {
@@ -30,8 +30,7 @@ namespace Mil.Paperwork.Domain.Reports
 
                 FillTheFields(reportData, document);
 
-                var tables = document.Sections[0].Tables.Cast<Table>().ToList();
-                var table = tables.FirstOrDefault(x => x.Title == QualityStateReportHelper.TABLE_ASSETS_NAME);
+                var table = document.GetTable(QualityStateReportHelper.TABLE_ASSETS_NAME);
 
                 if (table != null)
                 {
@@ -56,7 +55,7 @@ namespace Mil.Paperwork.Domain.Reports
             return _reportBytes;
         }
 
-        private void FillTheFields(WriteOffReportData reportData, Document document)
+        private void FillTheFields(IQualityStateReportData reportData, Document document)
         {
             var reportConfig = _reportDataService.GetReportParametersDictionary(ReportType.QualityStateReport);
 
@@ -69,7 +68,7 @@ namespace Mil.Paperwork.Domain.Reports
             document.ReplaceField(QualityStateReportHelper.FIELD_WHAT_HAPPENED, assetStateText);
         }
 
-        private static void FillTheTable(WriteOffReportData reportData, Table table)
+        private static void FillTheTable(IQualityStateReportData reportData, Table table)
         {
             var firstRow = table.LastRow;
 
@@ -82,14 +81,14 @@ namespace Mil.Paperwork.Domain.Reports
 
                 // TODO: optimize. Make a mapper.
 
-                var residualPrice = ResidualPriceHelper.CalculateResidualPriceForItem(asset);
+                var residualPrice = ResidualPriceHelper.CalculateResidualPriceForItem(asset, reportData.EventDate);
 
                 var initialCategory = ReportHelper.ConvertCategoryToText(asset.InitialCategory);
                 var residualCategory = ReportHelper.ConvertEventTypeToCategoryText(asset.InitialCategory, reportData.EventType);
                 
                 var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
                 var nomenclatureCode = asset.NomenclatureCode?.ToUpper() ?? string.Empty;
-                var monthsOperated = (int)((reportData.ReportDate - asset.StartDate).TotalDays / 30);
+                var monthsOperated = (int)((reportData.EventDate - asset.StartDate).TotalDays / 30);
 
                 row.Cells[QualityStateReportHelper.COLUMN_INDEX].AddNumber(i + 1, fontSize);
                 row.Cells[QualityStateReportHelper.COLUMN_NAME].AddText(assetName, fontSize, HorizontalAlignment.Left);
@@ -115,10 +114,10 @@ namespace Mil.Paperwork.Domain.Reports
             AddSummaryRow(reportData, table);
         }
 
-        private static void AddSummaryRow(WriteOffReportData reportData, Table table)
+        private static void AddSummaryRow(IQualityStateReportData reportData, Table table)
         {
-            var totalSumClear = ResidualPriceHelper.CalculateTotalReportSum(reportData, false);
-            var totalSum = ResidualPriceHelper.CalculateTotalReportSum(reportData, true);
+            var totalSumClear = ResidualPriceHelper.CalculateTotalReportSum(reportData.Assets, reportData.EventDate, false);
+            var totalSum = ResidualPriceHelper.CalculateTotalReportSum(reportData.Assets, reportData.EventDate, true);
 
             var totalSumText = ReportHelper.ConvertTotalSumToUkrainianString(totalSum);
             var totalItemsText = ReportHelper.ConvertNamesNumberToReportString(reportData.Assets.Count);

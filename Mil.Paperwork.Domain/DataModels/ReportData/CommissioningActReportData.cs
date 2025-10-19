@@ -7,6 +7,7 @@ namespace Mil.Paperwork.Domain.DataModels.ReportData
         public string DestinationFolder { get; set; }
 
         public string DocumentNumber { get; set; } = string.Empty;
+        public DateTime DocumentDate { get; set; } = DateTime.Now.Date;
         
         public IProductData Asset { get; set; }
         public string AssetState { get; set; } = "прид.";

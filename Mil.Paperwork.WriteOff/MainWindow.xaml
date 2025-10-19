@@ -45,6 +45,10 @@
             <views:WriteOffReportView />
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type reportViewModels:ResidualValueReportViewModel}">
+            <views:ResidualValueReportView />
+        </DataTemplate>
+
         <DataTemplate DataType="{x:Type reportViewModels:AssetInitialTechnicalStateViewModel}">
             <views:TechnicalStateReportView />
         </DataTemplate>
@@ -55,6 +59,10 @@
 
         <DataTemplate DataType="{x:Type reportViewModels:CommissioningActReportViewModel}">
             <views:CommissioningActReportView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type reportViewModels:InvoiceReportViewModel}">
+            <views:InvoiceView />
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type reportViewModels:AssetValuationViewModel}">

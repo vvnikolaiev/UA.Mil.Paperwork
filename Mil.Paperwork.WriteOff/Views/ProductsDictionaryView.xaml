@@ -72,6 +72,9 @@
                 <DataGridTextColumn Header="Гарантія (р.)" Binding="{Binding WarrantyPeriodMonths}" 
                                 ElementStyle="{StaticResource DataGridTextBlockStyle}"
                                 Width="70" />
+                <DataGridTextColumn Header="Ресурс (р.)" Binding="{Binding ResourceYears}" 
+                                ElementStyle="{StaticResource DataGridTextBlockStyle}"
+                                Width="70" />
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

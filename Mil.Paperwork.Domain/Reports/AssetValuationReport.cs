@@ -30,8 +30,7 @@ namespace Mil.Paperwork.Domain.Reports
 
                 FillTheFields(assetValuationData, document);
 
-                var tables = document.Sections[0].Tables.Cast<Table>().ToList();
-                var table = tables.FirstOrDefault(x => x.Title == ValuationReportHelper.TABLE_ASSET_NAME);
+                var table = document.GetTable(ValuationReportHelper.TABLE_ASSET_NAME);
 
                 if (table != null)
                 {

@@ -103,7 +103,7 @@ namespace Mil.Paperwork.Tests.Helpers
         [InlineData(11, "11 років")]
         public void GetWarrantyPeriodText_ShouldReturnCorrectString(int warrantyPeriodYears, string expected)
         {
-            var result = ReportHelper.GetWarrantyPeriodText(warrantyPeriodYears);
+            var result = ReportHelper.GetYearsText(warrantyPeriodYears);
             Assert.Equal(expected, result);
         }
     }

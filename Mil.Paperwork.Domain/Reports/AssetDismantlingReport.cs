@@ -30,8 +30,7 @@ namespace Mil.Paperwork.Domain.Reports
 
                 FillTheFields(assetDismantlingData, document);
 
-                var tables = document.Sections[0].Tables.Cast<Table>().ToList();
-                var table = tables.FirstOrDefault(x => x.Title == DismantlingReportHelper.TABLE_ASSET_CONFIGURATION_NAME);
+                var table = document.GetTable(DismantlingReportHelper.TABLE_ASSET_CONFIGURATION_NAME);
 
                 if (table != null)
                 {

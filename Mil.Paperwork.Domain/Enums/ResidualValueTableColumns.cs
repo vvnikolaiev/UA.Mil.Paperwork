@@ -7,7 +7,6 @@
         MeasurementUnit,
         Count,
         Price,
-        DateStart,
         IndexationCoefficient,
         CurrencyConversionRate,
         TotalWearCoefficient,

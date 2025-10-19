@@ -1,10 +1,9 @@
-﻿using OfficeOpenXml;
-
-namespace Mil.Paperwork.Domain.Helpers
+﻿namespace Mil.Paperwork.Domain.Helpers
 {
     public class CommissioningActHelper
     {
         public const string FIELD_DOC_NUMBER = "DOC_NUMBER";
+        public const string FIELD_DOC_DATE = "DOC_DATE";
         public const string FIELD_ASSET_NAME = "ASSET_NAME";
         public const string FIELD_ASSET_STATE = "ASSET_STATE";
         public const string FIELD_COUNT_TEXT = "COUNT_TEXT";
@@ -34,6 +33,7 @@ namespace Mil.Paperwork.Domain.Helpers
         public const int COLUMN_Price = 2;
         public const int COLUMN_TotalPrice = 3;
         public const int COLUMN_WarrantyPeriod = 7;
+        public const int COLUMN_ManufacturedYear = 8;
         public const int COLUMN_SerialNumber = 9;
     }
 }

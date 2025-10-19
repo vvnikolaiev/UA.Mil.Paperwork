@@ -25,6 +25,12 @@ namespace Mil.Paperwork.Infrastructure.DataModels
         [ImportColumn("Гарантія (міс.)", isReqired: false)]
         public int WarrantyPeriodMonths { get; set; } = 12;
 
+        [ImportColumn("Рік виробництва", isReqired: false)]
+        public int YearManufactured { get; set; }
+
+        [ImportColumn("Ресурс (років)", isReqired: false)]
+        public int ResourceYears { get; set; }
+
         public string AlmostUniqueID => $"{Name}{MeasurementUnit}{Price}{NomenclatureCode}";
 
         public override string ToString()

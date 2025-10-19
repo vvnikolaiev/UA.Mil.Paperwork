@@ -50,7 +50,7 @@ namespace Mil.Paperwork.Domain.Helpers
             }
         }
 
-        public static void MadDataToTheNamedFields(this ExcelWorksheet sheet, Dictionary<string, string> fieldsMap)
+        public static void MapDataToTheNamedFields(this ExcelWorksheet sheet, Dictionary<string, string> fieldsMap)
         {
             var namedFields = sheet.GetNamedFieldRanges();
 
@@ -103,6 +103,7 @@ namespace Mil.Paperwork.Domain.Helpers
             tableCell.Style.Border.BorderAround(ExcelBorderStyle.Thin);
             tableCell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
             tableCell.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+            tableCell.Style.WrapText = true;
             tableCell.Value = value;
 
             return tableCell;

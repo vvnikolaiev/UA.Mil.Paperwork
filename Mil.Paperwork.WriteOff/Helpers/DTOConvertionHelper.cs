@@ -15,7 +15,8 @@ namespace Mil.Paperwork.WriteOff.Helpers
                 NomenclatureCode = asset.NomenclatureCode,
                 Price = asset.Price,
                 StartDate = asset.StartDate,
-                WarrantyPeriodMonths = asset.WarrantyPeriodMonths
+                WarrantyPeriodMonths = asset.WarrantyPeriodMonths,
+                ResourceYears = asset.ResourceYears
             };
         }
     }

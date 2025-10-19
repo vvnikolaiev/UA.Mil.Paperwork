@@ -25,6 +25,7 @@ namespace Mil.Paperwork.Domain.DataModels.ReportData
         string CountText { get; set; }
         int Count { get; set; }
         string DocumentNumber { get; set; }
+        DateTime DocumentDate { get; set; }
         
         string CommissioningLocation { get; set; }
         string ShortCharacteristic { get; set; }

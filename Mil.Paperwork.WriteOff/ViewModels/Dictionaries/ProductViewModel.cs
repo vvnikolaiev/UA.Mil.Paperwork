@@ -12,6 +12,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
         private decimal _price = 0;
         private DateTime _startDate = DateTime.Today;
         private int _warrantyPeriodMonths = 12;
+        private int _resourceYears = 5;
 
         public string Name
         {
@@ -55,6 +56,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
             set => SetProperty(ref _warrantyPeriodMonths, value);
         }
 
+        public int ResourceYears
+        {
+            get => _resourceYears;
+            set => SetProperty(ref _resourceYears, value);
+        }
+
         public ProductViewModel() { }
 
         public ProductViewModel(ProductDTO dto)
@@ -66,6 +73,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
             Price = dto.Price;
             StartDate = dto.StartDate;
             WarrantyPeriodMonths = dto.WarrantyPeriodMonths;
+            ResourceYears = dto.ResourceYears;
         }
 
         public ProductDTO ToProductDTO()
@@ -78,7 +86,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
                 NomenclatureCode = NomenclatureCode,
                 Price = Price,
                 StartDate = StartDate,
-                WarrantyPeriodMonths = WarrantyPeriodMonths
+                WarrantyPeriodMonths = WarrantyPeriodMonths,
+                ResourceYears = ResourceYears
             };
         }
     }

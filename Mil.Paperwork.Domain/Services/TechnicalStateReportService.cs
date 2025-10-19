@@ -1,4 +1,4 @@
-﻿using Mil.Paperwork.Domain.DataModels.Assets;
+﻿using Mil.Paperwork.Domain.DataModels.Parameters;
 using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Domain.Reports;
@@ -24,14 +24,32 @@ namespace Mil.Paperwork.Domain.Services
 
             var assets = reportData.Assets;
             // aggregate assets here if there are duplications in each field but serial number
+            var parameters = TechnicalStateReportParameters.FromReportData(reportData);
+
             foreach (var asset in assets)
             {
-                var report = new TechnicalStateReport(_reportDataService);
-                result = report.TryCreate(asset, reportData.EventType, reportData.ReportDate, reportData.Reason);
+                parameters.AssetInfo = asset;
+
+                ITechnicalStateReport report;
+                string fileNameFormat;
+
+                // TODO: figure out a better way to choose report type
+                if (reportData.GenerateWriteOffActs && string.IsNullOrEmpty(asset.SerialNumber))
+                {
+                    report = new WriteOffActReport(_reportDataService);
+                    fileNameFormat = TechnicalStateReportHelper.OUTPUT_WRITE_OFF_ACT_NAME_FORMAT;
+                }
+                else
+                {
+                    report = new TechnicalStateReport(_reportDataService);
+                    fileNameFormat = TechnicalStateReportHelper.OUTPUT_REPORT_11_NAME_FORMAT;
+                }
+
+                result = report.TryCreate(parameters);
 
                 if (result)
                 {
-                    var fileName = PathsHelper.GetDetailedFileName(asset, TechnicalStateReportHelper.OUTPUT_REPORT_11_NAME_FORMAT);
+                    var fileName = PathsHelper.GetDetailedFileName(asset, fileNameFormat);
                     SaveReport(report, reportData, fileName);
                 }
             }

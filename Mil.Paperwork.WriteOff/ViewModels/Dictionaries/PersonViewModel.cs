@@ -5,15 +5,31 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
 {
     public class PersonViewModel : ObservableItem
     {
-        private string _name;
+        private string _firstName;
+        private string _lastName;
+        private string _patronymic;
         private string _position;
         private string _rank;
 
-        public string Name
+        public string FirstName
         {
-            get => _name;
-            set => SetProperty(ref _name, value);
+            get => _firstName;
+            set => SetProperty(ref _firstName, value);
         }
+
+        public string LastName
+        {
+            get => _lastName;
+            set => SetProperty(ref _lastName, value);
+        }
+
+        public string Patronymic
+        {
+            get => _patronymic;
+            set => SetProperty(ref _patronymic, value);
+        }
+
+        public string FullName => $"{FirstName} {LastName}";
 
         public string Position
         {
@@ -31,14 +47,18 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
 
         public PersonViewModel(PersonDTO dto)
         {
-            Name = dto.FullName;
+            FirstName = dto.FirstName;
+            LastName = dto.LastName;
+            Patronymic = dto.Patronymic;
             Position = dto.Position;
             Rank = dto.Rank;
         }
 
         public PersonDTO ToDTO() => new()
         {
-            FullName = Name,
+            FirstName = FirstName,
+            LastName = LastName,
+            Patronymic = Patronymic,
             Position = Position,
             Rank = Rank
         };

@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Mil.Paperwork.Domain.Services
 {
-    public class QualityStateReportService : IReportService<WriteOffReportData>
+    public class QualityStateReportService : IReportService<IQualityStateReportData>
     {
         private readonly IFileStorageService _fileStorage;
         private readonly IReportDataService _reportDataService;
@@ -17,7 +17,7 @@ namespace Mil.Paperwork.Domain.Services
             _fileStorage = fileStorage;
         }
 
-        public bool TryGenerateReport(WriteOffReportData reportData)
+        public bool TryGenerateReport(IQualityStateReportData reportData)
         {
             var report = new QualityStateReport(_reportDataService);
 
@@ -33,7 +33,7 @@ namespace Mil.Paperwork.Domain.Services
             return result;
         }
 
-        private string GetFileName(WriteOffReportData reportData)
+        private string GetFileName(IQualityStateReportData reportData)
         {
             var destinationPath = reportData.GetDestinationPath();
             var rawFileName = String.Format(QualityStateReportHelper.OUTPUT_REPORT_NAME_TEMPLATE, reportData.DocumentNumber);
