@@ -58,8 +58,8 @@
                 <DataGridTextColumn Header="Код номенклатури" Binding="{Binding NomenclatureCode}" 
                                 ElementStyle="{StaticResource DataGridTextBlockStyle}"
                                 Width="70" />
-                <DataGridTextColumn Header="Ціна" Binding="{Binding Price}"
-                                ElementStyle="{StaticResource DataGridTextBlockStyle}" />
+                <controls:NumericTextColumn Header="Ціна" Binding="{Binding Price}"
+                                            ElementStyle="{StaticResource DataGridTextBlockStyle}" />
                 <DataGridTemplateColumn Header="Взято на облік" 
                                     Width="*" MinWidth="90" MaxWidth="110">
                     <DataGridTemplateColumn.CellTemplate>

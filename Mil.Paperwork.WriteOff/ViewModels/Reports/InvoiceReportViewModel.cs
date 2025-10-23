@@ -26,14 +26,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         private string _reason;
         private string _operationType;
 
-        private PersonViewModel _selectedRecipient;
-        private PersonViewModel _selectedTransmitter;
-        private string _recipientName;
-        private string _recipientRank;
-        private string _recipientPosition;
-        private string _transmitterName;
-        private string _transmitterRank;
-        private string _transmitterPosition;
+        private AssetAccetpanceViewModel _assetAcceptance;
 
         private InvoiceAssetViewModel _selectedAsset;
 
@@ -77,49 +70,10 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             set => SetProperty(ref _operationType, value);
         }
 
-        public PersonViewModel SelectedRecipient
+        public AssetAccetpanceViewModel AssetAcceptance
         {
-            get => _selectedRecipient;
-            set => SetProperty(ref _selectedRecipient, value);
-        }
-        public PersonViewModel SelectedTransmitter
-        {
-            get => _selectedTransmitter;
-            set => SetProperty(ref _selectedTransmitter, value);
-        }
-
-        public string RecipientName
-        {
-            get => _recipientName;
-            set => SetProperty(ref _recipientName, value);
-        }
-        public string RecipientRank
-        {
-            get => _recipientRank;
-            set => SetProperty(ref _recipientRank, value);
-        }
-        public string RecipientPosition
-        {
-            get => _recipientPosition;
-            set => SetProperty(ref _recipientPosition, value);
-        }
-
-        public string TransmitterName
-        {
-            get => _transmitterName;
-            set => SetProperty(ref _transmitterName, value);
-        }
-
-        public string TransmitterRank
-        {
-            get => _transmitterRank;
-            set => SetProperty(ref _transmitterRank, value);
-        }
-
-        public string TransmitterPosition
-        {
-            get => _transmitterPosition;
-            set => SetProperty(ref _transmitterPosition, value);
+            get => _assetAcceptance;
+            set => SetProperty(ref _assetAcceptance, value);
         }
 
         public InvoiceAssetViewModel SelectedAsset
@@ -134,8 +88,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
         public ObservableCollection<PersonViewModel> People { get; }
 
-        public ICommand RecipientSelectedCommand { get; }
-        public ICommand TransmitterSelectedCommand { get; }
         public ICommand UpdateDueDateCommand { get; }
         public ICommand AddRowCommand { get; }
         public ICommand RemoveRowCommand { get; }
@@ -143,22 +95,18 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         public ICommand CloseTabCommand { get; }
         public ICommand OpenConfigurationCommand { get; }
 
-        public InvoiceReportViewModel(
-            ReportManager reportManager,
-            IDataService dataService,
-            IReportDataService reportDataService)
+        public InvoiceReportViewModel(ReportManager reportManager, IDataService dataService)
         {
             _reportManager = reportManager;
             _dataService = dataService;
-            _reportDataService = reportDataService;
 
             ProductsSelector = new ProductSelectionViewModel(dataService);
             MeasurementUnits = [.. _dataService.LoadMeasurementUnitsData().Select(x => new MeasurementUnitViewModel(x))];
             People = [.. _dataService.LoadPeopleData().Select(x => new PersonViewModel(x))];
-            AssetsCollection = new ObservableCollection<InvoiceAssetViewModel>();
+            AssetsCollection = [];
 
-            RecipientSelectedCommand = new DelegateCommand(RecipientSelectedCommandExecute);
-            TransmitterSelectedCommand = new DelegateCommand(TransmitterSelectedCommandExecute);
+            AssetAcceptance = new AssetAccetpanceViewModel(dataService);
+            
             UpdateDueDateCommand = new DelegateCommand(UpdateDueDateCommandExecute);
 
             GenerateReportCommand = new DelegateCommand(GenerateReportCommandExecute);
@@ -167,40 +115,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
             AddRowCommand = new DelegateCommand(AddRow);
             RemoveRowCommand = new DelegateCommand(RemoveRowExecute);
-        }
-
-
-
-        private void RecipientSelectedCommandExecute()
-        {
-            var person = SelectedRecipient;
-
-            if (person != null)
-            {
-                RecipientName = person.FullName;
-                RecipientPosition = person.Position;
-                RecipientRank = person.Rank;
-            }
-            else
-            {
-                OnPropertyChanged(nameof(RecipientName));
-            }
-        }
-
-        private void TransmitterSelectedCommandExecute()
-        {
-            var person = SelectedTransmitter;
-
-            if (person != null)
-            {
-                TransmitterName = person.FullName;
-                TransmitterPosition = person.Position;
-                TransmitterRank = person.Rank;
-            }
-            else
-            {
-                OnPropertyChanged(nameof(TransmitterName));
-            }
         }
 
         private void UpdateDueDateCommandExecute()
@@ -245,29 +159,22 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
         private bool GetIsDataValid()
         {
-            var isTransmitterValid =
-                !string.IsNullOrEmpty(TransmitterName) &&
-                !string.IsNullOrEmpty(TransmitterPosition) &&
-                !string.IsNullOrEmpty(TransmitterRank);
-
-            var isRecipientValid =
-                !string.IsNullOrEmpty(RecipientName) &&
-                !string.IsNullOrEmpty(RecipientPosition) &&
-                !string.IsNullOrEmpty(RecipientRank);
+            var isTransmitterValid = AssetAcceptance.GetIsTransmitterValid();
+            var isReceiverValid = AssetAcceptance.GetIsReceiverValid();
 
             var isValid =
                 !string.IsNullOrWhiteSpace(DocumentNumber) &&
                 AssetsCollection.Count > 0 &&
                 isTransmitterValid &&
-                isRecipientValid;
+                isReceiverValid;
 
             return isValid;
         }
 
         protected void GenerateReport(string folderName)
         {
-            var personRecipient = new PersonDTO(RecipientName, RecipientPosition, RecipientRank);
-            var personTransmitter = new PersonDTO(TransmitterName, TransmitterPosition, TransmitterRank);
+            var personRecipient = AssetAcceptance.GetReceiverDTO();
+            var personTransmitter = AssetAcceptance.GetTransmitterDTO();
 
             var reportData = new InvoceReportData
             {

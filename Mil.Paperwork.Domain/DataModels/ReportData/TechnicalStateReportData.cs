@@ -2,7 +2,7 @@
 
 namespace Mil.Paperwork.Domain.DataModels.ReportData
 {
-    public class TechnicalStateReportData : InitialTechnicalStateReportData, ITechnicalStateReportData
+    public class TechnicalStateReportData : BaseTechnicalStateReportData, ITechnicalStateReportData
     {
         public DateTime DocumentDate { get; set; }
 

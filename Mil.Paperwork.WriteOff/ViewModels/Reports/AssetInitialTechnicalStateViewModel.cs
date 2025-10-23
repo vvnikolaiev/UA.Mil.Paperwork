@@ -21,6 +21,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         private readonly IDataService _dataService;
 
         private AssetsTableViewModel _assetsTable;
+        private AssetAccetpanceViewModel _assetAcceptance;
         private EventType _eventType;
 
         public override string Header => "Тех. стан (№7)";
@@ -37,6 +38,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             set => SetProperty(ref _assetsTable, value);
         }
 
+        public AssetAccetpanceViewModel AssetAcceptance
+        {
+            get => _assetAcceptance;
+            set => SetProperty(ref _assetAcceptance, value);
+        }
+
         public ObservableCollection<EventType> EventTypes { get; private set; }
 
         public ObservableCollection<MeasurementUnitViewModel> MeasurementUnits { get; }
@@ -51,6 +58,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             _dataService = dataService;
 
             AssetsTable = new AssetsTableViewModel(assetFactory, dataService);
+            AssetAcceptance = new AssetAccetpanceViewModel(dataService);
 
             FillAssetTypesCollection();
             MeasurementUnits = [.. _dataService.LoadMeasurementUnitsData().Select(x => new MeasurementUnitViewModel(x))];
@@ -70,7 +78,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
                 var assets = AssetsTable.AssetsCollection.Select(x => x.ToAssetInfo(EventType)).ToArray();
 
                 GenerateReport(assets, folderName);
-                
+
                 var productInfos = assets.Select(DTOConvertionHelper.ConvertToProductDTO).ToList();
                 _dataService.AlterProductsData(productInfos);
             }
@@ -78,12 +86,20 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
         protected virtual void GenerateReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
         {
+
+            var personAccepted = AssetAcceptance.GetReceiverDTO();
+            var personHanded = AssetAcceptance.GetTransmitterDTO();
+
             var reportData = new InitialTechnicalStateReportData
             {
                 EventType = _eventType,
                 Assets = [.. assets],
-                DestinationFolder = destinationFolder
+                DestinationFolder = destinationFolder,
+                PersonAccepted = personAccepted,
+                PersonHanded = personHanded
             };
+
+            _dataService.AlterPeople([personAccepted, personHanded]);
 
             _reportManager.GenerateInitialTechnicalStateReport(reportData);
         }

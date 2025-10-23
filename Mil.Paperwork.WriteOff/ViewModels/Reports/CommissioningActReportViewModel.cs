@@ -27,6 +27,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         private string _measurementUnitName;
         private MeasurementUnitViewModel _measurementUnit;
         private string _assetState;
+        private AssetAccetpanceViewModel _assetAcceptance;
 
         private string _serialNumber;
         private int _count = 1;
@@ -41,15 +42,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         private string _otherInfo;
         private string _conclusion;
         private string _attachedDocumentation;
-
-        private PersonViewModel _selectedPersonAccepted;
-        private PersonViewModel _selectedPersonHanded;
-        private string _personAcceptedName;
-        private string _personAcceptedRank;
-        private string _personAcceptedPosition;
-        private string _personHandedName;
-        private string _personHandedRank;
-        private string _personHandedPosition;
 
         public override string Header => "Акт введення в експлуатацію";
 
@@ -81,6 +73,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         {
             get => _measurementUnit;
             set => SetProperty(ref _measurementUnit, value);
+        }
+
+        public AssetAccetpanceViewModel AssetAcceptance
+        {
+            get => _assetAcceptance;
+            set => SetProperty(ref _assetAcceptance, value);
         }
 
         public int WarrantyPeriodMonths
@@ -173,65 +171,13 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             set => SetProperty(ref _attachedDocumentation, value);
         }
 
-        public PersonViewModel SelectedPersonAccepted
-        {
-            get => _selectedPersonAccepted;
-            set => SetProperty(ref _selectedPersonAccepted, value);
-        }
-
-        public PersonViewModel SelectedPersonHanded
-        {
-            get => _selectedPersonHanded;
-            set => SetProperty(ref _selectedPersonHanded, value);
-        }
-
-        public string PersonAcceptedName
-        {
-            get => _personAcceptedName;
-            set => SetProperty(ref _personAcceptedName, value);
-        }
-
-        public string PersonAcceptedRank
-        {
-            get => _personAcceptedRank;
-            set => SetProperty(ref _personAcceptedRank, value);
-        }
-
-        public string PersonAcceptedPosition
-        {
-            get => _personAcceptedPosition;
-            set => SetProperty(ref _personAcceptedPosition, value);
-        }
-
-        public string PersonHandedName
-        {
-            get => _personHandedName;
-            set => SetProperty(ref _personHandedName, value);
-        }
-
-        public string PersonHandedRank
-        {
-            get => _personHandedRank;
-            set => SetProperty(ref _personHandedRank, value);
-        }
-
-        public string PersonHandedPosition
-        {
-            get => _personHandedPosition;
-            set => SetProperty(ref _personHandedPosition, value);
-        }
-
         public ObservableCollection<MeasurementUnitViewModel> MeasurementUnits { get; }
-
-        public ObservableCollection<PersonViewModel> People { get; }
 
         public ObservableCollection<ProductIdentification> ProductIdentifiers { get; } = [];
 
         public ProductSelectionViewModel ProductSelector { get; }
 
         public ICommand ProductSelectedCommand { get; }
-        public ICommand PersonAccSelectedCommand { get; }
-        public ICommand PersonHanSelectedCommand { get; }
         public ICommand GenerateReportCommand { get; }
         public ICommand CloseTabCommand { get; }
         public ICommand OpenConfigurationCommand { get; }
@@ -247,11 +193,10 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
             ProductSelector = new ProductSelectionViewModel(dataService);
             MeasurementUnits = [.. _dataService.LoadMeasurementUnitsData().Select(x => new MeasurementUnitViewModel(x))];
-            People = [.. _dataService.LoadPeopleData().Select(x => new PersonViewModel(x))];
+
+            AssetAcceptance = new AssetAccetpanceViewModel(dataService);
 
             ProductSelectedCommand = new DelegateCommand(ProductSelectedExecute);
-            PersonAccSelectedCommand = new DelegateCommand(PersonAccSelectedExecute);
-            PersonHanSelectedCommand = new DelegateCommand(PersonHanSelectedExecute);
             GenerateReportCommand = new DelegateCommand(GenerateReportCommandExecute);
             CloseTabCommand = new DelegateCommand(CloseTabCommandExecute);
             OpenConfigurationCommand = new DelegateCommand(OpenConfigurationCommandExecute);
@@ -282,38 +227,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         private void ProductSelectedExecute()
         {
             FillProductDetails();
-        }
-
-        private void PersonAccSelectedExecute()
-        {
-            var person = SelectedPersonAccepted;
-
-            if (person != null)
-            {
-                PersonAcceptedName = person.FullName;
-                PersonAcceptedPosition = person.Position;
-                PersonAcceptedRank = person.Rank;
-            }
-            else
-            {
-                OnPropertyChanged(nameof(PersonAcceptedName));
-            }
-        }
-
-        private void PersonHanSelectedExecute()
-        {
-            var person = SelectedPersonHanded;
-
-            if (person != null)
-            {
-                PersonHandedName = person.FullName;
-                PersonHandedPosition = person.Position;
-                PersonHandedRank = person.Rank;
-            }
-            else
-            {
-                OnPropertyChanged(nameof(PersonHandedName));
-            }
         }
 
         private void FillProductDetails()
@@ -379,8 +292,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
             var identifiers = ProductIdentifiers.Cast<IProductIdentification>().ToList();
 
-            var personAccepted = new PersonDTO(_personAcceptedName, _personAcceptedPosition, _personAcceptedRank);
-            var personHanded = new PersonDTO(_personHandedName, _personHandedPosition, _personHandedRank);
+            var personAccepted = _assetAcceptance.GetReceiverDTO();
+            var personHanded = _assetAcceptance.GetTransmitterDTO();
 
             var reportData = new CommissioningActReportData
             {

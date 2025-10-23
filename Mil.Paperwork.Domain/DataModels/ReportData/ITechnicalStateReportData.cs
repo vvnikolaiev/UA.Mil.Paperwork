@@ -2,7 +2,7 @@
 
 namespace Mil.Paperwork.Domain.DataModels.ReportData
 {
-    public interface ITechnicalStateReportData : IInitialTechnicalStateReportData
+    public interface ITechnicalStateReportData : IBaseTechnicalStateReportData
     {
         DateTime DocumentDate { get; }
 

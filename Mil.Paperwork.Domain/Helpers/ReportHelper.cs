@@ -2,6 +2,7 @@
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
+using System.Globalization;
 
 namespace Mil.Paperwork.Domain.Helpers
 {
@@ -23,7 +24,7 @@ namespace Mil.Paperwork.Domain.Helpers
             public string Third { get; set; }
         }
 
-        private static readonly Words NominativeWords = new() { Year = "рік", Month = "місяць", Hour = "година", Names = "найменування", Unit = "одиниця" ,Hryvna = "гривня", Kopiyka = "копійка", First="перша", Second="друга", Third="третя" };
+        private static readonly Words NominativeWords = new() { Year = "рік", Month = "місяць", Hour = "година", Names = "найменування", Unit = "одиниця", Hryvna = "гривня", Kopiyka = "копійка", First = "перша", Second = "друга", Third = "третя" };
         private static readonly Words GenitiveWords = new() { Year = "років", Month = "місяців", Hour = "годин", Names = "найменувань", Unit = "одиниць", Hryvna = "гривень", Kopiyka = "копійок", First = "першої", Second = "другої", Third = "третьої" };
         private static readonly Words AccusativeWords = new() { Year = "роки", Month = "місяці", Hour = "години", Names = "найменування", Unit = "одиниці", Hryvna = "гривні", Kopiyka = "копійки", First = "першу", Second = "другу", Third = "третю" };
 
@@ -52,12 +53,19 @@ namespace Mil.Paperwork.Domain.Helpers
 
         private const string NamesNumberStringFormat = "Всього: {0} ({1}) {2}";
 
+        public static readonly NumberFormatInfo PriceNumberFormatInfo = new()
+        {
+            NumberDecimalSeparator = ",",
+            NumberGroupSeparator = " ", // Use space as the thousands separator
+            NumberDecimalDigits = 2 // Set number of decimal places
+        };
+
         public const string DATE_FORMAT = "dd.MM.yyyy";
         public const string DATE_FORMAT_Ex = "« {0:dd} »    {0:MM}    {0:yyyy} року";
 
         public static string GetPersonNameWithRank(IPerson person)
         {
-            var result = $"{person.Rank}      {person.FullName}"; 
+            var result = $"{person.Rank}      {person.FullName}";
             return result;
         }
 
@@ -171,14 +179,14 @@ namespace Mil.Paperwork.Domain.Helpers
             var kopiykasText = NounCasesWords[caseKopiykas].Kopiyka;
 
             var result = string.Format("{0}грн. {1}коп. ({2} {3} {4} {5})", integerPart, fractionalPart, sumInWords, hryvnasText, kopInWords, kopiykasText);
-            
+
             return result;
         }
 
         public static string GetMonthsOperatedText(DateTime startDate, DateTime endDate)
         {
             var monthsOperated = (int)((endDate - startDate).TotalDays / 30);
-            
+
             var result = GetMonthsText(monthsOperated);
 
             return result;

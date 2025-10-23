@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Mil.Paperwork.WriteOff.Views"
              xmlns:ViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels.Reports" 
              xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors" 
+             xmlns:Controls="clr-namespace:Mil.Paperwork.WriteOff.Controls"
              xmlns:converters="clr-namespace:Mil.Paperwork.Infrastructure.Converters;assembly=Mil.Paperwork.Infrastructure"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=ViewModels:AssetDismantlingViewModel}"
@@ -79,7 +80,7 @@
         <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding DocumentNumber}" />
 
         <TextBlock Grid.Row="3" Grid.Column="0" Text="Загальна ціна" />
-        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Price}" />
+        <Controls:NumericTextBox Grid.Row="3" Grid.Column="1" Text="{Binding Price}" />
 
         <TextBlock Grid.Row="3" Grid.Column="2" Text="Одиниця виміру" />
         <ComboBox Grid.Row="3" Grid.Column="3" 
@@ -150,7 +151,7 @@
                 <DataGridTextColumn Header="Назва" Binding="{Binding Name}" Width="*"/>
                 <DataGridTextColumn Header="Од. вим." Binding="{Binding MeasurementUnit}" />
                 <DataGridTextColumn Header="К-сть" Binding="{Binding Quantity}" />
-                <DataGridTextColumn Header="Ціна" Binding="{Binding Price}" />
+                <Controls:NumericTextColumn Header="Ціна" Binding="{Binding Price}" />
                 <DataGridCheckBoxColumn Header="Дерибан" Binding="{Binding Exclude, UpdateSourceTrigger=PropertyChanged}"/>
             </DataGrid.Columns>
         </DataGrid>

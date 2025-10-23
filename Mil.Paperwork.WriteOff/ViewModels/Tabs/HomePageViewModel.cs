@@ -109,7 +109,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
                     createdTab = new AssetTechnicalStateViewModel(_reportManager, _assetFactory, _dataService);
                     break;
                 case DocumentTypeEnum.Invoice:
-                    createdTab = new InvoiceReportViewModel(_reportManager, _dataService, _reportDataService);
+                    createdTab = new InvoiceReportViewModel(_reportManager, _dataService);
                     break;
                 case DocumentTypeEnum.CommisioningAct:
                     createdTab = new CommissioningActReportViewModel(_reportManager, _dataService, _reportDataService);
