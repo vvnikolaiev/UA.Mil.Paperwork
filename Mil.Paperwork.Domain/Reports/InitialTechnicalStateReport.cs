@@ -1,6 +1,7 @@
 ﻿using Mil.Paperwork.Domain.DataModels.Assets;
 using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Domain.Helpers;
+using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;
 using Spire.Doc;
@@ -20,7 +21,7 @@ namespace Mil.Paperwork.Domain.Reports
             _reportDataService = reportDataService;
         }
 
-        public bool TryCreate(IAssetInfo assetInfo, EventType eventType)
+        public bool TryCreate(IAssetInfo assetInfo, IPerson personAccepted, IPerson personHanded, EventType eventType)
         {
             try
             {
@@ -29,7 +30,7 @@ namespace Mil.Paperwork.Domain.Reports
                 var document = new Document();
                 document.LoadFromFile(templatePath, FileFormat.Docx);
 
-                FillTheFields(assetInfo, eventType, document);
+                FillTheFields(assetInfo, personAccepted, personHanded, eventType, document);
                 FillAssetTable(assetInfo, eventType, document);
                 FillOperationalTable(assetInfo, document);
 
@@ -51,7 +52,7 @@ namespace Mil.Paperwork.Domain.Reports
             return _reportBytes;
         }
 
-        private void FillTheFields(IAssetInfo asset, EventType eventType, Document document)
+        private void FillTheFields(IAssetInfo asset, IPerson personAccepted, IPerson personHanded, EventType eventType, Document document)
         {
             var reportConfig = _reportDataService.GetReportParametersDictionary(ReportType.TechnicalStateReport);
             var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
@@ -63,11 +64,17 @@ namespace Mil.Paperwork.Domain.Reports
             document.ReplaceField(TechnicalStateReportHelper.FIELD_ASSET_NAME, assetName);
             document.ReplaceField(TechnicalStateReportHelper.FIELD_REGISTRATION_NUMBER, asset.TSRegisterNumber);
             document.ReplaceField(TechnicalStateReportHelper.FIELD_DOCUMENT_NUMBER, asset.TSDocumentNumber);
+            document.ReplaceField(TechnicalStateReportHelper.FIELD_DOCUMENT_DATE, asset.StartDate.ToString(ReportHelper.DATE_FORMAT));
             document.ReplaceField(TechnicalStateReportHelper.FIELD_ASSET_INITIAL_CATEGORY, sInitialCategory);
             document.ReplaceField(TechnicalStateReportHelper.FIELD_ASSET_RESIDUAL_CATEGORY, sResidualCategory);
 
             document.ReplaceField(TechnicalStateReportHelper.FIELD_ASSET_INITIAL_CATEGORY_TEXT, sInitialText);
             document.ReplaceField(TechnicalStateReportHelper.FIELD_ASSET_RESIDUAL_CATEGORY_TEXT, sResidualText);
+
+            document.ReplaceField(CommissioningActHelper.FIELD_ACCEPTED_PERSON_RANK, personAccepted?.Rank ?? string.Empty);
+            document.ReplaceField(CommissioningActHelper.FIELD_ACCEPTED_PERSON_NAME, personAccepted?.FullName ?? string.Empty);
+            document.ReplaceField(CommissioningActHelper.FIELD_HANDED_PERSON_RANK, personHanded?.Rank ?? string.Empty);
+            document.ReplaceField(CommissioningActHelper.FIELD_HANDED_PERSON_NAME, personHanded?.FullName ?? string.Empty);
 
             document.ReplaceFields(reportConfig);
         }

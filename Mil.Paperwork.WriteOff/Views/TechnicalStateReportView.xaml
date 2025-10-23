@@ -4,8 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Mil.Paperwork.WriteOff.Views"
+             xmlns:Controls="clr-namespace:Mil.Paperwork.WriteOff.Controls"
              xmlns:ViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels.Reports" 
              xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:MyBehaviors="clr-namespace:Mil.Paperwork.WriteOff.Behaviors"
+             xmlns:Views="clr-namespace:Mil.Paperwork.WriteOff.Views"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=ViewModels:AssetInitialTechnicalStateViewModel}"
              d:DesignHeight="450" d:DesignWidth="800" Grid.IsSharedSizeScope="True">
@@ -28,7 +31,7 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <!--<TextBlock Grid.Row="1" Grid.Column="0" Text="Коротка назва"/>
                 <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Asset.ShortName}" TextWrapping="Wrap"/>-->
 
@@ -49,7 +52,7 @@
                           EnableRowVirtualization="False"
                           AutoGenerateColumns="False" CanUserAddRows="False"
                           Margin="5"
-                          Height="150">
+                          MinHeight="100">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Header="Назва" Width="*">
                             <DataGridTemplateColumn.CellTemplate>
@@ -89,8 +92,10 @@
                         </DataGridTemplateColumn>
                         <DataGridTextColumn Header="К-сть" Binding="{Binding Count}" Width="40"
                                             ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
-                        <DataGridTextColumn Header="Ціна" Binding="{Binding Price}" Width="60"
-                                            ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
+                        <Controls:NumericTextColumn Header="Ціна" Binding="{Binding Price}" Width="60"
+                                                    ElementStyle="{StaticResource DataGridTextBlockStyle}">
+
+                        </Controls:NumericTextColumn>
                         <DataGridTextColumn Header="Кат-ія" Binding="{Binding Category}" Width="50"
                                             ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
 
@@ -115,8 +120,8 @@
                                     ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
                     </DataGrid.Columns>
                 </DataGrid>
-                
-                
+
+
             </Grid>
         </ContentControl>
 
@@ -144,7 +149,7 @@
                     <ColumnDefinition Width="115" />
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <!--<TextBlock Grid.Row="0" Grid.Column="4" Text="Коеф. зберігання"/>-->
                 <!--<TextBox Grid.Row="1" Grid.Column="5" Text="{Binding Asset.WearAndTearCoeff}" TextWrapping="Wrap"/>-->
 
@@ -199,8 +204,8 @@
                 <ContentControl Grid.Row="7" Grid.ColumnSpan="99"
                                 Content="{StaticResource InitialTechnicalStateViewLayout}"/>
 
-                
-                
+
+
             </Grid>
         </ContentControl>
 
@@ -209,15 +214,24 @@
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type ViewModels:AssetInitialTechnicalStateViewModel}">
-            <ContentControl Content="{StaticResource InitialTechnicalStateViewLayout}"/>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <ContentControl Grid.ColumnSpan="99" 
+                                Content="{StaticResource InitialTechnicalStateViewLayout}"/>
+
+                <Views:AssetAcceptanceView Grid.Row="2" DataContext="{Binding AssetAcceptance}"/>
+            </Grid>
         </DataTemplate>
     </UserControl.Resources>
 
     <Grid Background="Wheat" Grid.IsSharedSizeScope="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="5" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="5" />
@@ -231,7 +245,7 @@
         <ContentControl Grid.Row="1" Grid.Column="1" 
                         Content="{Binding}"/>
 
-        <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button Content="Відкрити конфігурацію" Command="{Binding OpenConfigurationCommand}"/>
             <Button Content="Створити документ" Command="{Binding GenerateReportCommand}"/>
             <Button Content="Додати майно" Command="{Binding AssetsTable.AddRowCommand}" />

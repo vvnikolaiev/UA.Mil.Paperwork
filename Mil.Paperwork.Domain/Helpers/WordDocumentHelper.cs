@@ -1,5 +1,5 @@
-﻿using Spire.Doc.Documents;
-using Spire.Doc;
+﻿using Spire.Doc;
+using Spire.Doc.Documents;
 using Spire.Doc.Fields;
 
 namespace Mil.Paperwork.Domain.Helpers
@@ -63,7 +63,9 @@ namespace Mil.Paperwork.Domain.Helpers
 
         public static void AddPrice(this TableCell cell, decimal value, int fontSize = 12, HorizontalAlignment horizontalAlignment = HorizontalAlignment.Center)
         {
-            cell.AddText(value.ToString("F2"), fontSize, horizontalAlignment);
+            string price = value.ToString("N", ReportHelper.PriceNumberFormatInfo);
+
+            cell.AddText(price, fontSize, horizontalAlignment);
         }
 
         public static void AddText(this TableCell cell, string text, int fontSize = 12, HorizontalAlignment horizontalAlignment = HorizontalAlignment.Center)

@@ -3,6 +3,7 @@
              xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"        
              xmlns:converters="clr-namespace:Mil.Paperwork.Infrastructure.Converters;assembly=Mil.Paperwork.Infrastructure"
+             xmlns:Controls="clr-namespace:Mil.Paperwork.WriteOff.Controls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Mil.Paperwork.WriteOff.Views"
@@ -92,7 +93,7 @@
                         <Border BorderThickness="0,0,1,0" BorderBrush="LightGray" Padding="6" Width="80">
                             <StackPanel>
                                 <TextBlock Text="{Binding Title}" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap"/>
-                                <TextBox Text="{Binding Cost, StringFormat=N2}" TextAlignment="Center" Margin="0,6,0,0"/>
+                                <Controls:NumericTextBox Text="{Binding Cost, StringFormat=N2}" TextAlignment="Center" Margin="0,6,0,0"/>
                             </StackPanel>
                         </Border>
                     </DataTemplate>
@@ -147,7 +148,7 @@
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="К-сть" Binding="{Binding Count}" Width="40"
                                     ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
-                <DataGridTextColumn Header="Ціна" Binding="{Binding Price}" Width="60"
+                <Controls:NumericTextColumn Header="Ціна" Binding="{Binding Price}" Width="60"
                                     ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
                 <DataGridTextColumn Header="Кат-ія" Binding="{Binding Category}" Width="50"
                                     ElementStyle="{StaticResource DataGridTextBlockStyle}"/>

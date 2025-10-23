@@ -119,6 +119,8 @@ namespace Mil.Paperwork.Domain.Reports
                 var category = ReportHelper.ConvertCategoryToText(asset.InitialCategory);
                 var totalPrice = Math.Round(asset.Price * asset.Count, 2);
 
+                var serialNumber = !string.IsNullOrEmpty(asset.SerialNumber) ? $"s/n: {asset.SerialNumber}" : "-";
+
                 row.Cells[InvoiceReportHelper.COLUMN_INDEX].AddNumber(i + 1, fontSize);
                 row.Cells[InvoiceReportHelper.COLUMN_ASSET_NAME].AddText(asset.Name, fontSize, horizontalAlignment: HorizontalAlignment.Left);
                 row.Cells[InvoiceReportHelper.COLUMN_NOMENCLATURE_CODE].AddText(nomenclatureCode, fontSize);
@@ -128,7 +130,7 @@ namespace Mil.Paperwork.Domain.Reports
                 row.Cells[InvoiceReportHelper.COLUMN_COUNT_OUT].AddNumber(asset.Count, fontSize);
                 row.Cells[InvoiceReportHelper.COLUMN_COUNT_IN].AddNumber(asset.Count, fontSize);
                 row.Cells[InvoiceReportHelper.COLUMN_TOTAL_PRICE].AddPrice(totalPrice, fontSize);
-                row.Cells[InvoiceReportHelper.COLUMN_NOTE].AddText("-", fontSize);
+                row.Cells[InvoiceReportHelper.COLUMN_NOTE].AddText(serialNumber, fontSize);
             }
 
             table.Rows.Remove(firstRow);

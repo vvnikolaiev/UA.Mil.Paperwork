@@ -66,7 +66,7 @@ namespace Mil.Paperwork.Domain.Services
             foreach (var asset in assets)
             {
                 var report = new InitialTechnicalStateReport(_reportDataService);
-                result = report.TryCreate(asset, reportData.EventType);
+                result = report.TryCreate(asset, reportData.PersonAccepted, reportData.PersonHanded, reportData.EventType);
 
                 if (result)
                 {

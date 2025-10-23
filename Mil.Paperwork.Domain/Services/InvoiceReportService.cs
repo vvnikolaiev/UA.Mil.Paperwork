@@ -41,12 +41,14 @@ namespace Mil.Paperwork.Domain.Services
 
             if (!string.IsNullOrEmpty(reportData.DocumentNumber))
             {
-                nameParameters.Add(reportData.DocumentNumber);
+                nameParameters.Add($"№{reportData.DocumentNumber}");
             }
+
+            nameParameters.Add($"{reportData.Transmitter?.LastName} - {reportData.Recipient?.LastName}");
 
             nameParameters.Add(reportData.DateCreated.ToString(ReportHelper.DATE_FORMAT));
 
-            var name = nameParameters.Any() ? string.Join(",", nameParameters) : string.Empty;
+            var name = nameParameters.Any() ? string.Join(" ", nameParameters) : string.Empty;
 
             var rawFileName = String.Format(InvoiceReportHelper.OUTPUT_REPORT_NAME_TEMPLATE, name);
             var fileName = PathsHelper.SanitizeFileName(rawFileName);

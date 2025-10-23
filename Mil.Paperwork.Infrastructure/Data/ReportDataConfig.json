@@ -146,9 +146,21 @@
       "Value": "пгт Білочервневе",
       "Comment": ""
     },
-    { "Name": "HEAD_OF_SERVICE_NAME", "Value": "Петро ГРИЩЕНКО", "Comment": "" },
-    { "Name": "HEAD_OF_SERVICE_RANK", "Value": "лейтенант", "Comment": "" },
-    { "Name": "HEAD_OF_SERVICE_POSITION", "Value": "Начальник групи правопорядку – начальник правопорядку", "Comment": "" },
+    {
+      "Name": "HEAD_OF_SERVICE_NAME",
+      "Value": "Петро ГРИЩЕНКО",
+      "Comment": ""
+    },
+    {
+      "Name": "HEAD_OF_SERVICE_RANK",
+      "Value": "лейтенант",
+      "Comment": ""
+    },
+    {
+      "Name": "HEAD_OF_SERVICE_POSITION",
+      "Value": "Начальник групи правопорядку – начальник правопорядку",
+      "Comment": ""
+    },
     {
       "Name": "HEAD_OF_STAFF_NAME",
       "Value": "Ігор Жокеєнко",
@@ -162,6 +174,36 @@
     {
       "Name": "HEAD_OF_STAFF_POSITION",
       "Value": "Начальник штабу",
+      "Comment": ""
+    },
+    {
+      "Name": "HEAD_OF_FINANCE_NAME",
+      "Value": "\u0412\u043E\u043B\u043E\u0434\u0438\u043C\u0438\u0440 \u0427\u0415\u0412\u0415\u041B\u042C\u0427\u0410",
+      "Comment": ""
+    },
+    {
+      "Name": "HEAD_OF_FINANCE_RANK",
+      "Value": "мол. лейтенант",
+      "Comment": ""
+    },
+    {
+      "Name": "HEAD_OF_FINANCE_POSITION",
+      "Value": "Копійка",
+      "Comment": ""
+    },
+    {
+      "Name": "HEAD_OF_JUSTICE_NAME",
+      "Value": "Ігор Гришак",
+      "Comment": ""
+    },
+    {
+      "Name": "HEAD_OF_JUSTICE_RANK",
+      "Value": "лейтенант юстиції",
+      "Comment": ""
+    },
+    {
+      "Name": "HEAD_OF_JUSTICE_POSITION",
+      "Value": "Помічник командира військової частини А1488 з правової роботи",
       "Comment": ""
     }
   ]

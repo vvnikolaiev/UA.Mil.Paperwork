@@ -1,0 +1,73 @@
+﻿<UserControl x:Class="Mil.Paperwork.WriteOff.Views.AssetAcceptanceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Mil.Paperwork.WriteOff.Views"
+             xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:ViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels" 
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance Type=ViewModels:AssetAccetpanceViewModel}"
+             x:Name="root">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="125" />
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="125" />
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding RecievedLabel, ElementName=root}" FontWeight="Bold" />
+        <TextBlock Grid.Row="0" Grid.Column="3" Text="{Binding AcceptedLabel, ElementName=root}" FontWeight="Bold" />
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Ім'я та прізвище*:"
+                   HorizontalAlignment="Right" />
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Посада*:" 
+                   HorizontalAlignment="Right" />
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Звання*:"
+                   HorizontalAlignment="Right" />
+
+        <ComboBox Grid.Row="1" Grid.Column="1"
+                  ItemsSource="{Binding People}" 
+                  Text="{Binding PersonAcceptedName}"
+                  DisplayMemberPath="FullName"
+                  SelectedItem="{Binding SelectedPersonAccepted, UpdateSourceTrigger=PropertyChanged}" 
+                  IsEditable="True"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Center">
+            <Behaviors:Interaction.Triggers>
+                <Behaviors:EventTrigger EventName="SelectionChanged">
+                    <Behaviors:InvokeCommandAction Command="{Binding PersonAccSelectedCommand}" />
+                </Behaviors:EventTrigger>
+            </Behaviors:Interaction.Triggers>
+        </ComboBox>
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding PersonAcceptedPosition, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding PersonAcceptedRank, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <ComboBox Grid.Row="1" Grid.Column="3"
+                  ItemsSource="{Binding People}" 
+                  Text="{Binding PersonHandedName}"
+                  DisplayMemberPath="FullName"
+                  SelectedItem="{Binding SelectedPersonHanded, UpdateSourceTrigger=PropertyChanged}" 
+                  IsEditable="True"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Center">
+            <Behaviors:Interaction.Triggers>
+                <Behaviors:EventTrigger EventName="SelectionChanged">
+                    <Behaviors:InvokeCommandAction Command="{Binding PersonHanSelectedCommand}" />
+                </Behaviors:EventTrigger>
+            </Behaviors:Interaction.Triggers>
+        </ComboBox>
+        <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding PersonHandedPosition, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding PersonHandedRank, UpdateSourceTrigger=PropertyChanged}"/>
+
+    </Grid>
+</UserControl>

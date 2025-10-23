@@ -66,7 +66,9 @@ namespace Mil.Paperwork.Domain.Reports
 
             var fieldsMap = _reportDataService.GetReportParametersDictionary(ReportType.ResidualValueReport);
             fieldsMap.Add(ResidualValueReportHelper.REPORT_DATE_PLACEHOLDER, reportDate.ToString(ReportHelper.DATE_FORMAT));
-            fieldsMap.Add(ResidualValueReportHelper.TOTAL_RESIDUAL_SUM_PLACEHOLDER, ResidualPriceHelper.CalculateResidualPriceForItem(asset, reportDate, asset.Count).ToString("F2"));
+            
+            var residualPrice = ResidualPriceHelper.CalculateResidualPriceForItem(asset, reportDate, asset.Count);
+            fieldsMap.Add(ResidualValueReportHelper.TOTAL_RESIDUAL_SUM_PLACEHOLDER, residualPrice.ToString("N", ReportHelper.PriceNumberFormatInfo));
             
             fieldsMap.Add(ResidualValueReportHelper.ASSET_NAME, ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber));
             fieldsMap.Add(ResidualValueReportHelper.ASSEMBLY_YEAR, asset.YearManufactured.ToString());

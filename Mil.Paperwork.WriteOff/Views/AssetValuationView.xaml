@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Mil.Paperwork.WriteOff.Views"
              xmlns:ViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels.Reports" 
              xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors" 
+             xmlns:Controls="clr-namespace:Mil.Paperwork.WriteOff.Controls"
              xmlns:converters="clr-namespace:Mil.Paperwork.Infrastructure.Converters;assembly=Mil.Paperwork.Infrastructure"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=ViewModels:AssetValuationViewModel}"
@@ -57,8 +58,7 @@
         </ComboBox>
 
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Загальна ціна" />
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Price}" 
-             IsReadOnly="{Binding IsReadOnly}" />
+        <Controls:NumericTextBox Grid.Row="1" Grid.Column="1" Text="{Binding Price}" />
 
         <TextBlock Grid.Row="1" Grid.Column="2" Text="Одиниця вимірювання" />
         <ComboBox Grid.Row="1" Grid.Column="3" 
@@ -109,7 +109,7 @@
                 <DataGridTextColumn Header="Назва" Binding="{Binding Name}" Width="*"/>
                 <DataGridTextColumn Header="Од. вим." Binding="{Binding MeasurementUnit}" />
                 <DataGridTextColumn Header="К-сть" Binding="{Binding Quantity}" />
-                <DataGridTextColumn Header="Ціна" Binding="{Binding Price}" />
+                <Controls:NumericTextColumn Header="Ціна" Binding="{Binding Price}" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

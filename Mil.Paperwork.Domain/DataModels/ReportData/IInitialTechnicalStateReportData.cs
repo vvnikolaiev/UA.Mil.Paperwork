@@ -1,12 +1,10 @@
-﻿using Mil.Paperwork.Domain.DataModels.Assets;
-using Mil.Paperwork.Domain.Enums;
+﻿using Mil.Paperwork.Infrastructure.DataModels;
 
 namespace Mil.Paperwork.Domain.DataModels.ReportData
 {
-    public interface IInitialTechnicalStateReportData : IReportData
+    public interface IInitialTechnicalStateReportData : IBaseTechnicalStateReportData
     {
-        EventType EventType { get; }
-
-        IList<IAssetInfo> Assets { get; set; }
+        IPerson PersonAccepted { get; }
+        IPerson PersonHanded { get; }
     }
 }

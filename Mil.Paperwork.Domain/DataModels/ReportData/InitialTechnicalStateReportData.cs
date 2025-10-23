@@ -1,19 +1,11 @@
-﻿using Mil.Paperwork.Domain.DataModels.Assets;
-using Mil.Paperwork.Domain.Enums;
+﻿using Mil.Paperwork.Infrastructure.DataModels;
 
 namespace Mil.Paperwork.Domain.DataModels.ReportData
 {
-    public class InitialTechnicalStateReportData : IInitialTechnicalStateReportData
+    public class InitialTechnicalStateReportData : BaseTechnicalStateReportData, IInitialTechnicalStateReportData
     {
-        public EventType EventType { get; set; }
 
-        public IList<IAssetInfo> Assets { get; set; }
-
-        public string DestinationFolder { get; set; }
-
-        public string GetDestinationPath()
-        {
-            return DestinationFolder;
-        }
+        public IPerson PersonAccepted { get; set; }
+        public IPerson PersonHanded { get; set; }
     }
 }
