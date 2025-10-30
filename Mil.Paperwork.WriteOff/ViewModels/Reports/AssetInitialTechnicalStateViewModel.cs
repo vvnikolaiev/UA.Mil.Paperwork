@@ -1,17 +1,20 @@
-﻿using Mil.Paperwork.Infrastructure.MVVM;
+﻿using Microsoft.Win32;
+using Mil.Paperwork.Domain.DataModels.Assets;
+using Mil.Paperwork.Domain.DataModels.ReportData;
+using Mil.Paperwork.Domain.Enums;
+using Mil.Paperwork.Domain.Helpers;
+using Mil.Paperwork.Infrastructure.DataModels;
+using Mil.Paperwork.Infrastructure.Enums;
+using Mil.Paperwork.Infrastructure.Helpers;
+using Mil.Paperwork.Infrastructure.MVVM;
+using Mil.Paperwork.Infrastructure.Services;
+using Mil.Paperwork.WriteOff.Factories;
+using Mil.Paperwork.WriteOff.Helpers;
 using Mil.Paperwork.WriteOff.Managers;
+using Mil.Paperwork.WriteOff.ViewModels.Dictionaries;
+using Mil.Paperwork.WriteOff.ViewModels.Tabs;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using Mil.Paperwork.Infrastructure.Services;
-using Mil.Paperwork.WriteOff.Helpers;
-using Microsoft.Win32;
-using Mil.Paperwork.WriteOff.Factories;
-using Mil.Paperwork.Domain.DataModels.Assets;
-using Mil.Paperwork.Domain.Enums;
-using Mil.Paperwork.Infrastructure.Helpers;
-using Mil.Paperwork.WriteOff.ViewModels.Tabs;
-using Mil.Paperwork.Domain.DataModels.ReportData;
-using Mil.Paperwork.WriteOff.ViewModels.Dictionaries;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {
@@ -19,17 +22,67 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
     {
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
-
+        private readonly IReportDataService _reportDataService;
         private AssetsTableViewModel _assetsTable;
         private AssetAccetpanceViewModel _assetAcceptance;
         private EventType _eventType;
 
+        private DateTime _operationDate = DateTime.Now;
+        private bool _isInvoiceNeeded;
+        private bool _isInvoceInvertedExchange;
+        private string _invoiceNumber;
+        private string _commissioningActNumbers;
+        private string _commissioningLocation;
+        private bool _isCommissioningActNeeded;
+
         public override string Header => "Тех. стан (№7)";
+
+        public DateTime OperationDate
+        {
+            get => _operationDate;
+            set => SetProperty(ref _operationDate, value);
+        }
 
         public EventType EventType
         {
             get => _eventType;
             set => SetProperty(ref _eventType, value);
+        }
+
+        public bool IsInvoiceNeeded
+        {
+            get => _isInvoiceNeeded;
+            set => SetProperty(ref _isInvoiceNeeded, value);
+        }
+
+        public bool IsInvoceInvertedExchange
+        {
+            get => _isInvoceInvertedExchange;
+            set => SetProperty(ref _isInvoceInvertedExchange, value);
+        }
+
+        public string InvoiceNumber
+        {
+            get => _invoiceNumber;
+            set => SetProperty(ref _invoiceNumber, value);
+        }
+
+        public string CommissioningLocation
+        {
+            get => _commissioningLocation;
+            set => SetProperty(ref _commissioningLocation, value);
+        }
+
+        public string CommissioningActNumbers
+        {
+            get => _commissioningActNumbers;
+            set => SetProperty(ref _commissioningActNumbers, value);
+        }
+
+        public bool IsCommissioningActNeeded
+        {
+            get => _isCommissioningActNeeded;
+            set => SetProperty(ref _isCommissioningActNeeded, value);
         }
 
         public AssetsTableViewModel AssetsTable
@@ -52,14 +105,20 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         public ICommand CloseCommand { get; }
         public ICommand OpenConfigurationCommand { get; }
 
-        public AssetInitialTechnicalStateViewModel(ReportManager reportManager, IAssetFactory assetFactory, IDataService dataService)
+        public AssetInitialTechnicalStateViewModel(
+            ReportManager reportManager,
+            IAssetFactory assetFactory,
+            IDataService dataService,
+            IReportDataService reportDataService)
         {
             _reportManager = reportManager;
             _dataService = dataService;
+            _reportDataService = reportDataService;
 
             AssetsTable = new AssetsTableViewModel(assetFactory, dataService);
             AssetAcceptance = new AssetAccetpanceViewModel(dataService);
 
+            FillReportDefaults();
             FillAssetTypesCollection();
             MeasurementUnits = [.. _dataService.LoadMeasurementUnitsData().Select(x => new MeasurementUnitViewModel(x))];
 
@@ -102,11 +161,92 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             _dataService.AlterPeople([personAccepted, personHanded]);
 
             _reportManager.GenerateInitialTechnicalStateReport(reportData);
+
+            GenerateInvoiceReport(assets, destinationFolder, personAccepted, personHanded);
+
+            GenerateComissioningActReport(assets, destinationFolder, personAccepted, personHanded);
+        }
+
+        private void GenerateComissioningActReport(IEnumerable<IAssetInfo> assets, string destinationFolder, PersonDTO personAccepted, PersonDTO personHanded)
+        {
+            if (IsCommissioningActNeeded)
+            {
+                var assetsArray = assets.ToArray();
+
+                List<ICommissioningActReportData> commissioningActDataList = [];
+
+                var docNums = CommissioningActNumbers?.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
+
+                var assetCount = assetsArray.Length;
+
+                for (int i = 0; i < assetsArray.Length; i++)
+                {
+                    var commActDocumentNum = docNums.Length > i ? docNums[i] : 
+                                             docNums.Length > 0 ? docNums[0] :
+                                             string.Empty;
+
+                    var asset = assetsArray[i];
+
+                    var serialNumbers = asset.SerialNumber?.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
+                    var identifiers = serialNumbers.Select(x => new ProductIdentification() { SerialNumber = x });
+
+                    var reportData = new CommissioningActReportData
+                    {
+                        DocumentNumber = commActDocumentNum,
+                        DocumentDate = OperationDate,
+                        Asset = asset,
+                        DestinationFolder = destinationFolder,
+                        AssetIds = [.. identifiers],
+                        Count = asset.Count,
+                        CountText = ReportHelper.GenerateItemsCountText(asset.Count, null),
+                        CommissioningLocation = CommissioningLocation,
+                        PersonAccepted = personAccepted,
+                        PersonHanded = personHanded
+                    };
+
+                    commissioningActDataList.Add(reportData);
+                }
+
+
+                _reportManager.GenerateCommissioningAct(commissioningActDataList);
+            }
+        }
+
+        private void GenerateInvoiceReport(IEnumerable<IAssetInfo> assets, string destinationFolder, PersonDTO personAccepted, PersonDTO personHanded)
+        {
+            if (IsInvoiceNeeded)
+            {
+                var invoiceReportData = new InvoceReportData
+                {
+                    DocumentNumber = InvoiceNumber,
+                    Assets = [.. assets],
+                    Recipient = IsInvoceInvertedExchange ? personHanded : personAccepted,
+                    Transmitter = IsInvoceInvertedExchange ? personAccepted : personHanded,
+                    Reason = string.Empty,
+                    DateCreated = OperationDate,
+                    DueDate = OperationDate.AddDays(10),
+
+                    DestinationFolder = destinationFolder,
+                };
+
+                _reportManager.GenerateInvoice(invoiceReportData);
+            }
         }
 
         private void FillAssetTypesCollection()
         {
             EventTypes = [.. EnumHelper.GetValues<EventType>()];
+        }
+
+        private void FillReportDefaults()
+        {
+            var reportParameters = _reportDataService.GetReportParametersDictionary(ReportType.CommissioningAct);
+
+            CommissioningLocation = reportParameters.GetValueOrDefault(CommissioningActHelper.FIELD_COMMISSIONED_LOCATIONN, string.Empty);
+            //_assetState = "прид.";
+            //AssetCompliance = "відповідає";
+            //CompletionState = "не потрібна";
+            //Conclusion = "ввести в експлуатацію";
         }
 
         private void CloseCommandExecute()
@@ -116,7 +256,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
         private void OpenConfigurationCommandExecute()
         {
-            OpenSettings(Infrastructure.Enums.ReportType.TechnicalStateReport);
+            OpenSettings(ReportType.TechnicalStateReport);
         }
     }
 }

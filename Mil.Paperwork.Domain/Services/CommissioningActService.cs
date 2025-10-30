@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Mil.Paperwork.Domain.Services
 {
-    public class CommissioningActService : IReportService<ICommissioningActReportData>
+    public class CommissioningActService : IReportService<ICommissioningActReportData>, IReportService<IList<ICommissioningActReportData>>
     {
         private readonly IFileStorageService _fileStorage;
         private readonly IReportDataService _reportDataService;
@@ -15,6 +15,17 @@ namespace Mil.Paperwork.Domain.Services
         {
             _reportDataService = reportDataService;
             _fileStorage = fileStorage;
+        }
+
+        public bool TryGenerateReport(IList<ICommissioningActReportData> reportData)
+        {
+            var result = true;
+            foreach (var data in reportData)
+            {
+                result &= TryGenerateReport(data);
+            }
+
+            return result;
         }
 
         public bool TryGenerateReport(ICommissioningActReportData reportData)

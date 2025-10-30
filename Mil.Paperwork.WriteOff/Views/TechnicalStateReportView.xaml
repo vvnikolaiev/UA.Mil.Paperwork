@@ -19,7 +19,7 @@
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
 
-        <ContentControl x:Key="InitialTechnicalStateViewLayout"
+        <ContentControl x:Key="CommonTechnicalStateViewLayout"
                         d:DataContext="{d:DesignInstance Type=ViewModels:AssetInitialTechnicalStateViewModel}">
             <Grid Grid.IsSharedSizeScope="True">
                 <Grid.RowDefinitions>
@@ -31,18 +31,6 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-
-                <!--<TextBlock Grid.Row="1" Grid.Column="0" Text="Коротка назва"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Asset.ShortName}" TextWrapping="Wrap"/>-->
-
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Категорія" />
-                <ComboBox Grid.Row="0" Grid.Column="1"
-                          Width="150"
-                          ItemsSource="{Binding EventTypes}" 
-                          SelectedItem="{Binding EventType}"
-                          Style="{StaticResource EnumDescriptionComboBox}"
-                          HorizontalAlignment="Stretch"
-                          VerticalAlignment="Center"/>
 
                 <DataGrid Grid.Row="1" Grid.ColumnSpan="99" 
                           x:Name="AssetsDataGrid"
@@ -113,10 +101,13 @@
                         <DataGridTextColumn Header="Ресурс, р." Binding="{Binding ResourceYears}" Width="65"
                                             ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
 
-                        <DataGridTextColumn Header="№ док-та" Binding="{Binding TSRegisterNumber}" Width="50"
+                        <DataGridTextColumn Header="Г-тія, міс." Binding="{Binding WarrantyPeriodMonths}" Width="65"
+                                            ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
+
+                        <DataGridTextColumn Header="№ док-ту" Binding="{Binding TSRegisterNumber}" Width="50"
                                     ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
 
-                        <DataGridTextColumn Header="Код д-та" Binding="{Binding TSDocumentNumber}" Width="50"
+                        <DataGridTextColumn Header="Код д-ту" Binding="{Binding TSDocumentNumber}" Width="50"
                                     ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
                     </DataGrid.Columns>
                 </DataGrid>
@@ -171,6 +162,15 @@
                          Text="{Binding Reason}" TextWrapping="Wrap"
                          Height="50"/>
 
+                <TextBlock Grid.Row="3" Grid.Column="6" Text="Зміна категорії" 
+                           VerticalAlignment="Top"/>
+                <ComboBox Grid.Row="3" Grid.Column="7"
+                          ItemsSource="{Binding EventTypes}" 
+                          SelectedItem="{Binding EventType}"
+                          Style="{StaticResource EnumDescriptionComboBox}"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Top"/>
+
                 <CheckBox Grid.Row="4" 
                           Grid.ColumnSpan="5"
                           Content="Формувати Акти Списання, якщо відсутній Серійний Номер"
@@ -202,9 +202,7 @@
                 </StackPanel>
 
                 <ContentControl Grid.Row="7" Grid.ColumnSpan="99"
-                                Content="{StaticResource InitialTechnicalStateViewLayout}"/>
-
-
+                                Content="{StaticResource CommonTechnicalStateViewLayout}"/>
 
             </Grid>
         </ContentControl>
@@ -216,15 +214,81 @@
         <DataTemplate DataType="{x:Type ViewModels:AssetInitialTechnicalStateViewModel}">
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition />
                     <RowDefinition Height="5"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-                <ContentControl Grid.ColumnSpan="99" 
-                                Content="{StaticResource InitialTechnicalStateViewLayout}"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" 
+                           Text="Дата документу:" 
+                           Margin="5 0"
+                           VerticalAlignment="Center"/>
+                <DatePicker Grid.Row="0" Grid.Column="1" 
+                            SelectedDate="{Binding OperationDate}" Language="uk-UA"/>
+                
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="Зміна категорії" 
+                           Margin="5 0"
+                           VerticalAlignment="Center"/>
+                <ComboBox Grid.Row="0" Grid.Column="3"
+                          Width="150"
+                          ItemsSource="{Binding EventTypes}" 
+                          SelectedItem="{Binding EventType}"
+                          Style="{StaticResource EnumDescriptionComboBox}"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Center"/>
 
-                <Views:AssetAcceptanceView Grid.Row="2" DataContext="{Binding AssetAcceptance}"/>
+                <ContentControl Grid.Row="1" Grid.ColumnSpan="99" 
+                                Content="{StaticResource CommonTechnicalStateViewLayout}"/>
+
+                <CheckBox Grid.Row="3" Grid.Column="0"
+                          IsChecked="{Binding IsCommissioningActNeeded}"
+                          Content="Акти вв. в експл."
+                          Margin="5" 
+                          VerticalAlignment="Center" />
+
+                <StackPanel Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3"
+                            Orientation="Horizontal"
+                            IsEnabled="{Binding IsCommissioningActNeeded}"
+                            Margin="5 0">
+                    
+                    <TextBlock Text="Майно знаходиться у*:" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding CommissioningLocation}"
+                             Width="150"/>
+
+                    <TextBlock Text="№№ Актів (через кому):" VerticalAlignment="Center" />
+                    <TextBox Text="{Binding CommissioningActNumbers}"
+                             Width="150"/>
+                </StackPanel>
+
+                <CheckBox Grid.Row="4" Grid.Column="0"
+                          IsChecked="{Binding IsInvoiceNeeded}"
+                          Content="Накладна"
+                          Margin="5" VerticalAlignment="Center"/>
+
+                <StackPanel Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3"
+                            Orientation="Horizontal"
+                            IsEnabled="{Binding IsInvoiceNeeded}"
+                            Margin="5 0">
+                    <TextBlock Text="Номер*:" VerticalAlignment="Center" FontWeight="Bold"/>
+                    <TextBox Text="{Binding InvoiceNumber}" Width="60" />
+
+                    <CheckBox IsChecked="{Binding IsInvoceInvertedExchange}"
+                              Content="Зворотня передача введеного майна накладною (наприклад, назад на склад)" 
+                              VerticalAlignment="Center"
+                              Margin="5 0"/>
+                </StackPanel>
+
+                <Views:AssetAcceptanceView Grid.Row="5" Grid.ColumnSpan="7"
+                                           DataContext="{Binding AssetAcceptance}"/>
             </Grid>
         </DataTemplate>
     </UserControl.Resources>

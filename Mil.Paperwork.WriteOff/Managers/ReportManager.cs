@@ -13,7 +13,7 @@ namespace Mil.Paperwork.WriteOff.Managers
         private readonly IReportService<IInitialTechnicalStateReportData> _initialTechnicalStateReportService;
         private readonly IReportService<IAssetValuationReportData> _valuationReportService;
         private readonly IReportService<IDismantlingReportData> _dismantlingReportService;
-        private readonly IReportService<ICommissioningActReportData> _commissioningActService;
+        private readonly CommissioningActService _commissioningActService;
         private readonly IReportService<IInvoceReportData> _invoiceReportService;
         private readonly IReportService<ITechnicalStateReportData> _writeOffReportsPackageService;
 
@@ -106,6 +106,14 @@ namespace Mil.Paperwork.WriteOff.Managers
         }
 
         public void GenerateCommissioningAct(ICommissioningActReportData reportData)
+        {
+            var commissioningActResult = _commissioningActService.TryGenerateReport(reportData);
+
+            var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.CommisioninaActName, commissioningActResult);
+            MessageBox.Show(status);
+        }
+
+        public void GenerateCommissioningAct(IList<ICommissioningActReportData> reportData)
         {
             var commissioningActResult = _commissioningActService.TryGenerateReport(reportData);
 
