@@ -280,6 +280,22 @@ namespace Mil.Paperwork.Domain.Helpers
                 return ConvertLargeNumberToWords(number, 1000000000, Billions, NounGender.Masculine);
         }
 
+        public static string GenerateItemsCountText(int count, MeasurementUnitDTO? measurementUnit)
+        {
+            var gender = measurementUnit?.Gender ?? NounGender.Feminine;
+            var unitName = measurementUnit?.Name ?? "одиниця";
+
+            var countText = ReportHelper.ConvertNumberToWords(count, gender);
+            var result = $"{count} ({countText}) {unitName}";
+
+            return result;
+        }
+
+        public static string GetPriceString(decimal price)
+        {
+            return price.ToString("N", PriceNumberFormatInfo);
+        }
+
         // TODO: refactor later?
         private static string ConvertLargeNumberToWords(int number, int divisor, string[] forms, NounGender gender)
         {

@@ -1,4 +1,5 @@
 ﻿using Mil.Paperwork.Domain.Enums;
+using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
 
 namespace Mil.Paperwork.Domain.DataModels.Assets
@@ -23,5 +24,22 @@ namespace Mil.Paperwork.Domain.DataModels.Assets
         public int WarrantyPeriodMonths { get; set; } = 1;
         public int YearManufactured { get; set; } = 2023;
         public int ResourceYears { get; set; } = 5;
+
+        public AssetInfo()
+        {
+        }
+
+        public AssetInfo(IProductData productData)
+        {
+            Name = productData.Name;
+            Price = productData.Price;
+            ShortName = productData.ShortName;
+            MeasurementUnit = productData.MeasurementUnit;
+            WarrantyPeriodMonths = productData.WarrantyPeriodMonths;
+            YearManufactured = productData.YearManufactured;
+            ResourceYears = productData.ResourceYears;
+            StartDate = productData.StartDate;
+            NomenclatureCode = productData.NomenclatureCode;
+        }
     }
 }
