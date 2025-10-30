@@ -64,11 +64,12 @@ namespace Mil.Paperwork.Domain.Reports
 
             FillTableMetals(metalCosts, sheet);
 
+            var residualSum = ResidualPriceHelper.CalculateResidualPriceForItem(asset, reportDate, asset.Count);
+            var sResidualSum = ReportHelper.GetPriceString(residualSum);
+
             var fieldsMap = _reportDataService.GetReportParametersDictionary(ReportType.ResidualValueReport);
             fieldsMap.Add(ResidualValueReportHelper.REPORT_DATE_PLACEHOLDER, reportDate.ToString(ReportHelper.DATE_FORMAT));
-            
-            var residualPrice = ResidualPriceHelper.CalculateResidualPriceForItem(asset, reportDate, asset.Count);
-            fieldsMap.Add(ResidualValueReportHelper.TOTAL_RESIDUAL_SUM_PLACEHOLDER, residualPrice.ToString("N", ReportHelper.PriceNumberFormatInfo));
+            fieldsMap.Add(ResidualValueReportHelper.TOTAL_RESIDUAL_SUM_PLACEHOLDER, sResidualSum);
             
             fieldsMap.Add(ResidualValueReportHelper.ASSET_NAME, ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber));
             fieldsMap.Add(ResidualValueReportHelper.ASSEMBLY_YEAR, asset.YearManufactured.ToString());
@@ -187,8 +188,7 @@ namespace Mil.Paperwork.Domain.Reports
             var newRow = firstRow + i; // Новий рядок
 
             var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
-            var yearManufactured = asset.YearManufactured > 1900 ? asset.YearManufactured : asset.StartDate.Year;
-            var indexationCoefficient = CoefficientsHelper.GetIndexationCoefficient(yearManufactured, reportDate.Year);
+            var indexationCoefficient = CoefficientsHelper.GetIndexationCoefficient(asset.StartDate.Year, reportDate.Year);
             var residualPrice = ResidualPriceHelper.CalculateResidualPriceForItem(asset, reportDate, asset.Count);
 
             sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.Index].ColumnIndex].Value = i + 1; // number

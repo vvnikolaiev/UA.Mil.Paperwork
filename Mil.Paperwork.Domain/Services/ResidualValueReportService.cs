@@ -56,7 +56,7 @@ namespace Mil.Paperwork.Domain.Services
             const int MAX_NAME_LENGTH = 30;
             var destinationPath = reportData.GetDestinationPath();
             var addParam = (reportData.EventReportNumber ?? 0) > 0
-                ? reportData.EventReportNumber.ToString()
+                ? $"Рапорт №{reportData.EventReportNumber}"
                 : reportData.EventDate.ToString("dd-MM-yyyy");
 
 
@@ -65,7 +65,7 @@ namespace Mil.Paperwork.Domain.Services
 
             var name = string.IsNullOrEmpty(shortName) ? asset.Name : shortName;
 
-            name = name.Length > MAX_NAME_LENGTH ? name.Substring(MAX_NAME_LENGTH) : name;
+            name = name.Length > MAX_NAME_LENGTH ? name.Substring(0, MAX_NAME_LENGTH) : name;
 
             var rawFileName = string.Format(ResidualValueReportHelper.OUTPUT_REPORT_NAME_FORMAT, $"{addParam}, {name}");
 

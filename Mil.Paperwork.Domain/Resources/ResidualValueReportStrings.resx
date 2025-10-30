@@ -133,7 +133,7 @@
     <value>Кзб</value>
   </data>
   <data name="ResidualValueColumnTitle" xml:space="preserve">
-    <value>Залишкова вартість (графа 7 х  графу 10)
+    <value>Залишкова вартість (графа 7 х графу 10 х графу 4)
 (Взал)</value>
   </data>
   <data name="TotalWearCoefficientColumnTitle" xml:space="preserve">

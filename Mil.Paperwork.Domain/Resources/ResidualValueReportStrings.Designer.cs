@@ -106,7 +106,7 @@ namespace Mil.Paperwork.Domain.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Залишкова вартість (графа 7 х  графу 10)
+        ///   Looks up a localized string similar to Залишкова вартість (графа 7 х графу 10 х графу 4)
         ///(Взал).
         /// </summary>
         internal static string ResidualValueColumnTitle {
