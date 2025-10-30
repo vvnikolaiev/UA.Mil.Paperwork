@@ -1,4 +1,5 @@
-﻿using Mil.Paperwork.Domain.Helpers;
+﻿using Mil.Paperwork.Domain.DataModels.Parameters;
+using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;
@@ -72,23 +73,24 @@ namespace Mil.Paperwork.Domain.Reports
         {
             var firstRow = table.LastRow;
 
+            var nameCellParameters = new WordCellParameters(ValuationReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Left);
+            var cellParameters = new WordCellParameters(ValuationReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Center);
+
             for (int i = 0; i < assetValuationData.AssetComponentsCount; i++)
             {
                 var assetComponent = assetValuationData.AssetComponents[i];
                 TableRow row = table.AddRow();
 
-                var fontSize = ValuationReportHelper.TABLE_FONT_SIZE;
-
                 var nomenclatureCode = assetComponent.NomenclatureCode?.ToUpper() ?? string.Empty;
                 var totalPrice = Math.Round(assetComponent.Price * assetComponent.Quantity, 2);
 
-                row.Cells[ValuationReportHelper.COLUMN_INDEX].AddNumber(i + 1, fontSize);
-                row.Cells[ValuationReportHelper.COLUMN_NAME].AddText(assetComponent.Name, fontSize, horizontalAlignment: HorizontalAlignment.Left);
-                row.Cells[ValuationReportHelper.COLUMN_NOMENCLATURE_CODE].AddText(nomenclatureCode, fontSize);
-                row.Cells[ValuationReportHelper.COLUMN_MEAS_UNIT].AddText(assetComponent.Unit, fontSize);
-                row.Cells[ValuationReportHelper.COLUMN_COUNT].AddNumber(assetComponent.Quantity, fontSize);
-                row.Cells[ValuationReportHelper.COLUMN_PRICE_INITIAL].AddPrice(assetComponent.Price, fontSize);
-                row.Cells[ValuationReportHelper.COLUMN_PRICE_TOTAL].AddPrice(totalPrice, fontSize);
+                row.Cells[ValuationReportHelper.COLUMN_INDEX].AddNumber(i + 1, cellParameters);
+                row.Cells[ValuationReportHelper.COLUMN_NAME].AddText(assetComponent.Name, nameCellParameters);
+                row.Cells[ValuationReportHelper.COLUMN_NOMENCLATURE_CODE].AddText(nomenclatureCode, cellParameters);
+                row.Cells[ValuationReportHelper.COLUMN_MEAS_UNIT].AddText(assetComponent.Unit, cellParameters);
+                row.Cells[ValuationReportHelper.COLUMN_COUNT].AddNumber(assetComponent.Quantity, cellParameters);
+                row.Cells[ValuationReportHelper.COLUMN_PRICE_INITIAL].AddPrice(assetComponent.Price, cellParameters);
+                row.Cells[ValuationReportHelper.COLUMN_PRICE_TOTAL].AddPrice(totalPrice, cellParameters);
             }
 
             table.Rows.Remove(firstRow);
@@ -98,6 +100,7 @@ namespace Mil.Paperwork.Domain.Reports
 
         private static void AddSummaryRow(IAssetValuationData assetValuationData, Table table)
         {
+            var nameCellParameters = new WordCellParameters(ValuationReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Left);
             var totalSum = assetValuationData.AssetComponents.Sum(x => Math.Round(x.Price * x.Quantity, 2));
 
             var totalSumText = ReportHelper.ConvertTotalSumToUkrainianString(totalSum);
@@ -107,7 +110,7 @@ namespace Mil.Paperwork.Domain.Reports
             var textSummaryRow = table.AddRow(false);
             var summaryCell = textSummaryRow.CreateMergedCell(0, textSummaryRow.Cells.Count);
             var summaryText = string.Format(ValuationReportHelper.TOTAL_TEXT_FORMAT, totalItemsText, totalSumText);
-            textSummaryRow.Cells[0].AddText(summaryText, ValuationReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Left);
+            textSummaryRow.Cells[0].AddText(summaryText, nameCellParameters);
         }
     }
 }

@@ -78,7 +78,8 @@ namespace Mil.Paperwork.Domain.Reports
             if (table != null)
             {
                 // TODO: optimize. Make a mapper.
-                var fontSize = TechnicalStateReportHelper.TABLE_FONT_SIZE;
+                var nameCellParameters = new WordCellParameters(TechnicalStateReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Left);
+                var cellParameters = new WordCellParameters(TechnicalStateReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Center);
                 var row = table.LastRow;
                 var asset = reportParameters.AssetInfo;
                 var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
@@ -91,16 +92,16 @@ namespace Mil.Paperwork.Domain.Reports
                 var residualPrice = ResidualPriceHelper.CalculateResidualPriceForItem(asset, reportParameters.EventDate, asset.Count);
                 var nomenclatureCode = asset.NomenclatureCode?.ToUpper() ?? string.Empty;
 
-                row.Cells[TechnicalStateReportHelper.COLUMN_NAME].AddText(assetName, fontSize, HorizontalAlignment.Left);
-                row.Cells[TechnicalStateReportHelper.COLUMN_NOMENCLATURE_CODE].AddText(nomenclatureCode, fontSize);
-                row.Cells[TechnicalStateReportHelper.COLUMN_MEAS_UNIT].AddText(asset.MeasurementUnit, fontSize);
-                row.Cells[TechnicalStateReportHelper.COLUMN_COUNT].AddNumber(asset.Count, fontSize);
-                row.Cells[TechnicalStateReportHelper.COLUMN_CATEGORY_INITIAL].AddText(initialCategory, fontSize);
-                row.Cells[TechnicalStateReportHelper.COLUMN_CATEGORY_RESIDUAL].AddText(category, fontSize);
-                row.Cells[TechnicalStateReportHelper.COLUMN_PRICE_INITIAL].AddPrice(price, fontSize);
-                row.Cells[TechnicalStateReportHelper.COLUMN_PRICE_RESIDUAL].AddPrice(residualPrice, fontSize);
+                row.Cells[TechnicalStateReportHelper.COLUMN_NAME].AddText(assetName, nameCellParameters);
+                row.Cells[TechnicalStateReportHelper.COLUMN_NOMENCLATURE_CODE].AddText(nomenclatureCode, cellParameters);
+                row.Cells[TechnicalStateReportHelper.COLUMN_MEAS_UNIT].AddText(asset.MeasurementUnit, cellParameters);
+                row.Cells[TechnicalStateReportHelper.COLUMN_COUNT].AddNumber(asset.Count, cellParameters);
+                row.Cells[TechnicalStateReportHelper.COLUMN_CATEGORY_INITIAL].AddText(initialCategory, cellParameters);
+                row.Cells[TechnicalStateReportHelper.COLUMN_CATEGORY_RESIDUAL].AddText(category, cellParameters);
+                row.Cells[TechnicalStateReportHelper.COLUMN_PRICE_INITIAL].AddPrice(price, cellParameters);
+                row.Cells[TechnicalStateReportHelper.COLUMN_PRICE_RESIDUAL].AddPrice(residualPrice, cellParameters);
 
-                row.Cells[TechnicalStateReportHelper.COLUMN_FACTORY_NUMBER].AddText(asset.SerialNumber, fontSize);
+                row.Cells[TechnicalStateReportHelper.COLUMN_FACTORY_NUMBER].AddText(asset.SerialNumber, cellParameters);
             }
         }
 
@@ -110,7 +111,7 @@ namespace Mil.Paperwork.Domain.Reports
 
             if (table != null)
             {
-                var fontSize = TechnicalStateReportHelper.TABLE_FONT_SIZE;
+                var cellParameters = new WordCellParameters(TechnicalStateReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Center);
 
                 // TODO: optimize. Make a mapper.
                 var columnNumber = 1;
@@ -136,20 +137,20 @@ namespace Mil.Paperwork.Domain.Reports
                 var warrantyPeriodYears = ReportHelper.GetYearsText(asset.WarrantyPeriodMonths / 12);
                 var operationalResource = ReportHelper.GetYearsText(asset.ResourceYears);
 
-                cellCommisioningYear.AddText(comissioningDate, fontSize);
-                cellMonthsOperated.AddText(monthsOperatedText, fontSize);
-                cellHoursOperated.AddText(hoursOperatedText, fontSize);
-                cellTechnicalResource.AddText("-", fontSize);
-                cellTechnicalOperationalTerm.AddText(operationalResource, fontSize);
-                cellWarrantyResource.AddText("-", fontSize);
-                cellWarrantyPeriodYears.AddText(warrantyPeriodYears, fontSize);
-                cellRepairDescriptionAndDate.AddText("Ремонт не проводився", fontSize);
-                cellInOperatingSinceRepairMonths.AddText("-", fontSize);
-                cellOperatingResourceSinceRepair.AddText("-", fontSize);
-                cellIncompletenessResource.AddText("-", fontSize);
-                cellIncompletenessOperationalTerm.AddText("-", fontSize);
-                cellIncompletenessWarrantyResource.AddText("-", fontSize);
-                cellIncompletenessWarrantyTerm.AddText("-", fontSize);
+                cellCommisioningYear.AddText(comissioningDate, cellParameters);
+                cellMonthsOperated.AddText(monthsOperatedText, cellParameters);
+                cellHoursOperated.AddText(hoursOperatedText, cellParameters);
+                cellTechnicalResource.AddText("-", cellParameters);
+                cellTechnicalOperationalTerm.AddText(operationalResource, cellParameters);
+                cellWarrantyResource.AddText("-", cellParameters);
+                cellWarrantyPeriodYears.AddText(warrantyPeriodYears, cellParameters);
+                cellRepairDescriptionAndDate.AddText("Ремонт не проводився", cellParameters);
+                cellInOperatingSinceRepairMonths.AddText("-", cellParameters);
+                cellOperatingResourceSinceRepair.AddText("-", cellParameters);
+                cellIncompletenessResource.AddText("-", cellParameters);
+                cellIncompletenessOperationalTerm.AddText("-", cellParameters);
+                cellIncompletenessWarrantyResource.AddText("-", cellParameters);
+                cellIncompletenessWarrantyTerm.AddText("-", cellParameters);
             }
         }
     }

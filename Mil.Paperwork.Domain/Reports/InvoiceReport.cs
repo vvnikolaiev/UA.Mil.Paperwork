@@ -1,4 +1,5 @@
 ﻿using Mil.Paperwork.Domain.DataModels.Assets;
+using Mil.Paperwork.Domain.DataModels.Parameters;
 using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.Enums;
@@ -108,12 +109,13 @@ namespace Mil.Paperwork.Domain.Reports
         {
             var firstRow = table.LastRow;
 
+            var nameCellParameters = new WordCellParameters(InvoiceReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Left);
+            var cellParameters = new WordCellParameters(InvoiceReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Center);
+
             for (int i = 0; i < assets.Count; i++)
             {
                 var asset = assets[i];
                 TableRow row = table.AddRow();
-
-                var fontSize = InvoiceReportHelper.TABLE_FONT_SIZE;
 
                 var nomenclatureCode = asset.NomenclatureCode?.ToUpper() ?? string.Empty;
                 var category = ReportHelper.ConvertCategoryToText(asset.InitialCategory);
@@ -121,16 +123,16 @@ namespace Mil.Paperwork.Domain.Reports
 
                 var serialNumber = !string.IsNullOrEmpty(asset.SerialNumber) ? $"s/n: {asset.SerialNumber}" : "-";
 
-                row.Cells[InvoiceReportHelper.COLUMN_INDEX].AddNumber(i + 1, fontSize);
-                row.Cells[InvoiceReportHelper.COLUMN_ASSET_NAME].AddText(asset.Name, fontSize, horizontalAlignment: HorizontalAlignment.Left);
-                row.Cells[InvoiceReportHelper.COLUMN_NOMENCLATURE_CODE].AddText(nomenclatureCode, fontSize);
-                row.Cells[InvoiceReportHelper.COLUMN_MEASUREMENT_UNIT].AddText(asset.MeasurementUnit, fontSize);
-                row.Cells[InvoiceReportHelper.COLUMN_CATEGORY].AddText(category, fontSize);
-                row.Cells[InvoiceReportHelper.COLUMN_PRICE].AddPrice(asset.Price, fontSize);
-                row.Cells[InvoiceReportHelper.COLUMN_COUNT_OUT].AddNumber(asset.Count, fontSize);
-                row.Cells[InvoiceReportHelper.COLUMN_COUNT_IN].AddNumber(asset.Count, fontSize);
-                row.Cells[InvoiceReportHelper.COLUMN_TOTAL_PRICE].AddPrice(totalPrice, fontSize);
-                row.Cells[InvoiceReportHelper.COLUMN_NOTE].AddText(serialNumber, fontSize);
+                row.Cells[InvoiceReportHelper.COLUMN_INDEX].AddNumber(i + 1, cellParameters);
+                row.Cells[InvoiceReportHelper.COLUMN_ASSET_NAME].AddText(asset.Name, nameCellParameters);
+                row.Cells[InvoiceReportHelper.COLUMN_NOMENCLATURE_CODE].AddText(nomenclatureCode, cellParameters);
+                row.Cells[InvoiceReportHelper.COLUMN_MEASUREMENT_UNIT].AddText(asset.MeasurementUnit, cellParameters);
+                row.Cells[InvoiceReportHelper.COLUMN_CATEGORY].AddText(category, cellParameters);
+                row.Cells[InvoiceReportHelper.COLUMN_PRICE].AddPrice(asset.Price, cellParameters);
+                row.Cells[InvoiceReportHelper.COLUMN_COUNT_OUT].AddNumber(asset.Count, cellParameters);
+                row.Cells[InvoiceReportHelper.COLUMN_COUNT_IN].AddNumber(asset.Count, cellParameters);
+                row.Cells[InvoiceReportHelper.COLUMN_TOTAL_PRICE].AddPrice(totalPrice, cellParameters);
+                row.Cells[InvoiceReportHelper.COLUMN_NOTE].AddText(serialNumber, cellParameters);
             }
 
             table.Rows.Remove(firstRow);
@@ -143,15 +145,17 @@ namespace Mil.Paperwork.Domain.Reports
 
         private static void AddSummaryRow(decimal totalSum, int totalCount, Table table)
         {
-            var fontSize = InvoiceReportHelper.TABLE_FONT_SIZE;
+            var nameCellParameters = new WordCellParameters(InvoiceReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Left);
+            var cellParameters = new WordCellParameters(InvoiceReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Center);
+
             var textSummaryRow = table.AddRow(true);
             var countMergedColumns = InvoiceReportHelper.COLUMN_COUNT_IN - InvoiceReportHelper.COLUMN_INDEX;
             var summaryCell = textSummaryRow.CreateMergedCell(InvoiceReportHelper.COLUMN_INDEX, countMergedColumns);
 
-            textSummaryRow.Cells[0].AddText(SummaryRowTotalText, fontSize, HorizontalAlignment.Left);
-            textSummaryRow.Cells[InvoiceReportHelper.COLUMN_COUNT_IN].AddNumber(totalCount, fontSize);
-            textSummaryRow.Cells[InvoiceReportHelper.COLUMN_COUNT_OUT].AddNumber(totalCount, fontSize);
-            textSummaryRow.Cells[InvoiceReportHelper.COLUMN_TOTAL_PRICE].AddPrice(totalSum, fontSize);
+            textSummaryRow.Cells[0].AddText(SummaryRowTotalText, nameCellParameters);
+            textSummaryRow.Cells[InvoiceReportHelper.COLUMN_COUNT_IN].AddNumber(totalCount, cellParameters);
+            textSummaryRow.Cells[InvoiceReportHelper.COLUMN_COUNT_OUT].AddNumber(totalCount, cellParameters);
+            textSummaryRow.Cells[InvoiceReportHelper.COLUMN_TOTAL_PRICE].AddPrice(totalSum, cellParameters);
         }
 
         private static decimal GetTotalSum(IList<IAssetInfo> assets)

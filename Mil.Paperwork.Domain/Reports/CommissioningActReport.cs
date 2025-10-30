@@ -1,4 +1,5 @@
-﻿using Mil.Paperwork.Domain.DataModels.ReportData;
+﻿using Mil.Paperwork.Domain.DataModels.Parameters;
+using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
@@ -103,30 +104,29 @@ namespace Mil.Paperwork.Domain.Reports
 
             int totalCount = 0;
             var countItems = identifiers?.Count ?? 1;
+            var cellParameters = new WordCellParameters(CommissioningActHelper.TABLE_FONT_SIZE, HorizontalAlignment.Center);
 
             for (int i = 0; i < countItems; i++)
             {
                 TableRow row = table.AddRow();
 
-                var fontSize = CommissioningActHelper.TABLE_FONT_SIZE;
-
                 var identifier = identifiers?.Count >= i ? identifiers[i] : new ProductIdentification();
                 var totalSum = productData.Price * count;
 
-                row.Cells[CommissioningActHelper.COLUMN_InventoryNumber].AddText(identifier.InventoryNumber, fontSize);
-                row.Cells[CommissioningActHelper.COLUMN_Count].AddNumber(count, fontSize);
-                row.Cells[CommissioningActHelper.COLUMN_Price].AddPrice(productData.Price, fontSize);
-                row.Cells[CommissioningActHelper.COLUMN_TotalPrice].AddPrice(totalSum, fontSize);
-                if (productData.WarrantyPeriodMonths > 0)
+                row.Cells[CommissioningActHelper.COLUMN_InventoryNumber].AddText(identifier.InventoryNumber, cellParameters);
+                row.Cells[CommissioningActHelper.COLUMN_Count].AddNumber(count, cellParameters);
+                row.Cells[CommissioningActHelper.COLUMN_Price].AddPrice(productData.Price, cellParameters);
+                row.Cells[CommissioningActHelper.COLUMN_TotalPrice].AddPrice(totalSum, cellParameters);
+                if (productData.ResourceYears > 0)
                 {
-                    row.Cells[CommissioningActHelper.COLUMN_WarrantyPeriod].AddNumber(productData.WarrantyPeriodMonths, fontSize);
+                    row.Cells[CommissioningActHelper.COLUMN_WarrantyPeriod].AddNumber(productData.ResourceYears * 12, cellParameters);
                 }
                 if (productData.YearManufactured > 0)
                 {
-                    row.Cells[CommissioningActHelper.COLUMN_ManufacturedYear].AddNumber(productData.YearManufactured, fontSize);
+                    row.Cells[CommissioningActHelper.COLUMN_ManufacturedYear].AddNumber(productData.YearManufactured, cellParameters);
                 }
 
-                row.Cells[CommissioningActHelper.COLUMN_SerialNumber].AddText(identifier.SerialNumber, fontSize);
+                row.Cells[CommissioningActHelper.COLUMN_SerialNumber].AddText(identifier.SerialNumber, cellParameters);
 
                 totalCount += count;
             }
@@ -138,16 +138,19 @@ namespace Mil.Paperwork.Domain.Reports
 
         private static void AddSummaryRow(decimal price, int count, Table table)
         {
+            var nameCellParameters = new WordCellParameters(CommissioningActHelper.TABLE_FONT_SIZE, HorizontalAlignment.Right);
+            var cellParameters = new WordCellParameters(CommissioningActHelper.TABLE_FONT_SIZE, HorizontalAlignment.Center);
+
             var totalSum = Math.Round(price * count, 2);
 
             var totalSumText = ReportHelper.ConvertTotalSumToUkrainianString(totalSum);
 
             // last united string row 
             var textSummaryRow = table.AddRow(false);
-            textSummaryRow.Cells[0].AddText(SummaryRowTotalText, CommissioningActHelper.TABLE_FONT_SIZE, HorizontalAlignment.Right);
-            textSummaryRow.Cells[CommissioningActHelper.COLUMN_Count].AddNumber(count, CommissioningActHelper.TABLE_FONT_SIZE);
-            textSummaryRow.Cells[CommissioningActHelper.COLUMN_Price].AddPrice(totalSum, CommissioningActHelper.TABLE_FONT_SIZE);
-            textSummaryRow.Cells[CommissioningActHelper.COLUMN_TotalPrice].AddPrice(totalSum, CommissioningActHelper.TABLE_FONT_SIZE);
+            textSummaryRow.Cells[0].AddText(SummaryRowTotalText, nameCellParameters);
+            textSummaryRow.Cells[CommissioningActHelper.COLUMN_Count].AddNumber(count, cellParameters);
+            textSummaryRow.Cells[CommissioningActHelper.COLUMN_Price].AddPrice(totalSum, cellParameters);
+            textSummaryRow.Cells[CommissioningActHelper.COLUMN_TotalPrice].AddPrice(totalSum, cellParameters);
         }
     }
 }

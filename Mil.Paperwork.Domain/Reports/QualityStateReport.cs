@@ -1,4 +1,5 @@
-﻿using Mil.Paperwork.Domain.DataModels.ReportData;
+﻿using Mil.Paperwork.Domain.DataModels.Parameters;
+using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;
@@ -72,12 +73,13 @@ namespace Mil.Paperwork.Domain.Reports
         {
             var firstRow = table.LastRow;
 
+            var nameCellParameters = new WordCellParameters(QualityStateReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Left);
+            var cellParameters = new WordCellParameters(QualityStateReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Center);
+
             for (int i = 0; i < reportData.Assets.Count; i++)
             {
                 var asset = reportData.Assets[i];
                 TableRow row = table.AddRow();
-
-                var fontSize = QualityStateReportHelper.TABLE_FONT_SIZE;
 
                 // TODO: optimize. Make a mapper.
 
@@ -90,23 +92,23 @@ namespace Mil.Paperwork.Domain.Reports
                 var nomenclatureCode = asset.NomenclatureCode?.ToUpper() ?? string.Empty;
                 var monthsOperated = (int)((reportData.EventDate - asset.StartDate).TotalDays / 30);
 
-                row.Cells[QualityStateReportHelper.COLUMN_INDEX].AddNumber(i + 1, fontSize);
-                row.Cells[QualityStateReportHelper.COLUMN_NAME].AddText(assetName, fontSize, HorizontalAlignment.Left);
-                row.Cells[QualityStateReportHelper.COLUMN_NOMENCLATURE_CODE].AddText(nomenclatureCode, fontSize);
-                row.Cells[QualityStateReportHelper.COLUMN_MEASUREMENT_UNIT].AddText(asset.MeasurementUnit, fontSize);
-                row.Cells[QualityStateReportHelper.COLUMN_CATEGORY].AddText(initialCategory, fontSize);
-                row.Cells[QualityStateReportHelper.COLUMN_COUNT].AddNumber(asset.Count, fontSize);
-                row.Cells[QualityStateReportHelper.COLUMN_PRICE].AddPrice(asset.Price, fontSize);
-                row.Cells[QualityStateReportHelper.COLUMN_TOTAL_PRICE].AddPrice(asset.Count * asset.Price, fontSize);
-                row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_FACT].AddNumber(monthsOperated);
-                row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_NORM].AddNumber(60); // ???
-                row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_NAME].AddText(assetName, fontSize, HorizontalAlignment.Left);
-                row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_NOMENCLATURE_CODE].AddText(nomenclatureCode, fontSize);
-                row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_MEASUREMENT_UNIT].AddText(asset.MeasurementUnit, fontSize);
-                row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_CATEGORY].AddText(residualCategory, fontSize);
-                row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_COUNT].AddNumber(asset.Count, fontSize);
-                row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_PRICE].AddPrice(residualPrice, fontSize);
-                row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_TOTAL_PRICE].AddPrice(residualPrice * asset.Count, fontSize);
+                row.Cells[QualityStateReportHelper.COLUMN_INDEX].AddNumber(i + 1, cellParameters);
+                row.Cells[QualityStateReportHelper.COLUMN_NAME].AddText(assetName, nameCellParameters);
+                row.Cells[QualityStateReportHelper.COLUMN_NOMENCLATURE_CODE].AddText(nomenclatureCode, cellParameters);
+                row.Cells[QualityStateReportHelper.COLUMN_MEASUREMENT_UNIT].AddText(asset.MeasurementUnit, cellParameters);
+                row.Cells[QualityStateReportHelper.COLUMN_CATEGORY].AddText(initialCategory, cellParameters);
+                row.Cells[QualityStateReportHelper.COLUMN_COUNT].AddNumber(asset.Count, cellParameters);
+                row.Cells[QualityStateReportHelper.COLUMN_PRICE].AddPrice(asset.Price, cellParameters);
+                row.Cells[QualityStateReportHelper.COLUMN_TOTAL_PRICE].AddPrice(asset.Count * asset.Price, cellParameters);
+                row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_FACT].AddNumber(monthsOperated, cellParameters);
+                row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_NORM].AddNumber(60, cellParameters); // ???
+                row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_NAME].AddText(assetName, nameCellParameters);
+                row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_NOMENCLATURE_CODE].AddText(nomenclatureCode, cellParameters);
+                row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_MEASUREMENT_UNIT].AddText(asset.MeasurementUnit, cellParameters);
+                row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_CATEGORY].AddText(residualCategory, cellParameters);
+                row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_COUNT].AddNumber(asset.Count, cellParameters);
+                row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_PRICE].AddPrice(residualPrice, cellParameters);
+                row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_TOTAL_PRICE].AddPrice(residualPrice * asset.Count, cellParameters);
             }
 
             table.Rows.Remove(firstRow);
@@ -116,6 +118,7 @@ namespace Mil.Paperwork.Domain.Reports
 
         private static void AddSummaryRow(IQualityStateReportData reportData, Table table)
         {
+            var cellParameters = new WordCellParameters(QualityStateReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Left);
             var totalSumClear = ResidualPriceHelper.CalculateTotalReportSum(reportData.Assets, reportData.EventDate, false);
             var totalSum = ResidualPriceHelper.CalculateTotalReportSum(reportData.Assets, reportData.EventDate, true);
 
@@ -126,7 +129,7 @@ namespace Mil.Paperwork.Domain.Reports
             var textSummaryRow = table.AddRow(false);
             var summaryCell = textSummaryRow.CreateMergedCell(0, textSummaryRow.Cells.Count);
             var summaryText = string.Format(QualityStateReportHelper.TOTAL_TEXT_FORMAT, totalItemsText, totalSumText);
-            textSummaryRow.Cells[0].AddText(summaryText, QualityStateReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Left);
+            textSummaryRow.Cells[0].AddText(summaryText, cellParameters);
         }
     }
 }
