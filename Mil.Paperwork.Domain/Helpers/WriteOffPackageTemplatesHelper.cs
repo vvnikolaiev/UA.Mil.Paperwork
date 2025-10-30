@@ -30,13 +30,14 @@
         public const int TABLE_BOOK_COLUMN_ASSET_SUM = 7;
         public const int TABLE_BOOK_COLUMN_ASSET_WAR_LOSSES = 17;
 
-        public const string FIELD_TOTAL_WRITE_OFF_SUM = "«TOTAL_WRITE_OFF_SUM»";
+        public const string FIELD_TOTAL_WRITE_OFF_SUM = "TOTAL_WRITE_OFF_SUM";
 
-        public const string FIELD_BOOK_YEAR = "«BOOK_YEAR»";
-        public const string FIELD_BOOK_NUM = "«BOOK_NUM»";
-        public const string FIELD_PAGE_NUM = "«PAGE_NUM»";
-        public const string FIELD_RECORD_DATE = "«RECORD_DATE»";
-        public const string FIELD_ORDEN_DATE = "«ORDEN_DATE»";
-        public const string FIELD_ORDEN_NUM = "«ORDEN_NUM»";
+        public const string FIELD_BOOK_MIL_UNIT = "MIL_UNIT";
+        public const string FIELD_BOOK_YEAR = "BOOK_YEAR";
+        public const string FIELD_BOOK_NUM = "BOOK_NUM";
+        public const string FIELD_PAGE_NUM = "PAGE_NUM";
+        public const string FIELD_RECORD_DATE = "RECORD_DATE";
+        public const string FIELD_ORDEN_DATE = "ORDEN_DATE";
+        public const string FIELD_ORDEN_NUM = "ORDEN_NUM";
     }
 }

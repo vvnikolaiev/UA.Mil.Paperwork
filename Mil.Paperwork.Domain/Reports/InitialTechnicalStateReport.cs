@@ -1,4 +1,5 @@
 ﻿using Mil.Paperwork.Domain.DataModels.Assets;
+using Mil.Paperwork.Domain.DataModels.Parameters;
 using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.DataModels;
@@ -85,7 +86,8 @@ namespace Mil.Paperwork.Domain.Reports
 
             if (table != null)
             {
-                var fontSize = TechnicalStateReportHelper.TABLE_FONT_SIZE;
+                var nameCellParameters = new WordCellParameters(TechnicalStateReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Left);
+                var cellParameters = new WordCellParameters(TechnicalStateReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Center);
                 // TODO: optimize. Make a mapper.
                 var row = table.LastRow;
 
@@ -97,15 +99,15 @@ namespace Mil.Paperwork.Domain.Reports
                 var totalPrice = asset.Price * asset.Count;
                 var nomenclatureCode = asset.NomenclatureCode?.ToUpper() ?? string.Empty;
 
-                row.Cells[TechnicalStateReportHelper.COLUMN_NAME].AddText(assetName, fontSize, HorizontalAlignment.Left);
-                row.Cells[TechnicalStateReportHelper.COLUMN_NOMENCLATURE_CODE].AddText(nomenclatureCode, fontSize);
-                row.Cells[TechnicalStateReportHelper.COLUMN_MEAS_UNIT].AddText(asset.MeasurementUnit, fontSize);
-                row.Cells[TechnicalStateReportHelper.COLUMN_COUNT].AddNumber(asset.Count, fontSize);
-                row.Cells[TechnicalStateReportHelper.COLUMN_CATEGORY_INITIAL].AddText(initialCategory, fontSize);
-                row.Cells[TechnicalStateReportHelper.COLUMN_CATEGORY_RESIDUAL].AddText(initialCategory, fontSize);
-                row.Cells[TechnicalStateReportHelper.COLUMN_PRICE_INITIAL].AddPrice(asset.Price, fontSize);
-                row.Cells[TechnicalStateReportHelper.COLUMN_PRICE_RESIDUAL].AddPrice(totalPrice, fontSize);
-                row.Cells[TechnicalStateReportHelper.COLUMN_FACTORY_NUMBER].AddText(asset.SerialNumber, fontSize);
+                row.Cells[TechnicalStateReportHelper.COLUMN_NAME].AddText(assetName, nameCellParameters);
+                row.Cells[TechnicalStateReportHelper.COLUMN_NOMENCLATURE_CODE].AddText(nomenclatureCode, cellParameters);
+                row.Cells[TechnicalStateReportHelper.COLUMN_MEAS_UNIT].AddText(asset.MeasurementUnit, cellParameters);
+                row.Cells[TechnicalStateReportHelper.COLUMN_COUNT].AddNumber(asset.Count, cellParameters);
+                row.Cells[TechnicalStateReportHelper.COLUMN_CATEGORY_INITIAL].AddText(initialCategory, cellParameters);
+                row.Cells[TechnicalStateReportHelper.COLUMN_CATEGORY_RESIDUAL].AddText(initialCategory, cellParameters);
+                row.Cells[TechnicalStateReportHelper.COLUMN_PRICE_INITIAL].AddPrice(asset.Price, cellParameters);
+                row.Cells[TechnicalStateReportHelper.COLUMN_PRICE_RESIDUAL].AddPrice(totalPrice, cellParameters);
+                row.Cells[TechnicalStateReportHelper.COLUMN_FACTORY_NUMBER].AddText(asset.SerialNumber, cellParameters);
                 //row.Cells[TechnicalStateReportHelper.COLUMN_MANUFACTURER].AddText("-");
                 //row.Cells[TechnicalStateReportHelper.COLUMN_PASSPORT_NUMBER].AddText("-");
             }
@@ -114,10 +116,10 @@ namespace Mil.Paperwork.Domain.Reports
         private static void FillOperationalTable(IAssetInfo asset, Document document)
         {
             var table = document.GetTable(TechnicalStateReportHelper.TABLE_OPERATIONAL_INDICATORS_NAME);
+            var cellParameters = new WordCellParameters(TechnicalStateReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Center);
 
             if (table != null)
             {
-                var fontSize = TechnicalStateReportHelper.TABLE_FONT_SIZE;
                 // TODO: optimize. Make a mapper.
                 var columnNumber = 1;
                 var cellCommisioningYear = table.Rows[TechnicalStateReportHelper.ROW_COMMISIONING_YEAR].Cells[columnNumber];
@@ -140,17 +142,17 @@ namespace Mil.Paperwork.Domain.Reports
 
                 // add feminine/masculine/neutral form????
 
-                cellTechnicalResource.AddText("-", fontSize);
-                cellTechnicalOperationalTerm.AddText(operationalResource, fontSize);
-                cellWarrantyResource.AddText("-", fontSize);
-                cellWarrantyPeriodYears.AddText(warrantyPeriodYears, fontSize);
-                cellRepairDescriptionAndDate.AddText("-", fontSize);
-                cellInOperatingSinceRepairMonths.AddText("-", fontSize);
-                cellOperatingResourceSinceRepair.AddText("-", fontSize);
-                cellIncompletenessResource.AddText("-", fontSize);
-                cellIncompletenessOperationalTerm.AddText("-", fontSize);
-                cellIncompletenessWarrantyResource.AddText("-", fontSize);
-                cellIncompletenessWarrantyTerm.AddText("-", fontSize);
+                cellTechnicalResource.AddText("-", cellParameters);
+                cellTechnicalOperationalTerm.AddText(operationalResource, cellParameters);
+                cellWarrantyResource.AddText("-", cellParameters);
+                cellWarrantyPeriodYears.AddText(warrantyPeriodYears, cellParameters);
+                cellRepairDescriptionAndDate.AddText("-", cellParameters);
+                cellInOperatingSinceRepairMonths.AddText("-", cellParameters);
+                cellOperatingResourceSinceRepair.AddText("-", cellParameters);
+                cellIncompletenessResource.AddText("-", cellParameters);
+                cellIncompletenessOperationalTerm.AddText("-", cellParameters);
+                cellIncompletenessWarrantyResource.AddText("-", cellParameters);
+                cellIncompletenessWarrantyTerm.AddText("-", cellParameters);
             }
         }
     }

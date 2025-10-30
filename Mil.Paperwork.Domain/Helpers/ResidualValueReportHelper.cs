@@ -6,7 +6,7 @@ namespace Mil.Paperwork.Domain.Helpers
     internal class ResidualValueReportHelper
     {
         public const string REPORT_TEMPLATE_NAME = "ResidualValueReportTemplate.xlsx";
-        public const string OUTPUT_REPORT_NAME_FORMAT = "Відомість залишкової вартості {0}.xlsx";
+        public const string OUTPUT_REPORT_NAME_FORMAT = "ВЗВ {0}.xlsx";
 
         public const string FIELD_TABLE_HEADER = "FIELD_HEADER_TITLE";
         public const string FIELD_TABLE_COLUMN_NUMBER = "FIELD_TABLE_COLUMN_NUMBER";

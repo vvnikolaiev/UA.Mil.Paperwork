@@ -1,5 +1,7 @@
 ﻿using Microsoft.Win32;
+using Mil.Paperwork.Domain.DataModels.Assets;
 using Mil.Paperwork.Domain.DataModels.ReportData;
+using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
@@ -23,13 +25,13 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         private string _shortName;
         private decimal _price;
         private int _warrantyPeriodMonths;
+        private int _resourceYears;
         private int _yearManufactured;
         private string _measurementUnitName;
         private MeasurementUnitViewModel _measurementUnit;
         private string _assetState;
         private AssetAccetpanceViewModel _assetAcceptance;
 
-        private string _serialNumber;
         private int _count = 1;
         private string _countText = string.Empty;
         private string _documentNumber;
@@ -42,6 +44,10 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         private string _otherInfo;
         private string _conclusion;
         private string _attachedDocumentation;
+
+        private bool _isTechnicalStateActCreationChecked;
+        private string _tsDocNumber;
+        private string _tsRegNumber;
 
         public override string Header => "Акт введення в експлуатацію";
 
@@ -87,16 +93,16 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             set => SetProperty(ref _warrantyPeriodMonths, value);
         }
 
+        public int ResourceYears
+        {
+            get => _resourceYears;
+            set => SetProperty(ref _resourceYears, value);
+        }
+
         public int YearManufactured
         {
             get => _yearManufactured;
             set => SetProperty(ref _yearManufactured, value);
-        }
-
-        public string SerialNumber
-        {
-            get => _serialNumber;
-            set => SetProperty(ref _serialNumber, value);
         }
 
         public int Count
@@ -169,6 +175,24 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         {
             get => _attachedDocumentation;
             set => SetProperty(ref _attachedDocumentation, value);
+        }
+
+        public bool IsTechnicalStateActCreationChecked
+        {
+            get => _isTechnicalStateActCreationChecked;
+            set => SetProperty(ref _isTechnicalStateActCreationChecked, value);
+        }
+
+        public string TSDocNumber
+        {
+            get => _tsDocNumber;
+            set => SetProperty(ref _tsDocNumber, value);
+        }
+
+        public string TSRegNumber
+        {
+            get => _tsRegNumber;
+            set => SetProperty(ref _tsRegNumber, value);
         }
 
         public ObservableCollection<MeasurementUnitViewModel> MeasurementUnits { get; }
@@ -286,6 +310,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
                 Price = Price,
                 ShortName = ShortName,
                 MeasurementUnit = MeasurementUnitName,
+                ResourceYears = ResourceYears,
                 WarrantyPeriodMonths = WarrantyPeriodMonths,
                 YearManufactured = YearManufactured,
             };
@@ -319,8 +344,33 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
             _dataService.AlterPeople([personAccepted, personHanded]);
 
-            // Generate report
             _reportManager.GenerateCommissioningAct(reportData);
+
+            if (IsTechnicalStateActCreationChecked)
+            {
+                var asset = new AssetInfo(product)
+                {
+                    StartDate = DocumentDate,
+                    SerialNumber = string.Join(", ", identifiers?.Select(x => x.SerialNumber) ?? []),
+                    Count = Count,
+                    InitialCategory = 1,
+                    TSRegisterNumber = TSRegNumber,
+                    TSDocumentNumber = TSDocNumber
+                };
+
+                var tsReportData = new InitialTechnicalStateReportData
+                {
+                    EventType = EventType.Accounted,
+                    Assets = [asset],
+                    DestinationFolder = folderName,
+                    PersonAccepted = personAccepted,
+                    PersonHanded = personHanded,
+                    
+                };
+
+                _reportManager.GenerateInitialTechnicalStateReport(tsReportData);
+            }
+
         }
 
         private void CloseTabCommandExecute()
@@ -335,8 +385,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
         private void GenerateCountText()
         {
-            var countText = ReportHelper.ConvertNumberToWords(_count, _measurementUnit.Gender);
-            var result = $"{_count} ({countText}) {_measurementUnit.Name}";
+            var result = ReportHelper.GenerateItemsCountText(_count, _measurementUnit?.ToDTO());
             CountText = result;
         }
     }

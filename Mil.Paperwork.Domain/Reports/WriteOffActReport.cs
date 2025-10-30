@@ -75,7 +75,8 @@ namespace Mil.Paperwork.Domain.Reports
             if (table != null)
             {
                 // TODO: optimize. Make a mapper.
-                var fontSize = TechnicalStateReportHelper.TABLE_FONT_SIZE;
+                var nameCellParameters = new WordCellParameters(TechnicalStateReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Left);
+                var cellParameters = new WordCellParameters(TechnicalStateReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Center);
                 var row = table.LastRow;
                 var asset = reportParameters.AssetInfo;
                 var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
@@ -84,15 +85,15 @@ namespace Mil.Paperwork.Domain.Reports
                 var residualPrice = ResidualPriceHelper.CalculateResidualPriceForItem(asset, reportParameters.EventDate, asset.Count);
                 var nomenclatureCode = asset.NomenclatureCode?.ToUpper() ?? string.Empty;
 
-                row.Cells[TechnicalStateReportHelper.WOA_COLUMN_NAME].AddText(assetName, fontSize, HorizontalAlignment.Left);
-                row.Cells[TechnicalStateReportHelper.WOA_COLUMN_NOMENCLATURE_CODE].AddText(nomenclatureCode, fontSize);
-                row.Cells[TechnicalStateReportHelper.WOA_COLUMN_MEAS_UNIT].AddText(asset.MeasurementUnit, fontSize);
-                row.Cells[TechnicalStateReportHelper.WOA_COLUMN_CATEGORY].AddText(initialCategory, fontSize);
-                row.Cells[TechnicalStateReportHelper.WOA_COLUMN_PRICE_INITIAL].AddPrice(asset.Price, fontSize);
-                row.Cells[TechnicalStateReportHelper.WOA_COLUMN_COUNT].AddNumber(asset.Count, fontSize);
-                row.Cells[TechnicalStateReportHelper.WOA_COLUMN_PRICE_RESIDUAL].AddPrice(residualPrice, fontSize);
+                row.Cells[TechnicalStateReportHelper.WOA_COLUMN_NAME].AddText(assetName, nameCellParameters);
+                row.Cells[TechnicalStateReportHelper.WOA_COLUMN_NOMENCLATURE_CODE].AddText(nomenclatureCode, cellParameters);
+                row.Cells[TechnicalStateReportHelper.WOA_COLUMN_MEAS_UNIT].AddText(asset.MeasurementUnit, cellParameters);
+                row.Cells[TechnicalStateReportHelper.WOA_COLUMN_CATEGORY].AddText(initialCategory, cellParameters);
+                row.Cells[TechnicalStateReportHelper.WOA_COLUMN_PRICE_INITIAL].AddPrice(asset.Price, cellParameters);
+                row.Cells[TechnicalStateReportHelper.WOA_COLUMN_COUNT].AddNumber(asset.Count, cellParameters);
+                row.Cells[TechnicalStateReportHelper.WOA_COLUMN_PRICE_RESIDUAL].AddPrice(residualPrice, cellParameters);
 
-                row.Cells[TechnicalStateReportHelper.COLUMN_FACTORY_NUMBER].AddText(asset.SerialNumber, fontSize);
+                row.Cells[TechnicalStateReportHelper.COLUMN_FACTORY_NUMBER].AddText(asset.SerialNumber, cellParameters);
             }
         }
     }

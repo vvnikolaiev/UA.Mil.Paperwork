@@ -90,6 +90,7 @@ namespace Mil.Paperwork.Infrastructure.Services
                     existingProduct.StartDate = newProduct.StartDate;
                     existingProduct.Price = newProduct.Price;
                     existingProduct.WarrantyPeriodMonths = newProduct.WarrantyPeriodMonths;
+                    existingProduct.ResourceYears = newProduct.ResourceYears;
                     existingProduct.MeasurementUnit = newProduct.MeasurementUnit;
                     existingProduct.NomenclatureCode = newProduct.NomenclatureCode;
                 }

@@ -26,7 +26,7 @@ namespace Mil.Paperwork.Domain.Helpers
         {
             var calculator = ResidualPriceCalculatorFactory.CreateCalculator(asset.Service);
             
-            var indexationCoefficient = CoefficientsHelper.GetIndexationCoefficient(asset.YearManufactured, reportDate.Year);
+            var indexationCoefficient = CoefficientsHelper.GetIndexationCoefficient(asset.StartDate.Year, reportDate.Year);
 
             var totalWearCoeff = calculator.CalculateTotalWearCoefficient(asset, reportDate);
             var result = CalculateResidualPrice(asset.Price, indexationCoefficient, totalWearCoeff, count);

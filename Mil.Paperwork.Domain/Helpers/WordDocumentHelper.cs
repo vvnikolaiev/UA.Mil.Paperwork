@@ -1,4 +1,5 @@
-﻿using Spire.Doc;
+﻿using Mil.Paperwork.Domain.DataModels.Parameters;
+using Spire.Doc;
 using Spire.Doc.Documents;
 using Spire.Doc.Fields;
 
@@ -56,34 +57,41 @@ namespace Mil.Paperwork.Domain.Helpers
             }
         }
 
-        public static void AddNumber(this TableCell cell, int value, int fontSize = 12, HorizontalAlignment horizontalAlignment = HorizontalAlignment.Center)
+        public static void AddNumber(this TableCell cell, int value, WordCellParameters parameters)
         {
-            cell.AddText(value.ToString(), fontSize, horizontalAlignment);
+            cell.AddText(value.ToString(), parameters);
         }
 
-        public static void AddPrice(this TableCell cell, decimal value, int fontSize = 12, HorizontalAlignment horizontalAlignment = HorizontalAlignment.Center)
+        public static void AddPrice(this TableCell cell, decimal value, WordCellParameters parameters)
         {
-            string price = value.ToString("N", ReportHelper.PriceNumberFormatInfo);
-
-            cell.AddText(price, fontSize, horizontalAlignment);
+            var price = ReportHelper.GetPriceString(value);
+            cell.AddText(price, parameters);
         }
 
-        public static void AddText(this TableCell cell, string text, int fontSize = 12, HorizontalAlignment horizontalAlignment = HorizontalAlignment.Center)
+        public static void AddText(this TableCell cell, string text, WordCellParameters parameters)
         {
             cell.Paragraphs.Clear(); // Clear the cell before appending text
             cell.AddParagraph().AppendText(text);
+            if (parameters.VerticalAlignment != null)
+            {
+                cell.CellFormat.VerticalAlignment = parameters.VerticalAlignment.Value;
+            }
 
             foreach (Paragraph paragraph in cell.Paragraphs)
             {
-                paragraph.Format.HorizontalAlignment = horizontalAlignment;
-                paragraph.Format.BeforeSpacing = 0;
-                paragraph.Format.AfterSpacing = 0;
+                if (parameters.HorizontalAlignment != null)
+                {
+                    paragraph.Format.HorizontalAlignment = parameters.HorizontalAlignment.Value;
+                    //paragraph.Format.BeforeSpacing = 0;
+                    //paragraph.Format.AfterSpacing = 0;
+                }
 
                 foreach (DocumentObject obj in paragraph.ChildObjects)
                 {
                     if (obj is TextRange textRange)
                     {
-                        textRange.CharacterFormat.FontSize = fontSize;
+                        textRange.CharacterFormat.FontSize = parameters.FontSize;
+                        textRange.CharacterFormat.Bold = parameters.IsBold;
                         textRange.CharacterFormat.FontName = DOCUMENT_FONT_NAME;
                     }
                 }
@@ -93,7 +101,7 @@ namespace Mil.Paperwork.Domain.Helpers
         public static TableCell CreateMergedCell(this TableRow tableRow, int firstColumn, int count)
         {
             tableRow.Cells[firstColumn].CellFormat.HorizontalMerge = CellMerge.Start;
-            
+
             var lastColumn = firstColumn + count;
             for (int i = firstColumn + 1; i < lastColumn; i++)
             {
@@ -107,7 +115,7 @@ namespace Mil.Paperwork.Domain.Helpers
         {
             if (table == null || columnIndex < 0 || startRowIndex < 0 || rowCount <= 1)
             {
-                throw new ArgumentException("Invalid arguments for merging cells vertically.");
+                return table?.Rows[startRowIndex].Cells[columnIndex];
             }
 
             table.Rows[startRowIndex].Cells[columnIndex].CellFormat.VerticalMerge = CellMerge.Start;

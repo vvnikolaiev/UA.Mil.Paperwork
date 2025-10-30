@@ -103,10 +103,10 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
                     createdTab = new AssetDismantlingViewModel(_reportManager, _dataService, _navigationService);
                     break;
                 case DocumentTypeEnum.TechnicalState7:
-                    createdTab = new AssetInitialTechnicalStateViewModel(_reportManager, _assetFactory, _dataService);
+                    createdTab = new AssetInitialTechnicalStateViewModel(_reportManager, _assetFactory, _dataService, _reportDataService);
                     break;
                 case DocumentTypeEnum.TechnicalState11:
-                    createdTab = new AssetTechnicalStateViewModel(_reportManager, _assetFactory, _dataService);
+                    createdTab = new AssetTechnicalStateViewModel(_reportManager, _assetFactory, _dataService, _reportDataService);
                     break;
                 case DocumentTypeEnum.Invoice:
                     createdTab = new InvoiceReportViewModel(_reportManager, _dataService);

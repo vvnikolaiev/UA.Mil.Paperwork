@@ -33,16 +33,15 @@
 
         </StackPanel>
 
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <Grid Grid.Row="1" VerticalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="125" />
-                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width=".5*" MinWidth="150" MaxWidth="200" />
                     <ColumnDefinition Width="125" />
-                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width=".5*" MinWidth="150" MaxWidth="200" />
                     <ColumnDefinition Width="125" />
-                    <ColumnDefinition Width="150" />
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -89,33 +88,39 @@
                     <TextBlock Grid.Row="1" Grid.Column="4" Text="Коротка назва:"/>
                 <TextBox Grid.Row="1" Grid.Column="5" Text="{Binding ShortName, UpdateSourceTrigger=PropertyChanged}" />
 
-                <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4"
+                <WrapPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4"
                             Orientation="Horizontal">
 
                     <TextBlock Text="Кількість:"/>
                     <TextBox Text="{Binding Count, UpdateSourceTrigger=PropertyChanged}"
-                             Width="30"/>
+                             Width="20" Margin="0"/>
 
                     <TextBlock Text="Од. виміру*:"/>
-                    <ComboBox Grid.Row="1" Grid.Column="3" 
-                              Text="{Binding MeasurementUnitName}"
+                    <ComboBox Text="{Binding MeasurementUnitName}"
                               ItemsSource="{Binding MeasurementUnits}" 
                               SelectedItem="{Binding MeasurementUnit}"
                               DisplayMemberPath="ShortName"
                               IsEditable="True"
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Center" 
-                              MinWidth="50"/>
+                              MinWidth="50" Margin="0"/>
                     
-                    <TextBlock Text="Корисне викор., міс.*:"
-                               ToolTip="Строк корисного використання, місяців"/>
-                    <TextBox Text="{Binding WarrantyPeriodMonths, UpdateSourceTrigger=PropertyChanged}"
-                             Width="30" />
-
                     <TextBlock Text="Рік випуску:"/>
                     <TextBox Text="{Binding YearManufactured, UpdateSourceTrigger=PropertyChanged}"
-                             Width="30" />
-                </StackPanel>
+                             Width="30"  Margin="0" />
+
+                    <TextBlock Text="Ресурс, р.*:"
+                               ToolTip="Строк корисного використання, років"/>
+                    <TextBox Text="{Binding ResourceYears, UpdateSourceTrigger=PropertyChanged}"
+                             Width="20" Margin="0"/>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Гарантія, міс.*:"
+                               ToolTip="Строк гарантійного використання, місяців"/>
+                        <TextBox Text="{Binding WarrantyPeriodMonths, UpdateSourceTrigger=PropertyChanged}"
+                             Width="20"  Margin="0"/>
+                    </StackPanel>
+                </WrapPanel>
 
                 <Expander Grid.Row="2" Grid.Column="4" 
                           Grid.RowSpan="11" Grid.ColumnSpan="2" BorderBrush="Black"
@@ -126,10 +131,10 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Серійний номер" Binding="{Binding SerialNumber}" 
                                                 ElementStyle="{StaticResource DataGridTextBlockStyle}"
-                                                Width="*" />
+                                                MinWidth="100" />
                             <DataGridTextColumn Header="Інвентарний номер" Binding="{Binding InventoryNumber}"
                                                 ElementStyle="{StaticResource DataGridTextBlockStyle}" 
-                                                Width="*"/>
+                                                MinWidth="100"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Expander>
@@ -161,6 +166,26 @@
                 <TextBlock Grid.Row="7" Grid.Column="0" Text="Висновок комісії*:"/>
                 <TextBox Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="3"
                          Text="{Binding Conclusion, UpdateSourceTrigger=PropertyChanged}"/>
+
+
+                <CheckBox Grid.Row="8" Grid.Column="0" 
+                          IsChecked="{Binding IsTechnicalStateActCreationChecked}"
+                          Content="Додати АТС (№7)"
+                          VerticalAlignment="Center"
+                          Margin="5 0"/>
+
+                <StackPanel Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="5" 
+                            Orientation="Horizontal"
+                            Margin="5"
+                            IsEnabled="{Binding IsTechnicalStateActCreationChecked}">
+
+                    <TextBlock Text="Реєстраційний номер:"/>
+                    <TextBox Text="{Binding TSRegNumber}" />
+
+                    <TextBlock Text="Номер документу:"/>
+                    <TextBox Text="{Binding TSDocNumber}" />
+
+                </StackPanel>
 
                 <Views:AssetAcceptanceView Grid.Row="9" Grid.ColumnSpan="99" DataContext="{Binding AssetAcceptance}"/>
 
