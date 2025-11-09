@@ -29,6 +29,7 @@ namespace Mil.Paperwork.Domain.Reports
                 var document = new Document();
                 document.LoadFromFile(templatePath);
 
+                FillCommission(document);
                 FillTheFields(reportData, document);
 
                 var table = document.GetTable(QualityStateReportHelper.TABLE_ASSETS_NAME);
@@ -56,9 +57,16 @@ namespace Mil.Paperwork.Domain.Reports
             return _reportBytes;
         }
 
+        private void FillCommission(Document document)
+        {
+            var dictCommissionFields = ReportParametersHelper.GetCommission(ReportType.QualityStateReport, _reportDataService);
+
+            document.ReplaceFields(dictCommissionFields);
+        }
+
         private void FillTheFields(IQualityStateReportData reportData, Document document)
         {
-            var reportConfig = _reportDataService.GetReportParametersDictionary(ReportType.QualityStateReport);
+            var reportConfig = ReportParametersHelper.GetFullParametersDictionary(ReportType.QualityStateReport, _reportDataService);
 
             document.ReplaceFields(reportConfig);
 

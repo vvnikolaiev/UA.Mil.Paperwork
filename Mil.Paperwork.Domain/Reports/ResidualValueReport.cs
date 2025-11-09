@@ -64,10 +64,12 @@ namespace Mil.Paperwork.Domain.Reports
 
             FillTableMetals(metalCosts, sheet);
 
+
             var residualSum = ResidualPriceHelper.CalculateResidualPriceForItem(asset, reportDate, asset.Count);
             var sResidualSum = ReportHelper.GetPriceString(residualSum);
 
-            var fieldsMap = _reportDataService.GetReportParametersDictionary(ReportType.ResidualValueReport);
+            var fieldsMap = ReportParametersHelper.GetFullParametersDictionary(ReportType.ResidualValueReport, _reportDataService);
+
             fieldsMap.Add(ResidualValueReportHelper.REPORT_DATE_PLACEHOLDER, reportDate.ToString(ReportHelper.DATE_FORMAT));
             fieldsMap.Add(ResidualValueReportHelper.TOTAL_RESIDUAL_SUM_PLACEHOLDER, sResidualSum);
             
@@ -76,6 +78,9 @@ namespace Mil.Paperwork.Domain.Reports
             fieldsMap.Add(ResidualValueReportHelper.COMMISSIONED_YEAR, asset.StartDate.Year.ToString());
 
             sheet.MapDataToTheNamedFields(fieldsMap);
+
+            var dictCommissionFields = ReportParametersHelper.GetCommission(ReportType.ResidualValueReport, _reportDataService);
+            sheet.MapDataToTheNamedFields(dictCommissionFields);
 
             using var reportStream = new MemoryStream();
             package.SaveAs(reportStream);

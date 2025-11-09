@@ -4,10 +4,14 @@ namespace Mil.Paperwork.Infrastructure.Enums
 {
     public enum ReportType
     {
+        [Description("Загальна інформація")]
+        Common,
         [Description("Акт якісного стану")]
         QualityStateReport,
         [Description("Акт технічного стану")]
         TechnicalStateReport,
+        [Description("Акт списання")]
+        WriteOffAct,
         [Description("Відомість залишкової вартості")]
         ResidualValueReport,
         [Description("Акт оцінки")]

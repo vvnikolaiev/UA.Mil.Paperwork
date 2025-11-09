@@ -28,6 +28,7 @@ namespace Mil.Paperwork.Domain.Reports
                 var document = new Document();
                 document.LoadFromFile(templatePath, FileFormat.Docx);
 
+                FillCommission(document);
                 FillTheFields(reportParameters, document);
                 FillAssetTable(reportParameters, document);
                 FillOperationalTable(reportParameters, document);
@@ -54,7 +55,8 @@ namespace Mil.Paperwork.Domain.Reports
         {
             var asset = reportParameters.AssetInfo;
 
-            var reportConfig = _reportDataService.GetReportParametersDictionary(ReportType.TechnicalStateReport);
+            var reportConfig = ReportParametersHelper.GetFullParametersDictionary(ReportType.TechnicalStateReport, _reportDataService);
+
             var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
             var category = ReportHelper.ConvertEventTypeToCategoryText(asset.InitialCategory, reportParameters.EventType);
 
@@ -69,6 +71,13 @@ namespace Mil.Paperwork.Domain.Reports
             document.ReplaceField(TechnicalStateReportHelper.FIELD_ORDEN_DATE, reportParameters.OrdenDate.ToString(ReportHelper.DATE_FORMAT)); 
 
             document.ReplaceFields(reportConfig);
+        }
+
+        private void FillCommission(Document document)
+        {
+            var dictCommissionFields = ReportParametersHelper.GetCommission(ReportType.TechnicalStateReport, _reportDataService);
+
+            document.ReplaceFields(dictCommissionFields);
         }
 
         private static void FillAssetTable(ITechnicalStateReportParameters reportParameters, Document document)

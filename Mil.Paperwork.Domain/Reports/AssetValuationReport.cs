@@ -29,6 +29,7 @@ namespace Mil.Paperwork.Domain.Reports
                 var document = new Document();
                 document.LoadFromFile(templatePath, FileFormat.Docx);
 
+                FillCommission(document);
                 FillTheFields(assetValuationData, document);
 
                 var table = document.GetTable(ValuationReportHelper.TABLE_ASSET_NAME);
@@ -56,9 +57,16 @@ namespace Mil.Paperwork.Domain.Reports
             return _reportBytes;
         }
 
+        private void FillCommission(Document document)
+        {
+            var dictCommissionFields = ReportParametersHelper.GetCommission(ReportType.AssetValuationReport, _reportDataService);
+
+            document.ReplaceFields(dictCommissionFields);
+        }
+
         private void FillTheFields(IAssetValuationData assetValuationData, Document document)
         {
-            var reportConfig = _reportDataService.GetReportParametersDictionary(ReportType.AssetValuationReport);
+            var reportConfig = ReportParametersHelper.GetFullParametersDictionary(ReportType.AssetValuationReport, _reportDataService);
             var assetName = ReportHelper.GetFullAssetName(assetValuationData.Name, assetValuationData.SerialNumber);
             var valuatuionDate = assetValuationData.ValuationDate.ToString(ReportHelper.DATE_FORMAT);
 

@@ -20,7 +20,6 @@ namespace Mil.Paperwork.Infrastructure.Services
                     path = GetUniqueFileName(path);
                 }
 
-
                 File.WriteAllBytes(path, fileContent);
             }
         }

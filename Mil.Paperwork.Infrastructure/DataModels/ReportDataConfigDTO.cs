@@ -1,4 +1,5 @@
 ﻿using Mil.Paperwork.Infrastructure.Attributes;
+using Mil.Paperwork.Infrastructure.DataModels.Configuration;
 using Mil.Paperwork.Infrastructure.Enums;
 
 namespace Mil.Paperwork.Infrastructure.DataModels

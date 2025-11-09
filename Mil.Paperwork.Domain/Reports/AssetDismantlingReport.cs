@@ -29,6 +29,7 @@ namespace Mil.Paperwork.Domain.Reports
                 var document = new Document();
                 document.LoadFromFile(templatePath, FileFormat.Docx);
 
+                FillCommission(document);
                 FillTheFields(assetDismantlingData, document);
 
                 var table = document.GetTable(DismantlingReportHelper.TABLE_ASSET_CONFIGURATION_NAME);
@@ -56,9 +57,16 @@ namespace Mil.Paperwork.Domain.Reports
             return _reportBytes;
         }
 
+        private void FillCommission(Document document)
+        {
+            var dictCommissionFields = ReportParametersHelper.GetCommission(ReportType.AssetDismantlingReport, _reportDataService);
+
+            document.ReplaceFields(dictCommissionFields);
+        }
+
         private void FillTheFields(AssetDismantlingData assetDismantlingDate, Document document)
         {
-            var reportConfig = _reportDataService.GetReportParametersDictionary(ReportType.AssetDismantlingReport);
+            var reportConfig = ReportParametersHelper.GetFullParametersDictionary(ReportType.AssetDismantlingReport, _reportDataService);
             var assetName = ReportHelper.GetFullAssetName(assetDismantlingDate.Name, assetDismantlingDate.SerialNumber);
             var valuatuionDate = assetDismantlingDate.ValuationDate.ToString(ReportHelper.DATE_FORMAT);
 

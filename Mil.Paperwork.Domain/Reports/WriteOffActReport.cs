@@ -28,6 +28,7 @@ namespace Mil.Paperwork.Domain.Reports
                 var document = new Document();
                 document.LoadFromFile(templatePath, FileFormat.Docx);
 
+                FillCommission(document);
                 FillTheFields(reportParameters, document);
                 FillAssetTable(reportParameters, document);
 
@@ -49,11 +50,18 @@ namespace Mil.Paperwork.Domain.Reports
             return _reportBytes;
         }
 
+        private void FillCommission(Document document)
+        {
+            var dictCommissionFields = ReportParametersHelper.GetCommission(ReportType.WriteOffAct, _reportDataService);
+
+            document.ReplaceFields(dictCommissionFields);
+        }
+
         private void FillTheFields(ITechnicalStateReportParameters reportParameters, Document document)
         {
             var asset = reportParameters.AssetInfo;
 
-            var reportConfig = _reportDataService.GetReportParametersDictionary(ReportType.TechnicalStateReport);
+            var reportConfig = ReportParametersHelper.GetFullParametersDictionary(ReportType.WriteOffAct, _reportDataService);
             var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
 
             document.ReplaceField(TechnicalStateReportHelper.FIELD_ASSET_NAME, assetName);

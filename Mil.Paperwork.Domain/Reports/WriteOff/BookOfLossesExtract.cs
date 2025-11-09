@@ -31,7 +31,7 @@ namespace Mil.Paperwork.Domain.Reports.WriteOff
 
         private void FillTheFields(IWriteOffPackageParameters reportParameters, Document document)
         {
-            var reportConfig = _reportDataService.GetReportParametersDictionary(ReportType.WriteOffPackage);
+            var reportConfig = ReportParametersHelper.GetFullParametersDictionary(ReportType.WriteOffPackage, _reportDataService);
 
             var extractData = reportParameters.BookOfLossesExtractData;
 

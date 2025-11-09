@@ -61,7 +61,7 @@ namespace Mil.Paperwork.Domain.Reports
 
         private void FillTheFields(IInvoceReportData reportData, Document document)
         {
-            var reportConfig = _reportDataService.GetReportParametersDictionary(ReportType.Invoice);
+            var reportConfig = ReportParametersHelper.GetFullParametersDictionary(ReportType.Invoice, _reportDataService);
 
             document.ReplaceField(InvoiceReportHelper.FIELD_DOCUMENT_NUMBER, reportData.DocumentNumber);
 
