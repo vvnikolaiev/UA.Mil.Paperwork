@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Mil.Paperwork.WriteOff.Views.ReportConfigurationView"
+﻿<UserControl x:Class="Mil.Paperwork.WriteOff.Views.CommissionsConfigurationView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              xmlns:viewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels.Tabs"
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance Type=viewModels:ReportConfigViewModel}">
+             d:DataContext="{d:DesignInstance Type=viewModels:CommissionsConfigViewModel}">
     <DockPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
             <Button Content="Зберегти" Command="{Binding SaveCommand}" Margin="0,0,5,0"/>
@@ -34,22 +34,50 @@
             <Button Content="Закрити" Command="{Binding CloseCommand}" Margin="0,0,5,0"/>
         </StackPanel>
 
-        <ComboBox ItemsSource="{Binding ReportTypes}"
+        <ComboBox ItemsSource="{Binding CommissionTypes}"
                 DockPanel.Dock="Top"
-                SelectedItem="{Binding SelectedReportType}"
+                SelectedItem="{Binding SelectedCommissionType}"
                 Style="{StaticResource EnumDescriptionComboBox}">
             <Behaviors:Interaction.Triggers>
                 <Behaviors:EventTrigger EventName="SelectionChanged">
-                    <Behaviors:InvokeCommandAction Command="{Binding ReportTypeSelectedCommand}" />
+                    <Behaviors:InvokeCommandAction Command="{Binding CommissionTypeSelectedCommand}" />
                 </Behaviors:EventTrigger>
             </Behaviors:Interaction.Triggers>
         </ComboBox>
 
-        <DataGrid ItemsSource="{Binding CurrentConfig}" AutoGenerateColumns="False" Margin="0,5,0,0">
+        <Grid DockPanel.Dock="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="5" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="5" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="150" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="5" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="Назва комісії" Grid.Row="1" Grid.Column="1" 
+                       VerticalAlignment="Center" />
+            <TextBox Grid.Row="1" Grid.Column="2" 
+                     Text="{Binding CommissionName}"/>
+
+            <TextBlock Text="Опис" Grid.Row="1" Grid.Column="3"
+                       VerticalAlignment="Center" />
+            <TextBox Grid.Row="1" Grid.Column="4" 
+                     Text="{Binding CommissionDescription}"/>
+
+        </Grid>
+
+        <DataGrid ItemsSource="{Binding CurrentCommission}" AutoGenerateColumns="False" Margin="0,5,0,0">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Ідентифікатор" Binding="{Binding Name}" Width=".7*" />
-                <DataGridTextColumn Header="Значення" Binding="{Binding Value}" Width="*" />
-                <DataGridTextColumn Header="Коментар" Binding="{Binding Comment}" Width="*" />
+                <DataGridTextColumn Header="Ім'я та прізвище" Binding="{Binding Name}" Width=".7*" />
+                <DataGridTextColumn Header="Посада" Binding="{Binding Position}" Width="*" />
+                <DataGridTextColumn Header="Звання" Binding="{Binding Rank}" Width="*" />
+                <DataGridTextColumn Header="Звання та ім'я (кого?)" Binding="{Binding NameAccusationForm}" Width="*" />
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

@@ -37,6 +37,10 @@
             <views:ReportConfigurationView />
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type tabViewModels:CommissionsConfigViewModel}">
+            <views:CommissionsConfigurationView />
+        </DataTemplate>
+
         <DataTemplate DataType="{x:Type tabViewModels:HomePageViewModel}">
             <views:HomePageView />
         </DataTemplate>

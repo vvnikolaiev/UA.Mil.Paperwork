@@ -15,6 +15,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private readonly IDataService _dataService;
         private readonly IReportDataService _reportDataService;
         private readonly IExportService _exportService;
+        private readonly IImportService _importService;
         private readonly INavigationService _navigationService;
 
         private ITabViewModel? _selectedTab;
@@ -32,6 +33,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             IDataService dataService,
             IReportDataService reportDataService,
             IExportService exportService,
+            IImportService importService,
             INavigationService navigationService)
         {
             _reportManager = reportManager;
@@ -39,6 +41,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             _dataService = dataService;
             _reportDataService = reportDataService;
             _exportService = exportService;
+            _importService = importService;
             _navigationService = navigationService;
 
             AddHomeTab();
@@ -46,7 +49,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void AddHomeTab()
         {
-            var homePageVM = new HomePageViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _exportService, _navigationService);
+            var homePageVM = new HomePageViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _exportService, _importService, _navigationService);
             homePageVM.TabAdded += OnNewTabAdded;
             homePageVM.TabSelectionRequested += OnTabSelectRequested;
 
