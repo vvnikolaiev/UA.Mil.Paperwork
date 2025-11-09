@@ -62,8 +62,9 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="С/Н" Binding="{Binding SerialNumber}" Width="80"
+                        <DataGridTextColumn Header="С/Н" Binding="{Binding SerialNumber, UpdateSourceTrigger=LostFocus}" Width="80"
                                             ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
+
                         <DataGridTextColumn Header="Код ном." Binding="{Binding NomenclatureCode}" Width="70"
                                             ElementStyle="{StaticResource DataGridTextBlockStyle}"/>
                         <DataGridTemplateColumn Header="Од. виміру" Width="60">

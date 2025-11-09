@@ -82,7 +82,13 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         public string SerialNumber
         {
             get => _serialNumber;
-            set => SetProperty(ref _serialNumber, value);
+            set
+            {
+                if (SetProperty(ref _serialNumber, value))
+                {
+                    TryToGuessItemsCount();
+                }
+            }
         }
 
         public string NomenclatureCode
@@ -195,6 +201,19 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             else
             {
                 OnPropertyChanged(nameof(Name));
+            }
+        }
+
+        private void TryToGuessItemsCount()
+        {
+            if (!string.IsNullOrEmpty(_serialNumber))
+            {
+                var count = _serialNumber.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Length;
+
+                if (count > 0 && _count != count)
+                {
+                    Count = count;
+                }
             }
         }
     }
