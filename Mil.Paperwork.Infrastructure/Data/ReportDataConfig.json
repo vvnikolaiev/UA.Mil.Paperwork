@@ -48,7 +48,7 @@
     
     { "Name": "HEAD_OF_SERVICE_NAME", "Value": "Петро ГРИЩЕНКО", "Comment": "" },
     { "Name": "HEAD_OF_SERVICE_RANK", "Value": "лейтенант", "Comment": "" },
-    { "Name": "HEAD_OF_SERVICE_POSITION", "Value": "Начальник групи правопорядку – начальник правопорядку", "Comment": "" }
+    { "Name": "HEAD_OF_SERVICE_POSITION", "Value": "Начальник групи правопорядку – начальник правопорядку", "Comment": "" },
     { "Name": "RESPONSIBLE_FOR_STORAGE_NAME", "Value": "Олександр ПОВОРОЗНЮК", "Comment": "" },
     { "Name": "RESPONSIBLE_FOR_STORAGE_RANK", "Value": "молодший сержант", "Comment": "" },
     { "Name": "RESPONSIBLE_FOR_STORAGE_POSITION", "Value": "Відповідальна особа за зберіганння й утримання військового майна служби правопорядку", "Comment": "" }
@@ -66,12 +66,12 @@
     { "Name": "SERVICE_NAME", "Value": "служби правопорядку", "Comment": "" },
     { "Name": "HEAD_OF_SERVICE_NAME", "Value": "Петро ГРИЩЕНКО", "Comment": "" },
     { "Name": "HEAD_OF_SERVICE_RANK", "Value": "лейтенант", "Comment": "" },
-    { "Name": "HEAD_OF_SERVICE_POSITION", "Value": "Начальник групи правопорядку – начальник правопорядку", "Comment": "" },\\
+    { "Name": "HEAD_OF_SERVICE_POSITION", "Value": "Начальник групи правопорядку – начальник правопорядку", "Comment": "" }
   ],
   "AssetDismantlingReport": [
     { "Name": "HEAD_OF_SERVICE_NAME", "Value": "Петро ГРИЩЕНКО", "Comment": "" },
     { "Name": "HEAD_OF_SERVICE_RANK", "Value": "лейтенант", "Comment": "" },
-    { "Name": "HEAD_OF_SERVICE_POSITION", "Value": "Начальник групи правопорядку – начальник правопорядку", "Comment": "" },
+    { "Name": "HEAD_OF_SERVICE_POSITION", "Value": "Начальник групи правопорядку – начальник правопорядку", "Comment": "" }
   ],  
   "CommissioningAct": [
     { "Name": "PLACE_CREATED", "Value": "с. Старі Запорожці", "Comment": "" },
@@ -84,8 +84,8 @@
     { "Name": "HANDED_PERSON_NAME", "Value": "Григорій КВІТКА", "Comment": "" }
   ],
   "Invoice": [
-    { "Name": "SERVICE", "Value": "служби правопорядку", "Comment": "" }
-    { "Name": "HEAD_OF_SERVICE_NAME", "Value": "Петро ГРИЩЕНКО", "Comment": "" },
+    { "Name": "SERVICE", "Value": "служби правопорядку", "Comment": "" },
+    { "Name": "HEAD_OF_SERVICE_NAME", "Value": "Петро ГРИЩЕНКО", "Comment": "" }
   ],
   "WriteOffPackage": [
     { "Name": "HEAD_OF_SERVICE_NAME", "Value": "Петро ГРИЩЕНКО", "Comment": "" },
