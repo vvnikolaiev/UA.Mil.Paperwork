@@ -32,6 +32,7 @@ namespace Mil.Paperwork.Domain.Reports
                 var document = new Document();
                 document.LoadFromFile(templatePath);
 
+                FillCommission(document);
                 FillTheFields(reportData, document);
 
                 var tables = document.Sections[0].Tables.Cast<Table>().ToList();
@@ -68,9 +69,16 @@ namespace Mil.Paperwork.Domain.Reports
             return _reportBytes;
         }
 
+        private void FillCommission(Document document)
+        {
+            var dictCommissionFields = ReportParametersHelper.GetCommission(ReportType.CommissioningAct, _reportDataService);
+
+            document.ReplaceFields(dictCommissionFields);
+        }
+
         private void FillTheFields(ICommissioningActReportData reportData, Document document)
         {
-            var reportConfig = _reportDataService.GetReportParametersDictionary(ReportType.CommissioningAct);
+            var reportConfig = ReportParametersHelper.GetFullParametersDictionary(ReportType.CommissioningAct, _reportDataService);
 
             document.ReplaceField(CommissioningActHelper.FIELD_DOC_NUMBER, reportData.DocumentNumber);
             document.ReplaceField(CommissioningActHelper.FIELD_DOC_DATE, reportData.DocumentDate.ToString(ReportHelper.DATE_FORMAT));

@@ -49,13 +49,13 @@ namespace Mil.Paperwork.Domain.Services
             var destinationPath = reportData.GetDestinationPath();
 
             var nameParameters = new List<string>();
+            if (!string.IsNullOrEmpty(reportData.DocumentNumber))
+            {
+                nameParameters.Add($"№{reportData.DocumentNumber}");
+            }
             if (!string.IsNullOrEmpty(reportData.Asset.ShortName))
             {
                 nameParameters.Add(reportData.Asset.ShortName);
-            }
-            if (!string.IsNullOrEmpty(reportData.DocumentNumber))
-            {
-                nameParameters.Add(reportData.DocumentNumber);
             }
             var numbers = string.Join(", ", reportData?.AssetIds?.Select(x => x.SerialNumber) ?? []);
             if (!string.IsNullOrEmpty(numbers))

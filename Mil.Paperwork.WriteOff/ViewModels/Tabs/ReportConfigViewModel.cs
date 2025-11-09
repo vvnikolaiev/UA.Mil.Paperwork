@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using Mil.Paperwork.Domain.Services;
+﻿using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
@@ -13,12 +12,13 @@ using System.Windows.Input;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 {
-    internal class ReportConfigViewModel : ObservableItem, ISettingsTabViewModel
+    internal class ReportConfigViewModel : ConfigViewModel
     {
         private ReportType _selectedReportType;
         private ObservableCollection<ReportParameter> _currentConfig;
         private readonly IReportDataService _reportDataService;
-        private readonly IExportService _exportService;
+
+        protected override string ExportFileTitle => SelectedReportType.GetDescription();
 
         public ObservableCollection<ReportType> ReportTypes { get; }
         public ObservableCollection<EnumItemDataModel<ExportType>> ExportTypes { get; private set; }
@@ -29,6 +29,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             set => SetProperty(ref _selectedReportType, value);
         }
 
+        public override List<object> ExportData => [.. CurrentConfig];
+
         public ObservableCollection<ReportParameter> CurrentConfig
         {
             get => _currentConfig;
@@ -38,36 +40,28 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
         public ICommand ReportTypeSelectedCommand { get; }
         public ICommand SaveCommand { get; }
         public ICommand SaveLocalCommand { get; }
-        public ICommand<ExportType> ExportDataCommand { get; }
-        public ICommand ImportCommand { get; }
         public ICommand RefreshCommand { get; }
-        public ICommand CloseCommand { get; }
 
-        public string Header => "Налаштування звітів";
+        public override string Header => "Налаштування звітів";
 
-        public bool IsClosed { get; private set; }
-
-        public event EventHandler<ITabViewModel> TabCloseRequested;
-
-        public ReportConfigViewModel(IReportDataService reportDataService, IExportService exportService)
+        public ReportConfigViewModel(
+            IReportDataService reportDataService,
+            IExportService exportService,
+            IImportService importService) : base(exportService, importService)
         {
             _reportDataService = reportDataService;
-            _exportService = exportService;
 
             ReportTypes = [.. EnumHelper.GetValues<ReportType>()];
             SelectedReportType = ReportTypes.FirstOrDefault();
 
             FillExportTypesCollection();
-            UpdateCurrentConfig(SelectedReportType);
+            UpdateCurrentConfig();
 
             ReportTypeSelectedCommand = new DelegateCommand(ReportTypeSelectedCommandExecute);
 
             SaveCommand = new DelegateCommand(SaveCommandExecute);
             SaveLocalCommand = new DelegateCommand(SaveLocalCommandExecute);
-            ExportDataCommand = new DelegateCommand<ExportType>(ExportDataCommandExecute);
-            ImportCommand = new DelegateCommand(ImportCommandExecute, () => false);
             RefreshCommand = new DelegateCommand(RefreshCommandExecute);
-            CloseCommand = new DelegateCommand(CloseCommandExecute);
         }
 
         public void SelectReportType(ReportType reportType)
@@ -75,7 +69,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             if (ReportTypes.Contains(reportType))
             {
                 SelectedReportType = reportType;
-                UpdateCurrentConfig(SelectedReportType);
+                UpdateCurrentConfig();
             }
             else
             {
@@ -85,21 +79,14 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 
         private void ReportTypeSelectedCommandExecute()
         {
-            UpdateCurrentConfig(SelectedReportType);
+            UpdateCurrentConfig();
         }
 
-        private void UpdateCurrentConfig(ReportType? reportType, bool withReload = false)
+        protected override void UpdateCurrentConfig(bool withReload = false)
         {
-            if (reportType != null)
-            {
-                var reportConfig = _reportDataService.GetReportParameters(reportType.Value, withReload);
+            var reportConfig = _reportDataService.GetReportParameters(SelectedReportType, withReload);
 
-                CurrentConfig = [.. reportConfig ?? []];
-            }
-            else
-            {
-                CurrentConfig = [];
-            }
+            CurrentConfig = [.. reportConfig ?? []];
         }
 
         private void FillExportTypesCollection()
@@ -118,70 +105,13 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             _reportDataService.SaveReportConfigTemprorary([.. CurrentConfig], SelectedReportType);
         }
 
-        private void ExportDataCommandExecute(ExportType exportType)
-        {
-            var folderDialog = new OpenFolderDialog();
-
-            if (folderDialog.ShowDialog() == true)
-            {
-                var folderName = folderDialog.FolderName;
-                var reportParameters = CurrentConfig.ToList();
-
-                var fileNameFormat = GetFileNameFormat(SelectedReportType, exportType);
-
-                var result = exportType switch
-                {
-                    ExportType.Json => _exportService.TryExportToJson(reportParameters, folderName, fileNameFormat),
-                    ExportType.Excel => _exportService.TryExportToExcel(reportParameters, folderName, fileNameFormat),
-                    _ => throw new ArgumentOutOfRangeException(nameof(exportType), exportType, null)
-                };
-
-                string message;
-                if (result)
-                {
-                    message = $"Дані експортовано успішно. Каталог:\r\n{folderName}";
-                }
-                else
-                {
-                    message = $"Помилка експорту данних.";
-                }
-
-                MessageBox.Show(message);
-            }
-        }
-
-        private void ImportCommandExecute()
-        {
-            /* Import logic */
-        }
-
         private void RefreshCommandExecute()
         {
             var result = MessageBox.Show("Ви впевнені що бажаєте перезавантажити таблицю?", "Підтвердження", MessageBoxButton.YesNo);
             if (result == MessageBoxResult.Yes)
             {
-                UpdateCurrentConfig(SelectedReportType, withReload: true);
+                UpdateCurrentConfig(withReload: true);
             }
-        }
-
-        private void CloseCommandExecute()
-        {
-            IsClosed = true;
-            TabCloseRequested?.Invoke(this, this);
-        }
-
-        private static string GetFileNameFormat(ReportType reportType, ExportType exportType)
-        {
-            var reportTypeTitle = reportType.GetDescription();
-
-            var extension = exportType switch
-            {
-                ExportType.Json => "json",
-                ExportType.Excel => "xlsx",
-                _ => throw new ArgumentOutOfRangeException(nameof(exportType), exportType, null)
-            };
-
-            return $"Конфігурація {reportTypeTitle} {{0}}.{extension}";
         }
     }
 }

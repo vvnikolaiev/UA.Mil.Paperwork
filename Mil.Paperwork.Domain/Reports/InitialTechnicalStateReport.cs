@@ -31,6 +31,7 @@ namespace Mil.Paperwork.Domain.Reports
                 var document = new Document();
                 document.LoadFromFile(templatePath, FileFormat.Docx);
 
+                FillCommission(document);
                 FillTheFields(assetInfo, personAccepted, personHanded, eventType, document);
                 FillAssetTable(assetInfo, eventType, document);
                 FillOperationalTable(assetInfo, document);
@@ -53,9 +54,16 @@ namespace Mil.Paperwork.Domain.Reports
             return _reportBytes;
         }
 
+        private void FillCommission(Document document)
+        {
+            var dictCommissionFields = ReportParametersHelper.GetCommission(ReportType.TechnicalStateReport, _reportDataService);
+
+            document.ReplaceFields(dictCommissionFields);
+        }
+
         private void FillTheFields(IAssetInfo asset, IPerson personAccepted, IPerson personHanded, EventType eventType, Document document)
         {
-            var reportConfig = _reportDataService.GetReportParametersDictionary(ReportType.TechnicalStateReport);
+            var reportConfig = ReportParametersHelper.GetFullParametersDictionary(ReportType.TechnicalStateReport, _reportDataService);
             var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
             var sInitialCategory = ReportHelper.ConvertCategoryToText(asset.InitialCategory);
             var residualCategory = ReportHelper.ConvertEventTypeToCategory(asset.InitialCategory, eventType);

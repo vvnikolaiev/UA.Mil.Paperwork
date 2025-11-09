@@ -1,5 +1,4 @@
 ﻿using Mil.Paperwork.Domain.Helpers;
-using Mil.Paperwork.Infrastructure.Attributes;
 using Mil.Paperwork.Infrastructure.Helpers;
 using Mil.Paperwork.Infrastructure.Services;
 using OfficeOpenXml;
@@ -27,10 +26,12 @@ namespace Mil.Paperwork.Domain.Services
     internal class ExportService : IExportService
     {
         private readonly IFileStorageService _fileStorage;
+        private readonly IReportDataService _reportDataService;
 
-        public ExportService(IFileStorageService fileStorage)
+        public ExportService(IFileStorageService fileStorage, IReportDataService reportDataService)
         {
             _fileStorage = fileStorage;
+            _reportDataService = reportDataService;
         }
 
         public bool TryExportToJson<T>(IEnumerable<T> data, string folderName, string fileNameFormat)
@@ -62,7 +63,15 @@ namespace Mil.Paperwork.Domain.Services
                 var worksheet = package.Workbook.Worksheets.Add("Export");
 
                 // Write headers
-                var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+                var type = data.FirstOrDefault()?.GetType();
+
+                if (type == null)
+                {
+                    return false;
+                }
+
+                var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
                 for (int i = 0; i < properties.Length; i++)
                 {
                     worksheet.Cells[1, i + 1].Value = properties[i].Name;
@@ -95,6 +104,19 @@ namespace Mil.Paperwork.Domain.Services
 
                 _fileStorage.SaveFile(filePath, reportBytes);
 
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool TryExportSettingsConfigFile(string directoryPath)
+        {
+            try
+            {
+                _reportDataService.SaveReportConfigExternally(directoryPath);
                 return true;
             }
             catch

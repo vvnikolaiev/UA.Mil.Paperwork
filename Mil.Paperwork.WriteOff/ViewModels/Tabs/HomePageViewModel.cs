@@ -18,6 +18,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
         private readonly IDataService _dataService;
         private readonly IReportDataService _reportDataService;
         private readonly IExportService _exportService;
+        private readonly IImportService _importService;
         private readonly INavigationService _navigationService;
 
         private readonly Dictionary<SettingsTabType, ISettingsTabViewModel> _settingTabViewModels;
@@ -39,6 +40,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
         public ICommand OpenProductsDictionaryCommand { get; }
         public ICommand OpenPeopleDictionaryCommand { get; }
         public ICommand OpenMeasurementUnitsDictionaryCommand { get; }
+        public ICommand OpenCommissionsConfigurationCommand { get; }
         public ICommand OpenReportConfigurationCommand { get; }
 
         public HomePageViewModel(
@@ -47,6 +49,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             IDataService dataService,
             IReportDataService reportDataService,
             IExportService exportService,
+            IImportService importService,
             INavigationService navigationService)
         {
             _reportManager = reportManager;
@@ -54,6 +57,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             _dataService = dataService;
             _reportDataService = reportDataService;
             _exportService = exportService;
+            _importService = importService;
             _navigationService = navigationService;
 
             _settingTabViewModels = [];
@@ -65,6 +69,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             OpenProductsDictionaryCommand = new DelegateCommand(OpenProductsDictionaryCommandExecute);
             OpenPeopleDictionaryCommand = new DelegateCommand(OpenPeopleDictionaryCommandExecute);
             OpenMeasurementUnitsDictionaryCommand = new DelegateCommand(OpenMeasurementUnitsDictionaryCommandExecute);
+            OpenCommissionsConfigurationCommand = new DelegateCommand(OpenCommissionsConfigurationCommandExecute);
             OpenReportConfigurationCommand = new DelegateCommand(OpenReportConfigurationCommandExecute);
         }
 
@@ -75,11 +80,11 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
                 //new(DocumentTypeEnum.WriteOff),
                 new(DocumentTypeEnum.ResidualValue),
                 new(DocumentTypeEnum.TechnicalState11),
-                new(DocumentTypeEnum.TechnicalState7),
                 new(DocumentTypeEnum.Valuation),
                 new(DocumentTypeEnum.Dismantling),
-                new(DocumentTypeEnum.Invoice),
+                new(DocumentTypeEnum.TechnicalState7),
                 new(DocumentTypeEnum.CommisioningAct),
+                new(DocumentTypeEnum.Invoice),
             };
 
             return reportTypes;
@@ -165,6 +170,11 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             OpenSettingsTab(SettingsTabType.MeasurementUnitsDictionary);
         }
 
+        private void OpenCommissionsConfigurationCommandExecute()
+        {
+            OpenSettingsTab(SettingsTabType.CommissionsConfiguration);
+        }
+
         private void OpenReportConfigurationCommandExecute()
         {
             OpenSettingsTab(SettingsTabType.ReportsConfiguration);
@@ -183,7 +193,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
                 tabViewModel = settingsTabType switch
                 {
                     SettingsTabType.Settings => new SettingsViewModel(_reportDataService),
-                    SettingsTabType.ReportsConfiguration => new ReportConfigViewModel(_reportDataService, _exportService),
+                    SettingsTabType.ReportsConfiguration => new ReportConfigViewModel(_reportDataService, _exportService, _importService),
+                    SettingsTabType.CommissionsConfiguration => new CommissionsConfigViewModel(_reportDataService, _exportService, _importService),
                     SettingsTabType.ProductDictionary => new ProductsDictionaryViewModel(_dataService, _exportService, _navigationService),
                     SettingsTabType.PeopleDictionary => new PeopleDictionaryViewModel(_dataService, _navigationService),
                     SettingsTabType.MeasurementUnitsDictionary => new MeasurementUnitsDictionaryViewModel(_dataService),

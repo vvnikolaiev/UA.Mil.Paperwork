@@ -4,5 +4,7 @@
     {
         bool TryExportToJson<T>(IEnumerable<T> data, string filePath, string fileNameFormat);
         bool TryExportToExcel<T>(IEnumerable<T> data, string filePath, string fileNameFormat);
+
+        bool TryExportSettingsConfigFile(string directoryPath);
     }
 }

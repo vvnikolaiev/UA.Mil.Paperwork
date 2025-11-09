@@ -26,7 +26,7 @@ namespace Mil.Paperwork.Domain.Reports.WriteOff
 
         private void FillTheFields(IWriteOffPackageParameters reportParameters, Document document)
         {
-            var reportConfig = _reportDataService.GetReportParametersDictionary(ReportType.WriteOffPackage);
+            var reportConfig = ReportParametersHelper.GetFullParametersDictionary(ReportType.WriteOffPackage, _reportDataService);
 
             document.ReplaceField(WriteOffPackageTemplatesHelper.FIELD_TOTAL_WRITE_OFF_SUM, ReportHelper.GetPriceString(reportParameters.TotalWriteOffSum));
 

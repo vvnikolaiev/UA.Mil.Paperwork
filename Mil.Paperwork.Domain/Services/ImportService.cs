@@ -1,10 +1,35 @@
 ﻿using Mil.Paperwork.Domain.Helpers;
+using Mil.Paperwork.Infrastructure.DataModels;
+using Mil.Paperwork.Infrastructure.Helpers;
+using Mil.Paperwork.Infrastructure.Services;
 using OfficeOpenXml;
 
 namespace Mil.Paperwork.Domain.Services
 {
     internal class ImportService : IImportService
     {
+        private readonly IFileStorageService _fileStorageService;
+        private readonly IReportDataService _reportDataService;
+
+        public ImportService(IFileStorageService fileStorageService, IReportDataService reportDataService)
+        {
+            _fileStorageService = fileStorageService;
+            _reportDataService = reportDataService;
+        }
+
+        public bool TryImportSettingsConfigFile(string filePath)
+        {
+            var config = _fileStorageService.ReadJsonFile<ReportDataConfigDTO>(filePath);
+            if (config == null || config.Common == null || config.Invoice == null)
+            {
+                return false;
+            }
+
+            var result = _reportDataService.ImportReportConfig(config);
+
+            return result;
+        }
+
         public List<string> GetExcelTableHeaders(string filePath, int headerRow = 1)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;

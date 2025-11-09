@@ -4,6 +4,7 @@
     {
         Settings,
         ReportsConfiguration,
+        CommissionsConfiguration,
         ProductDictionary,
         PeopleDictionary,
         MeasurementUnitsDictionary,

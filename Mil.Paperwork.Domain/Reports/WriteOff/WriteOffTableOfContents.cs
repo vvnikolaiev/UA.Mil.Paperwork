@@ -27,7 +27,7 @@ namespace Mil.Paperwork.Domain.Reports.WriteOff
 
         private void FillTheFields(IWriteOffPackageParameters reportParameters, Document document)
         {
-            var reportConfig = _reportDataService.GetReportParametersDictionary(ReportType.WriteOffPackage);
+            var reportConfig = ReportParametersHelper.GetFullParametersDictionary(ReportType.WriteOffPackage, _reportDataService);
             
             document.ReplaceField(WriteOffPackageTemplatesHelper.FIELD_ORDEN_NUM, reportParameters.OrdenNumber.ToString());
             document.ReplaceField(WriteOffPackageTemplatesHelper.FIELD_ORDEN_DATE, reportParameters.OrdenDate.ToString(ReportHelper.DATE_FORMAT));

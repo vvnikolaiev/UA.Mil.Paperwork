@@ -72,13 +72,14 @@
                 Command="{Binding OpenReportConfigurationCommand}" 
                 Style="{StaticResource SquareButtonStyle}"/>
 
+            <Button Content="Конфігурація Комісій"
+                Command="{Binding OpenCommissionsConfigurationCommand}" 
+                Style="{StaticResource SquareButtonStyle}"/>
+
             <Button Content="Налаштування" 
                 Style="{StaticResource SquareButtonStyle}"
                 Command="{Binding OpenSettingsCommand}" />
 
-            <!--<Button Content="Контрольна сума" 
-                Style="{StaticResource SquareButtonStyle}"
-                Command="{Binding CheckSumCommand}" />-->
         </StackPanel>
     </Grid>
 </UserControl>

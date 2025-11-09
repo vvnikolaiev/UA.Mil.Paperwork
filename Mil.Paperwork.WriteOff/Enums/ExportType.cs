@@ -4,9 +4,9 @@ namespace Mil.Paperwork.WriteOff.Enums
 {
     internal enum ExportType
     {
-        [Description("RAW data (json)")]
+        [Description("Повну конфігурацію (json)")]
         Json,
-        [Description("Table (.xlsx)")]
+        [Description("Таблицю (.xlsx)")]
         Excel
     }
 }
