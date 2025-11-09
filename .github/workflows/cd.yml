@@ -14,18 +14,19 @@ jobs:
   build:
     strategy:
           matrix:          
-            channel: [Debug, Release]
+            channel: [Release]
+            # channel: [Debug, Release]
             targetPlatform: [x86, x64]
             include:
               
                 # includes the following variables for the matrix leg matching Debug
-              - channel: Debug
-                ChannelName: Debug
-                Configuration: Debug
-                # DistributionUrl: https://microsoft.github.io/github-actions-for-desktop-apps-distribution-dev
-                MsixPackageId: UA.Mil.Paperwork.Debug
-                MsixPublisherId: CN=UA.Mil.Paperowrk, O=vvnikolaiev, C=UA
-                MsixPackageDisplayName: UA.Mil.Paperwork Application (Debug)
+              # - channel: Debug
+              #   ChannelName: Debug
+              #   Configuration: Debug
+              #   # DistributionUrl: https://microsoft.github.io/github-actions-for-desktop-apps-distribution-dev
+              #   MsixPackageId: UA.Mil.Paperwork.Debug
+              #   MsixPublisherId: CN=UA.Mil.Paperowrk, O=vvnikolaiev, C=UA
+              #   MsixPackageDisplayName: UA.Mil.Paperwork Application (Debug)
 
               # includes the following variables for the matrix leg matching Release
               - channel: Release
