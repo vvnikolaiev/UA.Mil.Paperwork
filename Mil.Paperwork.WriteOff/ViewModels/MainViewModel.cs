@@ -1,10 +1,11 @@
-﻿using Mil.Paperwork.Infrastructure.MVVM;
+﻿using Mil.Paperwork.WriteOff.MVVM;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.Infrastructure.Services;
 using System.Collections.ObjectModel;
 using Mil.Paperwork.WriteOff.Factories;
 using Mil.Paperwork.WriteOff.ViewModels.Tabs;
+using Mil.Paperwork.WriteOff.Configuration;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
@@ -17,7 +18,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         private readonly IExportService _exportService;
         private readonly IImportService _importService;
         private readonly INavigationService _navigationService;
-
+        private readonly IDialogService _dialogService;
         private ITabViewModel? _selectedTab;
 
         public ITabViewModel? SelectedTab
@@ -34,7 +35,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             IReportDataService reportDataService,
             IExportService exportService,
             IImportService importService,
-            INavigationService navigationService)
+            INavigationService navigationService,
+            IDialogService dialogService)
         {
             _reportManager = reportManager;
             _assetFactory = assetFactory;
@@ -43,13 +45,14 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             _exportService = exportService;
             _importService = importService;
             _navigationService = navigationService;
+            _dialogService = dialogService;
 
             AddHomeTab();
         }
 
         private void AddHomeTab()
         {
-            var homePageVM = new HomePageViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _exportService, _importService, _navigationService);
+            var homePageVM = new HomePageViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _exportService, _importService, _navigationService, _dialogService);
             homePageVM.TabAdded += OnNewTabAdded;
             homePageVM.TabSelectionRequested += OnTabSelectRequested;
 

@@ -2,7 +2,7 @@
 using System.Windows.Data;
 using System.Windows;
 
-namespace Mil.Paperwork.Infrastructure.Converters
+namespace Mil.Paperwork.WriteOff.Converters
 {
     public class InversedBoolConverter : IValueConverter
     {

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Mil.Paperwork.Infrastructure.MVVM;
+using Mil.Paperwork.WriteOff.MVVM;
 using System.Windows;
 
-namespace Mil.Paperwork.Domain.Services
+namespace Mil.Paperwork.WriteOff.Configuration
 {
     public class NavigationService : INavigationService
     {
@@ -19,7 +19,7 @@ namespace Mil.Paperwork.Domain.Services
             return _serviceProvider.GetRequiredService<TViewModel>();
         }
 
-        public TViewModel OpenWindow<TWindow, TViewModel>(TViewModel viewModel = null, bool isDialog = true) 
+        public TViewModel OpenWindow<TWindow, TViewModel>(TViewModel viewModel = null, bool isDialog = true)
             where TViewModel : ObservableItem
             where TWindow : Window
         {

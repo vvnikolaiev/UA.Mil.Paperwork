@@ -1,5 +1,6 @@
 ﻿using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.Attributes;
+using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.WriteOff.DataModels;
 using System.Data;
 using System.Reflection;
@@ -116,26 +117,33 @@ namespace Mil.Paperwork.WriteOff.Helpers
             return result;
         }
 
-        public static void ShowImportResultMessage(ImportDataResult importDataResult)
+        public static string GetImportResultCaption(ImportDataResult importDataResult)
         {
-            MessageBoxImage messageBoxImage;
-            string message, caption;
+            var caption = importDataResult.IsSuccessful ? IMPORT_SUCCESSFUL_CAPTION : IMPORT_FAILED_CAPTION;
+            return caption;
+        }
+
+        public static string GetImportResultMessage(ImportDataResult importDataResult)
+        {
+            string message;
             if (importDataResult.IsSuccessful)
             {
-                caption = IMPORT_SUCCESSFUL_CAPTION;
                 message = string.Format(IMPORT_SUCCESSFUL_MESSAGE_FORMAT, importDataResult.ImportedRowsCount, importDataResult.InvalidRowsCount);
-                messageBoxImage = MessageBoxImage.Information;
             }
             else
             {
-                caption = IMPORT_FAILED_CAPTION;
-                message = string.IsNullOrEmpty(importDataResult.ErrorMessage) 
+                message = string.IsNullOrEmpty(importDataResult.ErrorMessage)
                     ? IMPORT_FAILED_MESSAGE_SIMPLE
                     : string.Format(IMPORT_FAILED_MESSAGE_FORMAT, importDataResult.ErrorMessage);
-                messageBoxImage = MessageBoxImage.Warning;
             }
 
-            MessageBox.Show(message, caption, MessageBoxButton.OK, messageBoxImage);
+            return message;
+        }
+
+        public static DialogIcon GetImportResultIcon(ImportDataResult importDataResult)
+        {
+            var messageBoxImage = importDataResult.IsSuccessful ? DialogIcon.Information : DialogIcon.Warning;
+            return messageBoxImage;
         }
     }
 }

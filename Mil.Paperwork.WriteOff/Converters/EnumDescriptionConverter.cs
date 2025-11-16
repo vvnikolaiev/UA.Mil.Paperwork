@@ -2,7 +2,7 @@
 using System.Windows.Data;
 using System.ComponentModel;
 
-namespace Mil.Paperwork.Infrastructure.Converters
+namespace Mil.Paperwork.WriteOff.Converters
 {
     public class EnumDescriptionConverter : IValueConverter
     {

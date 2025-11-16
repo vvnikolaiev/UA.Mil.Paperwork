@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace Mil.Paperwork.Infrastructure.MVVM
+namespace Mil.Paperwork.WriteOff.MVVM
 {
     public interface ICommand<T> : ICommand
     {

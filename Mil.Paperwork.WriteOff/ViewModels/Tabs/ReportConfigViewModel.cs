@@ -2,21 +2,22 @@
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
-using Mil.Paperwork.Infrastructure.MVVM;
+using Mil.Paperwork.WriteOff.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.DataModels;
 using Mil.Paperwork.WriteOff.Enums;
 using System.Collections.ObjectModel;
-using System.Windows;
 using System.Windows.Input;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 {
     internal class ReportConfigViewModel : ConfigViewModel
     {
+        private readonly IReportDataService _reportDataService;
+        private readonly IDialogService _dialogService;
+
         private ReportType _selectedReportType;
         private ObservableCollection<ReportParameter> _currentConfig;
-        private readonly IReportDataService _reportDataService;
 
         protected override string ExportFileTitle => SelectedReportType.GetDescription();
 
@@ -47,9 +48,11 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
         public ReportConfigViewModel(
             IReportDataService reportDataService,
             IExportService exportService,
-            IImportService importService) : base(exportService, importService)
+            IImportService importService,
+            IDialogService dialogService) : base(exportService, importService, dialogService)
         {
             _reportDataService = reportDataService;
+            _dialogService = dialogService;
 
             ReportTypes = [.. EnumHelper.GetValues<ReportType>()];
             SelectedReportType = ReportTypes.FirstOrDefault();
@@ -73,7 +76,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             }
             else
             {
-                MessageBox.Show("Невідомий тип звіту.");
+                _dialogService.ShowMessage("Невідомий тип звіту.");
             }
         }
 
@@ -107,8 +110,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 
         private void RefreshCommandExecute()
         {
-            var result = MessageBox.Show("Ви впевнені що бажаєте перезавантажити таблицю?", "Підтвердження", MessageBoxButton.YesNo);
-            if (result == MessageBoxResult.Yes)
+            var result = _dialogService.ShowMessage("Ви впевнені що бажаєте перезавантажити таблицю?", "Підтвердження", DialogButtons.YesNo);
+            if (result == DialogResult.Yes)
             {
                 UpdateCurrentConfig(withReload: true);
             }

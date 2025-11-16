@@ -1,12 +1,12 @@
 ﻿using System.Collections.ObjectModel;
-using System.Windows;
 using System.Windows.Input;
-using Mil.Paperwork.Domain.Services;
-using Mil.Paperwork.Infrastructure.MVVM;
+using Mil.Paperwork.Infrastructure.Enums;
+using Mil.Paperwork.WriteOff.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Enums;
 using Mil.Paperwork.WriteOff.ViewModels.Tabs;
 using Mil.Paperwork.WriteOff.Views;
+using Mil.Paperwork.WriteOff.Configuration;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
 {
@@ -14,6 +14,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
     {
         private readonly IDataService _dataService;
         private readonly INavigationService _navigationService;
+        private readonly IDialogService _dialogService;
 
         public ObservableCollection<PersonViewModel> People { get; }
         public string Header => "Довідник осіб";
@@ -28,10 +29,15 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
         public ICommand ImportCommand { get; }
         public ICommand CloseCommand { get; }
 
-        public PeopleDictionaryViewModel(IDataService dataService, INavigationService navigationService)
+        public PeopleDictionaryViewModel(
+            IDataService dataService, 
+            INavigationService navigationService,
+            IDialogService dialogService)
         {
             _dataService = dataService;
             _navigationService = navigationService;
+            _dialogService = dialogService;
+
             People = [.. GetPeopleData()];
 
             AddItemCommand = new DelegateCommand(AddItemCommandExecute);
@@ -95,7 +101,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
 
         private void CloseCommandExecute()
         {
-            if (MessageBox.Show("Close tab?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            if (_dialogService.ShowMessage("Close tab?", "Confirmation", DialogButtons.YesNo) == DialogResult.Yes)
             {
                 TabCloseRequested?.Invoke(this, this);
                 IsClosed = true;

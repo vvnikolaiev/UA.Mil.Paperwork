@@ -1,9 +1,7 @@
-﻿using Microsoft.Win32;
-using Mil.Paperwork.Domain.DataModels.ReportData;
-using Mil.Paperwork.Domain.Services;
+﻿using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
-using Mil.Paperwork.Infrastructure.MVVM;
+using Mil.Paperwork.WriteOff.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Enums;
 using Mil.Paperwork.WriteOff.Managers;
@@ -11,10 +9,9 @@ using Mil.Paperwork.WriteOff.Memento;
 using Mil.Paperwork.WriteOff.ViewModels.Dictionaries;
 using Mil.Paperwork.WriteOff.ViewModels.Tabs;
 using Mil.Paperwork.WriteOff.Views;
-using OfficeOpenXml.Drawing.Controls;
 using System.Collections.ObjectModel;
-using System.Windows;
 using System.Windows.Input;
+using Mil.Paperwork.WriteOff.Configuration;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {
@@ -23,7 +20,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
         private readonly INavigationService _navigationService;
-
+        private readonly IDialogService _dialogService;
         private AssetValuationViewModelMemento _memento;
 
         private bool _isValid;
@@ -133,11 +130,16 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         public ICommand GenerateReportCommand { get; }
         public ICommand OpenConfigurationCommand { get; }
 
-        public AssetValuationViewModel(ReportManager reportManager, IDataService dataService, INavigationService navigationService)
+        public AssetValuationViewModel(
+            ReportManager reportManager, 
+            IDataService dataService, 
+            INavigationService navigationService,
+            IDialogService dialogService) : base(dialogService)
         {
             _reportManager = reportManager;
             _dataService = dataService;
             _navigationService = navigationService;
+            _dialogService = dialogService;
 
             UpdateValuationTemplatesCollection();
 
@@ -256,7 +258,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
                 return;
             }
 
-            if (MessageBox.Show("Are you sure you want to replace all the table items?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            var dlgResult = _dialogService.ShowMessage("Are you sure you want to replace all the table items?", "Confirmation", DialogButtons.YesNo);
+            if (dlgResult == DialogResult.Yes)
             {
                 ApplyTemplateData(SelectedValuationTemplate);
             }
@@ -283,7 +286,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
         private void ClearTableExecute()
         {
-            if (MessageBox.Show("Are you sure you want to clear the table?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            var dlgResult = _dialogService.ShowMessage("Are you sure you want to clear the table?", "Confirmation", DialogButtons.YesNo);
+            if (dlgResult == DialogResult.Yes)
             {
                 ClearComponents();
             }
@@ -294,11 +298,9 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             ValidateData();
             if (IsValid)
             {
-                var folderDialog = new OpenFolderDialog();
                 // TODO: folderDialog.InitialDirectory = ;
-                if (folderDialog.ShowDialog() == true)
+                if (_dialogService.TryPickFolder(out var folderName))
                 {
-                    var folderName = folderDialog.FolderName;
                     GenerateReport(folderName);
                 }
             }

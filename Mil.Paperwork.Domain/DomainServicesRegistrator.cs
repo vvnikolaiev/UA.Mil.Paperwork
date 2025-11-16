@@ -7,8 +7,6 @@ namespace Mil.Paperwork.Domain
     {
         public static void Register(IServiceCollection services)
         {
-            services.AddSingleton<INavigationService, NavigationService>();
-
             services.AddSingleton<QualityStateReportService>();
             services.AddSingleton<TechnicalStateReportService>();
             services.AddSingleton<WriteOffReportPackageService>();

@@ -1,11 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Mil.Paperwork.Domain;
+using Mil.Paperwork.Infrastructure;
+using Mil.Paperwork.Infrastructure.Services;
+using Mil.Paperwork.WriteOff.Factories;
 using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.WriteOff.ViewModels;
-using Mil.Paperwork.WriteOff.Views;
-using Mil.Paperwork.Infrastructure;
-using Mil.Paperwork.Domain;
-using Mil.Paperwork.WriteOff.Factories;
 using Mil.Paperwork.WriteOff.ViewModels.Reports;
+using Mil.Paperwork.WriteOff.Views;
 
 namespace Mil.Paperwork.WriteOff.Configuration
 {
@@ -32,6 +33,9 @@ namespace Mil.Paperwork.WriteOff.Configuration
             services.AddSingleton<IAssetFactory, AssetFactory>();
 
             // Register Services
+            services.AddSingleton<INavigationService, NavigationService>();
+            services.AddSingleton<IDialogService, WpfDialogService>();
+            
             InfrastructureServicesRegistrator.Register(services);
             DomainServicesRegistrator.Register(services);
 

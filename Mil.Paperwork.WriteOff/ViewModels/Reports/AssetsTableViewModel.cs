@@ -1,9 +1,9 @@
-﻿using Mil.Paperwork.Infrastructure.MVVM;
+﻿using Mil.Paperwork.Infrastructure.Enums;
+using Mil.Paperwork.WriteOff.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Factories;
 using Mil.Paperwork.WriteOff.ViewModels.Dictionaries;
 using System.Collections.ObjectModel;
-using System.Windows;
 using System.Windows.Input;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Reports
@@ -12,7 +12,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
     {
         private readonly IAssetFactory _assetFactory;
         private readonly IDataService _dataService;
-
+        private readonly IDialogService _dialogService;
         private WriteOffAssetViewModel? _selectedAsset;
         
         public ProductSelectionViewModel ProductsSelector { get; }
@@ -33,10 +33,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
         public AssetsTableViewModel(
             IAssetFactory assetFactory,
-            IDataService dataService)
+            IDataService dataService,
+            IDialogService dialogService)
         {
             _assetFactory = assetFactory;
             _dataService = dataService;
+            _dialogService = dialogService;
 
             ProductsSelector = new ProductSelectionViewModel(dataService);
             AssetsCollection = new ObservableCollection<WriteOffAssetViewModel>();
@@ -49,7 +51,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         }
         private void ClearTable()
         {
-            if (MessageBox.Show("Are you sure you want to clear the table?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            var dlgResult = _dialogService.ShowMessage("Are you sure you want to clear the table?", "Confirmation", DialogButtons.YesNo);
+            if (dlgResult == DialogResult.Yes)
             {
                 AssetsCollection.Clear();
             }

@@ -1,6 +1,7 @@
-﻿using System.Windows.Input;
+﻿using Mil.Paperwork.WriteOff.MVVM;
+using System.Windows.Input;
 
-namespace Mil.Paperwork.Infrastructure.MVVM
+namespace Mil.Paperwork.WriteOff.MVVM
 {
     public class DelegateCommand : ICommand
     {

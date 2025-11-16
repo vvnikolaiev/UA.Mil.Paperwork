@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Mil.Paperwork.WriteOff.Views"
-        xmlns:converters="clr-namespace:Mil.Paperwork.Infrastructure.Converters;assembly=Mil.Paperwork.Infrastructure"
+        xmlns:converters="clr-namespace:Mil.Paperwork.WriteOff.Converters"
         mc:Ignorable="d"
         xmlns:ViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels" 
         xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"

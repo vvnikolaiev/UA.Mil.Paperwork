@@ -1,12 +1,11 @@
-﻿using Microsoft.Win32;
-using Mil.Paperwork.Domain.DataModels.Assets;
+﻿using Mil.Paperwork.Domain.DataModels.Assets;
 using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
-using Mil.Paperwork.Infrastructure.MVVM;
+using Mil.Paperwork.WriteOff.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Factories;
 using Mil.Paperwork.WriteOff.Helpers;
@@ -23,6 +22,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
         private readonly IReportDataService _reportDataService;
+        private readonly IDialogService _dialogService;
         private AssetsTableViewModel _assetsTable;
         private AssetAccetpanceViewModel _assetAcceptance;
         private EventType _eventType;
@@ -109,13 +109,15 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             ReportManager reportManager,
             IAssetFactory assetFactory,
             IDataService dataService,
-            IReportDataService reportDataService)
+            IReportDataService reportDataService,
+            IDialogService dialogService) : base(dialogService)
         {
             _reportManager = reportManager;
             _dataService = dataService;
             _reportDataService = reportDataService;
+            _dialogService = dialogService;
 
-            AssetsTable = new AssetsTableViewModel(assetFactory, dataService);
+            AssetsTable = new AssetsTableViewModel(assetFactory, dataService, dialogService);
             AssetAcceptance = new AssetAccetpanceViewModel(dataService);
 
             FillReportDefaults();
@@ -129,11 +131,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
         private void GenerateReport()
         {
-            var folderDialog = new OpenFolderDialog();
-
-            if (folderDialog.ShowDialog() == true)
+            if (_dialogService.TryPickFolder(out var folderName))
             {
-                var folderName = folderDialog.FolderName;
                 var assets = AssetsTable.AssetsCollection.Select(x => x.ToAssetInfo(EventType)).ToArray();
 
                 GenerateReport(assets, folderName);

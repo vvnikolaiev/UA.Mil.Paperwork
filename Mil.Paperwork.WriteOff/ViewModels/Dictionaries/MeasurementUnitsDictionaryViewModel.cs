@@ -1,9 +1,8 @@
 ﻿using System.Collections.ObjectModel;
-using System.Windows;
 using System.Windows.Input;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
-using Mil.Paperwork.Infrastructure.MVVM;
+using Mil.Paperwork.WriteOff.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.ViewModels.Tabs;
 
@@ -12,6 +11,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
     internal class MeasurementUnitsDictionaryViewModel : ISettingsTabViewModel
     {
         private readonly IDataService _dataService;
+        private readonly IDialogService _dialogService;
+
         public ObservableCollection<MeasurementUnitViewModel> Units { get; }
         public string Header => "Довідник одиниць виміру";
         public bool IsClosed { get; private set; }
@@ -26,9 +27,11 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
         public ICommand RefreshCommand { get; }
         public ICommand CloseCommand { get; }
 
-        public MeasurementUnitsDictionaryViewModel(IDataService dataService)
+        public MeasurementUnitsDictionaryViewModel(IDataService dataService, IDialogService dialogService)
         {
             _dataService = dataService;
+            _dialogService = dialogService;
+
             Units = [.. GetUnitsData()];
             Genders = [.. EnumHelper.GetValues<NounGender>()];
 
@@ -74,7 +77,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
 
         private void CloseCommandExecute()
         {
-            if (MessageBox.Show("Close tab?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            if (_dialogService.ShowMessage("Close tab?", "Confirmation", DialogButtons.YesNo) == DialogResult.Yes)
             {
                 TabCloseRequested?.Invoke(this, this);
                 IsClosed = true;

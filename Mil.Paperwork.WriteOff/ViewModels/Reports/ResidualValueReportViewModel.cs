@@ -1,9 +1,8 @@
-﻿using Microsoft.Win32;
-using Mil.Paperwork.Domain.DataModels.ReportData;
+﻿using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
-using Mil.Paperwork.Infrastructure.MVVM;
+using Mil.Paperwork.WriteOff.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Factories;
 using Mil.Paperwork.WriteOff.Helpers;
@@ -19,7 +18,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
     {
         private readonly IDataService _dataService;
         private readonly ReportManager _reportManager;
-
+        private readonly IDialogService _dialogService;
         private int? _eventReportNumber = null;
         private DateTime _writeOffDate = DateTime.Now.Date;
         private EventType _eventType;
@@ -75,12 +74,14 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             ReportManager reportManager,
             IAssetFactory assetFactory,
             IDataService dataService,
-            IReportDataService reportDataService)
+            IReportDataService reportDataService,
+            IDialogService dialogService) : base(dialogService)
         {
             _dataService = dataService;
             _reportManager = reportManager;
+            _dialogService = dialogService;
 
-            AssetsTable = new AssetsTableViewModel(assetFactory, dataService);
+            AssetsTable = new AssetsTableViewModel(assetFactory, dataService, dialogService);
 
             MetalCostCollection = [.. EnumHelper.GetDescriptionDictionary<MetalType>().Select(x => new MetalCostViewModel(x.Key))];
 
@@ -125,10 +126,9 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
         private void SelectFolder()
         {
-            var a = new OpenFolderDialog();
-            if (a.ShowDialog() == true)
+            if (_dialogService.TryPickFolder(out var folderName))
             {
-                DestinationFolderPath = a.FolderName;
+                DestinationFolderPath = folderName;
             }
         }
 

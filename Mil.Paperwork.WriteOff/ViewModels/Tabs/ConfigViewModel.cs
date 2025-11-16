@@ -1,8 +1,8 @@
-﻿using Microsoft.Win32;
-using Mil.Paperwork.Domain.Services;
-using Mil.Paperwork.Infrastructure.MVVM;
+﻿using Mil.Paperwork.Domain.Services;
+using Mil.Paperwork.Infrastructure.Enums;
+using Mil.Paperwork.WriteOff.MVVM;
+using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Enums;
-using System.Windows;
 using System.Windows.Input;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
@@ -13,6 +13,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
         private const string ImportFileTitle = "Виберіть файл JSON для імпорту";
         private readonly IExportService _exportService;
         private readonly IImportService _importService;
+        private readonly IDialogService _dialogService;
 
         public abstract List<object> ExportData { get; }
 
@@ -27,10 +28,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 
         public ConfigViewModel(
             IExportService exportService,
-            IImportService importService)
+            IImportService importService,
+            IDialogService dialogService)
         {
             _exportService = exportService;
             _importService = importService;
+            _dialogService = dialogService;
 
             ExportDataCommand = new DelegateCommand<ExportType>(ExportDataCommandExecute);
             ImportCommand = new DelegateCommand(ImportCommandExecute);
@@ -41,11 +44,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 
         private void ExportDataCommandExecute(ExportType exportType)
         {
-            var folderDialog = new OpenFolderDialog();
-
-            if (folderDialog.ShowDialog() == true)
+            if (_dialogService.TryPickFolder(out var folderName))
             {
-                var folderName = folderDialog.FolderName;
                 var reportParameters = ExportData;
 
                 var fileNameFormat = GetFileNameFormat(exportType);
@@ -68,7 +68,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
                     message = $"Помилка експорту данних.";
                 }
 
-                MessageBox.Show(message);
+                _dialogService.ShowMessage(message);
             }
         }
 
@@ -78,13 +78,13 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 
             if (!string.IsNullOrEmpty(filePath))
             {
-                var messageBoxResult = MessageBox.Show("Ви впевнені що бажаєте імпортувати файл налаштувань?", "Підтвердження", MessageBoxButton.YesNo);
-                if (messageBoxResult == MessageBoxResult.Yes)
+                var messageBoxResult = _dialogService.ShowMessage("Ви впевнені що бажаєте імпортувати файл налаштувань?", "Підтвердження", DialogButtons.YesNo);
+                if (messageBoxResult == DialogResult.Yes)
                 {
                     var result = _importService.TryImportSettingsConfigFile(filePath);
 
                     var message = result ? "Конфігурація імпортована успішно." : "Помилка прід час імпорту файлу конфігурації";
-                    MessageBox.Show(message);
+                    _dialogService.ShowMessage(message);
 
                     if (result)
                     {
@@ -96,18 +96,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 
         private string GetFileToImport()
         {
-            string filePath = string.Empty;
-            var openFileDialog = new OpenFileDialog
-            {
-                Filter = ImportFileFilter,
-                Title = ImportFileTitle
-            };
-
-            if (openFileDialog.ShowDialog() == true)
-            {
-                filePath = openFileDialog.FileName;
-            }
-
+            _dialogService.TryPickFile(out var filePath, ImportFileFilter, ImportFileTitle);
             return filePath;
         }
 

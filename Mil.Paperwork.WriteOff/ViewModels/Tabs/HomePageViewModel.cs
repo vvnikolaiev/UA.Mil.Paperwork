@@ -1,4 +1,4 @@
-﻿using Mil.Paperwork.Infrastructure.MVVM;
+﻿using Mil.Paperwork.WriteOff.MVVM;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.Infrastructure.Services;
@@ -8,6 +8,7 @@ using System.Windows.Input;
 using Mil.Paperwork.WriteOff.ViewModels.Reports;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.WriteOff.ViewModels.Dictionaries;
+using Mil.Paperwork.WriteOff.Configuration;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 {
@@ -20,7 +21,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
         private readonly IExportService _exportService;
         private readonly IImportService _importService;
         private readonly INavigationService _navigationService;
-
+        private readonly IDialogService _dialogService;
         private readonly Dictionary<SettingsTabType, ISettingsTabViewModel> _settingTabViewModels;
 
         public event EventHandler<ITabViewModel> TabAdded;
@@ -51,7 +52,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             IReportDataService reportDataService,
             IExportService exportService,
             IImportService importService,
-            INavigationService navigationService)
+            INavigationService navigationService,
+            IDialogService dialogService)
         {
             _reportManager = reportManager;
             _assetFactory = assetFactory;
@@ -60,6 +62,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             _exportService = exportService;
             _importService = importService;
             _navigationService = navigationService;
+            _dialogService = dialogService;
 
             _settingTabViewModels = [];
             DocumentTypes = [.. GetAllReportTypes()];
@@ -98,28 +101,28 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             switch (documentType)
             {
                 case DocumentTypeEnum.WriteOff:
-                    createdTab = new WriteOffReportViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _navigationService);
+                    createdTab = new WriteOffReportViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _navigationService, _dialogService);
                     break;
                 case DocumentTypeEnum.ResidualValue:
-                    createdTab = new ResidualValueReportViewModel(_reportManager, _assetFactory, _dataService, _reportDataService);
+                    createdTab = new ResidualValueReportViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _dialogService);
                     break;
                 case DocumentTypeEnum.Valuation:
-                    createdTab = new AssetValuationViewModel(_reportManager, _dataService, _navigationService);
+                    createdTab = new AssetValuationViewModel(_reportManager, _dataService, _navigationService, _dialogService);
                     break;
                 case DocumentTypeEnum.Dismantling:
-                    createdTab = new AssetDismantlingViewModel(_reportManager, _dataService, _navigationService);
+                    createdTab = new AssetDismantlingViewModel(_reportManager, _dataService, _navigationService, _dialogService);
                     break;
                 case DocumentTypeEnum.TechnicalState7:
-                    createdTab = new AssetInitialTechnicalStateViewModel(_reportManager, _assetFactory, _dataService, _reportDataService);
+                    createdTab = new AssetInitialTechnicalStateViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _dialogService);
                     break;
                 case DocumentTypeEnum.TechnicalState11:
-                    createdTab = new AssetTechnicalStateViewModel(_reportManager, _assetFactory, _dataService, _reportDataService);
+                    createdTab = new AssetTechnicalStateViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _dialogService);
                     break;
                 case DocumentTypeEnum.Invoice:
-                    createdTab = new InvoiceReportViewModel(_reportManager, _dataService);
+                    createdTab = new InvoiceReportViewModel(_reportManager, _dataService, _dialogService);
                     break;
                 case DocumentTypeEnum.CommisioningAct:
-                    createdTab = new CommissioningActReportViewModel(_reportManager, _dataService, _reportDataService);
+                    createdTab = new CommissioningActReportViewModel(_reportManager, _dataService, _reportDataService, _dialogService);
                     break;
                 default:
                     createdTab = null;
@@ -200,12 +203,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
                 tabViewModel = settingsTabType switch
                 {
                     SettingsTabType.Settings => new SettingsViewModel(_reportDataService),
-                    SettingsTabType.ReportsConfiguration => new ReportConfigViewModel(_reportDataService, _exportService, _importService),
-                    SettingsTabType.CommissionsConfiguration => new CommissionsConfigViewModel(_reportDataService, _exportService, _importService),
-                    SettingsTabType.ServicesConfiguration => new ServicesConfigViewModel(_reportDataService, _exportService, _importService),
-                    SettingsTabType.ProductDictionary => new ProductsDictionaryViewModel(_dataService, _exportService, _navigationService),
-                    SettingsTabType.PeopleDictionary => new PeopleDictionaryViewModel(_dataService, _navigationService),
-                    SettingsTabType.MeasurementUnitsDictionary => new MeasurementUnitsDictionaryViewModel(_dataService),
+                    SettingsTabType.ReportsConfiguration => new ReportConfigViewModel(_reportDataService, _exportService, _importService, _dialogService),
+                    SettingsTabType.CommissionsConfiguration => new CommissionsConfigViewModel(_reportDataService, _exportService, _importService, _dialogService),
+                    SettingsTabType.ServicesConfiguration => new ServicesConfigViewModel(_reportDataService, _dialogService),
+                    SettingsTabType.ProductDictionary => new ProductsDictionaryViewModel(_dataService, _exportService, _navigationService, _dialogService),
+                    SettingsTabType.PeopleDictionary => new PeopleDictionaryViewModel(_dataService, _navigationService, _dialogService),
+                    SettingsTabType.MeasurementUnitsDictionary => new MeasurementUnitsDictionaryViewModel(_dataService, _dialogService),
                     _ => throw new NotImplementedException()
                 };
 

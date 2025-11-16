@@ -1,7 +1,7 @@
 ﻿using Mil.Paperwork.Domain.DataModels.Assets;
 using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Infrastructure.DataModels;
-using Mil.Paperwork.Infrastructure.MVVM;
+using Mil.Paperwork.WriteOff.MVVM;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {
