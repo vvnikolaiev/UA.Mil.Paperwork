@@ -1,10 +1,18 @@
-﻿using System.ComponentModel;
+﻿using Mil.Paperwork.Infrastructure.Enums;
+using System.ComponentModel;
 using System.Reflection;
 
 namespace Mil.Paperwork.Infrastructure.Helpers
 {
     public static class EnumHelper
     {
+        public static bool TryGetEnumValue<TEnum>(string value, out TEnum enumValue) 
+            where TEnum : struct, Enum
+        {
+            bool result = Enum.TryParse(value, true, out enumValue);
+            return result;
+        }
+
         /// <summary>
         /// Gets the description of an enum value, or its name if no description is set.
         /// </summary>

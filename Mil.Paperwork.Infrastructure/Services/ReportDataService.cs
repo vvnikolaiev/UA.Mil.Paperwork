@@ -69,7 +69,6 @@ namespace Mil.Paperwork.Infrastructure.Services
             UpdateCommissionData(configCommission, commissionType, _config);
 
             Save();
-
         }
 
         public void SaveCommissionTemporary(CommissionDTO configCommission, CommissionType commissionType)
@@ -77,6 +76,55 @@ namespace Mil.Paperwork.Infrastructure.Services
             if (_tempConfig != null)
             {
                 UpdateCommissionData(configCommission, commissionType, _tempConfig);
+            }
+        }
+
+        public void SaveServiceData(string key, MilitaryServiceDTO serviceDTO, bool temporary = false)
+        {
+            if (_tempConfig == null)
+            {
+                return;
+            }
+
+            AlterMilServiceData(key, serviceDTO, _tempConfig);
+            
+            if (!temporary && _config != null)
+            {
+                AlterMilServiceData(key, serviceDTO, _config);
+                Save();
+            }
+        }
+
+        public void DeleteServiceData(string key)
+        {
+            if (_config != null)
+            {
+                _config.Common.MilServicesData.Remove(key);
+                
+                if (_config.Common.ServiceKey == key)
+                {
+                    var newDefault = _config.Common.MilServicesData.FirstOrDefault().Key ?? string.Empty;
+                    _config.Common.ServiceKey = newDefault;
+                }
+
+                Save();
+                ReloadTempConfig();
+            }
+        }
+
+        public void SetDefaultService(string key)
+        {
+            if (_config != null)
+            {
+                if (!_config.Common.MilServicesData.ContainsKey(key))
+                {
+                    return;
+                }
+
+                _config.Common.ServiceKey = key;
+
+                Save();
+                ReloadTempConfig();
             }
         }
 
@@ -115,6 +163,56 @@ namespace Mil.Paperwork.Infrastructure.Services
             return result;
         }
 
+        public string GetSelectedService(bool withReload = false)
+        {
+            var config = GetConfig(withReload);
+
+            var selectedService = config?.Common.ServiceKey ?? string.Empty;
+
+            return selectedService;
+        }
+
+        public Dictionary<string, MilitaryServiceDTO> GetAllServices(bool withReload = false)
+        {
+            var config = GetConfig(withReload);
+
+            if (config == null)
+            {
+                return [];
+            }
+            
+            var services = config.Common.MilServicesData.ToDictionary(x => x.Key, y => y.Value);
+
+            return services;
+        }
+
+
+        public Dictionary<string, string> GetServiceReportParametersDictionary(string serviceKey)
+        {
+            var list = GetServiceReportParameters(serviceKey);
+            var result = list.ToDictionary(x => x.Name, y => y.Value);
+
+            return result;
+        }
+
+        public List<ReportParameter> GetServiceReportParameters(string serviceKey, bool withReload = false)
+        {
+            var config = GetConfig(withReload);
+
+            if (config == null)
+            {
+                return [];
+            }
+
+            var sService = serviceKey ?? config.Common.ServiceKey;
+
+            var dataExists = config.Common.MilServicesData.TryGetValue(sService, out var militaryServiceDTO);
+
+            var result = dataExists ? militaryServiceDTO.GetAllParameters() ?? [] : [];
+
+            return [.. result];
+        }
+
         public CommissionDTO GetCommissionData(CommissionType commissionType, bool withReload = false)
         {
             var config = GetConfig(withReload);
@@ -137,26 +235,23 @@ namespace Mil.Paperwork.Infrastructure.Services
 
         public AssetType GetAssetType()
         {
-            if (Enum.TryParse<AssetType>(_config?.Common.AssetType, true, out var assetType))
-            {
-                return assetType;
-            }
-            else
-            {
-                return AssetType.Default;
-            }
-        }
+            var result = AssetType.Default;
 
-        public void SetAssetType(AssetType assetType)
-        {
-            if (_config != null)
-            {
-                _config.Common.AssetType = assetType.ToString();
-                _tempConfig.Common.AssetType = _config.Common.AssetType;
-                Save();
-            }
-        }
+            var defaultServiceKey = _config?.Common.ServiceKey ?? string.Empty;
+            var milServiceData = _config?.Common.MilServicesData;
 
+            if (milServiceData != null && milServiceData.TryGetValue(defaultServiceKey, out var militaryServiceDTO))
+            {
+                var sAssetType = militaryServiceDTO.AssetTypes?.FirstOrDefault() ?? string.Empty;
+                if (EnumHelper.TryGetEnumValue(sAssetType, out AssetType assetType))
+                {
+                    result = assetType;
+                }
+            }
+
+            return result;
+        }
+        
         public ICommisionsConfigSection GetCommissionsConfig()
         {
             var config = GetConfig(false);
@@ -290,6 +385,14 @@ namespace Mil.Paperwork.Infrastructure.Services
                     break;
                 default: 
                     return;
+            }
+        }
+
+        private void AlterMilServiceData(string key, MilitaryServiceDTO serviceDTO, ReportDataConfigDTO reportDataConfig)
+        {
+            if (reportDataConfig != null)
+            {
+                reportDataConfig.Common.MilServicesData[key] = serviceDTO;
             }
         }
 

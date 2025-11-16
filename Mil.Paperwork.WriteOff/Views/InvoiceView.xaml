@@ -93,7 +93,7 @@
 
             <Views:AssetAcceptanceView Grid.Row="3" Grid.ColumnSpan="99" 
                                        AcceptedLabel="Приймає*:"
-                                       RecievedLabel="Передає*:"
+                                       HandedLabel="Передає*:"
                                        DataContext="{Binding AssetAcceptance}"/>
 
             <DataGrid Grid.Row="7" Grid.ColumnSpan="99" 

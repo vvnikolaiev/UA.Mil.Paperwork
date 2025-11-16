@@ -25,8 +25,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding RecievedLabel, ElementName=root}" FontWeight="Bold" />
-        <TextBlock Grid.Row="0" Grid.Column="3" Text="{Binding AcceptedLabel, ElementName=root}" FontWeight="Bold" />
+        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding AcceptedLabel, ElementName=root}" FontWeight="Bold" />
 
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Ім'я та прізвище*:"
                    HorizontalAlignment="Right" />
@@ -51,6 +50,8 @@
         </ComboBox>
         <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding PersonAcceptedPosition, UpdateSourceTrigger=PropertyChanged}"/>
         <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding PersonAcceptedRank, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <TextBlock Grid.Row="0" Grid.Column="3" Text="{Binding HandedLabel, ElementName=root}" FontWeight="Bold" />
 
         <ComboBox Grid.Row="1" Grid.Column="3"
                   ItemsSource="{Binding People}" 

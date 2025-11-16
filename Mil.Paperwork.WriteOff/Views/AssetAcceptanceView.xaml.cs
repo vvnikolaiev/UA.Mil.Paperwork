@@ -15,16 +15,16 @@ namespace Mil.Paperwork.WriteOff.Views
         }
 
         public static readonly DependencyProperty AcceptedLabelProperty =
-            DependencyProperty.Register(nameof(AcceptedLabel), typeof(string), typeof(AssetAcceptanceView), new PropertyMetadata("Здав*:"));
+            DependencyProperty.Register(nameof(AcceptedLabel), typeof(string), typeof(AssetAcceptanceView), new PropertyMetadata("Прийняв*:"));
 
-        public string RecievedLabel
+        public string HandedLabel
         {
-            get => (string)GetValue(RecievedLabelProperty);
-            set => SetValue(RecievedLabelProperty, value);
+            get => (string)GetValue(HandedLabelProperty);
+            set => SetValue(HandedLabelProperty, value);
         }
 
-        public static readonly DependencyProperty RecievedLabelProperty =
-            DependencyProperty.Register(nameof(RecievedLabel), typeof(string), typeof(AssetAcceptanceView), new PropertyMetadata("Прийняв*:"));
+        public static readonly DependencyProperty HandedLabelProperty =
+            DependencyProperty.Register(nameof(HandedLabel), typeof(string), typeof(AssetAcceptanceView), new PropertyMetadata("Здав*:"));
 
         public AssetAcceptanceView()
         {

@@ -16,6 +16,7 @@ namespace Mil.Paperwork.Domain.Helpers
         {
             var reportConfig = reportDataService.GetReportParametersDictionary(reportType);
             var commonConfig = reportDataService.GetReportParametersDictionary(ReportType.Common);
+            var serviceConfig = reportDataService.GetServiceReportParametersDictionary();
 
             var fullDict = new Dictionary<string, string>(reportConfig);
             foreach (var commonRow in commonConfig)
@@ -23,6 +24,14 @@ namespace Mil.Paperwork.Domain.Helpers
                 if (!fullDict.ContainsKey(commonRow.Key))
                 {
                     fullDict.Add(commonRow.Key, commonRow.Value);
+                }
+            }
+
+            foreach (var serviceRow in serviceConfig)
+            {
+                if (!fullDict.ContainsKey(serviceRow.Key))
+                {
+                    fullDict.Add(serviceRow.Key, serviceRow.Value);
                 }
             }
 

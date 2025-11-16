@@ -5,6 +5,7 @@
         Settings,
         ReportsConfiguration,
         CommissionsConfiguration,
+        ServicesConfiguration,
         ProductDictionary,
         PeopleDictionary,
         MeasurementUnitsDictionary,

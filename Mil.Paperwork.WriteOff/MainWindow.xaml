@@ -7,6 +7,7 @@
         xmlns:local="clr-namespace:Mil.Paperwork.WriteOff" 
         xmlns:controls="clr-namespace:Mil.Paperwork.WriteOff.Controls"
         xmlns:views="clr-namespace:Mil.Paperwork.WriteOff.Views"
+        xmlns:configViews="clr-namespace:Mil.Paperwork.WriteOff.Views.Config"
         xmlns:viewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels"
         xmlns:tabViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels.Tabs"
         xmlns:dictionaryViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels.Dictionaries"
@@ -18,7 +19,7 @@
     <Window.Resources>
 
         <DataTemplate DataType="{x:Type tabViewModels:SettingsViewModel}">
-            <views:SettingsView />
+            <configViews:SettingsView />
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type dictionaryViewModels:ProductsDictionaryViewModel}">
@@ -34,11 +35,15 @@
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type tabViewModels:ReportConfigViewModel}">
-            <views:ReportConfigurationView />
+            <configViews:ReportConfigurationView />
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type tabViewModels:CommissionsConfigViewModel}">
-            <views:CommissionsConfigurationView />
+            <configViews:CommissionsConfigurationView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type tabViewModels:ServicesConfigViewModel}">
+            <configViews:MilServicesConfigurationView />
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type tabViewModels:HomePageViewModel}">

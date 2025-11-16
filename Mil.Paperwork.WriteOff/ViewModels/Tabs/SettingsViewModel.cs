@@ -53,7 +53,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 
         private void SaveSettingsCommandExecute()
         {
-            _reportDataService.SetAssetType(_selectedAssetType);
+            //_reportDataService.SetAssetType(_selectedAssetType);
         }
     }
 }

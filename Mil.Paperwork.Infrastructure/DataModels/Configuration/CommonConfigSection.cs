@@ -2,7 +2,9 @@
 {
     public class CommonConfigSection
     {
-        public string AssetType { get; set; }
+        public string ServiceKey { get; set; }
+        
+        public Dictionary<string, MilitaryServiceDTO> MilServicesData { get; set; }
 
         public List<ReportParameter> MilitaryUnitData { get; set; }
 

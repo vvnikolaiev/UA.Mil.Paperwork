@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Mil.Paperwork.WriteOff.Views
+namespace Mil.Paperwork.WriteOff.Views.Config
 {
     /// <summary>
-    /// Interaction logic for CommissionsConfigurationView.xaml
+    /// Interaction logic for SettingsView.xaml
     /// </summary>
-    public partial class CommissionsConfigurationView : UserControl
+    public partial class SettingsView : UserControl
     {
-        public CommissionsConfigurationView()
+        public SettingsView()
         {
             InitializeComponent();
         }

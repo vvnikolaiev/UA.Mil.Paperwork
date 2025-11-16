@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Mil.Paperwork.WriteOff.Views
+namespace Mil.Paperwork.WriteOff.Views.Config
 {
     /// <summary>
     /// Interaction logic for ReportConfigurationView.xaml
