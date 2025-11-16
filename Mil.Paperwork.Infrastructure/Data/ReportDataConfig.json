@@ -1,11 +1,23 @@
 {
   "Common": {
-    "AssetType": "Connectivity",
-    "MilitaryUnitData": [      
+    "ServiceKey": "Connectivity",
+    "MilServicesData": {
+      "Connectivity": {
+        "AssetTypes": [ "Connectivity" ],
+        "Description": "",
+        "ServiceName": { "Name": "SERVICE", "Value": "правопорядок", "Comment": null },
+        "ServiceNameFull": { "Name": "SERVICE_NAME", "Value": "Служба правопорядку", "Comment": null },
+        "ServiceNameGenitive": { "Name": "SERVICE_NAME_GENITIVE", "Value": "служби правопорядку", "Comment": null },
+        "HeadOfServiceName": { "Name": "HEAD_OF_SERVICE_NAME", "Value": "Петро ГРИЩЕНКО", "Comment": null },
+        "HeadOfServicePosition": { "Name": "HEAD_OF_SERVICE_POSITION", "Value": "Начальник групи правопорядку – начальник правопорядку", "Comment": null },
+        "HeadOfServiceRank": { "Name": "HEAD_OF_SERVICE_RANK", "Value": "лейтенант", "Comment": null }
+      }
+    },
+    "MilitaryUnitData": [
       { "Name": "MIL_UNIT", "Value": "А1488", "Comment": "" },
       { "Name": "UNIT_COMM", "Value": "Іван ПЕТРЕНКО", "Comment": "" },
       { "Name": "COMM_RANK", "Value": "старший лейтенант", "Comment": "" },
-      { "Name": "UNIT_EDRPOU", "Value": "14881488", "Comment": ""  },
+      { "Name": "UNIT_EDRPOU", "Value": "14881488", "Comment": "" },
       { "Name": "UNIT_CITY", "Value": "с-ще Дружківка", "Comment": "" },
       { "Name": "HEAD_OF_FINANCE_NAME", "Value": "Володимир КРАВЧЕНКО", "Comment": "" },
       { "Name": "HEAD_OF_FINANCE_RANK", "Value": "капітан", "Comment": "" },
@@ -24,54 +36,78 @@
         "Name": "\u0422\u0435\u0445\u043D\u0456\u0447\u043D\u0456 \u0441\u0442\u0430\u043D\u0438",
         "Description": "",
         "Squad": [
-          { "Name": "Андрій КОВАЛЕНКО", "NameAccusationForm": "", "Rank": "ст. лейтенант", "Position": "Начальник групи логістики штабу" },
-          { "Name": "Микола ШЕВЧЕНКО", "NameAccusationForm": "", "Rank": "старшина", "Position": "Головний сержант – ком.відділення" },
-          { "Name": "Василь БОНДАРЕНКО", "NameAccusationForm": "", "Rank": "гол. сержант", "Position": "Водій-заправник" },
-          { "Name": "Олег ТКАЧЕНКО", "NameAccusationForm": "", "Rank": "мол. сержант", "Position": "Начальник групи бухг. обліку" }
+          {
+            "Name": "Андрій КОВАЛЕНКО",
+            "NameAccusationForm": "",
+            "Rank": "ст. лейтенант",
+            "Position": "Начальник групи логістики штабу"
+          },
+          {
+            "Name": "Микола ШЕВЧЕНКО",
+            "NameAccusationForm": "",
+            "Rank": "старшина",
+            "Position": "Головний сержант – ком.відділення"
+          },
+          {
+            "Name": "Василь БОНДАРЕНКО",
+            "NameAccusationForm": "",
+            "Rank": "гол. сержант",
+            "Position": "Водій-заправник"
+          },
+          {
+            "Name": "Олег ТКАЧЕНКО",
+            "NameAccusationForm": "",
+            "Rank": "мол. сержант",
+            "Position": "Начальник групи бухг. обліку"
+          }
         ]
       },
       "WriteOffCommission": {
         "Name": "Комісія зі списання",
         "Description": "",
         "Squad": [
-          { "Name": "Олексій КОВАЛЕНКО", "NameAccusationForm": "капітана КОВАЛЕНКО Олексія", "Rank": "капітан", "Position": "" },
-          { "Name": "Ігор ПЕТРЕНКО", "NameAccusationForm": "лейтенанта ПЕТРЕНКО Ігоря", "Rank": "лейтенант", "Position": "" },
-          { "Name": "Юрій ШЕВЧЕНКО", "NameAccusationForm": "капітана ШЕВЧЕНКО Юрія", "Rank": "капітан", "Position": "" },
-          { "Name": "Володимир БОНДАРЕНКО", "NameAccusationForm": "капітана БОНДАРЕНКО Володимира", "Rank": "капітан", "Position": "" }
+          {
+            "Name": "Олексій КОВАЛЕНКО",
+            "NameAccusationForm": "капітана КОВАЛЕНКО Олексія",
+            "Rank": "капітан",
+            "Position": ""
+          },
+          {
+            "Name": "Ігор ПЕТРЕНКО",
+            "NameAccusationForm": "лейтенанта ПЕТРЕНКО Ігоря",
+            "Rank": "лейтенант",
+            "Position": ""
+          },
+          {
+            "Name": "Юрій ШЕВЧЕНКО",
+            "NameAccusationForm": "капітана ШЕВЧЕНКО Юрія",
+            "Rank": "капітан",
+            "Position": ""
+          },
+          {
+            "Name": "Володимир БОНДАРЕНКО",
+            "NameAccusationForm": "капітана БОНДАРЕНКО Володимира",
+            "Rank": "капітан",
+            "Position": ""
+          }
         ]
       }
     }
   },
   "QualityStateReport": [
-    { "Name": "SERVICE_NAME", "Value": "правопорядок", "Comment": "" },
-    { "Name": "SERVICE_NAME2", "Value": "служби правопорядку", "Comment": "" },
-    
-    { "Name": "HEAD_OF_SERVICE_NAME", "Value": "Петро ГРИЩЕНКО", "Comment": "" },
-    { "Name": "HEAD_OF_SERVICE_RANK", "Value": "лейтенант", "Comment": "" },
-    { "Name": "HEAD_OF_SERVICE_POSITION", "Value": "Начальник групи правопорядку – начальник правопорядку", "Comment": "" },
     { "Name": "RESPONSIBLE_FOR_STORAGE_NAME", "Value": "Олександр ПОВОРОЗНЮК", "Comment": "" },
     { "Name": "RESPONSIBLE_FOR_STORAGE_RANK", "Value": "молодший сержант", "Comment": "" },
     { "Name": "RESPONSIBLE_FOR_STORAGE_POSITION", "Value": "Відповідальна особа за зберіганння й утримання військового майна служби правопорядку", "Comment": "" }
   ],
   "TechnicalStateReport": [
-    { "Name": "SERVICE", "Value": "правопорядок", "Comment": "" }
   ],
   "WriteOffAct": [
-    { "Name": "SERVICE", "Value": "правопорядок", "Comment": "" }
   ],
   "ResidualValueReport": [
-    { "Name": "SERVICE_NAME", "Value": "служби правопорядку", "Comment": "" }
   ],
   "AssetValuationReport": [
-    { "Name": "SERVICE_NAME", "Value": "служби правопорядку", "Comment": "" },
-    { "Name": "HEAD_OF_SERVICE_NAME", "Value": "Петро ГРИЩЕНКО", "Comment": "" },
-    { "Name": "HEAD_OF_SERVICE_RANK", "Value": "лейтенант", "Comment": "" },
-    { "Name": "HEAD_OF_SERVICE_POSITION", "Value": "Начальник групи правопорядку – начальник правопорядку", "Comment": "" }
   ],
   "AssetDismantlingReport": [
-    { "Name": "HEAD_OF_SERVICE_NAME", "Value": "Петро ГРИЩЕНКО", "Comment": "" },
-    { "Name": "HEAD_OF_SERVICE_RANK", "Value": "лейтенант", "Comment": "" },
-    { "Name": "HEAD_OF_SERVICE_POSITION", "Value": "Начальник групи правопорядку – начальник правопорядку", "Comment": "" }
   ],  
   "CommissioningAct": [
     { "Name": "PLACE_CREATED", "Value": "с. Старі Запорожці", "Comment": "" },
@@ -84,12 +120,7 @@
     { "Name": "HANDED_PERSON_NAME", "Value": "Григорій КВІТКА", "Comment": "" }
   ],
   "Invoice": [
-    { "Name": "SERVICE", "Value": "служби правопорядку", "Comment": "" },
-    { "Name": "HEAD_OF_SERVICE_NAME", "Value": "Петро ГРИЩЕНКО", "Comment": "" }
   ],
   "WriteOffPackage": [
-    { "Name": "HEAD_OF_SERVICE_NAME", "Value": "Петро ГРИЩЕНКО", "Comment": "" },
-    { "Name": "HEAD_OF_SERVICE_RANK", "Value": "лейтенант", "Comment": "" },
-    { "Name": "HEAD_OF_SERVICE_POSITION", "Value": "Начальник групи правопорядку – начальник правопорядку", "Comment": "" }
   ]
 }

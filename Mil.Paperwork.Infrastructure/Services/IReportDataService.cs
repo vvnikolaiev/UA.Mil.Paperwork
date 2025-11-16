@@ -13,15 +13,25 @@ namespace Mil.Paperwork.Infrastructure.Services
         void SaveCommission(CommissionDTO configCommission, CommissionType commissionType);
         void SaveCommissionTemporary(CommissionDTO configCommission, CommissionType commissionType);
 
+        void SaveServiceData(string key, MilitaryServiceDTO serviceDTO, bool temporary = false);
+        void DeleteServiceData(string key);
+        void SetDefaultService(string key);
+
         Dictionary<string, string> GetReportParametersDictionary(ReportType reportType);
 
         List<ReportParameter> GetReportParameters(ReportType reportType, bool withReload = false);
 
+        Dictionary<string, string> GetServiceReportParametersDictionary(string serviceKey = null);
+
+        List<ReportParameter> GetServiceReportParameters(string serviceKey = null, bool withReload = false);
+
+        Dictionary<string, MilitaryServiceDTO> GetAllServices(bool withReload = false);
+
+        string GetSelectedService(bool withReload = false);
+
         CommissionDTO GetCommissionData(CommissionType coimmissionType, bool withReload = false);
 
         AssetType GetAssetType();
-
-        void SetAssetType(AssetType assetType);
 
         ICommisionsConfigSection GetCommissionsConfig();
 

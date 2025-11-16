@@ -41,6 +41,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
         public ICommand OpenPeopleDictionaryCommand { get; }
         public ICommand OpenMeasurementUnitsDictionaryCommand { get; }
         public ICommand OpenCommissionsConfigurationCommand { get; }
+        public ICommand OpenServicesConfigurationCommand { get; }
         public ICommand OpenReportConfigurationCommand { get; }
 
         public HomePageViewModel(
@@ -70,6 +71,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             OpenPeopleDictionaryCommand = new DelegateCommand(OpenPeopleDictionaryCommandExecute);
             OpenMeasurementUnitsDictionaryCommand = new DelegateCommand(OpenMeasurementUnitsDictionaryCommandExecute);
             OpenCommissionsConfigurationCommand = new DelegateCommand(OpenCommissionsConfigurationCommandExecute);
+            OpenServicesConfigurationCommand = new DelegateCommand(OpenServicesConfigurationCommandExecute);
             OpenReportConfigurationCommand = new DelegateCommand(OpenReportConfigurationCommandExecute);
         }
 
@@ -175,6 +177,11 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             OpenSettingsTab(SettingsTabType.CommissionsConfiguration);
         }
 
+        private void OpenServicesConfigurationCommandExecute()
+        {
+            OpenSettingsTab(SettingsTabType.ServicesConfiguration);
+        }
+
         private void OpenReportConfigurationCommandExecute()
         {
             OpenSettingsTab(SettingsTabType.ReportsConfiguration);
@@ -195,6 +202,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
                     SettingsTabType.Settings => new SettingsViewModel(_reportDataService),
                     SettingsTabType.ReportsConfiguration => new ReportConfigViewModel(_reportDataService, _exportService, _importService),
                     SettingsTabType.CommissionsConfiguration => new CommissionsConfigViewModel(_reportDataService, _exportService, _importService),
+                    SettingsTabType.ServicesConfiguration => new ServicesConfigViewModel(_reportDataService, _exportService, _importService),
                     SettingsTabType.ProductDictionary => new ProductsDictionaryViewModel(_dataService, _exportService, _navigationService),
                     SettingsTabType.PeopleDictionary => new PeopleDictionaryViewModel(_dataService, _navigationService),
                     SettingsTabType.MeasurementUnitsDictionary => new MeasurementUnitsDictionaryViewModel(_dataService),

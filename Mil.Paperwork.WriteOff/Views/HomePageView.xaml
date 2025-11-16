@@ -76,9 +76,13 @@
                 Command="{Binding OpenCommissionsConfigurationCommand}" 
                 Style="{StaticResource SquareButtonStyle}"/>
 
-            <Button Content="Налаштування" 
+            <Button Content="Конфігурація Служб"
+                Command="{Binding OpenServicesConfigurationCommand}" 
+                Style="{StaticResource SquareButtonStyle}"/>
+
+            <!--<Button Content="Налаштування" 
                 Style="{StaticResource SquareButtonStyle}"
-                Command="{Binding OpenSettingsCommand}" />
+                Command="{Binding OpenSettingsCommand}" />-->
 
         </StackPanel>
     </Grid>
