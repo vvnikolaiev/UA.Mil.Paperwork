@@ -8,21 +8,6 @@ using System.Text;
 
 namespace Mil.Paperwork.Domain.Services
 {
-    public class ImportColumnDefinition
-    {
-        public string Title { get; }
-        public bool IsRequired { get; }
-        public string? SelectedSourceColumn { get; set; }
-
-        public bool ImportColumn { get; set; } = true;
-
-        public ImportColumnDefinition(string title, bool isRequired)
-        {
-            Title = title;
-            IsRequired = isRequired;
-        }
-    }
-
     internal class ExportService : IExportService
     {
         private readonly IFileStorageService _fileStorage;

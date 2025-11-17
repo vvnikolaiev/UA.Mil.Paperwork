@@ -1,10 +1,10 @@
 ﻿using Mil.Paperwork.Infrastructure.Services;
-using Mil.Paperwork.WriteOff.Enums;
-using Mil.Paperwork.WriteOff.Strategies;
+using Mil.Paperwork.Common.Enums;
+using Mil.Paperwork.Common.Strategies;
 
-namespace Mil.Paperwork.WriteOff.Factories
+namespace Mil.Paperwork.Common.Factories
 {
-    internal static class ImportStrategyFactory
+    public static class ImportStrategyFactory
     {
         public static IImportStrategy GetStrategy(IDataService dataService, ImportType type)
         {

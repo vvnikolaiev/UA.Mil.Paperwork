@@ -1,10 +1,9 @@
-﻿using Mil.Paperwork.Domain.Services;
-using Mil.Paperwork.WriteOff.DataModels;
+﻿using Mil.Paperwork.Common.DataModels;
 using System.Data;
 
-namespace Mil.Paperwork.WriteOff.Strategies
+namespace Mil.Paperwork.Common.Strategies
 {
-    internal interface IImportStrategy
+    public interface IImportStrategy
     {
         ImportDataResult ImportData(List<ImportColumnDefinition> columns, List<Dictionary<string, object>> rows);
         List<ImportColumnDefinition> GetColumnsToMap();

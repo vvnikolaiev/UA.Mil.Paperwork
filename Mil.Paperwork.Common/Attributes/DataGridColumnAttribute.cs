@@ -1,6 +1,6 @@
-﻿using Mil.Paperwork.WriteOff.Enums;
+﻿using Mil.Paperwork.Common.Enums;
 
-namespace Mil.Paperwork.WriteOff.Attributes
+namespace Mil.Paperwork.Common.Attributes
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class DataGridColumnAttribute : Attribute

@@ -1,7 +1,6 @@
-﻿using Mil.Paperwork.WriteOff.MVVM;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
-namespace Mil.Paperwork.WriteOff.MVVM
+namespace Mil.Paperwork.Common.MVVM
 {
     public class DelegateCommand : ICommand
     {
@@ -24,10 +23,12 @@ namespace Mil.Paperwork.WriteOff.MVVM
             _execute();
         }
 
-        public event EventHandler CanExecuteChanged
+        public event EventHandler? CanExecuteChanged;
+
+        public void RaiseCanExecuteChanged()
         {
-            add => CommandManager.RequerySuggested += value;
-            remove => CommandManager.RequerySuggested -= value;
+            var handler = CanExecuteChanged;
+            handler?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -66,7 +67,8 @@ namespace Mil.Paperwork.WriteOff.MVVM
 
         public void RaiseCanExecuteChanged()
         {
-            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            var handler = CanExecuteChanged;
+            handler?.Invoke(this, EventArgs.Empty);
         }
     }
 }

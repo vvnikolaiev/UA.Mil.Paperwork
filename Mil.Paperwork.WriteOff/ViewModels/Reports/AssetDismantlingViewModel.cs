@@ -1,7 +1,7 @@
 ﻿using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.DataModels;
-using Mil.Paperwork.WriteOff.MVVM;
+using Mil.Paperwork.Common.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Helpers;
 using Mil.Paperwork.WriteOff.Managers;

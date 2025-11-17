@@ -4,7 +4,7 @@ using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
-using Mil.Paperwork.WriteOff.MVVM;
+using Mil.Paperwork.Common.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.WriteOff.ViewModels.Dictionaries;

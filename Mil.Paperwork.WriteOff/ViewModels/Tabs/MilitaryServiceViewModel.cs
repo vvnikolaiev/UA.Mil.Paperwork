@@ -2,7 +2,7 @@
 using Mil.Paperwork.Infrastructure.DataModels.Configuration;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
-using Mil.Paperwork.WriteOff.MVVM;
+using Mil.Paperwork.Common.MVVM;
 using System.Collections.ObjectModel;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Tabs

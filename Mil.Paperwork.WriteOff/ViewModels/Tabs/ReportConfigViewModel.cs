@@ -1,11 +1,10 @@
-﻿using Mil.Paperwork.Domain.Services;
+﻿using Mil.Paperwork.Common.Enums;
+using Mil.Paperwork.Common.MVVM;
+using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
-using Mil.Paperwork.WriteOff.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
-using Mil.Paperwork.WriteOff.DataModels;
-using Mil.Paperwork.WriteOff.Enums;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -22,8 +21,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
         protected override string ExportFileTitle => SelectedReportType.GetDescription();
 
         public ObservableCollection<ReportType> ReportTypes { get; }
-        public ObservableCollection<EnumItemDataModel<ExportType>> ExportTypes { get; private set; }
-
+        public ObservableCollection<ExportType> ExportTypes { get; private set; }
+        
         public ReportType SelectedReportType
         {
             get => _selectedReportType;
@@ -55,9 +54,9 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             _dialogService = dialogService;
 
             ReportTypes = [.. EnumHelper.GetValues<ReportType>()];
+            ExportTypes = [.. EnumHelper.GetValues<ExportType>()];
             SelectedReportType = ReportTypes.FirstOrDefault();
 
-            FillExportTypesCollection();
             UpdateCurrentConfig();
 
             ReportTypeSelectedCommand = new DelegateCommand(ReportTypeSelectedCommandExecute);
@@ -90,12 +89,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             var reportConfig = _reportDataService.GetReportParameters(SelectedReportType, withReload);
 
             CurrentConfig = [.. reportConfig ?? []];
-        }
-
-        private void FillExportTypesCollection()
-        {
-            var types = EnumHelper.GetValuesWithDescriptions<ExportType>().Select(x => new EnumItemDataModel<ExportType>(x.Value, x.Description));
-            ExportTypes = [.. types];
         }
 
         private void SaveCommandExecute()

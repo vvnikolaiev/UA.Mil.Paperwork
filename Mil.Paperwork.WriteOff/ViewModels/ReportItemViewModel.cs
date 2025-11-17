@@ -1,5 +1,5 @@
 ﻿using Mil.Paperwork.Infrastructure.Helpers;
-using Mil.Paperwork.WriteOff.MVVM;
+using Mil.Paperwork.Common.MVVM;
 using Mil.Paperwork.WriteOff.Enums;
 
 namespace Mil.Paperwork.WriteOff.ViewModels

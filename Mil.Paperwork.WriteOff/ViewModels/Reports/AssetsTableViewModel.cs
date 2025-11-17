@@ -1,5 +1,5 @@
 ﻿using Mil.Paperwork.Infrastructure.Enums;
-using Mil.Paperwork.WriteOff.MVVM;
+using Mil.Paperwork.Common.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Factories;
 using Mil.Paperwork.WriteOff.ViewModels.Dictionaries;

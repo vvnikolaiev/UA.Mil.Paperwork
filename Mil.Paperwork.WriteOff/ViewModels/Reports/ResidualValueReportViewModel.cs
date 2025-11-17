@@ -2,7 +2,7 @@
 using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
-using Mil.Paperwork.WriteOff.MVVM;
+using Mil.Paperwork.Common.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Factories;
 using Mil.Paperwork.WriteOff.Helpers;

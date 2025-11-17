@@ -1,9 +1,8 @@
-﻿using Mil.Paperwork.Domain.Services;
-using Mil.Paperwork.Infrastructure.DataModels;
-using Mil.Paperwork.WriteOff.DataModels;
-using Mil.Paperwork.WriteOff.Helpers;
+﻿using Mil.Paperwork.Infrastructure.DataModels;
+using Mil.Paperwork.Common.DataModels;
+using Mil.Paperwork.Common.Helpers;
 
-namespace Mil.Paperwork.WriteOff.Strategies
+namespace Mil.Paperwork.Common.Strategies
 {
     internal class ValuationImportStrategy : ImportStrategy<AssetComponent>
     {

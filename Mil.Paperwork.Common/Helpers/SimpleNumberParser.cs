@@ -1,9 +1,7 @@
-﻿namespace Mil.Paperwork.WriteOff.Helpers
-{
-    using System;
-    using System.Globalization;
-    using System.Text;
+﻿using System.Globalization;
 
+namespace Mil.Paperwork.Common.Helpers
+{
     public static class SimpleNumberParser
     {
         /// <summary>

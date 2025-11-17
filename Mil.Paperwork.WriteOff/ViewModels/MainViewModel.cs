@@ -1,4 +1,4 @@
-﻿using Mil.Paperwork.WriteOff.MVVM;
+﻿using Mil.Paperwork.Common.MVVM;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.Infrastructure.Services;

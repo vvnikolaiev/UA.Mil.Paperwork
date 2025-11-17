@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Mil.Paperwork.WriteOff.MVVM
+namespace Mil.Paperwork.Common.MVVM
 {
     public class ObservableItem : INotifyPropertyChanged
     {

@@ -1,4 +1,4 @@
-﻿using Mil.Paperwork.WriteOff.MVVM;
+﻿using Mil.Paperwork.Common.MVVM;
 using System.Collections.ObjectModel;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Services;

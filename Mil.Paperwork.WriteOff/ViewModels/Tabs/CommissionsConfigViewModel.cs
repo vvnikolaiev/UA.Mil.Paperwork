@@ -1,11 +1,10 @@
-﻿using Mil.Paperwork.Domain.Services;
+﻿using Mil.Paperwork.Common.Enums;
+using Mil.Paperwork.Common.MVVM;
+using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.DataModels.Configuration;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
-using Mil.Paperwork.WriteOff.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
-using Mil.Paperwork.WriteOff.DataModels;
-using Mil.Paperwork.WriteOff.Enums;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -21,7 +20,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
         private string _commissionDescription;
 
         public ObservableCollection<CommissionType> CommissionTypes { get; }
-        public ObservableCollection<EnumItemDataModel<ExportType>> ExportTypes { get; private set; }
+        public ObservableCollection<ExportType> ExportTypes { get; private set; }
 
         public CommissionType SelectedCommissionType
         {
@@ -68,9 +67,9 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             _dialogService = dialogService;
 
             CommissionTypes = [.. EnumHelper.GetValues<CommissionType>()];
+            ExportTypes = [.. EnumHelper.GetValues<ExportType>()];
             SelectedCommissionType = CommissionTypes.FirstOrDefault();
 
-            FillExportTypesCollection();
             UpdateCurrentConfig();
 
             CommissionTypeSelectedCommand = new DelegateCommand(CommissionTypeSelectedCommandExecute);
@@ -106,12 +105,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
             CommissionName = commissionDTO.Name;
 
             CurrentCommission = [.. commissionDTO?.Squad ?? []];
-        }
-
-        private void FillExportTypesCollection()
-        {
-            var types = EnumHelper.GetValuesWithDescriptions<ExportType>().Select(x => new EnumItemDataModel<ExportType>(x.Value, x.Description));
-            ExportTypes = [.. types];
         }
 
         private void SaveCommandExecute()

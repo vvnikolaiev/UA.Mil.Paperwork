@@ -1,4 +1,4 @@
-﻿namespace Mil.Paperwork.WriteOff.Enums
+﻿namespace Mil.Paperwork.Common.Enums
 {
     public enum ColumnType
     {

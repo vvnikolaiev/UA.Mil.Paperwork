@@ -1,14 +1,12 @@
-﻿using Mil.Paperwork.Domain.Services;
+﻿using Mil.Paperwork.Common.DataModels;
 using Mil.Paperwork.Infrastructure.Attributes;
 using Mil.Paperwork.Infrastructure.Enums;
-using Mil.Paperwork.WriteOff.DataModels;
 using System.Data;
 using System.Reflection;
-using System.Windows;
 
-namespace Mil.Paperwork.WriteOff.Helpers
+namespace Mil.Paperwork.Common.Helpers
 {
-    internal static class ImportHelper
+    public static class ImportHelper
     {
         private const string IMPORT_SUCCESSFUL_CAPTION = "Дані імпортовано успішно";
         private const string IMPORT_FAILED_CAPTION = "Помилка імпорту даних";

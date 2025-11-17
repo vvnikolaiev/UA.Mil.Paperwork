@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 
-namespace Mil.Paperwork.WriteOff.Enums
+namespace Mil.Paperwork.Common.Enums
 {
-    internal enum ExportType
+    public enum ExportType
     {
         [Description("Повну конфігурацію (json)")]
         Json,

@@ -1,16 +1,16 @@
-﻿using Mil.Paperwork.Domain.Services;
+﻿using Mil.Paperwork.Common.DataModels;
+using Mil.Paperwork.Common.Enums;
+using Mil.Paperwork.Common.Factories;
+using Mil.Paperwork.Common.Helpers;
+using Mil.Paperwork.Common.MVVM;
+using Mil.Paperwork.Common.Strategies;
+using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.Enums;
-using Mil.Paperwork.WriteOff.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
-using Mil.Paperwork.WriteOff.DataModels;
-using Mil.Paperwork.WriteOff.Enums;
-using Mil.Paperwork.WriteOff.Factories;
-using Mil.Paperwork.WriteOff.Helpers;
-using Mil.Paperwork.WriteOff.Strategies;
+using Mil.Paperwork.WriteOff.Configuration;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Windows.Input;
-using Mil.Paperwork.WriteOff.Configuration;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
 {

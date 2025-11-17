@@ -17,6 +17,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\Mil.Paperwork.Common\Mil.Paperwork.Common.csproj" />
     <ProjectReference Include="..\Mil.Paperwork.Domain\Mil.Paperwork.Domain.csproj" />
     <ProjectReference Include="..\Mil.Paperwork.Infrastructure\Mil.Paperwork.Infrastructure.csproj" />
   </ItemGroup>

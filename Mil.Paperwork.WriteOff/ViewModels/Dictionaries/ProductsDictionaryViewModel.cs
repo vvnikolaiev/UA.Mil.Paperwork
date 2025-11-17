@@ -1,16 +1,15 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows.Input;
+﻿using Mil.Paperwork.Common.Enums;
+using Mil.Paperwork.Common.MVVM;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
-using Mil.Paperwork.WriteOff.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
-using Mil.Paperwork.WriteOff.DataModels;
-using Mil.Paperwork.WriteOff.Enums;
+using Mil.Paperwork.WriteOff.Configuration;
 using Mil.Paperwork.WriteOff.ViewModels.Tabs;
 using Mil.Paperwork.WriteOff.Views;
-using Mil.Paperwork.WriteOff.Configuration;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
 {
@@ -22,7 +21,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
         private readonly IDialogService _dialogService;
 
         public ObservableCollection<ProductViewModel> Products { get; }
-        public ObservableCollection<EnumItemDataModel<ExportType>> ExportTypes { get; private set; }
+        public ObservableCollection<ExportType> ExportTypes { get; private set; }
         public ObservableCollection<MeasurementUnitViewModel> MeasurementUnits { get; }
 
         public string Header => "Довідник майна";
@@ -51,7 +50,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
             _dialogService = dialogService;
 
             Products = [.. GetProductsData()];
-            FillExportTypesCollection();
+            ExportTypes = [.. EnumHelper.GetValues<ExportType>()];
             MeasurementUnits = [.. _dataService.LoadMeasurementUnitsData().Select(x => new MeasurementUnitViewModel(x))];
 
             AddItemCommand = new DelegateCommand(AddItemCommandExecute);
@@ -68,12 +67,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
             var products = _dataService.LoadProductsData();
             var productViewModels = products.Select(x => new ProductViewModel(x));
             return productViewModels.ToArray();
-        }
-
-        private void FillExportTypesCollection()
-        {
-            var types = EnumHelper.GetValuesWithDescriptions<ExportType>().Select(x => new EnumItemDataModel<ExportType>(x.Value, x.Description));
-            ExportTypes = [.. types];
         }
 
         private void ReloadProductsData()

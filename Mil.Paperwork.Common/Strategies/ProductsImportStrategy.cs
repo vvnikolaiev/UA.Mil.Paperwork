@@ -1,16 +1,15 @@
-﻿using Mil.Paperwork.Domain.Services;
-using Mil.Paperwork.Infrastructure.DataModels;
+﻿using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Services;
-using Mil.Paperwork.WriteOff.DataModels;
-using Mil.Paperwork.WriteOff.Helpers;
+using Mil.Paperwork.Common.DataModels;
+using Mil.Paperwork.Common.Helpers;
 
-namespace Mil.Paperwork.WriteOff.Strategies
+namespace Mil.Paperwork.Common.Strategies
 {
-    internal class PeopleImportStrategy : ImportStrategy<PersonDTO>
+    internal class ProductsImportStrategy : ImportStrategy<ProductDTO>
     {
         private readonly IDataService _dataService;
 
-        public PeopleImportStrategy(IDataService dataService)
+        public ProductsImportStrategy(IDataService dataService)
         {
             _dataService = dataService;
         }
@@ -21,8 +20,8 @@ namespace Mil.Paperwork.WriteOff.Strategies
             try
             {
                 var validColumns = FilterValidColumns(columns);
-                var dtos = ImportHelper.MapRowsToDtos<PersonDTO>(validColumns, rows);
-                _dataService.AlterPeople(dtos);
+                var dtos = ImportHelper.MapRowsToDtos<ProductDTO>(validColumns, rows);
+                _dataService.AlterProductsData(dtos);
 
                 result = new ImportDataResult(true, rows.Count)
                 {

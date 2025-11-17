@@ -1,9 +1,10 @@
-﻿using Mil.Paperwork.Domain.DataModels.ReportData;
+﻿using Mil.Paperwork.Common.Enums;
+using Mil.Paperwork.Common.MVVM;
+using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
-using Mil.Paperwork.WriteOff.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
-using Mil.Paperwork.WriteOff.Enums;
+using Mil.Paperwork.WriteOff.Configuration;
 using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.WriteOff.Memento;
 using Mil.Paperwork.WriteOff.ViewModels.Dictionaries;
@@ -11,7 +12,6 @@ using Mil.Paperwork.WriteOff.ViewModels.Tabs;
 using Mil.Paperwork.WriteOff.Views;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using Mil.Paperwork.WriteOff.Configuration;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {

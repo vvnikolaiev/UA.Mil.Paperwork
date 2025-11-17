@@ -1,9 +1,8 @@
-﻿using Mil.Paperwork.Domain.Services;
-using Mil.Paperwork.WriteOff.DataModels;
-using Mil.Paperwork.WriteOff.Helpers;
+﻿using Mil.Paperwork.Common.DataModels;
+using Mil.Paperwork.Common.Helpers;
 using System.Data;
 
-namespace Mil.Paperwork.WriteOff.Strategies
+namespace Mil.Paperwork.Common.Strategies
 {
     internal abstract class ImportStrategy<T> : IImportStrategy
         where T : new()

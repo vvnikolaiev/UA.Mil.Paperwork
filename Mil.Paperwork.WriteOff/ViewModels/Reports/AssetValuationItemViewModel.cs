@@ -1,5 +1,5 @@
 ﻿using Mil.Paperwork.Infrastructure.DataModels;
-using Mil.Paperwork.WriteOff.MVVM;
+using Mil.Paperwork.Common.MVVM;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {

@@ -1,4 +1,4 @@
-﻿using Mil.Paperwork.WriteOff.MVVM;
+﻿using Mil.Paperwork.Common.MVVM;
 using System.Windows;
 
 namespace Mil.Paperwork.WriteOff.Configuration

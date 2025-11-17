@@ -1,6 +1,6 @@
-﻿namespace Mil.Paperwork.WriteOff.DataModels
+﻿namespace Mil.Paperwork.Common.DataModels
 {
-    internal class ImportDataResult(bool isSuccessful, int rowsCount = 0)
+    public class ImportDataResult(bool isSuccessful, int rowsCount = 0)
     {
         public bool IsSuccessful { get; set; } = isSuccessful;
         public int ImportedRowsCount { get; set; } = rowsCount;

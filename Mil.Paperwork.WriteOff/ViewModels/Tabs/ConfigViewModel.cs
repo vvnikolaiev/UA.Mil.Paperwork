@@ -1,8 +1,8 @@
-﻿using Mil.Paperwork.Domain.Services;
+﻿using Mil.Paperwork.Common.Enums;
+using Mil.Paperwork.Common.MVVM;
+using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.Enums;
-using Mil.Paperwork.WriteOff.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
-using Mil.Paperwork.WriteOff.Enums;
 using System.Windows.Input;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
