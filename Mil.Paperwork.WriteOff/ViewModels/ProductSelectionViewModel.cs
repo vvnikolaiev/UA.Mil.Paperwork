@@ -34,27 +34,20 @@ namespace Mil.Paperwork.WriteOff.ViewModels
             UpdateProductsCollection();
         }
 
-        public void UpdateProductsCollection(IEnumerable<AssetDismantlingViewModel> assetDismantlings = null)
+        public void UpdateProductsCollection(IEnumerable<ProductDTO?> itemsToExclude = null)
         {
             _loadedProducts = LoadProductData();
 
-            UpdateMergedProductsCollection(assetDismantlings);
+            UpdateMergedProductsCollection(itemsToExclude);
         }
 
-        public void UpdateMergedProductsCollection(IEnumerable<AssetDismantlingViewModel> assetDismantlings = null)
+        public void UpdateMergedProductsCollection(IEnumerable<ProductDTO?> itemsToExclude = null)
         {
             var products = new List<ProductDTO>();
 
-            var excludedItems = assetDismantlings?
-                .Where(x => x != null && x.IsValid)
-                .SelectMany(x => x.Components
-                            .Where(c => c != null && x.IsValid && c.Exclude)
-                            .Select(c => c.ToProductDTO()))
-                .Distinct(new ProductComparer());
-
-            if (excludedItems != null)
+            if (itemsToExclude != null)
             {
-                products.AddRange(excludedItems);
+                products.AddRange(itemsToExclude);
             }
 
             products.AddRange(_loadedProducts);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mil.Paperwork.Infrastructure.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,6 +20,9 @@ namespace Mil.Paperwork.WriteOff.Views
     /// </summary>
     public partial class ImportDialogWindow : Window
     {
+        // Event used by window to close with a result
+        public event Action? RequestClose;
+
         public ImportDialogWindow()
         {
             InitializeComponent();

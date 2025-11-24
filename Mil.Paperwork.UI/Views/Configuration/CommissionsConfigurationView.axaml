@@ -1,0 +1,77 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="Mil.Paperwork.UI.Views.Configuration.CommissionsConfigurationView"
+			 xmlns:viewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Tabs"
+			 x:DataType="viewModels:CommissionsConfigViewModel"
+			 x:Name="Root">
+	<DockPanel>
+		<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
+			<Button Content="Зберегти" Command="{Binding SaveCommand}" Margin="0,0,5,0"/>
+			<Button Content="Зберегти тимчасово" Command="{Binding SaveLocalCommand}" Margin="0,0,5,0"
+					ToolTip.Tip="Після перезавантаження програми або натискання кнопки 'Оновити' налаштування будуть повернені "/>
+
+			<DropDownButton Content="Експортувати" Margin="0,0,5,0">
+				<DropDownButton.Flyout>
+					<MenuFlyout ItemsSource="{Binding ExportTypes}">
+						<MenuFlyout.ItemTemplate>
+							<DataTemplate>
+								<MenuItem Header="{Binding Converter={StaticResource EnumDescriptionConverter}}"
+										  Command="{Binding DataContext.ExportDataCommand, ElementName=Root}" 
+										  CommandParameter="{Binding}"/>
+							</DataTemplate>
+						</MenuFlyout.ItemTemplate>
+					</MenuFlyout>
+				</DropDownButton.Flyout>
+			</DropDownButton>
+
+			<Button Content="Імпортувати конфігурацію" Command="{Binding ImportCommand}" Margin="0,0,5,0" />
+			<Button Content="Оновити" Command="{Binding RefreshCommand}" Margin="0,0,5,0"/>
+			<Button Content="Закрити" Command="{Binding CloseCommand}" Margin="0,0,5,0"/>
+		</StackPanel>
+
+		<ComboBox ItemsSource="{Binding CommissionTypes}"
+				  Classes="enum"
+				  DockPanel.Dock="Top"
+				  SelectedItem="{Binding SelectedCommissionType}"
+				  Width="300"/>
+
+		<Grid DockPanel.Dock="Top">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="5" />
+				<RowDefinition Height="auto" />
+				<RowDefinition Height="5" />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="5" />
+				<ColumnDefinition Width="auto" />
+				<ColumnDefinition Width="150" />
+				<ColumnDefinition Width="auto" />
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="5" />
+			</Grid.ColumnDefinitions>
+
+			<TextBlock Text="Назва комісії" Grid.Row="1" Grid.Column="1"
+					   VerticalAlignment="Center" />
+			<TextBox Grid.Row="1" Grid.Column="2"
+					 Text="{Binding CommissionName}"/>
+
+			<TextBlock Text="Опис" Grid.Row="1" Grid.Column="3"
+					   VerticalAlignment="Center" />
+			<TextBox Grid.Row="1" Grid.Column="4"
+					 Text="{Binding CommissionDescription}"/>
+
+		</Grid>
+
+		<DataGrid ItemsSource="{Binding CurrentCommission}" AutoGenerateColumns="False" Margin="0,5,0,0">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Ім'я та прізвище" Binding="{Binding Name}" Width=".7*" />
+				<DataGridTextColumn Header="Посада" Binding="{Binding Position}" Width="*" />
+				<DataGridTextColumn Header="Звання" Binding="{Binding Rank}" Width="*" />
+				<DataGridTextColumn Header="Звання та ім'я (кого?)" Binding="{Binding NameAccusationForm}" Width="*" />
+			</DataGrid.Columns>
+		</DataGrid>
+	</DockPanel>
+</UserControl>

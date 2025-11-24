@@ -18,6 +18,10 @@
         d:DataContext="{d:DesignInstance Type=viewModels:MainViewModel}">
     <Window.Resources>
 
+        <DataTemplate DataType="{x:Type tabViewModels:HomePageViewModel}">
+            <views:HomePageView />
+        </DataTemplate>
+
         <DataTemplate DataType="{x:Type tabViewModels:SettingsViewModel}">
             <configViews:SettingsView />
         </DataTemplate>
@@ -44,10 +48,6 @@
 
         <DataTemplate DataType="{x:Type tabViewModels:ServicesConfigViewModel}">
             <configViews:MilServicesConfigurationView />
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type tabViewModels:HomePageViewModel}">
-            <views:HomePageView />
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type reportViewModels:WriteOffReportViewModel}">

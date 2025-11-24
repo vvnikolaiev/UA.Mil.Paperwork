@@ -1,8 +1,6 @@
-﻿using System.Windows.Input;
-
-namespace Mil.Paperwork.Common.MVVM
+﻿namespace Mil.Paperwork.Common.MVVM
 {
-    public class DelegateCommand : ICommand
+    public class DelegateCommand : IDelegateCommand
     {
         private readonly Action _execute;
         private readonly Func<bool>? _canExecute;
@@ -32,7 +30,7 @@ namespace Mil.Paperwork.Common.MVVM
         }
     }
 
-    public class DelegateCommand<T> : ICommand<T>
+    public class DelegateCommand<T> : IDelegateCommand<T>
     {
         private readonly Action<T> _execute;
         private readonly Func<T, bool> _canExecute;

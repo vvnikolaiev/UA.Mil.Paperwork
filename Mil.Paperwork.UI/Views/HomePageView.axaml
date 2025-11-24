@@ -1,0 +1,78 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:tabs="using:Mil.Paperwork.UI.ViewModels.Tabs"
+			 x:Class="Mil.Paperwork.UI.Views.HomePageView"
+			 x:DataType="{x:Type tabs:HomePageViewModel}">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="auto" />
+		</Grid.RowDefinitions>
+
+		<Grid.Styles>
+
+			<Style Selector="Button">
+				<Setter Property="Width" Value="100" />
+				<Setter Property="Height" Value="100" />
+				<Setter Property="Margin" Value="5" />
+				<Setter Property="HorizontalAlignment" Value="Center" />
+				<Setter Property="VerticalAlignment" Value="Center" />
+				<Setter Property="ContentTemplate">
+					<Setter.Value>
+						<DataTemplate>
+							<TextBlock Text="{Binding}"
+									   VerticalAlignment="Center"
+									   TextWrapping="Wrap"
+									   TextAlignment="Center"/>
+						</DataTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+		</Grid.Styles>
+
+		<ItemsControl ItemsSource="{Binding DocumentTypes}">
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<WrapPanel />
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
+
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<Grid Margin="5">
+						<Button Content="{Binding Text}"
+								Command="{Binding $parent[ItemsControl].DataContext.CreateReportCommand}"
+								CommandParameter="{Binding DocumentType}"
+								Classes="square"/>
+					</Grid>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+
+		<StackPanel Grid.Row="1" HorizontalAlignment="Left"
+					Orientation="Horizontal">
+
+			<Button Content="Довідник майна"
+					Command="{Binding OpenProductsDictionaryCommand}" />
+
+			<Button Content="Одиниці вимірювання"
+					Command="{Binding OpenMeasurementUnitsDictionaryCommand}" />
+
+			<Button Content="Довідник осіб"
+					Command="{Binding OpenPeopleDictionaryCommand}" />
+
+			<Button Content="Конфігурація звітів"
+					Command="{Binding OpenReportConfigurationCommand}" />
+
+			<Button Content="Конфігурація Комісій"
+					Command="{Binding OpenCommissionsConfigurationCommand}" />
+
+			<Button Content="Конфігурація Служб"
+					Command="{Binding OpenServicesConfigurationCommand}" />
+
+		</StackPanel>
+	</Grid>
+</UserControl>

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Win32;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;
-using System.Collections.Generic;
 using System.Windows;
 
 namespace Mil.Paperwork.WriteOff.Configuration
@@ -22,6 +21,9 @@ namespace Mil.Paperwork.WriteOff.Configuration
                 case DialogButtons.YesNo:
                     mbButtons = MessageBoxButton.YesNo;
                     break;
+                case DialogButtons.YesNoCancel:
+                    mbButtons = MessageBoxButton.YesNoCancel;
+                    break;
             }
 
             var mbIcon = MessageBoxImage.None;
@@ -36,6 +38,9 @@ namespace Mil.Paperwork.WriteOff.Configuration
                 case DialogIcon.Error:
                     mbIcon = MessageBoxImage.Error;
                     break;
+                case DialogIcon.Question:
+                    mbIcon = MessageBoxImage.Question;
+                    break;
             }
 
             var result = MessageBox.Show(message, caption ?? string.Empty, mbButtons, mbIcon);
@@ -48,6 +53,26 @@ namespace Mil.Paperwork.WriteOff.Configuration
                 MessageBoxResult.No => DialogResult.No,
                 _ => DialogResult.None
             };
+        }
+
+        public Task<DialogResult> ShowMessageAsync(string message, string caption = "", DialogButtons buttons = DialogButtons.OK, DialogIcon icon = DialogIcon.None)
+        {
+            var tcs = new TaskCompletionSource<DialogResult>();
+
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                try
+                {
+                    var res = ShowMessage(message, caption, buttons, icon);
+                    tcs.SetResult(res);
+                }
+                catch (Exception ex)
+                {
+                    tcs.SetException(ex);
+                }
+            }));
+
+            return tcs.Task;
         }
 
         public bool TryPickFile(out string filePath, string filter = "", string title = "")
@@ -64,6 +89,26 @@ namespace Mil.Paperwork.WriteOff.Configuration
             return result;
         }
 
+        public Task<(bool Success, string? Path)> TryPickFileAsync(string filter = "", string title = "")
+        {
+            var tcs = new TaskCompletionSource<(bool, string?)>();
+
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                try
+                {
+                    var ok = TryPickFile(out var path, filter, title);
+                    tcs.SetResult((ok, path));
+                }
+                catch (Exception ex)
+                {
+                    tcs.SetException(ex);
+                }
+            }));
+
+            return tcs.Task;
+        }
+
         public bool TryPickFolder(out string path)
         {
             var dlg = new OpenFolderDialog();
@@ -72,6 +117,31 @@ namespace Mil.Paperwork.WriteOff.Configuration
             path = result ? dlg.FolderName : null;
 
             return result;
+        }
+
+        public Task<(bool Success, string? Path)> TryPickFolderAsync()
+        {
+            var tcs = new TaskCompletionSource<(bool, string?)>();
+
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                try
+                {
+                    var ok = TryPickFolder(out var p);
+                    tcs.SetResult((ok, p));
+                }
+                catch (Exception ex)
+                {
+                    tcs.SetException(ex);
+                }
+            }));
+
+            return tcs.Task;
+        }
+
+        public Task OpenImportWindow(object viewModel = null, bool isDialog = true)
+        {
+            return Task.CompletedTask;
         }
     }
 }

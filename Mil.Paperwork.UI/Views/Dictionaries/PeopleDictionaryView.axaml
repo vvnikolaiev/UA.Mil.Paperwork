@@ -1,0 +1,37 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="Mil.Paperwork.UI.Views.Dictionaries.PeopleDictionaryView"
+			 xmlns:viewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Dictionaries"
+			 x:DataType="viewModels:PeopleDictionaryViewModel">
+	<DockPanel>
+		<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
+			<Button Content="Додати" Command="{Binding AddItemCommand}" Margin="0,0,5,0"/>
+			<Button Content="Видалити" Command="{Binding RemoveItemCommand}" Margin="0,0,5,0"
+					CommandParameter="{Binding SelectedItem, ElementName=PeopleDataGrid}"/>
+			<Button Content="Зберегти" Command="{Binding SaveCommand}" Margin="0,0,5,0"/>
+			<Button Content="Оновити" Command="{Binding RefreshCommand}" Margin="0,0,5,0"/>
+			<Button Content="Імпортувати" Command="{Binding ImportCommand}" Margin="0,0,5,0" />
+			<Button Content="Закрити" Command="{Binding CloseCommand}" Margin="0,0,5,0"/>
+		</StackPanel>
+
+		<DataGrid x:Name="PeopleDataGrid"
+				  ItemsSource="{Binding People}"
+				  AutoGenerateColumns="False" Margin="5">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Ім'я" Binding="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}" Width=".5*"
+									CellStyleClasses="name" />
+				<DataGridTextColumn Header="Прізвище" Binding="{Binding LastName, UpdateSourceTrigger=PropertyChanged}" Width=".5*"
+									CellStyleClasses="name" />
+				<DataGridTextColumn Header="По-батькові" Binding="{Binding Patronymic, UpdateSourceTrigger=PropertyChanged}" Width=".5*"
+									CellStyleClasses="name" />
+				<DataGridTextColumn Header="Звання" Binding="{Binding Rank, UpdateSourceTrigger=PropertyChanged}" Width=".5*"
+									CellStyleClasses="name" />
+				<DataGridTextColumn Header="Посада" Binding="{Binding Position, UpdateSourceTrigger=PropertyChanged}" Width="*"
+									CellStyleClasses="name" />
+			</DataGrid.Columns>
+		</DataGrid>
+	</DockPanel>
+</UserControl>

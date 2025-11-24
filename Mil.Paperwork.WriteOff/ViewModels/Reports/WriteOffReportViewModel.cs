@@ -1,9 +1,11 @@
-﻿using Mil.Paperwork.Domain.DataModels.ReportData;
+﻿using Mil.Paperwork.Common.MVVM;
+using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Enums;
+using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
-using Mil.Paperwork.Common.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
+using Mil.Paperwork.WriteOff.Configuration;
 using Mil.Paperwork.WriteOff.Factories;
 using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.WriteOff.Models;
@@ -12,7 +14,6 @@ using Mil.Paperwork.WriteOff.ViewModels.Tabs;
 using Mil.Paperwork.WriteOff.Views;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using Mil.Paperwork.WriteOff.Configuration;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {
@@ -285,7 +286,14 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         {
             var assetsWithProdId = AssetsCollection.Select(x => new { Asset = x, x.SelectedProductId }).ToList();
 
-            ProductsSelector.UpdateProductsCollection(DismantleCollection);
+            var itemsToExclude = DismantleCollection?
+                .Where(x => x != null && x.IsValid)
+                .SelectMany(x => x.Components
+                            .Where(c => c != null && x.IsValid && c.Exclude)
+                            .Select(c => c.ToProductDTO()))
+                .Distinct(new ProductComparer());
+
+            ProductsSelector.UpdateProductsCollection(itemsToExclude);
 
             // restore selected values
             var products = ProductsSelector.Products

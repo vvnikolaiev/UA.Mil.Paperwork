@@ -1,0 +1,71 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="Mil.Paperwork.UI.Views.Configuration.MilServicesConfigurationView"
+			 xmlns:viewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Tabs"
+			 x:DataType="viewModels:ServicesConfigViewModel"
+			 x:Name="Root">
+	<DockPanel>
+		<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
+			<Button Content="Додати службу" Command="{Binding AddNewServiceCommand}" Margin="0,0,5,0"/>
+			<Button Content="Використовувати за Замовчанням" Command="{Binding MarkAsDefaultCommand}" Margin="0,0,5,0" />
+			<Button Content="Видалити" Command="{Binding DeleteServiceCommand}" Margin="0,0,5,0"/>
+			<Button Content="Зберегти" Command="{Binding SaveCommand}" Margin="0,0,5,0"/>
+			<Button Content="Зберегти тимчасово" Command="{Binding SaveLocalCommand}" Margin="0,0,5,0"
+					ToolTip.Tip="Після перезавантаження програми або натискання кнопки 'Оновити' налаштування будуть повернені "/>
+			<Button Content="Оновити" Command="{Binding RefreshCommand}" Margin="0,0,5,0"/>
+			<Button Content="Закрити" Command="{Binding CloseCommand}" Margin="0,0,5,0"/>
+		</StackPanel>
+
+		<ComboBox ItemsSource="{Binding Services}"
+				  DisplayMemberBinding="{Binding Title, DataType={x:Type viewModels:MilitaryServiceViewModel}}"
+				  DockPanel.Dock="Top"
+				  SelectedItem="{Binding CurrentService}"
+				  Width="300"/>
+
+		<Grid DockPanel.Dock="Top">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="5" />
+				<RowDefinition Height="auto" />
+				<RowDefinition Height="5" />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="5" />
+				<ColumnDefinition Width="auto" />
+				<ColumnDefinition Width="150" />
+				<ColumnDefinition Width="auto" />
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="5" />
+			</Grid.ColumnDefinitions>
+
+
+			<TextBlock Grid.Row="1" Grid.Column="1" Text="Служба (майно)"
+					   VerticalAlignment="Center"/>
+			<ComboBox Grid.Row="1" Grid.Column="2"
+					  Classes="enum"
+					  ItemsSource="{Binding AssetTypes}"
+					  SelectedItem="{Binding CurrentService.AssetType}"
+					  HorizontalAlignment="Stretch"
+					  VerticalAlignment="Center"
+					  Margin="5 0"/>
+
+			<TextBlock Text="Опис" Grid.Row="1" Grid.Column="3"
+					   VerticalAlignment="Center" />
+			<TextBox Grid.Row="1" Grid.Column="4"
+					 Text="{Binding CurrentService.Description}"
+					 Margin="5 0"/>
+
+		</Grid>
+
+		<DataGrid ItemsSource="{Binding CurrentService.Parameters}" AutoGenerateColumns="False" Margin="0,5,0,0">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Ідентифікатор" Binding="{Binding Name}" Width=".7*"
+									IsReadOnly="True"/>
+				<DataGridTextColumn Header="Значення" Binding="{Binding Value}" Width="*" />
+				<DataGridTextColumn Header="Коментар" Binding="{Binding Comment}" Width="*" />
+			</DataGrid.Columns>
+		</DataGrid>
+	</DockPanel>
+</UserControl>

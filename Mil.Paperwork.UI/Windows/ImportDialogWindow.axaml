@@ -1,0 +1,93 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+		x:Class="Mil.Paperwork.UI.Windows.ImportDialogWindow"
+		xmlns:converters="clr-namespace:Mil.Paperwork.UI.Converters"
+		xmlns:ViewModels="clr-namespace:Mil.Paperwork.UI.ViewModels"
+		xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
+		Title="{Binding Title}"
+		Height="450" Width="750"
+		x:DataType="ViewModels:ImportViewModel">
+	<Window.Resources>
+		<converters:InversedBoolConverter x:Key="InversedBoolConverter" />
+		<converters:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter" />
+	</Window.Resources>
+
+	<Grid Grid.IsSharedSizeScope="True">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="auto"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="315" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+
+
+			<StackPanel Grid.Row="0" Grid.ColumnSpan="6" Orientation="Horizontal" Margin="10 5">
+				<TextBlock Text="Імпортувати з файлу: " VerticalAlignment="Center"/>
+				<TextBox Text="{Binding ImportFilePath}" Width="300" VerticalAlignment="Center" IsReadOnly="True" />
+				<Button Padding="0"
+						Content="..." Command="{Binding SelectFileCommand}" Width="30" VerticalAlignment="Center" />
+			</StackPanel>
+
+			<!-- Left: Mapping -->
+			<Grid Grid.Row="1" Grid.Column="0" >
+				<Grid.RowDefinitions>
+					<RowDefinition Height="auto" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+
+				<CheckBox Content="Перший рядок містить заголовки"
+						  IsChecked="{Binding IsFirstRowContainsHeaders}"
+						  Margin="5" VerticalAlignment="Center"
+						  HorizontalAlignment="Stretch"/>
+
+				<ItemsControl Grid.Row="1"
+							  ItemsSource="{Binding ColumnsToMap}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<DockPanel Margin="4">
+								<TextBlock Text="{Binding Title}" Width="120" VerticalAlignment="Center"
+										   FontWeight="{Binding IsRequired, Converter={StaticResource BoolToFontWeightConverter}}" />
+
+								<ComboBox ItemsSource="{Binding $parent[ItemsControl].DataContext.SourceHeaders}"
+										  SelectedItem="{Binding SelectedSourceColumn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+										  Width="150" Margin="8,0,0,0"
+										  IsEnabled="{Binding ImportColumn}" />
+
+								<CheckBox IsChecked="{Binding ImportColumn}"
+										  VerticalAlignment="Center"
+										  Margin="5 0"
+										  IsEnabled="{Binding IsRequired, Converter={StaticResource InversedBoolConverter}}" />
+							</DockPanel>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</Grid>
+
+			<!-- Right: Preview -->
+			<Border Grid.Row="1" Grid.Column="1">
+				<!--Header="Попередній перегляд">-->
+				<DataGrid ItemsSource="{Binding PreviewTable}"
+						  AutoGenerateColumns="True"
+						  AutoGeneratingColumn="DataGrid_AutoGeneratingColumn"
+						  IsReadOnly="True"
+						  Margin="8,0,8,8"/>
+			</Border>
+		</Grid>
+
+		<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+			<Button Content="ОК" Command="{Binding OKCommand}" IsDefault="True" />
+			<Button Content="Відміна" Command="{Binding CancelCommand}" IsCancel="True" />
+		</StackPanel>
+	</Grid>
+</Window>

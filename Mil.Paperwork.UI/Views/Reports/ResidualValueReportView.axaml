@@ -1,0 +1,220 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:i="using:Microsoft.Xaml.Interactivity"
+			 xmlns:ia="using:Microsoft.Xaml.Interactions.Core"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="Mil.Paperwork.UI.Views.Reports.ResidualValueReportView"
+			 xmlns:converters="clr-namespace:Mil.Paperwork.UI.Converters"
+			 xmlns:Controls="clr-namespace:Mil.Paperwork.UI.Controls"
+			 xmlns:local="clr-namespace:Mil.Paperwork.UI.Views"
+			 xmlns:behaviors="clr-namespace:Mil.Paperwork.UI.Behaviors"
+			 xmlns:viewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Reports"
+			 xmlns:dictionaries="clr-namespace:Mil.Paperwork.UI.ViewModels.Dictionaries"
+			 x:DataType="viewModels:ResidualValueReportViewModel">
+
+	<UserControl.Styles>
+		<Style Selector="TextBlock">
+			<Setter Property="Margin" Value="5" />
+			<Setter Property="HorizontalAlignment" Value="Left" />
+			<Setter Property="VerticalAlignment" Value="Center" />
+		</Style>
+
+
+		<Style Selector="TextBlock#PART_Watermark">
+			<Setter Property="Margin" Value="5 0" />
+		</Style>
+
+	</UserControl.Styles>
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" SharedSizeGroup="ColumnParamTitle" />
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+
+			<StackPanel Orientation="Horizontal" Margin="5">
+
+				<TextBlock HorizontalAlignment="Center"
+						   Text="Відомість залишкової вартості станом на" FontWeight="Bold" Margin="5" />
+
+				<DatePicker SelectedDate="{Binding WriteOffDate}"
+							HorizontalAlignment="Left" Margin="5 0"/>
+
+				<TextBlock Text="Рапорт №" />
+
+				<NumericUpDown Value="{Binding EventReportNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+							   VerticalAlignment="Center"
+							   ShowButtonSpinner="False"
+							   HorizontalContentAlignment="Center"
+							   Height="24"
+							   Width="50"/>
+			</StackPanel>
+
+			<StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" Orientation="Horizontal">
+				<TextBlock Text="Шлях" />
+				<TextBox Text="{Binding DestinationFolderPath}" Width="300" VerticalAlignment="Center" IsReadOnly="True" />
+				<Button Content="..." Command="{Binding SelectFolderCommand}"
+						VerticalAlignment="Center"
+						Margin="5 0"/>
+			</StackPanel>
+
+		</Grid>
+
+		<Grid Grid.Row="1">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+
+			<TextBlock TextAlignment="Left" FontSize="14"
+					   VerticalAlignment="Bottom">
+				<Run Text="Ціна 1 кг брухту металу"/>
+				<LineBreak/>
+				<Run Text="(дорогоцінних металів - 1 граму), грн:"/>
+			</TextBlock>
+
+			<ItemsControl Grid.Column="2" ItemsSource="{Binding MetalCostCollection}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<StackPanel Orientation="Horizontal"/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border BorderThickness="0,0,1,0" Padding="6" Width="100">
+							<StackPanel>
+								<TextBlock Text="{Binding Title}"
+										   FontWeight="Bold"
+										   TextAlignment="Center"
+										   TextWrapping="Wrap"
+										   HorizontalAlignment="Center"/>
+
+								<NumericUpDown Value="{Binding Cost, UpdateSourceTrigger=PropertyChanged}"
+											   ShowButtonSpinner="False"
+											   TextAlignment="Center" Margin="0,6,0,0"/>
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</Grid>
+
+		<DataGrid Grid.Row="2" Grid.Column="0"
+				  DataContext="{Binding AssetsTable}"
+				  ItemsSource="{Binding AssetsCollection}"
+				  SelectedItem="{Binding SelectedAsset}">
+			<DataGrid.Columns>
+				<DataGridTemplateColumn Header="Назва" Width="*">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<ComboBox ItemsSource="{Binding $parent[DataGrid].DataContext.ProductsSelector.Products}"
+									  Text="{Binding Name}"
+									  SelectedValue="{Binding SelectedProductId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+									  SelectedItem="{Binding SelectedProduct}"
+									  IsEditable="True"
+									  HorizontalAlignment="Stretch"
+									  VerticalAlignment="Center" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTextColumn Header="С/Н" Binding="{Binding SerialNumber, UpdateSourceTrigger=LostFocus}" Width="80" />
+
+				<DataGridTextColumn Header="Код ном." Binding="{Binding NomenclatureCode}" />
+
+				<DataGridTemplateColumn Header="Од. вим.">
+
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<ComboBox ItemsSource="{Binding $parent[DataGrid].DataContext.MeasurementUnits}"
+									  Text="{Binding MeasurementUnit}"
+									  DisplayMemberBinding="{Binding ShortName, DataType={x:Type dictionaries:MeasurementUnitViewModel}}"
+									  IsEditable="True"
+									  HorizontalAlignment="Stretch"
+									  VerticalAlignment="Center" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn Header="К-сть" Width="Auto">
+					<DataTemplate>
+						<NumericUpDown Value="{Binding Count, UpdateSourceTrigger=PropertyChanged}"
+									   Minimum="0"/>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn Header="Ціна" MinWidth="75">
+					<DataTemplate>
+						<NumericUpDown Value="{Binding Price, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+									   FormatString="N2"
+									   Minimum="0"/>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn Header="Кат-ія"
+										Width="60" CanUserResize="False">
+					<DataTemplate>
+						<NumericUpDown Value="{Binding Category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+									   Minimum="1" Maximum="5"/>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn Header="Взято на облік" CanUserResize="False">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<CalendarDatePicker SelectedDate="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn Header="Рік" CanUserResize="False"
+										Width="70">
+					<DataTemplate>
+						<NumericUpDown Value="{Binding YearManufacured, UpdateSourceTrigger=PropertyChanged}"
+									   ParsingNumberStyle="Integer"
+									   Minimum="1900"/>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn Header="Ресурс, р." Width="Auto">
+					<DataTemplate>
+						<NumericUpDown Value="{Binding ResourceYears}"
+									   ParsingNumberStyle="Integer"
+									   Minimum="0"/>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+
+			</DataGrid.Columns>
+		</DataGrid>
+
+		<StackPanel Grid.Row="3" Grid.Column="0"
+					Orientation="Horizontal" HorizontalAlignment="Center"
+					Margin="5">
+			<Button Content="Generate Report" Command="{Binding GenerateReportCommand}"/>
+			<Button Content="Add Row" Command="{Binding AssetsTable.AddRowCommand}" />
+			<Button Content="Remove Row" Command="{Binding AssetsTable.RemoveRowCommand }" />
+			<Button Content="Clear Table" Command="{Binding AssetsTable.ClearTableCommand}"/>
+			<Button Content="Закрити" Command="{Binding CloseCommand}"/>
+		</StackPanel>
+	</Grid>
+</UserControl>

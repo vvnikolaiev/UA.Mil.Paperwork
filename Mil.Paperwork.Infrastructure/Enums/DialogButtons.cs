@@ -4,6 +4,7 @@
     {
         OK,
         OKCancel,
-        YesNo
+        YesNo,
+        YesNoCancel
     }
 }
