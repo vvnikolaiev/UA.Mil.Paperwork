@@ -31,7 +31,7 @@ namespace Mil.Paperwork.UI.Services
 
             if (isDialog)
             {
-                var owner = GetMainWindow();
+                var owner = GetCurrentWindow();
                 await window.ShowDialog(owner);
             }
             else
@@ -56,7 +56,7 @@ namespace Mil.Paperwork.UI.Services
 
 
             // Determine owner window so the dialog can be shown modally.
-            var owner = GetMainWindow();
+            var owner = GetCurrentWindow();
 
             var result = await dialog.ShowDialog<DialogResult>(owner);
             return result;
@@ -74,7 +74,7 @@ namespace Mil.Paperwork.UI.Services
             var result = false;
             string? filePath = null;
 
-            var owner = GetMainWindow();
+            var owner = GetCurrentWindow();
             if (owner != null)
             {
                 var options = new FilePickerOpenOptions
@@ -109,7 +109,7 @@ namespace Mil.Paperwork.UI.Services
             var result = false;
             string? folderPath = null;
 
-            var owner = GetMainWindow();
+            var owner = GetCurrentWindow();
             if (owner != null)
             {
                 var options = new FolderPickerOpenOptions
@@ -175,12 +175,14 @@ namespace Mil.Paperwork.UI.Services
             return result.Count > 0 ? result : null;
         }
 
-        private Window? GetMainWindow()
+        private Window? GetCurrentWindow()
         {
             var app = Avalonia.Application.Current;
             if (app?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                return desktop.MainWindow;
+                var currentWindow = desktop.Windows.FirstOrDefault(w => w.IsActive) ?? desktop.MainWindow;
+
+                return currentWindow;
             }
 
             return null;

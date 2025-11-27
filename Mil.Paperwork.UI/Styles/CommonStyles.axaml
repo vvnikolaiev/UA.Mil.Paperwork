@@ -1,0 +1,131 @@
+<Styles xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Design.PreviewWith>
+		<Border Padding="20">
+			<!-- Add Controls for Previewer Here -->
+		</Border>
+	</Design.PreviewWith>
+
+	<Style Selector="DataValidationErrors">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<DockPanel LastChildFill="True">
+					<ContentControl DockPanel.Dock="Right"
+									ContentTemplate="{TemplateBinding ErrorTemplate}"
+									DataContext="{TemplateBinding Owner}"
+									Content="{Binding (DataValidationErrors.Errors)}"
+									IsVisible="{Binding (DataValidationErrors.HasErrors)}"/>
+					<ContentPresenter Name="PART_ContentPresenter"
+									  Background="{TemplateBinding Background}"
+									  BorderBrush="{TemplateBinding BorderBrush}"
+									  BorderThickness="{TemplateBinding BorderThickness}"
+									  CornerRadius="{TemplateBinding CornerRadius}"
+									  ContentTemplate="{TemplateBinding ContentTemplate}"
+									  Content="{TemplateBinding Content}"
+									  Padding="{TemplateBinding Padding}"/>
+				</DockPanel>
+			</ControlTemplate>
+		</Setter>
+
+		<Setter Property="ErrorTemplate">
+			<DataTemplate x:DataType="{x:Type x:Object}">
+				<Canvas Width="14" Height="14" Margin="4 0 1 0"
+						Background="Transparent">
+					<Canvas.Styles>
+						<Style Selector="ToolTip">
+							<Setter Property="Background" Value="Pink"/>
+							<Setter Property="BorderBrush" Value="Red"/>
+						</Style>
+					</Canvas.Styles>
+					<ToolTip.Tip>
+						<ItemsControl ItemsSource="{Binding}"/>
+					</ToolTip.Tip>
+					<Path Data="M14,7 A7,7 0 0,0 0,7 M0,7 A7,7 0 1,0 14,7 M7,3l0,5 M7,9l0,2"
+						  Stroke="Red"
+						  StrokeThickness="2"/>
+				</Canvas>
+			</DataTemplate>
+		</Setter>
+	</Style>
+	
+	
+	<Style Selector="Button">
+		<Setter Property="HorizontalContentAlignment" Value="Center" />
+	</Style>
+
+	<Style Selector="Grid.parameters > TextBlock, StackPanel.parameters > TextBlock">
+		<Setter Property="Margin" Value="5" />
+		<Setter Property="HorizontalAlignment" Value="Left" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+	</Style>
+
+	<Style Selector="StackPanel.buttons">
+		<Setter Property="Orientation" Value="Horizontal" />
+		<Setter Property="HorizontalAlignment" Value="Center" />
+		<Setter Property="Margin" Value="5" />
+	</Style>
+
+	<Style Selector="StackPanel > Button">
+		<Setter Property="Margin" Value="5 0" />
+	</Style>
+
+	<Style Selector="Grid.parameters > TextBox, StackPanel.parameters > TextBox, WrapPanel.parameters > TextBox">
+		<Setter Property="Margin" Value="5 0" />
+	</Style>
+
+	<Style Selector="TextBox">
+		<Setter Property="TextAlignment" Value="Left" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="HorizontalContentAlignment" Value="Left" />
+	</Style>
+
+
+	<Style Selector="NumericUpDown">
+		<Setter Property="Margin" Value="5 0" />
+		<Setter Property="ShowButtonSpinner" Value="False" />
+		<Setter Property="TextAlignment" Value="Center" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="HorizontalContentAlignment" Value="Center" />
+	</Style>
+
+	<Style Selector="DatePicker, CalendarDatePicker">
+		<Setter Property="Margin" Value="5 0" />
+	</Style>
+
+	<Style Selector="ComboBox">
+		<Setter Property="Margin" Value="5 0" />
+		<Setter Property="Padding" Value="5" />
+	</Style>
+
+	<Style Selector="TextBlock">
+		<Setter Property="VerticalAlignment" Value="Center" />
+	</Style>
+
+	<Style Selector="ComboBox > TextBlock">
+		<Setter Property="Margin" Value="5 0" />
+	</Style>
+
+	<Style Selector="TextPresenter#PART_TextPresenter">
+		<Setter Property="VerticalAlignment" Value="Center" />
+	</Style>
+
+	<Style Selector="ComboBox.enum">
+		<Setter Property="ItemTemplate">
+			<Setter.Value>
+				<DataTemplate>
+					<TextBlock Text="{Binding Converter={StaticResource EnumDescriptionConverter}}" />
+				</DataTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style Selector="MenuFlyoutPresenter.enum">
+		<Setter Property="ItemTemplate">
+			<Setter.Value>
+				<DataTemplate>
+					<TextBlock Text="{Binding Converter={StaticResource EnumDescriptionConverter}}" />
+				</DataTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+</Styles>

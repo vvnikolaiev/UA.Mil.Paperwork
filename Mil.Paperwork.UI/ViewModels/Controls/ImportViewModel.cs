@@ -36,7 +36,7 @@ namespace Mil.Paperwork.UI.ViewModels
         private string _importFilePath;
         private bool _isValid;
         private bool _isFirstRowContainsHeaders = true;
-        private List<Dictionary<string, object>> _previewRows;
+        private List<Dictionary<string, object>> _previewRows = [];
         private ObservableCollection<ExpandoObject> _previewTable;
 
         public string Title => "Імпорт даних";
@@ -66,7 +66,7 @@ namespace Mil.Paperwork.UI.ViewModels
         }
 
         public ObservableCollection<ImportColumnDefinition> ColumnsToMap { get; set; }
-        public ObservableCollection<string> SourceHeaders { get; set; } = new ObservableCollection<string>();
+        public ObservableCollection<string> SourceHeaders { get; set; } = [];
         public ObservableCollection<ExpandoObject> PreviewTable
         {
             get => _previewTable;
@@ -90,7 +90,9 @@ namespace Mil.Paperwork.UI.ViewModels
             _dataService = dataService;
             _dialogService = dialogService;
 
+            // initialize collections
             ColumnsToMap = [];
+            PreviewTable = [];
 
             SelectFileCommand = new DelegateCommand(SelectFileCommandExecute);
             OKCommand = new DelegateCommand(OKCommandExecute);
@@ -107,15 +109,24 @@ namespace Mil.Paperwork.UI.ViewModels
             foreach (var column in columns)
             {
                 ColumnsToMap.Add(column);
-                column.MappingChanged += (s, e) => MappingChangedCommandExecute();
+                column.MappingChanged += OnColumnMappingChanged;
             }
+
+            // ensure mapping validity and preview are updated for new columns
+            UpdateSourceHeaders();
+            UpdateMappingPreview();
+        }
+
+        private void OnColumnMappingChanged(object? sender, EventArgs e)
+        {
+            MappingChangedCommandExecute();
         }
 
         private void ClearColumns()
         {
             foreach (var column in ColumnsToMap)
             {
-                column.MappingChanged -= (s, e) => MappingChangedCommandExecute();
+                column.MappingChanged -= OnColumnMappingChanged;
             }
             ColumnsToMap.Clear();
         }
@@ -124,6 +135,7 @@ namespace Mil.Paperwork.UI.ViewModels
         {
             if (string.IsNullOrWhiteSpace(ImportFilePath))
             {
+                SourceHeaders.Clear();
                 return;
             }
 
@@ -137,6 +149,7 @@ namespace Mil.Paperwork.UI.ViewModels
             }
 
             LoadPreviewData();
+            UpdateMappingPreview();
         }
 
         private void LoadPreviewData()
@@ -187,24 +200,41 @@ namespace Mil.Paperwork.UI.ViewModels
         {
             UpdateIsMappingValid();
 
-            if (IsValid)
+            // if mapping not valid or there is no strategy or no preview rows - clear preview
+            if (!IsValid || _importStrategy == null || _previewRows == null || !_previewRows.Any())
             {
-                // fill the table
-                //false;
-                var dataTable = _importStrategy.GetItemsCollection([.. ColumnsToMap], _previewRows);
-                PreviewTable = [.. dataTable];
-            }
-        }
-
-        private void OKCommandExecute()
-        {
-            if (!IsValid)
-            {
-                _dialogService.ShowMessage(ImportFileInvalidMappingMessage, ImportFileInvalidMappingTitle, DialogButtons.OK, DialogIcon.Error);
+                PreviewTable = [];
                 return;
             }
 
-            var result = _dialogService.ShowMessage(ImportConfirmationMessage, ImportConfirmationTitle, DialogButtons.YesNo);
+            // Build preview items using strategy
+            try
+            {
+                var items = _importStrategy.GetItemsCollection(ColumnsToMap.ToList(), _previewRows);
+                if (items == null)
+                {
+                    PreviewTable = [];
+                    return;
+                }
+
+                PreviewTable = new ObservableCollection<ExpandoObject>(items);
+            }
+            catch
+            {
+                // on any error - clear preview to avoid binding exceptions in UI
+                PreviewTable = [];
+            }
+        }
+
+        private async void OKCommandExecute()
+        {
+            if (!IsValid)
+            {
+                await _dialogService.ShowMessageAsync(ImportFileInvalidMappingMessage, ImportFileInvalidMappingTitle, DialogButtons.OK, DialogIcon.Error);
+                return;
+            }
+
+            var result = await _dialogService.ShowMessageAsync(ImportConfirmationMessage, ImportConfirmationTitle, DialogButtons.YesNo);
 
             if (result == DialogResult.Yes)
             {
@@ -217,15 +247,15 @@ namespace Mil.Paperwork.UI.ViewModels
                 var caption = ImportHelper.GetImportResultCaption(importResult);
                 var icon = ImportHelper.GetImportResultIcon(importResult);
 
-                _dialogService.ShowMessage(message, caption, icon: icon);
+                await _dialogService.ShowMessageAsync(message, caption, icon: icon);
             }
 
             CloseWindow();
         }
         
-        private void CancelCommandExecute()
+        private async void CancelCommandExecute()
         {
-            var result = _dialogService.ShowMessage(ImportConfirmationCancelMessage, ImportConfirmationTitle, DialogButtons.YesNo);
+            var result = await _dialogService.ShowMessageAsync(ImportConfirmationCancelMessage, ImportConfirmationTitle, DialogButtons.YesNo);
 
             if (result == DialogResult.Yes)
             {

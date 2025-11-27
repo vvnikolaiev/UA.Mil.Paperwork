@@ -9,38 +9,17 @@
 			 x:Name="root"
 			 x:DataType="ViewModels:AssetAccetpanceViewModel">
 
-	<UserControl.Styles>
-		<Style Selector="ComboBox, TextBox.parameter">
-			<Setter Property="Margin" Value="5" />
-		</Style>
-
-		<Style Selector="TextBlock">
-			<Setter Property="VerticalAlignment" Value="Center" />
-		</Style>
-	</UserControl.Styles>
-
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="Auto"/>
-		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="125" />
-			<ColumnDefinition Width="150" />
-			<ColumnDefinition Width="125" />
-			<ColumnDefinition Width="150" />
-			<ColumnDefinition Width="*"/>
-		</Grid.ColumnDefinitions>
+	<Grid Classes="parameters"
+		  RowDefinitions="auto, auto, 5, auto, 5, auto"
+		  ColumnDefinitions="125, 200, 20, 200, *">
 
 		<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding AcceptedLabel, ElementName=root}" FontWeight="Bold" />
 
 		<TextBlock Grid.Row="1" Grid.Column="0" Text="Ім'я та прізвище*:"
 				   HorizontalAlignment="Right" />
-		<TextBlock Grid.Row="2" Grid.Column="0" Text="Посада*:"
+		<TextBlock Grid.Row="3" Grid.Column="0" Text="Посада*:"
 				   HorizontalAlignment="Right" />
-		<TextBlock Grid.Row="3" Grid.Column="0" Text="Звання*:"
+		<TextBlock Grid.Row="5" Grid.Column="0" Text="Звання*:"
 				   HorizontalAlignment="Right" />
 
 		<ComboBox Grid.Row="1" Grid.Column="1"
@@ -52,9 +31,9 @@
 				  HorizontalAlignment="Stretch"
 				  VerticalAlignment="Center"/>
 
-		<TextBox Grid.Row="2" Grid.Column="1" Text="{Binding PersonAcceptedPosition, UpdateSourceTrigger=PropertyChanged}"
+		<TextBox Grid.Row="3" Grid.Column="1" Text="{Binding PersonAcceptedPosition, UpdateSourceTrigger=PropertyChanged}"
 				 Classes="parameter"/>
-		<TextBox Grid.Row="3" Grid.Column="1" Text="{Binding PersonAcceptedRank, UpdateSourceTrigger=PropertyChanged}"
+		<TextBox Grid.Row="5" Grid.Column="1" Text="{Binding PersonAcceptedRank, UpdateSourceTrigger=PropertyChanged}"
 				 Classes="parameter"/>
 
 		<TextBlock Grid.Row="0" Grid.Column="3" Text="{Binding HandedLabel, ElementName=root}" FontWeight="Bold" />
@@ -68,9 +47,9 @@
 				  HorizontalAlignment="Stretch"
 				  VerticalAlignment="Center"/>
 
-		<TextBox Grid.Row="2" Grid.Column="3" Text="{Binding PersonHandedPosition, UpdateSourceTrigger=PropertyChanged}"
+		<TextBox Grid.Row="3" Grid.Column="3" Text="{Binding PersonHandedPosition, UpdateSourceTrigger=PropertyChanged}"
 				 Classes="parameter"/>
-		<TextBox Grid.Row="3" Grid.Column="3" Text="{Binding PersonHandedRank, UpdateSourceTrigger=PropertyChanged}"
+		<TextBox Grid.Row="5" Grid.Column="3" Text="{Binding PersonHandedRank, UpdateSourceTrigger=PropertyChanged}"
 				 Classes="parameter"/>
 
 	</Grid>

@@ -7,18 +7,7 @@
 			 xmlns:reportViewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Reports"
 			 xmlns:dictionaries="clr-namespace:Mil.Paperwork.UI.ViewModels.Dictionaries"
 			 xmlns:controls="clr-namespace:Mil.Paperwork.UI.Views.Controls"
-			 x:DataType="reportViewModels:InvoiceReportViewModel"
-			 x:Name="Root">
-
-	<UserControl.Styles>
-		<Style Selector="NumericUpDown, TextBox.parameter">
-			<Setter Property="Margin" Value="5" />
-		</Style>
-
-		<Style Selector="TextBlock">
-			<Setter Property="VerticalAlignment" Value="Center" />
-		</Style>
-	</UserControl.Styles>
+			 x:DataType="reportViewModels:InvoiceReportViewModel">
 
 	<Grid>
 		<Grid.RowDefinitions>
@@ -28,14 +17,13 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
-		<StackPanel Orientation="Horizontal">
+		<StackPanel Orientation="Horizontal" Classes="parameters">
 			<TextBlock Text="Накладна (вимога). Номер документу*:" FontWeight="Bold" FontSize="16"/>
 
-			<TextBox Text="{Binding DocumentNumber}" Width="60"
-					 Classes="parameter"/>
+			<TextBox Text="{Binding DocumentNumber}" Width="60"/>
 		</StackPanel>
 
-		<Grid Grid.Row="1" VerticalAlignment="Stretch">
+		<Grid Grid.Row="1" VerticalAlignment="Stretch" Classes="parameters">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="125" />
 				<ColumnDefinition Width="150" />
@@ -74,13 +62,11 @@
 
 			<TextBlock Grid.Row="1" Grid.Column="0" Text="Вид операції:"/>
 			<TextBox Grid.Row="1" Grid.Column="1"
-					 Text="{Binding OperationType, UpdateSourceTrigger=PropertyChanged}"
-					 Classes="parameter"/>
+					 Text="{Binding OperationType, UpdateSourceTrigger=PropertyChanged}"/>
 
 			<TextBlock Grid.Row="1" Grid.Column="2" Text="Підстава (мета):"/>
 			<TextBox Grid.Row="1" Grid.Column="3"
-					 Text="{Binding Reason, UpdateSourceTrigger=PropertyChanged}"
-					 Classes="parameter"/>
+					 Text="{Binding Reason, UpdateSourceTrigger=PropertyChanged}"/>
 
 
 			<controls:AssetAcceptanceView Grid.Row="3" Grid.ColumnSpan="99"
@@ -112,7 +98,7 @@
 
 					<DataGridTextColumn Header="Код ном." Binding="{Binding NomenclatureCode}" Width="70" />
 
-					<DataGridTemplateColumn Header="Од. виміру" Width="70">
+					<DataGridTemplateColumn Header="Од. виміру" Width="80">
 						<DataGridTemplateColumn.CellTemplate>
 							<DataTemplate>
 								<ComboBox ItemsSource="{Binding $parent[DataGrid].DataContext.MeasurementUnits}"
@@ -150,7 +136,7 @@
 			</DataGrid>
 		</Grid>
 
-		<StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+		<StackPanel Grid.Row="3" Classes="buttons">
 			<Button Content="Додати рядок" Command="{Binding AddRowCommand}" />
 			<Button Content="Видалити рядок" Command="{Binding RemoveRowCommand }" />
 			<Button Content="Згенерувати" Command="{Binding GenerateReportCommand}" />

@@ -7,18 +7,7 @@
 			 xmlns:reportViewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Reports"
 			 xmlns:dictionaries="clr-namespace:Mil.Paperwork.UI.ViewModels.Dictionaries"
 			 xmlns:controls="clr-namespace:Mil.Paperwork.UI.Views.Controls"
-			 x:DataType="reportViewModels:CommissioningActReportViewModel"
-			 x:Name="Root">
-
-	<UserControl.Styles>
-		<Style Selector="NumericUpDown, ComboBox, DatePicker, TextBox.parameter">
-			<Setter Property="Margin" Value="5" />
-		</Style>
-
-		<Style Selector="TextBlock">
-			<Setter Property="VerticalAlignment" Value="Center" />
-		</Style>
-	</UserControl.Styles>
+			 x:DataType="reportViewModels:CommissioningActReportViewModel">
 
 	<Grid>
 		<Grid.RowDefinitions>
@@ -28,10 +17,9 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
-		<StackPanel Orientation="Horizontal">
+		<StackPanel Orientation="Horizontal" Classes="parameters">
 			<TextBlock Text="Акт введення в експлуатацію. Номер документу*:" FontWeight="Bold" FontSize="16"/>
-			<TextBox Text="{Binding DocumentNumber}" Width="60"
-					 Classes="parameter"/>
+			<TextBox Text="{Binding DocumentNumber}" Width="60"/>
 
 			<TextBlock Text="Дата документу:" />
 			<DatePicker SelectedDate="{Binding DocumentDate}"/>
@@ -39,7 +27,7 @@
 		</StackPanel>
 
 		<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-			<Grid Grid.Row="1" VerticalAlignment="Stretch">
+			<Grid Grid.Row="1" VerticalAlignment="Stretch" Classes="parameters">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="125" />
 					<ColumnDefinition Width=".5*" MinWidth="150" MaxWidth="200" />
@@ -88,7 +76,9 @@
 						 Classes="parameter"/>
 
 				<WrapPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4"
-						   Orientation="Horizontal">
+						   Orientation="Horizontal"
+						   Classes="parameters"
+						   Margin="5 0">
 
 					<TextBlock Text="Кількість:"/>
 					<TextBox Text="{Binding Count, UpdateSourceTrigger=PropertyChanged}"
@@ -145,7 +135,8 @@
 					<DataGrid ItemsSource="{Binding ProductIdentifiers}"
 							  SelectedItem="{Binding SelectedIdentifier}"
 							  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-							  MaxHeight="240">
+							  MaxHeight="240"
+							  GridLinesVisibility="All" >
 						<DataGrid.Columns>
 							<DataGridTextColumn Header="Серійний номер" Binding="{Binding SerialNumber}"
 												MinWidth="100" />
@@ -208,7 +199,7 @@
 			</Grid>
 		</ScrollViewer>
 
-		<StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+		<StackPanel Grid.Row="3" Classes="buttons">
 			<Button Content="Згенерувати" Command="{Binding GenerateReportCommand}" />
 			<Button Content="Налаштування" Command="{Binding OpenConfigurationCommand}" />
 			<Button Content="Закрити" Command="{Binding CloseTabCommand}"/>

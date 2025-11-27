@@ -35,12 +35,13 @@
 			<StackPanel Grid.Row="0" Grid.ColumnSpan="6" Orientation="Horizontal" Margin="10 5">
 				<TextBlock Text="Імпортувати з файлу: " VerticalAlignment="Center"/>
 				<TextBox Text="{Binding ImportFilePath}" Width="300" VerticalAlignment="Center" IsReadOnly="True" />
-				<Button Padding="0"
+				<Button HorizontalContentAlignment="Center"
 						Content="..." Command="{Binding SelectFileCommand}" Width="30" VerticalAlignment="Center" />
 			</StackPanel>
 
 			<!-- Left: Mapping -->
-			<Grid Grid.Row="1" Grid.Column="0" >
+			<Grid Grid.Row="1" Grid.Column="0"
+				  Margin="5 0">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="auto" />
 					<RowDefinition Height="*" />
@@ -52,7 +53,8 @@
 						  HorizontalAlignment="Stretch"/>
 
 				<ItemsControl Grid.Row="1"
-							  ItemsSource="{Binding ColumnsToMap}">
+							  ItemsSource="{Binding ColumnsToMap}"
+							  Margin="5 0">
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
 							<DockPanel Margin="4">
@@ -77,17 +79,16 @@
 			<!-- Right: Preview -->
 			<Border Grid.Row="1" Grid.Column="1">
 				<!--Header="Попередній перегляд">-->
-				<DataGrid ItemsSource="{Binding PreviewTable}"
-						  AutoGenerateColumns="True"
-						  AutoGeneratingColumn="DataGrid_AutoGeneratingColumn"
+				<DataGrid Name="PreviewDataGrid" x:Name="PreviewDataGrid" ItemsSource="{Binding PreviewTable}"
+						  AutoGenerateColumns="False"
 						  IsReadOnly="True"
 						  Margin="8,0,8,8"/>
 			</Border>
 		</Grid>
 
-		<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-			<Button Content="ОК" Command="{Binding OKCommand}" IsDefault="True" />
-			<Button Content="Відміна" Command="{Binding CancelCommand}" IsCancel="True" />
+		<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
+			<Button Content="ОК" Command="{Binding OKCommand}" IsDefault="True" Width="100" />
+			<Button Content="Відміна" Command="{Binding CancelCommand}" IsCancel="True" Width="100" />
 		</StackPanel>
 	</Grid>
 </Window>

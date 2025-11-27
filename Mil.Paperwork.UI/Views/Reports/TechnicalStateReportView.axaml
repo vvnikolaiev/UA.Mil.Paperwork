@@ -8,26 +8,7 @@
 			 xmlns:reportViewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Reports"
 			 xmlns:dictionaries="clr-namespace:Mil.Paperwork.UI.ViewModels.Dictionaries"
 			 xmlns:controls="clr-namespace:Mil.Paperwork.UI.Views.Controls"
-			 x:DataType="reportViewModels:AssetInitialTechnicalStateViewModel"
-			 x:Name="Root">
-
-	<UserControl.Styles>
-		<Style Selector="TextBlock">
-			<Setter Property="Margin" Value="5" />
-			<Setter Property="HorizontalAlignment" Value="Left" />
-			<Setter Property="VerticalAlignment" Value="Center" />
-		</Style>
-
-		<Style Selector="TextBlock#PART_Watermark">
-			<Setter Property="Margin" Value="5 0" />
-		</Style>
-		
-		
-		<Style Selector="ComboBox > TextBlock">
-			<Setter Property="Margin" Value="5 0" />
-		</Style>
-
-	</UserControl.Styles>
+			 x:DataType="reportViewModels:AssetInitialTechnicalStateViewModel">
 
 	<UserControl.Resources>
 
@@ -71,7 +52,7 @@
 
 						<DataGridTextColumn Header="Код ном." Binding="{Binding NomenclatureCode}" Width="70" />
 
-						<DataGridTemplateColumn Header="Од. виміру" Width="70">
+						<DataGridTemplateColumn Header="Од. виміру" Width="80">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
 									<ComboBox ItemsSource="{Binding $parent[DataGrid].DataContext.MeasurementUnits}"
@@ -153,32 +134,34 @@
 
 		<ContentControl x:Key="TechnicalStateViewLayout"
 						x:DataType="reportViewModels:AssetTechnicalStateViewModel">
-			<Grid Grid.Row="5"
+			<Grid Grid.Row="5" Classes="parameters"
 				  Grid.RowDefinitions="Auto,5,Auto,Auto,Auto,Auto,Auto,*"
 				  Grid.ColumnDefinitions="130,115,100,115,100,115,100,115,*">
 
 				<!--<TextBlock Grid.Row="0" Grid.Column="4" Text="Коеф. зберігання"/>-->
 				<!--<TextBox Grid.Row="1" Grid.Column="5" Text="{Binding Asset.WearAndTearCoeff}" TextWrapping="Wrap"/>-->
 
-				<TextBlock Grid.Row="0" Grid.Column="0" Text="Наказ списання №"
+				<TextBlock Grid.Row="0" Grid.Column="0"
+						   Text="Наказ списання №"
+						   Classes="title"
 						   FontWeight="Bold"/>
 				<NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding OrdenNumber, UpdateSourceTrigger=PropertyChanged}" />
 
-				<TextBlock Grid.Row="0" Grid.Column="2" Text="від"/>
+				<TextBlock Grid.Row="0" Grid.Column="2" Classes="title" Text="від"/>
 				<CalendarDatePicker Grid.Row="0" Grid.Column="3" SelectedDate="{Binding OrdenDate}" />
 
-				<TextBlock Grid.Row="0" Grid.Column="4" Text="Дата документу" />
+				<TextBlock Grid.Row="0" Grid.Column="4" Classes="title" Text="Дата документу" />
 				<CalendarDatePicker Grid.Row="0" Grid.Column="5" SelectedDate="{Binding DocumentDate}" />
 
-				<TextBlock Grid.Row="0" Grid.Column="6" Text="Дата події"/>
+				<TextBlock Grid.Row="0" Grid.Column="6" Classes="title" Text="Дата події"/>
 				<CalendarDatePicker Grid.Row="0" Grid.Column="7" SelectedDate="{Binding EventDate}" />
 
-				<TextBlock Grid.Row="3" Grid.Column="0" Text="Причина"/>
+				<TextBlock Grid.Row="3" Grid.Column="0" Classes="title" Text="Причина"/>
 				<TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="5"
 						 Text="{Binding Reason}" TextWrapping="Wrap"
 						 Height="50"/>
 
-				<TextBlock Grid.Row="3" Grid.Column="6" Text="Зміна категорії"
+				<TextBlock Grid.Row="3" Grid.Column="6" Classes="title" Text="Зміна категорії"
 						   VerticalAlignment="Top"/>
 				<ComboBox Grid.Row="3" Grid.Column="7"
 						  ItemsSource="{Binding EventTypes}"
@@ -201,7 +184,8 @@
 
 				<StackPanel Grid.Row="6" Grid.ColumnSpan="7"
 							Orientation="Horizontal" Margin="5 0"
-							IsEnabled="{Binding GenerateWriteOffPackage}">
+							IsEnabled="{Binding GenerateWriteOffPackage}"
+							Classes="parameters">
 
 					<TextBlock Text="Номер книги обліку втрат:" FontWeight="Bold"/>
 					<NumericUpDown Value="{Binding BookOfLossesNumber}" Minimum="0"
@@ -235,7 +219,7 @@
 		</DataTemplate>
 
 		<DataTemplate DataType="{x:Type reportViewModels:AssetInitialTechnicalStateViewModel}">
-			<Grid>
+			<Grid Classes="parameters">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
 					<RowDefinition />
@@ -253,13 +237,11 @@
 
 				<TextBlock Grid.Row="0" Grid.Column="0"
 						   Text="Дата документу:"
-						   Margin="5 0"
 						   VerticalAlignment="Center"/>
 				<DatePicker Grid.Row="0" Grid.Column="1"
 							SelectedDate="{Binding OperationDate}" />
 
 				<TextBlock Grid.Row="0" Grid.Column="2" Text="Зміна категорії"
-						   Margin="5 0"
 						   VerticalAlignment="Center"/>
 				<ComboBox Grid.Row="0" Grid.Column="3"
 						  Width="150"
@@ -281,7 +263,8 @@
 				<StackPanel Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3"
 							Orientation="Horizontal"
 							IsEnabled="{Binding IsCommissioningActNeeded}"
-							Margin="5 0">
+							Margin="5 0"
+							Classes="parameters">
 
 					<TextBlock Text="Майно знаходиться у*:" VerticalAlignment="Center"/>
 					<TextBox Text="{Binding CommissioningLocation}"
@@ -300,7 +283,8 @@
 				<StackPanel Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3"
 							Orientation="Horizontal"
 							IsEnabled="{Binding IsInvoiceNeeded}"
-							Margin="5 0">
+							Margin="5 0"
+							Classes="parameters">
 					<TextBlock Text="Номер*:" VerticalAlignment="Center" FontWeight="Bold"/>
 					<TextBox Text="{Binding InvoiceNumber}" Width="60" />
 
@@ -333,7 +317,7 @@
 		<ContentControl Grid.Row="1" Grid.Column="1"
 						Content="{Binding}"/>
 
-		<StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+		<StackPanel Grid.Row="3" Grid.Column="1" Classes="buttons">
 			<Button Content="Відкрити конфігурацію" Command="{Binding OpenConfigurationCommand}"/>
 			<Button Content="Створити документ" Command="{Binding GenerateReportCommand}"/>
 			<Button Content="Додати майно" Command="{Binding AssetsTable.AddRowCommand}" />

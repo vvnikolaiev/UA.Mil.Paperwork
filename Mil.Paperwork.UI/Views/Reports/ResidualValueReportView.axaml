@@ -15,20 +15,20 @@
 			 x:DataType="viewModels:ResidualValueReportViewModel">
 
 	<UserControl.Styles>
-		<Style Selector="TextBlock">
+		<!--<Style Selector="TextBlock">
 			<Setter Property="Margin" Value="5" />
 			<Setter Property="HorizontalAlignment" Value="Left" />
 			<Setter Property="VerticalAlignment" Value="Center" />
 		</Style>
 
-
-		<Style Selector="TextBlock#PART_Watermark">
+-->
+		<!--<Style Selector="TextBlock#PART_Watermark">
 			<Setter Property="Margin" Value="5 0" />
 		</Style>
-
+-->
 	</UserControl.Styles>
 
-	<Grid>
+	<Grid Classes="parameters">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
@@ -51,7 +51,7 @@
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
 
-			<StackPanel Orientation="Horizontal" Margin="5">
+			<StackPanel Orientation="Horizontal" Margin="5" Classes="parameters">
 
 				<TextBlock HorizontalAlignment="Center"
 						   Text="Відомість залишкової вартості станом на" FontWeight="Bold" Margin="5" />
@@ -69,7 +69,7 @@
 							   Width="50"/>
 			</StackPanel>
 
-			<StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" Orientation="Horizontal">
+			<StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" Orientation="Horizontal" Classes="parameters">
 				<TextBlock Text="Шлях" />
 				<TextBox Text="{Binding DestinationFolderPath}" Width="300" VerticalAlignment="Center" IsReadOnly="True" />
 				<Button Content="..." Command="{Binding SelectFolderCommand}"
@@ -79,7 +79,7 @@
 
 		</Grid>
 
-		<Grid Grid.Row="1">
+		<Grid Grid.Row="1" Classes="parameters">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto"/>
 				<ColumnDefinition Width="*"/>
@@ -208,12 +208,11 @@
 		</DataGrid>
 
 		<StackPanel Grid.Row="3" Grid.Column="0"
-					Orientation="Horizontal" HorizontalAlignment="Center"
-					Margin="5">
-			<Button Content="Generate Report" Command="{Binding GenerateReportCommand}"/>
-			<Button Content="Add Row" Command="{Binding AssetsTable.AddRowCommand}" />
-			<Button Content="Remove Row" Command="{Binding AssetsTable.RemoveRowCommand }" />
-			<Button Content="Clear Table" Command="{Binding AssetsTable.ClearTableCommand}"/>
+					Classes="buttons">
+			<Button Content="Згенерувати Відомість" Command="{Binding GenerateReportCommand}"/>
+			<Button Content="Додати рядок" Command="{Binding AssetsTable.AddRowCommand}" />
+			<Button Content="Видалити рядок" Command="{Binding AssetsTable.RemoveRowCommand }" />
+			<Button Content="Очистити таблицю" Command="{Binding AssetsTable.ClearTableCommand}"/>
 			<Button Content="Закрити" Command="{Binding CloseCommand}"/>
 		</StackPanel>
 	</Grid>

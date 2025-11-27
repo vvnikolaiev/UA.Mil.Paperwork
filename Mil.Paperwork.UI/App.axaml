@@ -15,6 +15,7 @@
 	</Application.Resources>
 
 	<Application.Styles>
+
 		<FluentTheme DensityStyle="Compact">
 			<FluentTheme.Palettes>
 				<ColorPaletteResources x:Key="Light" Accent="#ffcc4d11" AltHigh="White" AltLow="White" AltMedium="White" AltMediumHigh="White" AltMediumLow="White" BaseHigh="Black" BaseLow="#ff7cbee0" BaseMedium="#ff3282a8" BaseMediumHigh="#ff005a83" BaseMediumLow="#ff196e96" ChromeAltLow="#ff005a83" ChromeBlackHigh="Black" ChromeBlackLow="#ff7cbee0" ChromeBlackMedium="#ff005a83" ChromeBlackMediumLow="#ff3282a8" ChromeDisabledHigh="#ff7cbee0" ChromeDisabledLow="#ff3282a8" ChromeGray="#ff196e96" ChromeHigh="#ff7cbee0" ChromeLow="#ffc1e9fe" ChromeMedium="#ffb3e0f8" ChromeMediumLow="#ffc1e9fe" ChromeWhite="White" ListLow="#ffb3e0f8" ListMedium="#ff7cbee0" RegionColor="#ffcfeaff"></ColorPaletteResources>
@@ -24,143 +25,9 @@
 
 		<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
 
-
-
-		<Style Selector="StackPanel > Button">
-			<Setter Property="Margin" Value="5 0" />
-		</Style>
-
-		<Style Selector="DataGrid">
-			<Setter Property="FontSize" Value="14" />
-			<Setter Property="AutoGenerateColumns" Value="False" />
-			<Setter Property="SelectionMode" Value="Single" />
-			<Setter Property="CanUserResizeColumns" Value="True" />
-			<Setter Property="CanUserReorderColumns" Value="True" />
-			<Setter Property="CanUserSortColumns" Value="False" />
-			<Setter Property="Margin" Value="10" />
-		</Style>
+		<StyleInclude Source="Styles/CommonStyles.axaml" />
 		
-
-		<Style Selector="TextBox">
-			<Setter Property="TextAlignment" Value="Left" />
-			<Setter Property="VerticalAlignment" Value="Center" />
-			<Setter Property="HorizontalContentAlignment" Value="Left" />
-		</Style>
-
-
-		<Style Selector="NumericUpDown">
-			<Setter Property="ShowButtonSpinner" Value="False" />
-			<Setter Property="TextAlignment" Value="Center" />
-			<Setter Property="VerticalAlignment" Value="Center" />
-			<Setter Property="HorizontalContentAlignment" Value="Center" />
-		</Style>
-
-		<Style Selector="DataGridCell > NumericUpDown">
-			<Setter Property="Margin" Value="5 0" />
-		</Style>
-
-		<Style Selector="DataGridCell">
-			<Setter Property="FontSize" Value="14" />
-		</Style>
-
-		<Style Selector="DataGridCell > ComboBox">
-			<Setter Property="VerticalAlignment" Value="Center" />
-			<Setter Property="Margin" Value="5 0" />
-		</Style>
-
-		<Style Selector="DataGridCell > CalendarDatePicker">
-			<Setter Property="FontSize" Value="12" />
-		</Style>
-
-		<Style Selector="DataGridCell > TextBlock">
-			<Setter Property="HorizontalAlignment" Value="Center" />
-			<Setter Property="VerticalAlignment" Value="Center" />
-		</Style>
-
-		<Style Selector="DataGridCell.name > TextBlock">
-			<Setter Property="HorizontalAlignment" Value="Left" />
-			<Setter Property="VerticalAlignment" Value="Center" />
-		</Style>
-
-		<!-- ComboBox -->
-
-		<Style Selector="ComboBox">
-			<Setter Property="Margin" Value="5 0" />
-			<Setter Property="Padding" Value="5" />
-		</Style>
-
-		<Style Selector="TextBlock#PART_Watermark">
-			<Setter Property="Margin" Value="5 0" />
-		</Style>
-
-		<Style Selector="TextPresenter#PART_TextPresenter">
-			<Setter Property="VerticalAlignment" Value="Center" />
-		</Style>
-
-		<Style Selector="DataGridColumnHeader">
-			<Setter Property="Padding" Value="5 0" />
-		</Style>
-
-		<Style Selector="DataValidationErrors">
-			<Setter Property="Template">
-				<ControlTemplate>
-					<DockPanel LastChildFill="True">
-						<ContentControl DockPanel.Dock="Right"
-										ContentTemplate="{TemplateBinding ErrorTemplate}"
-										DataContext="{TemplateBinding Owner}"
-										Content="{Binding (DataValidationErrors.Errors)}"
-										IsVisible="{Binding (DataValidationErrors.HasErrors)}"/>
-						<ContentPresenter Name="PART_ContentPresenter"
-										  Background="{TemplateBinding Background}"
-										  BorderBrush="{TemplateBinding BorderBrush}"
-										  BorderThickness="{TemplateBinding BorderThickness}"
-										  CornerRadius="{TemplateBinding CornerRadius}"
-										  ContentTemplate="{TemplateBinding ContentTemplate}"
-										  Content="{TemplateBinding Content}"
-										  Padding="{TemplateBinding Padding}"/>
-					</DockPanel>
-				</ControlTemplate>
-			</Setter>
-			<Setter Property="ErrorTemplate">
-				<DataTemplate x:DataType="{x:Type x:Object}">
-					<Canvas Width="14" Height="14" Margin="4 0 1 0"
-							Background="Transparent">
-						<Canvas.Styles>
-							<Style Selector="ToolTip">
-								<Setter Property="Background" Value="Pink"/>
-								<Setter Property="BorderBrush" Value="Red"/>
-							</Style>
-						</Canvas.Styles>
-						<ToolTip.Tip>
-							<ItemsControl ItemsSource="{Binding}"/>
-						</ToolTip.Tip>
-						<Path Data="M14,7 A7,7 0 0,0 0,7 M0,7 A7,7 0 1,0 14,7 M7,3l0,5 M7,9l0,2"
-							  Stroke="Red"
-							  StrokeThickness="2"/>
-					</Canvas>
-				</DataTemplate>
-			</Setter>
-		</Style>
-
-		<Style Selector="ComboBox.enum">
-			<Setter Property="ItemTemplate">
-				<Setter.Value>
-					<DataTemplate>
-						<TextBlock Text="{Binding Converter={StaticResource EnumDescriptionConverter}}" />
-					</DataTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
-
-		<Style Selector="MenuFlyoutPresenter.enum">
-			<Setter Property="ItemTemplate">
-				<Setter.Value>
-					<DataTemplate>
-						<TextBlock Text="{Binding Converter={StaticResource EnumDescriptionConverter}}" />
-					</DataTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
+		<StyleInclude Source="Styles/DataGridStyles.axaml" />
 
 	</Application.Styles>
 </Application>

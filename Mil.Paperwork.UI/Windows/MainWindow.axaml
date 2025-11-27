@@ -67,7 +67,7 @@
 
                 <reportViews:AssetValuationView />
 
-                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                <StackPanel Classes="buttons" Grid.Row="1">
                     <Button Content="Створити документ" Command="{Binding GenerateReportCommand}" />
                     <Button Content="Додати рядок" Command="{Binding AddRowCommand}" />
                     <Button Content="Імпортувати таблицю" Command="{Binding ImportRowsCommand}" />
@@ -86,7 +86,7 @@
 
                 <reportViews:AssetDismantlingView />
 
-                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                <StackPanel Grid.Row="1" Classes="buttons">
                     <Button Content="Створити документ" Command="{Binding GenerateReportCommand}" />
                     <Button Content="Додати рядок" Command="{Binding AddRowCommand}" />
                     <Button Content="Імпортувати таблицю" Command="{Binding ImportRowsCommand}" />

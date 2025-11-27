@@ -7,17 +7,12 @@
 			 xmlns:reportViewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Reports"
 			 xmlns:dictionaries="clr-namespace:Mil.Paperwork.UI.ViewModels.Dictionaries"
 			 xmlns:dataModels="clr-namespace:Mil.Paperwork.Infrastructure.DataModels;assembly=Mil.Paperwork.Infrastructure"
-			 x:DataType="reportViewModels:AssetValuationViewModel"
-			 x:Name="Root">
+			 x:DataType="reportViewModels:AssetValuationViewModel">
 
 	<UserControl.Styles>
 
 		<Style Selector="NumericUpDown, DatePicker, CalendarDatePicker, TextBox.parameter">
 			<Setter Property="Margin" Value="5" />
-		</Style>
-
-		<Style Selector="TextBlock">
-			<Setter Property="VerticalAlignment" Value="Center" />
 		</Style>
 
 	</UserControl.Styles>
@@ -33,7 +28,7 @@
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto" SharedSizeGroup="ColumnTitle" />
-			<ColumnDefinition Width="110" />
+			<ColumnDefinition Width="130" />
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="110" />
 			<ColumnDefinition Width="*" />
@@ -61,7 +56,7 @@
 				  VerticalAlignment="Center" />
 
 		<TextBlock Grid.Row="2" Grid.Column="0" Text="Дата оцінки" />
-		<CalendarDatePicker Grid.Row="2" Grid.Column="1" SelectedDate="{Binding ValuationDate}" Width="100"
+		<CalendarDatePicker Grid.Row="2" Grid.Column="1" SelectedDate="{Binding ValuationDate}"
 							HorizontalAlignment="Left" Margin="5"/>
 
 		<TextBlock Grid.Row="3" Grid.Column="0" Text="Метод" />
