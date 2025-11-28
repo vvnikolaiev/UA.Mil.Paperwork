@@ -8,6 +8,17 @@
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>
 
+  <!-- Add runtime identifiers so CI can publish for multiple platforms (win/linux/osx-arm64) -->
+  <PropertyGroup>
+    <RuntimeIdentifiers>win-x64;linux-x64;osx-arm64</RuntimeIdentifiers>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(OperatingSystem) == 'maccatalyst' or $(RuntimeIdentifier.StartsWith('osx'))">
+    <UseLocalAppHost>true</UseLocalAppHost>
+    <ApplicationIcon>Assets/temp-logo.icns</ApplicationIcon>
+    <ApplicationId>com.vvnikolaiev.mil.paperwork</ApplicationId>
+  </PropertyGroup>
+
   <ItemGroup>
     <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
