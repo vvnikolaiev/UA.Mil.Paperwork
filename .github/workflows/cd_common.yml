@@ -95,6 +95,19 @@ jobs:
         & $env:DotnetCmd restore $env:Solution_Path --runtime win-${{ env.TargetPlatform }}
       shell: pwsh
 
+    # Update the appxmanifest before build by setting the per-channel values set in the matrix such as
+    # the Package.Identity.Version or the Package.Identity.Name, which allows multiple channels to be built.
+    - name: Update manifest version
+      run: |
+        [xml]$manifest = get-content ".\$env:Wap_Project_Directory\Package.appxmanifest"
+        $manifest.Package.Identity.Version = "$env:VERSION"
+        $manifest.Package.Identity.Name = "${{ env.MsixPackageId }}"
+        $manifest.Package.Identity.Publisher = "${{ env.MsixPublisherId }}"
+        $manifest.Package.Properties.DisplayName = "${{ env.MsixPackageDisplayName }}"
+        $manifest.Package.Applications.Application.VisualElements.DisplayName = "${{ env.MsixPackageDisplayName }}"
+        $manifest.save(".\$env:Wap_Project_Directory\Package.appxmanifest")
+      shell: pwsh
+
     - name: Decode the Pfx
       run: |
         $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.Base64_Encoded_Pfx }}")
