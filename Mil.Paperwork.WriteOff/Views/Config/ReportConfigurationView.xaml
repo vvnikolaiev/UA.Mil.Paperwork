@@ -18,12 +18,12 @@
 
             <controls:DropDownButton Content="Експортувати" Margin="0,0,5,0">
                 <controls:DropDownButton.ContextMenu>
-                    <ContextMenu ItemsSource="{Binding ExportTypes}">
+                    <ContextMenu ItemsSource="{Binding ExportTypes}"
+                                 Style="{StaticResource EnumDescriptionContextMenu}">
                         <ContextMenu.ItemContainerStyle>
                             <Style TargetType="MenuItem">
-                                <Setter Property="Header" Value="{Binding Title}" />
                                 <Setter Property="Command" Value="{Binding DataContext.ExportDataCommand, RelativeSource={RelativeSource AncestorType=Button}}" />
-                                <Setter Property="CommandParameter" Value="{Binding Value}" />
+                                <Setter Property="CommandParameter" Value="{Binding}" />
                             </Style>
                         </ContextMenu.ItemContainerStyle>
                     </ContextMenu>

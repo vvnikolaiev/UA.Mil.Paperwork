@@ -59,7 +59,7 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
     <NoWarn>$(NoWarn);NU1702</NoWarn>
-    <EntryPointProjectUniqueName>..\Mil.Paperwork.WriteOff\Mil.Paperwork.WriteOff.csproj</EntryPointProjectUniqueName>
+    <EntryPointProjectUniqueName>..\Mil.Paperwork.UI\Mil.Paperwork.UI.csproj</EntryPointProjectUniqueName>
     <UserSecretsId>2d9452c1-7fea-475e-bac4-c645df386973</UserSecretsId>
     <PackageCertificateThumbprint>26FB21C26B38956D21672F6B21C83233738BCB23</PackageCertificateThumbprint>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
@@ -129,6 +129,6 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Mil.Paperwork.WriteOff\Mil.Paperwork.WriteOff.csproj" />
+    <ProjectReference Include="..\Mil.Paperwork.UI\Mil.Paperwork.UI.csproj" />
   </ItemGroup>
 </Project>

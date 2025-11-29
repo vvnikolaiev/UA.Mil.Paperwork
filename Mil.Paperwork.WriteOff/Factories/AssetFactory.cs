@@ -21,6 +21,7 @@ namespace Mil.Paperwork.WriteOff.Factories
             {
                 AssetType.Connectivity => new ConnectivityAssetInfoViewModel(),
                 AssetType.Radiochemical => new RadiochemicalAssetInfoViewModel(),
+                AssetType.Default => new DefaultAssetInfoViewModel(),
                 _ => throw new ArgumentException("Invalid asset type", nameof(assetType)),
             };
 

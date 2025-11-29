@@ -1,15 +1,15 @@
-﻿using Microsoft.Win32;
+﻿using Mil.Paperwork.Common.DataModels;
+using Mil.Paperwork.Common.Enums;
+using Mil.Paperwork.Common.Factories;
+using Mil.Paperwork.Common.Helpers;
+using Mil.Paperwork.Common.MVVM;
+using Mil.Paperwork.Common.Strategies;
 using Mil.Paperwork.Domain.Services;
-using Mil.Paperwork.Infrastructure.MVVM;
+using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;
-using Mil.Paperwork.WriteOff.DataModels;
-using Mil.Paperwork.WriteOff.Enums;
-using Mil.Paperwork.WriteOff.Factories;
-using Mil.Paperwork.WriteOff.Helpers;
-using Mil.Paperwork.WriteOff.Strategies;
+using Mil.Paperwork.WriteOff.Configuration;
 using System.Collections.ObjectModel;
 using System.Data;
-using System.Windows;
 using System.Windows.Input;
 
 namespace Mil.Paperwork.WriteOff.ViewModels
@@ -26,6 +26,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private readonly IImportService _importService;
         private readonly IDataService _dataService;
+        private readonly IDialogService _dialogService;
         private readonly INavigationService _navigationService;
 
         private IImportStrategy _importStrategy;
@@ -65,11 +66,16 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         public ICommand MappingChangedCommand { get; }
         public ICommand HeaderRowChangedCommand { get; }
 
-        public ImportViewModel(IImportService importService, IDataService dataService, INavigationService navigationService)
+        public ImportViewModel(
+            IImportService importService, 
+            IDataService dataService, 
+            INavigationService navigationService,
+            IDialogService dialogService)
         {
             _navigationService = navigationService;
             _importService = importService;
             _dataService = dataService;
+            _dialogService = dialogService;
 
             ColumnsToMap = [];
 
@@ -143,16 +149,9 @@ namespace Mil.Paperwork.WriteOff.ViewModels
 
         private void SelectFileCommandExecute()
         {
-            var openFileDialog = new OpenFileDialog
+            if (_dialogService.TryPickFile(out var filePath, ImportFileFilter, ImportFileTitle))
             {
-                Filter = ImportFileFilter,
-                Title = ImportFileTitle
-            };
-
-            if (openFileDialog.ShowDialog() == true)
-            {
-                var path = openFileDialog.FileName;
-                ImportFilePath = path;
+                ImportFilePath = filePath;
                 UpdateSourceHeaders();
             }
         }
@@ -179,20 +178,24 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         {
             if (!IsValid)
             {
-                MessageBox.Show(ImportFileInvalidMappingMessage, ImportFileInvalidMappingTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                _dialogService.ShowMessage(ImportFileInvalidMappingMessage, ImportFileInvalidMappingTitle, DialogButtons.OK, DialogIcon.Error);
                 return;
             }
 
-            var result = MessageBox.Show(ImportConfirmationMessage, ImportConfirmationTitle, MessageBoxButton.YesNo);
+            var result = _dialogService.ShowMessage(ImportConfirmationMessage, ImportConfirmationTitle, DialogButtons.YesNo);
 
-            if (result == MessageBoxResult.Yes)
+            if (result == DialogResult.Yes)
             {
                 var data = GetExcelRows();
                 var importResult = _importStrategy.ImportData([.. ColumnsToMap], data);
                
                 ImportDataResult = importResult;
                 
-                ImportHelper.ShowImportResultMessage(importResult);
+                var message = ImportHelper.GetImportResultMessage(importResult);
+                var caption = ImportHelper.GetImportResultCaption(importResult);
+                var icon = ImportHelper.GetImportResultIcon(importResult);
+
+                _dialogService.ShowMessage(message, caption, icon: icon);
             }
 
             CloseWindow();
@@ -200,9 +203,9 @@ namespace Mil.Paperwork.WriteOff.ViewModels
         
         private void CancelCommandExecute()
         {
-            var result = MessageBox.Show(ImportConfirmationCancelMessage, ImportConfirmationTitle, MessageBoxButton.YesNo);
+            var result = _dialogService.ShowMessage(ImportConfirmationCancelMessage, ImportConfirmationTitle, DialogButtons.YesNo);
 
-            if (result == MessageBoxResult.Yes)
+            if (result == DialogResult.Yes)
             {
                 CloseWindow();
             }

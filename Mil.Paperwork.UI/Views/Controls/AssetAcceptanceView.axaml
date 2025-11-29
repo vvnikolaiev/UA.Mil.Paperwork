@@ -1,0 +1,56 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:ViewModels="clr-namespace:Mil.Paperwork.UI.ViewModels"
+			 xmlns:Dictionaries="clr-namespace:Mil.Paperwork.UI.ViewModels.Dictionaries"
+			 x:Class="Mil.Paperwork.UI.Views.Controls.AssetAcceptanceView"
+			 x:Name="root"
+			 x:DataType="ViewModels:AssetAccetpanceViewModel">
+
+	<Grid Classes="parameters"
+		  RowDefinitions="auto, auto, 5, auto, 5, auto"
+		  ColumnDefinitions="125, 200, 20, 200, *">
+
+		<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding AcceptedLabel, ElementName=root}" FontWeight="Bold" />
+
+		<TextBlock Grid.Row="1" Grid.Column="0" Text="Ім'я та прізвище*:"
+				   HorizontalAlignment="Right" />
+		<TextBlock Grid.Row="3" Grid.Column="0" Text="Посада*:"
+				   HorizontalAlignment="Right" />
+		<TextBlock Grid.Row="5" Grid.Column="0" Text="Звання*:"
+				   HorizontalAlignment="Right" />
+
+		<ComboBox Grid.Row="1" Grid.Column="1"
+				  ItemsSource="{Binding People}"
+				  Text="{Binding PersonAcceptedName}"
+				  DisplayMemberBinding="{Binding FullName, DataType={x:Type Dictionaries:PersonViewModel}}"
+				  SelectedItem="{Binding SelectedPersonAccepted, UpdateSourceTrigger=PropertyChanged}"
+				  IsEditable="True"
+				  HorizontalAlignment="Stretch"
+				  VerticalAlignment="Center"/>
+
+		<TextBox Grid.Row="3" Grid.Column="1" Text="{Binding PersonAcceptedPosition, UpdateSourceTrigger=PropertyChanged}"
+				 Classes="parameter"/>
+		<TextBox Grid.Row="5" Grid.Column="1" Text="{Binding PersonAcceptedRank, UpdateSourceTrigger=PropertyChanged}"
+				 Classes="parameter"/>
+
+		<TextBlock Grid.Row="0" Grid.Column="3" Text="{Binding HandedLabel, ElementName=root}" FontWeight="Bold" />
+
+		<ComboBox Grid.Row="1" Grid.Column="3"
+				  ItemsSource="{Binding People}"
+				  Text="{Binding PersonHandedName}"
+				  DisplayMemberBinding="{Binding FullName, DataType={x:Type Dictionaries:PersonViewModel}}"
+				  SelectedItem="{Binding SelectedPersonHanded, UpdateSourceTrigger=PropertyChanged}"
+				  IsEditable="True"
+				  HorizontalAlignment="Stretch"
+				  VerticalAlignment="Center"/>
+
+		<TextBox Grid.Row="3" Grid.Column="3" Text="{Binding PersonHandedPosition, UpdateSourceTrigger=PropertyChanged}"
+				 Classes="parameter"/>
+		<TextBox Grid.Row="5" Grid.Column="3" Text="{Binding PersonHandedRank, UpdateSourceTrigger=PropertyChanged}"
+				 Classes="parameter"/>
+
+	</Grid>
+</UserControl>

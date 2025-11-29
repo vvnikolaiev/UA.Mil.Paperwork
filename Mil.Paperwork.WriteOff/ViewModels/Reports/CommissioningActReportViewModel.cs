@@ -1,17 +1,15 @@
-﻿using Microsoft.Win32;
-using Mil.Paperwork.Domain.DataModels.Assets;
+﻿using Mil.Paperwork.Domain.DataModels.Assets;
 using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
-using Mil.Paperwork.Infrastructure.MVVM;
+using Mil.Paperwork.Common.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.WriteOff.ViewModels.Dictionaries;
 using Mil.Paperwork.WriteOff.ViewModels.Tabs;
 using System.Collections.ObjectModel;
-using System.Windows;
 using System.Windows.Input;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Reports
@@ -21,6 +19,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
         private readonly IReportDataService _reportDataService;
+        private readonly IDialogService _dialogService;
         private string _productName;
         private string _shortName;
         private decimal _price;
@@ -209,11 +208,13 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         public CommissioningActReportViewModel(
             ReportManager reportManager,
             IDataService dataService,
-            IReportDataService reportDataService)
+            IReportDataService reportDataService,
+            IDialogService dialogService) : base(dialogService)
         {
             _reportManager = reportManager;
             _dataService = dataService;
             _reportDataService = reportDataService;
+            _dialogService = dialogService;
 
             ProductSelector = new ProductSelectionViewModel(dataService);
             MeasurementUnits = [.. _dataService.LoadMeasurementUnitsData().Select(x => new MeasurementUnitViewModel(x))];
@@ -290,14 +291,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             // Validate required fields
             if (string.IsNullOrWhiteSpace(DocumentNumber) || Count <= 0)
             {
-                MessageBox.Show("Please fill all required fields.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _dialogService.ShowMessage("Please fill all required fields.", "Validation", icon: DialogIcon.Warning);
                 return;
             }
 
-            var folderDialog = new OpenFolderDialog();
-            if (folderDialog.ShowDialog() == true)
+            if (_dialogService.TryPickFolder(out var folderName))
             {
-                var folderName = folderDialog.FolderName;
                 GenerateReport(folderName);
             }
         }

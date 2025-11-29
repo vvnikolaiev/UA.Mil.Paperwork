@@ -1,13 +1,13 @@
 ﻿using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Helpers;
-using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.DataModels;
-using Mil.Paperwork.Infrastructure.MVVM;
+using Mil.Paperwork.Common.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Helpers;
 using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.WriteOff.Memento;
 using System.Windows.Input;
+using Mil.Paperwork.WriteOff.Configuration;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 {
@@ -53,8 +53,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
 
         public ICommand ProductNameChangedCommand { get; }
 
-        public AssetDismantlingViewModel(ReportManager reportManager, IDataService dataService, INavigationService navigationService)
-            : base(reportManager, dataService, navigationService)
+        public AssetDismantlingViewModel(
+            ReportManager reportManager, 
+            IDataService dataService, 
+            INavigationService navigationService,
+            IDialogService dialogService)
+            : base(reportManager, dataService, navigationService, dialogService)
         {
             _reportManager = reportManager;
             _dataService = dataService;

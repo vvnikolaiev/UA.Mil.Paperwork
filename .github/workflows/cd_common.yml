@@ -20,35 +20,42 @@ on:
         required: true
       Pfx_Key:
         required: true
+      # Optional Apple notarization / signing secrets
+      # APPLE_ID:
+      #   required: false
+      # APPLE_PASSWORD:
+      #   required: false
+      # APPLE_TEAM_ID:
+      #   required: false
+      # MACOS_SIGNING_CERT_P12:
+      #   required: false
+      # MACOS_SIGNING_CERT_PASSWORD:
+      #   required: false
 
 jobs:
-
-  build:
-    runs-on: windows-latest  # For a list of available runner types, refer to
-                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
-
+  build-windows:
+    name: Build Windows artifacts
+    runs-on: windows-latest
     env:
       App_Packages_Archive: ${{ inputs.tag && inputs.tag != '' && format('AppPackages_{0}.zip', inputs.tag) || 'AppPackages.zip' }}
       App_Packages_Directory: AppPackages
       SigningCertificate: certificate.pfx
       Solution_Path: Mil.Paperwork.WriteOff.sln
       Test_Project_Path: Mil.Paperwork.Tests\Mil.Paperwork.Tests.csproj
-      Wpf_Project_Path: Mil.Paperwork.WriteOff\Mil.Paperwork.WriteOff.csproj
+      UI_Project_Path: Mil.Paperwork.UI\Mil.Paperwork.UI.csproj
       Wap_Project_Directory: Mil.Paperwork.Package
       Wap_Project_Name: Mil.Paperwork.Package.wapproj
-      Actions_Allow_Unsecure_Commands: true # Allows AddPAth and SetEnv commandsenv:
+      Actions_Allow_Unsecure_Commands: true
       ChannelName: ${{ inputs.channel }}
       Configuration: ${{ inputs.channel }}
       MsixPackageId: UA.Mil.Paperwork.${{ inputs.channel }}
       MsixPublisherId: CN=UA.Mil.Paperowrk, O=vvnikolaiev, C=UA
       MsixPackageDisplayName: UA.Mil.Paperwork Application (${{ inputs.channel }})
       TargetPlatform: ${{ inputs.targetPlatform }}
-      TagName: ${{ inputs.tagName }}      
-      # portable artifact variables
+      TagName: ${{ inputs.tagName }}
       Portable_Artifacts_Directory: artifacts/portable
       Portable_SelfContained_Archive: Portable_${{ inputs.channel }}_win-${{ inputs.targetPlatform }}_selfcontained.zip
       Portable_Framework_Archive: Portable_${{ inputs.channel }}_win-${{ inputs.targetPlatform }}_framework.zip
-      # command aliases to improve readability / maintainability
       DotnetCmd: dotnet
       MsbuildCmd: msbuild
 
@@ -57,40 +64,37 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    
+
     - name: Setup GitVersion
       uses: gittools/actions/gitversion/setup@v3
-    
+
     - name: Run GitVersion
       uses: gittools/actions/gitversion/execute@v3
       id: gitversion
-      
+
     - name: Make a valid version
       run: echo "VERSION=${{ steps.gitversion.outputs.majorMinorPatch }}.${{ steps.gitversion.outputs.preReleaseNumber }}" >> $GITHUB_ENV
       shell: bash
-      
+
     - name: Print VERSION
       run: |
         echo "(1) Final version is: $env:VERSION"
         echo "(2) Final version is: ${{ env.VERSION }}"
       shell: pwsh
-      
-    # Install the .NET Core workload
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
-    
-    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v2
-      
-    # Restore dependencies (solution-level)
+
     - name: Restore dependencies
       run: |
         & $env:DotnetCmd restore $env:Solution_Path --runtime win-${{ env.TargetPlatform }}
       shell: pwsh
-      
+
     # Update the appxmanifest before build by setting the per-channel values set in the matrix such as
     # the Package.Identity.Version or the Package.Identity.Name, which allows multiple channels to be built.
     - name: Update manifest version
@@ -104,7 +108,6 @@ jobs:
         $manifest.save(".\$env:Wap_Project_Directory\Package.appxmanifest")
       shell: pwsh
 
-    # Decode the Base64 encoded Pfx
     - name: Decode the Pfx
       run: |
         $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.Base64_Encoded_Pfx }}")
@@ -113,15 +116,13 @@ jobs:
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
       shell: pwsh
 
-    # Restore the application (msbuild restore to populate obj/)
-    - name: Restore the Wpf application to populate the obj folder
+    - name: Restore the solution to populate obj folder
       run: |
         & $env:MsbuildCmd $env:Solution_Path /t:Restore /p:Configuration=$env:Configuration /p:RuntimeIdentifier=win-${{ env.TargetPlatform }}
       env:
         Configuration: ${{ env.Configuration }}
       shell: pwsh
 
-# Publish portable outputs (two variants) and zip them
     - name: Publish portable (self-contained) and zip
       shell: pwsh
       run: |
@@ -133,7 +134,7 @@ jobs:
         New-Item -ItemType Directory -Path $outDir -Force | Out-Null
 
         Write-Host "Publishing self-contained ($rid) to $outDir"
-        & $env:DotnetCmd publish $env:Wpf_Project_Path -c Release -r $rid --self-contained true -p:PublishSingleFile=false -p:PublishTrimmed=false -o $outDir --no-restore
+        & $env:DotnetCmd publish $env:UI_Project_Path -c Release -r $rid --self-contained true -p:PublishSingleFile=false -p:PublishTrimmed=false -o $outDir --no-restore
 
         $zipPath = Join-Path -Path $artifactsRoot -ChildPath "${{ env.Portable_SelfContained_Archive }}"
         if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
@@ -150,41 +151,32 @@ jobs:
         New-Item -ItemType Directory -Path $outDir -Force | Out-Null
 
         Write-Host "Publishing framework-dependent ($rid) to $outDir"
-        & $env:DotnetCmd publish $env:Wpf_Project_Path -c Release -r $rid --self-contained false -p:PublishSingleFile=false -p:PublishTrimmed=false -o $outDir --no-restore
+        & $env:DotnetCmd publish $env:UI_Project_Path -c Release -r $rid --self-contained false -p:PublishSingleFile=false -p:PublishTrimmed=false -o $outDir --no-restore
 
         $zipPath = Join-Path -Path $artifactsRoot -ChildPath "${{ env.Portable_Framework_Archive }}"
         if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
         Compress-Archive -Path (Join-Path $outDir "*") -DestinationPath $zipPath -Force
 
-    # Build the Windows Application Packaging project
     - name: Build the Windows Application Packaging Project (wapproj) for ${{ env.ChannelName }}
       run: |
         & $env:MsbuildCmd $env:Solution_Path /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:BuildMode /p:AppxBundle=$env:AppxBundle /p:PackageCertificateKeyFile=$env:SigningCertificate /p:PackageCertificatePassword=${{ secrets.Pfx_Key }}
       env:
         AppxBundle: Never
-        # AppInstallerUri: ${{ matrix.DistributionUrl }}
         BuildMode: SideLoadOnly
         Configuration: ${{ env.Configuration }}
         GenerateAppInstallerFile: True
         TargetPlatform: ${{ env.TargetPlatform }}
       shell: pwsh
-    
-    # Remove the .pfx
+
     - name: Remove the .pfx
       run: Remove-Item -path $env:Wap_Project_Directory/$env:SigningCertificate
       shell: pwsh
-      
-    # Archive the package
-    - name: Create archive
-      run: Compress-Archive -Path $env:Wap_Project_Directory\$env:App_Packages_Directory\* -DestinationPath $env:Wap_Project_Directory\$env:App_Packages_Directory\$env:App_Packages_Archive
+
+    - name: Create WAP archive
+      run: Compress-Archive -Path $env:Wap_Project_Directory\${{ env.App_Packages_Directory }}\* -DestinationPath $env:Wap_Project_Directory\${{ env.App_Packages_Directory }}\$env:App_Packages_Archive
       shell: pwsh
-    
-    - name: Echo full identifier
-      run: |
-        echo "Full identifier: ${{ env.TagName }}"
-      shell: pwsh
-        
-    # Create the release:  https://github.com/actions/create-release
+
+      # Create the release:  https://github.com/actions/create-release
     - name: Create release
       id: create_release
       uses: actions/create-release@v1
@@ -207,7 +199,7 @@ jobs:
         asset_path: ${{ env.Wap_Project_Directory }}\${{ env.App_Packages_Directory }}\${{ env.App_Packages_Archive }}
         asset_name: ${{ env.App_Packages_Archive }}
         asset_content_type: application/zip
-    
+
     - name: Upload portable self-contained zip to release
       uses: actions/upload-release-asset@v1
       env:
@@ -227,3 +219,7 @@ jobs:
         asset_path: ${{ env.Portable_Artifacts_Directory }}\${{ env.Portable_Framework_Archive }}
         asset_name: ${{ env.Portable_Framework_Archive }}
         asset_content_type: application/zip
+
+  # macos-package:
+  #   name: Build macOS (osx-arm64) + DMG
+  #   runs-on: macos-lat

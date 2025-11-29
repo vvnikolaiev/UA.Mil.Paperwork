@@ -1,16 +1,15 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Input;
-using Microsoft.Win32;
+﻿using Mil.Paperwork.Common.Enums;
+using Mil.Paperwork.Common.MVVM;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Domain.Services;
+using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
-using Mil.Paperwork.Infrastructure.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
-using Mil.Paperwork.WriteOff.DataModels;
-using Mil.Paperwork.WriteOff.Enums;
+using Mil.Paperwork.WriteOff.Configuration;
 using Mil.Paperwork.WriteOff.ViewModels.Tabs;
 using Mil.Paperwork.WriteOff.Views;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
 {
@@ -19,8 +18,10 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
         private readonly IDataService _dataService;
         private readonly IExportService _exportService;
         private readonly INavigationService _navigationService;
+        private readonly IDialogService _dialogService;
+
         public ObservableCollection<ProductViewModel> Products { get; }
-        public ObservableCollection<EnumItemDataModel<ExportType>> ExportTypes { get; private set; }
+        public ObservableCollection<ExportType> ExportTypes { get; private set; }
         public ObservableCollection<MeasurementUnitViewModel> MeasurementUnits { get; }
 
         public string Header => "Довідник майна";
@@ -37,14 +38,19 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
         public ICommand RefreshCommand { get; }
         public ICommand CloseCommand { get; }
 
-        public ProductsDictionaryViewModel(IDataService dataService, IExportService exportService, INavigationService navigationService)
+        public ProductsDictionaryViewModel(
+            IDataService dataService, 
+            IExportService exportService, 
+            INavigationService navigationService,
+            IDialogService dialogService)
         {
             _dataService = dataService;
             _exportService = exportService;
             _navigationService = navigationService;
+            _dialogService = dialogService;
 
             Products = [.. GetProductsData()];
-            FillExportTypesCollection();
+            ExportTypes = [.. EnumHelper.GetValues<ExportType>()];
             MeasurementUnits = [.. _dataService.LoadMeasurementUnitsData().Select(x => new MeasurementUnitViewModel(x))];
 
             AddItemCommand = new DelegateCommand(AddItemCommandExecute);
@@ -61,12 +67,6 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
             var products = _dataService.LoadProductsData();
             var productViewModels = products.Select(x => new ProductViewModel(x));
             return productViewModels.ToArray();
-        }
-
-        private void FillExportTypesCollection()
-        {
-            var types = EnumHelper.GetValuesWithDescriptions<ExportType>().Select(x => new EnumItemDataModel<ExportType>(x.Value, x.Description));
-            ExportTypes = [.. types];
         }
 
         private void ReloadProductsData()
@@ -114,11 +114,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
 
         private void ExportRawDataCommandExecute(ExportType exportType)
         {
-            var folderDialog = new OpenFolderDialog();
-
-            if (folderDialog.ShowDialog() == true)
+            if (_dialogService.TryPickFolder(out var folderName))
             {
-                var folderName = folderDialog.FolderName;
                 var products = Products.Select(p => p.ToProductDTO());
 
                 var result = exportType switch
@@ -138,14 +135,15 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
                     message = $"Помилка експорту данних.";
                 }
 
-                MessageBox.Show(message);
+
+                _dialogService.ShowMessage(message);
             }
         }
 
         private void RefreshCommandExecute()
         {
-            var result = MessageBox.Show("Ви впевнені що бажаєте перезавантажити список?", "Підтвердження", MessageBoxButton.YesNo);
-            if (result == MessageBoxResult.Yes)
+            var result = _dialogService.ShowMessage("Ви впевнені що бажаєте перезавантажити список?", "Підтвердження", DialogButtons.YesNo);
+            if (result == DialogResult.Yes)
             {
                 ReloadProductsData();
             }
@@ -153,8 +151,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Dictionaries
 
         private void CloseCommandExecute()
         {
-            var result = MessageBox.Show("Are you sure you want to close this tab?", "Confirmation", MessageBoxButton.YesNo);
-            if (result == MessageBoxResult.Yes)
+            var result = _dialogService.ShowMessage("Are you sure you want to close this tab?", "Confirmation", DialogButtons.YesNo);
+            if (result == DialogResult.Yes)
             {
                 TabCloseRequested.Invoke(this, this);
                 IsClosed = true;

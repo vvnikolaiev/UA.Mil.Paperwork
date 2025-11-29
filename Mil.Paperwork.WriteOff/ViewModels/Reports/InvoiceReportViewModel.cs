@@ -1,14 +1,11 @@
-﻿using Microsoft.Win32;
-using Mil.Paperwork.Domain.DataModels.ReportData;
-using Mil.Paperwork.Infrastructure.DataModels;
+﻿using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Infrastructure.Enums;
-using Mil.Paperwork.Infrastructure.MVVM;
+using Mil.Paperwork.Common.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Managers;
 using Mil.Paperwork.WriteOff.ViewModels.Dictionaries;
 using Mil.Paperwork.WriteOff.ViewModels.Tabs;
 using System.Collections.ObjectModel;
-using System.Windows;
 using System.Windows.Input;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Reports
@@ -17,6 +14,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
     {
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
+        private readonly IDialogService _dialogService;
         private readonly IReportDataService _reportDataService;
 
         private int _validDays = 10;
@@ -95,10 +93,11 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
         public ICommand CloseTabCommand { get; }
         public ICommand OpenConfigurationCommand { get; }
 
-        public InvoiceReportViewModel(ReportManager reportManager, IDataService dataService)
+        public InvoiceReportViewModel(ReportManager reportManager, IDataService dataService, IDialogService dialogService) : base(dialogService)
         {
             _reportManager = reportManager;
             _dataService = dataService;
+            _dialogService = dialogService;
 
             ProductsSelector = new ProductSelectionViewModel(dataService);
             MeasurementUnits = [.. _dataService.LoadMeasurementUnitsData().Select(x => new MeasurementUnitViewModel(x))];
@@ -106,7 +105,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             AssetsCollection = [];
 
             AssetAcceptance = new AssetAccetpanceViewModel(dataService);
-            
+
             UpdateDueDateCommand = new DelegateCommand(UpdateDueDateCommandExecute);
 
             GenerateReportCommand = new DelegateCommand(GenerateReportCommandExecute);
@@ -145,14 +144,12 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             // Validate required fields
             if (GetIsDataValid() == false)
             {
-                MessageBox.Show("Please fill all required fields.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _dialogService.ShowMessage("Please fill all required fields.", "Validation", icon: DialogIcon.Warning);
                 return;
             }
 
-            var folderDialog = new OpenFolderDialog();
-            if (folderDialog.ShowDialog() == true)
+            if (_dialogService.TryPickFolder(out var folderName))
             {
-                var folderName = folderDialog.FolderName;
                 GenerateReport(folderName);
             }
         }

@@ -1,0 +1,180 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="Mil.Paperwork.UI.Views.Reports.AssetDismantlingView"
+			 xmlns:reportViewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Reports"
+			 xmlns:dictionaries="clr-namespace:Mil.Paperwork.UI.ViewModels.Dictionaries"
+			 xmlns:dataModels="clr-namespace:Mil.Paperwork.Infrastructure.DataModels;assembly=Mil.Paperwork.Infrastructure"
+			 x:DataType="reportViewModels:AssetDismantlingViewModel"
+			 x:Name="Root">
+
+	<UserControl.Styles>
+		<Style Selector="NumericUpDown, ComboBox, DatePicker, CalendarDatePicker, TextBox.parameter">
+			<Setter Property="Margin" Value="5" />
+		</Style>
+
+		<Style Selector="TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center" />
+		</Style>
+
+		<Style Selector="DockPanel#PART_InnerDockPanel">
+			<Setter Property="Margin" Value="5 0" />
+		</Style>
+
+		<Style Selector="TextBox#CellTextBox">
+			<Setter Property="VerticalContentAlignment" Value="Center" />
+			<Setter Property="Margin" Value="5 0" />
+		</Style>
+
+	</UserControl.Styles>
+
+	<Grid Grid.IsSharedSizeScope="True" Background="Wheat">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" SharedSizeGroup="ColumnTitle" />
+			<ColumnDefinition Width="110" />
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="80" />
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+
+		<TextBlock Grid.Row="0" Grid.Column="0" Text="Назва"
+				   x:Name="NameTextBlock" />
+		<ComboBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="6"
+				  ItemsSource="{Binding ProductSelector.Products}"
+				  Text="{Binding Name}"
+				  SelectedItem="{Binding SelectedProduct, UpdateSourceTrigger=PropertyChanged}"
+				  IsEditable="True"
+				  HorizontalAlignment="Stretch"
+				  VerticalAlignment="Center" />
+
+		<TextBlock Grid.Row="1" Grid.Column="0" Text="C/Н:"/>
+		<TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SerialNumber, UpdateSourceTrigger=PropertyChanged}"
+				 Classes="parameter" />
+
+		<TextBlock Grid.Row="1" Grid.Column="2" Text="Код номенкл.:" />
+		<TextBox Grid.Row="1" Grid.Column="3" Text="{Binding NomenclatureCode}"
+				 Classes="parameter" />
+
+		<TextBlock Grid.Row="2" Grid.Column="0" Text="Реєстр. №:"/>
+		<TextBox Grid.Row="2" Grid.Column="1" Text="{Binding RegistrationNumber}"
+				 Classes="parameter" />
+
+		<TextBlock Grid.Row="2" Grid.Column="2" Text="Код документу:"/>
+		<TextBox Grid.Row="2" Grid.Column="3" Text="{Binding DocumentNumber}"
+				 Classes="parameter" />
+
+		<TextBlock Grid.Row="3" Grid.Column="0" Text="Загальна ціна" />
+		<NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding Price}" />
+
+		<TextBlock Grid.Row="3" Grid.Column="2" Text="Одиниця виміру" />
+		<ComboBox Grid.Row="3" Grid.Column="3"
+				  ItemsSource="{Binding MeasurementUnits}"
+				  Text="{Binding MeasurementUnit}"
+				  DisplayMemberBinding="{Binding ShortName, DataType={x:Type dictionaries:MeasurementUnitViewModel}}"
+				  IsEditable="True"
+				  HorizontalAlignment="Stretch"
+				  VerticalAlignment="Center" />
+
+		<TextBlock Grid.Row="4" Grid.Column="0" Text="Причина:"/>
+		<TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3"
+				 Text="{Binding DismantlingReason, UpdateSourceTrigger=PropertyChanged}"
+				 HorizontalAlignment="Stretch"
+				 MaxHeight="50" TextWrapping="Wrap"
+				 ToolTip.Tip="внаслідок авіаційно-бомбового удару противником в районі ..."
+				 Classes="parameter" />
+
+		<TextBlock Grid.Row="5" Grid.Column="0"
+				   Text="Final reason text:"/>
+		<TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="5"
+				 Text="{Binding FinalReportReasonText}"
+				 HorizontalAlignment="Stretch"
+				 Height="40" TextWrapping="Wrap"
+				 Classes="parameter" />
+
+
+		<TextBlock Grid.Row="6" Grid.Column="0" Text="Дата оцінки" />
+		<CalendarDatePicker Grid.Row="6" Grid.Column="1" SelectedDate="{Binding ValuationDate}" Width="100"
+							HorizontalAlignment="Left" Margin="5"/>
+
+		<TextBlock Grid.Row="6" Grid.Column="2" Text="Метод оцінки" />
+		<TextBox Grid.Row="6" Grid.Column="3" Grid.ColumnSpan="4" Text="{Binding Description}"
+				 HorizontalAlignment="Stretch"
+				 TextWrapping="Wrap"
+				 Classes="parameter" />
+
+		<TextBlock Grid.Row="7" Grid.Column="0" Text="Шаблон" />
+
+		<Grid Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="5">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+
+			<ComboBox Grid.Column="0"
+					  ItemsSource="{Binding ValuationDataTemplates}"
+					  DisplayMemberBinding="{Binding Name, DataType={x:Type dataModels:IAssetValuationData}}"
+					  SelectedItem="{Binding SelectedValuationTemplate, UpdateSourceTrigger=PropertyChanged}"
+					  IsEditable="False"
+					  HorizontalAlignment="Stretch"
+					  VerticalAlignment="Center"/>
+
+			<Button Grid.Column="1"
+					Content="Apply template"
+					Command="{Binding ApplyValuationTemplateCommand}"/>
+		</Grid>
+
+
+		<DataGrid Grid.Row="8" Grid.ColumnSpan="6"
+				  ItemsSource="{Binding Components}"
+				  AutoGenerateColumns="False">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Назва" Binding="{Binding Name}" Width="*"
+									CellStyleClasses="name" />
+
+				<DataGridTemplateColumn Header="Од. виміру" Width="80">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<ComboBox ItemsSource="{Binding $parent[DataGrid].DataContext.MeasurementUnits}"
+									  Text="{Binding MeasurementUnit}"
+									  DisplayMemberBinding="{Binding ShortName, DataType={x:Type dictionaries:MeasurementUnitViewModel}}"
+									  IsEditable="True"
+									  HorizontalAlignment="Stretch"
+									  VerticalAlignment="Center" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn Header="К-сть" Width="Auto">
+					<DataTemplate>
+						<NumericUpDown Value="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
+									   Minimum="0"/>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn Header="Ціна" MinWidth="75">
+					<DataTemplate>
+						<NumericUpDown Value="{Binding Price, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+									   FormatString="N2"
+									   Minimum="0"/>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridCheckBoxColumn Header="Дерибан" Binding="{Binding Exclude, UpdateSourceTrigger=PropertyChanged}"/>
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
+</UserControl>

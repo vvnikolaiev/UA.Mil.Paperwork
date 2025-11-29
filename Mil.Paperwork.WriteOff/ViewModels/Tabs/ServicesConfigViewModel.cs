@@ -1,10 +1,8 @@
-﻿using Mil.Paperwork.Domain.Services;
-using Mil.Paperwork.Infrastructure.Enums;
+﻿using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
-using Mil.Paperwork.Infrastructure.MVVM;
+using Mil.Paperwork.Common.MVVM;
 using Mil.Paperwork.Infrastructure.Services;
 using System.Collections.ObjectModel;
-using System.Windows;
 using System.Windows.Input;
 
 namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
@@ -12,7 +10,7 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
     internal class ServicesConfigViewModel : ObservableItem, ISettingsTabViewModel
     {
         private readonly IReportDataService _reportDataService;
-
+        private readonly IDialogService _dialogService;
         private ObservableCollection<MilitaryServiceViewModel> _services;
         private MilitaryServiceViewModel _currentService;
         private string _defaultServiceKey;
@@ -49,10 +47,10 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 
         public ServicesConfigViewModel(
             IReportDataService reportDataService,
-            IExportService exportService,
-            IImportService importService)
+            IDialogService dialogService)
         {
             _reportDataService = reportDataService;
+            _dialogService = dialogService;
 
             AssetTypes = [.. EnumHelper.GetValues<AssetType>()];
 
@@ -130,8 +128,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 
         private void MarkAsDefaultCommandExecute()
         {
-            var result = MessageBox.Show("Ви впевнені що бажаєте встановити цю службу за замовчуванням?", "Підтвердження", MessageBoxButton.YesNo);
-            if (result == MessageBoxResult.Yes)
+            var result = _dialogService.ShowMessage("Ви впевнені що бажаєте встановити цю службу за замовчуванням?", "Підтвердження", DialogButtons.YesNo);
+            if (result == DialogResult.Yes)
             {
                 SaveService(CurrentService, false);
 
@@ -148,8 +146,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 
         private void DeleteServiceCommandExecute()
         {
-            var result = MessageBox.Show("Ви впевнені що бажаєте видалити цю службу?", "Підтвердження", MessageBoxButton.YesNo);
-            if (result == MessageBoxResult.Yes)
+            var result = _dialogService.ShowMessage("Ви впевнені що бажаєте видалити цю службу?", "Підтвердження", DialogButtons.YesNo);
+            if (result == DialogResult.Yes)
             {
                 var isDefaultRemoved = false;
                 if (CurrentService.IsSaved)
@@ -197,8 +195,8 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Tabs
 
         private void RefreshCommandExecute()
         {
-            var result = MessageBox.Show("Ви впевнені що бажаєте перезавантажити дані?", "Підтвердження", MessageBoxButton.YesNo);
-            if (result == MessageBoxResult.Yes)
+            var result = _dialogService.ShowMessage("Ви впевнені що бажаєте перезавантажити дані?", "Підтвердження", DialogButtons.YesNo);
+            if (result == DialogResult.Yes)
             {
                 LoadServicesData(withReload: true);
             }

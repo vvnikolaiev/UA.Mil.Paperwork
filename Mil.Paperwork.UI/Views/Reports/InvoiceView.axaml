@@ -1,0 +1,147 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="Mil.Paperwork.UI.Views.Reports.InvoiceView"
+			 xmlns:reportViewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Reports"
+			 xmlns:dictionaries="clr-namespace:Mil.Paperwork.UI.ViewModels.Dictionaries"
+			 xmlns:controls="clr-namespace:Mil.Paperwork.UI.Views.Controls"
+			 x:DataType="reportViewModels:InvoiceReportViewModel">
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="10"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+
+		<StackPanel Orientation="Horizontal" Classes="parameters">
+			<TextBlock Text="Накладна (вимога). Номер документу*:" FontWeight="Bold" FontSize="16"/>
+
+			<TextBox Text="{Binding DocumentNumber}" Width="60"/>
+		</StackPanel>
+
+		<Grid Grid.Row="1" VerticalAlignment="Stretch" Classes="parameters">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="125" />
+				<ColumnDefinition Width="150" />
+				<ColumnDefinition Width="125" />
+				<ColumnDefinition Width="150" />
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+
+			<TextBlock Grid.Row="0" Grid.Column="0" Text="Дата операції*:"/>
+			<CalendarDatePicker Grid.Row="0" Grid.Column="1"
+								x:Name="datePickerStart"
+								SelectedDate="{Binding DateCreated}"
+								HorizontalAlignment="Stretch" Margin="5"/>
+
+			<TextBlock Grid.Row="0" Grid.Column="2" Text="Дійсна, днів*:"/>
+			<StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal">
+				<NumericUpDown Value="{Binding ValidDays, UpdateSourceTrigger=PropertyChanged}"
+							   HorizontalAlignment="Stretch" />
+
+				<TextBlock Text="{Binding DueDate, StringFormat='до dd.MM.yyyy'}"
+						   Margin="5 0" VerticalAlignment="Center"
+						   FontStyle="Italic"/>
+			</StackPanel>
+
+			<TextBlock Grid.Row="1" Grid.Column="0" Text="Вид операції:"/>
+			<TextBox Grid.Row="1" Grid.Column="1"
+					 Text="{Binding OperationType, UpdateSourceTrigger=PropertyChanged}"/>
+
+			<TextBlock Grid.Row="1" Grid.Column="2" Text="Підстава (мета):"/>
+			<TextBox Grid.Row="1" Grid.Column="3"
+					 Text="{Binding Reason, UpdateSourceTrigger=PropertyChanged}"/>
+
+
+			<controls:AssetAcceptanceView Grid.Row="3" Grid.ColumnSpan="99"
+										  AcceptedLabel="Приймає*:"
+										  HandedLabel="Передає*:"
+										  DataContext="{Binding AssetAcceptance}"/>
+
+			<DataGrid Grid.Row="7" Grid.ColumnSpan="99"
+					  x:Name="AssetsDataGrid"
+					  ItemsSource="{Binding AssetsCollection}"
+					  SelectedItem="{Binding SelectedAsset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+					  VerticalAlignment="Stretch">
+				<DataGrid.Columns>
+					<DataGridTemplateColumn Header="Назва" Width="*">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<ComboBox ItemsSource="{Binding $parent[DataGrid].DataContext.ProductsSelector.Products}"
+										  Text="{Binding Name}"
+										  SelectedValue="{Binding SelectedProductId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+										  SelectedItem="{Binding SelectedProduct}"
+										  IsEditable="True"
+										  HorizontalAlignment="Stretch"
+										  VerticalAlignment="Center" />
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+
+					<DataGridTextColumn Header="С/Н" Binding="{Binding SerialNumber, UpdateSourceTrigger=LostFocus}" Width="80" />
+
+					<DataGridTextColumn Header="Код ном." Binding="{Binding NomenclatureCode}" Width="70" />
+
+					<DataGridTemplateColumn Header="Од. виміру" Width="80">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<ComboBox ItemsSource="{Binding $parent[DataGrid].DataContext.MeasurementUnits}"
+										  Text="{Binding MeasurementUnit}"
+										  DisplayMemberBinding="{Binding ShortName, DataType={x:Type dictionaries:MeasurementUnitViewModel}}"
+										  IsEditable="True"
+										  HorizontalAlignment="Stretch"
+										  VerticalAlignment="Center" />
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+					<DataGridTemplateColumn Header="К-сть" Width="Auto">
+						<DataTemplate>
+							<NumericUpDown Value="{Binding Count, UpdateSourceTrigger=PropertyChanged}"
+										   Minimum="0"/>
+						</DataTemplate>
+					</DataGridTemplateColumn>
+
+					<DataGridTemplateColumn Header="Кат-ія"
+											Width="60" CanUserResize="False">
+						<DataTemplate>
+							<NumericUpDown Value="{Binding Category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+										   Minimum="1" Maximum="5"/>
+						</DataTemplate>
+					</DataGridTemplateColumn>
+
+					<DataGridTemplateColumn Header="Ціна" MinWidth="75">
+						<DataTemplate>
+							<NumericUpDown Value="{Binding Price, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+										   FormatString="N2"
+										   Minimum="0"/>
+						</DataTemplate>
+					</DataGridTemplateColumn>
+				</DataGrid.Columns>
+			</DataGrid>
+		</Grid>
+
+		<StackPanel Grid.Row="3" Classes="buttons">
+			<Button Content="Додати рядок" Command="{Binding AddRowCommand}" />
+			<Button Content="Видалити рядок" Command="{Binding RemoveRowCommand }" />
+			<Button Content="Згенерувати" Command="{Binding GenerateReportCommand}" />
+			<Button Content="Налаштування" Command="{Binding OpenConfigurationCommand}" />
+			<Button Content="Закрити" Command="{Binding CloseTabCommand}"/>
+		</StackPanel>
+	</Grid>
+</UserControl>

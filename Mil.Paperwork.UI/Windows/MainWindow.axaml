@@ -1,0 +1,147 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:vm="using:Mil.Paperwork.UI.ViewModels"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		mc:Ignorable="d"
+		d:DesignWidth="900" d:DesignHeight="450"
+		x:Class="Mil.Paperwork.UI.Windows.MainWindow"
+		x:DataType="vm:MainWindowViewModel"
+		xmlns:tabs="using:Mil.Paperwork.UI.ViewModels.Tabs"
+		xmlns:views="using:Mil.Paperwork.UI.Views"
+		xmlns:configViews="using:Mil.Paperwork.UI.Views.Configuration"
+		xmlns:configViewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Tabs"
+		xmlns:reportViews="using:Mil.Paperwork.UI.Views.Reports"
+        xmlns:reports="using:Mil.Paperwork.Domain.Reports"
+		xmlns:reportViewModels="using:Mil.Paperwork.UI.ViewModels.Reports"
+		xmlns:dictionaryViews="using:Mil.Paperwork.UI.Views.Dictionaries"
+		xmlns:dictionaryViewModels="using:Mil.Paperwork.UI.ViewModels.Dictionaries"
+		Width="1050"
+		Height="500"
+		Icon="/Assets/avalonia-logo.ico"
+		Title="Mil.Paperwork.UI">
+
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
+		to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
+
+	<Window.Styles>
+		<Style Selector="TabItem">
+			<Setter Property="FontSize" Value="18" />
+		</Style>
+	</Window.Styles>
+
+	<Window.DataTemplates>
+
+		<!-- REPORTS -->
+
+		<DataTemplate DataType="reportViewModels:ResidualValueReportViewModel">
+			<reportViews:ResidualValueReportView />
+		</DataTemplate>
+
+		<DataTemplate DataType="reportViewModels:AssetInitialTechnicalStateViewModel">
+			<reportViews:TechnicalStateReportView />
+		</DataTemplate>
+
+        <DataTemplate DataType="{x:Type reportViewModels:AssetTechnicalStateViewModel}">
+            <reportViews:TechnicalStateReportView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type reportViewModels:CommissioningActReportViewModel}">
+            <reportViews:CommissioningActReportView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type reportViewModels:InvoiceReportViewModel}">
+            <reportViews:InvoiceView />
+        </DataTemplate>
+
+		<DataTemplate DataType="{x:Type reportViewModels:AssetValuationViewModel}">
+
+            <Grid Grid.IsSharedSizeScope="True">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <reportViews:AssetValuationView />
+
+                <StackPanel Classes="buttons" Grid.Row="1">
+                    <Button Content="Створити документ" Command="{Binding GenerateReportCommand}" />
+                    <Button Content="Додати рядок" Command="{Binding AddRowCommand}" />
+                    <Button Content="Імпортувати таблицю" Command="{Binding ImportRowsCommand}" />
+                    <Button Content="Очистити таблицю" Command="{Binding ClearCommand}" />
+                    <Button Content="Закрити" Command="{Binding CloseTabCommand}"/>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type reportViewModels:AssetDismantlingViewModel}">
+            <Grid Grid.IsSharedSizeScope="True">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <reportViews:AssetDismantlingView />
+
+                <StackPanel Grid.Row="1" Classes="buttons">
+                    <Button Content="Створити документ" Command="{Binding GenerateReportCommand}" />
+                    <Button Content="Додати рядок" Command="{Binding AddRowCommand}" />
+                    <Button Content="Імпортувати таблицю" Command="{Binding ImportRowsCommand}" />
+                    <Button Content="Очистити таблицю" Command="{Binding ClearCommand}" />
+                    <Button Content="Закрити" Command="{Binding CloseTabCommand}"/>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+		<!-- CONFIGURATION AND SETTINGS -->
+
+		<DataTemplate DataType="{x:Type dictionaryViewModels:ProductsDictionaryViewModel}">
+			<dictionaryViews:ProductsDictionaryView />
+		</DataTemplate>
+
+		<DataTemplate DataType="{x:Type dictionaryViewModels:PeopleDictionaryViewModel}">
+			<dictionaryViews:PeopleDictionaryView />
+		</DataTemplate>
+
+		<DataTemplate DataType="{x:Type dictionaryViewModels:MeasurementUnitsDictionaryViewModel}">
+			<dictionaryViews:MeasurementUnitsDictionaryView />
+		</DataTemplate>
+
+		<DataTemplate DataType="configViewModels:ReportConfigViewModel">
+			<configViews:ReportConfigurationView />
+		</DataTemplate>
+
+		<DataTemplate DataType="configViewModels:ServicesConfigViewModel">
+			<configViews:MilServicesConfigurationView />
+		</DataTemplate>
+
+		<DataTemplate DataType="configViewModels:CommissionsConfigViewModel">
+			<configViews:CommissionsConfigurationView />
+		</DataTemplate>
+
+		<DataTemplate DataType="{x:Type tabs:HomePageViewModel}">
+			<views:HomePageView />
+		</DataTemplate>
+
+	</Window.DataTemplates>
+
+	<Grid>
+		<TabControl ItemsSource="{Binding Tabs}"
+					SelectedItem="{Binding SelectedTab}">
+			<TabControl.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding Header}" />
+				</DataTemplate>
+			</TabControl.ItemTemplate>
+			<TabControl.ContentTemplate>
+				<DataTemplate>
+					<ContentControl Content="{Binding}" />
+				</DataTemplate>
+			</TabControl.ContentTemplate>
+		</TabControl>
+	</Grid>
+
+</Window>

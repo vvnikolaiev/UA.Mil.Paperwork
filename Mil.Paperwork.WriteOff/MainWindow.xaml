@@ -12,11 +12,15 @@
         xmlns:tabViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels.Tabs"
         xmlns:dictionaryViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels.Dictionaries"
         xmlns:reportViewModels="clr-namespace:Mil.Paperwork.WriteOff.ViewModels.Reports"
-        xmlns:converters="clr-namespace:Mil.Paperwork.Infrastructure.Converters;assembly=Mil.Paperwork.Infrastructure"
+        xmlns:converters="clr-namespace:Mil.Paperwork.WriteOff.Converters"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="1000"
         d:DataContext="{d:DesignInstance Type=viewModels:MainViewModel}">
     <Window.Resources>
+
+        <DataTemplate DataType="{x:Type tabViewModels:HomePageViewModel}">
+            <views:HomePageView />
+        </DataTemplate>
 
         <DataTemplate DataType="{x:Type tabViewModels:SettingsViewModel}">
             <configViews:SettingsView />
@@ -44,10 +48,6 @@
 
         <DataTemplate DataType="{x:Type tabViewModels:ServicesConfigViewModel}">
             <configViews:MilServicesConfigurationView />
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type tabViewModels:HomePageViewModel}">
-            <views:HomePageView />
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type reportViewModels:WriteOffReportViewModel}">

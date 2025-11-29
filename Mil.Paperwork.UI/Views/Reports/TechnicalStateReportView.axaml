@@ -1,0 +1,329 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="Mil.Paperwork.UI.Views.Reports.TechnicalStateReportView"
+			 xmlns:tabViewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Tabs"
+			 xmlns:reportViewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Reports"
+			 xmlns:dictionaries="clr-namespace:Mil.Paperwork.UI.ViewModels.Dictionaries"
+			 xmlns:controls="clr-namespace:Mil.Paperwork.UI.Views.Controls"
+			 x:DataType="reportViewModels:AssetInitialTechnicalStateViewModel">
+
+	<UserControl.Resources>
+
+		<ContentControl x:Key="CommonTechnicalStateViewLayout"
+						x:DataType="reportViewModels:AssetInitialTechnicalStateViewModel">
+			<Grid Grid.IsSharedSizeScope="True">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="120" />
+					<ColumnDefinition Width="auto"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+
+				<DataGrid Grid.Row="1" Grid.ColumnSpan="99"
+						  x:Name="AssetsDataGrid"
+						  DataContext="{Binding AssetsTable}"
+						  ItemsSource="{Binding AssetsCollection}"
+						  SelectedItem="{Binding SelectedAsset}"
+						  AutoGenerateColumns="False"
+						  Margin="5"
+						  MinHeight="100">
+					<DataGrid.Columns>
+						<DataGridTemplateColumn Header="Назва" Width="*">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<ComboBox ItemsSource="{Binding $parent[DataGrid].DataContext.ProductsSelector.Products}"
+											  Text="{Binding Name}"
+											  SelectedValue="{Binding SelectedProductId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+											  SelectedItem="{Binding SelectedProduct}"
+											  IsEditable="True"
+											  HorizontalAlignment="Stretch"
+											  VerticalAlignment="Center" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTextColumn Header="С/Н" Binding="{Binding SerialNumber, UpdateSourceTrigger=LostFocus}" Width="80" />
+
+						<DataGridTextColumn Header="Код ном." Binding="{Binding NomenclatureCode}" Width="70" />
+
+						<DataGridTemplateColumn Header="Од. виміру" Width="80">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<ComboBox ItemsSource="{Binding $parent[DataGrid].DataContext.MeasurementUnits}"
+											  Text="{Binding MeasurementUnit}"
+											  DisplayMemberBinding="{Binding ShortName, DataType={x:Type dictionaries:MeasurementUnitViewModel}}"
+											  IsEditable="True"
+											  HorizontalAlignment="Stretch"
+											  VerticalAlignment="Center" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn Header="К-сть" Width="Auto">
+							<DataTemplate>
+								<NumericUpDown Value="{Binding Count, UpdateSourceTrigger=PropertyChanged}"
+											   Minimum="0"/>
+							</DataTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn Header="Ціна" MinWidth="75">
+							<DataTemplate>
+								<NumericUpDown Value="{Binding Price, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+											   FormatString="N2"
+											   Minimum="0"/>
+							</DataTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn Header="Кат-ія"
+												Width="60" CanUserResize="False">
+							<DataTemplate>
+								<NumericUpDown Value="{Binding Category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+											   Minimum="1" Maximum="5"/>
+							</DataTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn Header="Взято на облік" CanUserResize="False">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<CalendarDatePicker SelectedDate="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn Header="Рік" CanUserResize="False"
+												Width="70">
+							<DataTemplate>
+								<NumericUpDown Value="{Binding YearManufacured, UpdateSourceTrigger=PropertyChanged}"
+											   ParsingNumberStyle="Integer"
+											   Minimum="1900"/>
+							</DataTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn Header="Ресурс, р." Width="Auto">
+							<DataTemplate>
+								<NumericUpDown Value="{Binding ResourceYears}"
+											   ParsingNumberStyle="Integer"
+											   Minimum="0"/>
+							</DataTemplate>
+						</DataGridTemplateColumn>
+
+
+						<DataGridTemplateColumn Header="Г-тія, міс." Width="Auto">
+							<DataTemplate>
+								<NumericUpDown Value="{Binding WarrantyPeriodMonths}"
+											   ParsingNumberStyle="Integer"
+											   Minimum="0"/>
+							</DataTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTextColumn Header="№ док-ту" Binding="{Binding TSRegisterNumber}" Width="60" />
+
+						<DataGridTextColumn Header="Код д-ту" Binding="{Binding TSDocumentNumber}" Width="60" />
+					</DataGrid.Columns>
+				</DataGrid>
+
+
+			</Grid>
+		</ContentControl>
+
+		<ContentControl x:Key="TechnicalStateViewLayout"
+						x:DataType="reportViewModels:AssetTechnicalStateViewModel">
+			<Grid Grid.Row="5" Classes="parameters"
+				  Grid.RowDefinitions="Auto,5,Auto,Auto,Auto,Auto,Auto,*"
+				  Grid.ColumnDefinitions="130,115,100,115,100,115,100,115,*">
+
+				<!--<TextBlock Grid.Row="0" Grid.Column="4" Text="Коеф. зберігання"/>-->
+				<!--<TextBox Grid.Row="1" Grid.Column="5" Text="{Binding Asset.WearAndTearCoeff}" TextWrapping="Wrap"/>-->
+
+				<TextBlock Grid.Row="0" Grid.Column="0"
+						   Text="Наказ списання №"
+						   Classes="title"
+						   FontWeight="Bold"/>
+				<NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding OrdenNumber, UpdateSourceTrigger=PropertyChanged}" />
+
+				<TextBlock Grid.Row="0" Grid.Column="2" Classes="title" Text="від"/>
+				<CalendarDatePicker Grid.Row="0" Grid.Column="3" SelectedDate="{Binding OrdenDate}" />
+
+				<TextBlock Grid.Row="0" Grid.Column="4" Classes="title" Text="Дата документу" />
+				<CalendarDatePicker Grid.Row="0" Grid.Column="5" SelectedDate="{Binding DocumentDate}" />
+
+				<TextBlock Grid.Row="0" Grid.Column="6" Classes="title" Text="Дата події"/>
+				<CalendarDatePicker Grid.Row="0" Grid.Column="7" SelectedDate="{Binding EventDate}" />
+
+				<TextBlock Grid.Row="3" Grid.Column="0" Classes="title" Text="Причина"/>
+				<TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="5"
+						 Text="{Binding Reason}" TextWrapping="Wrap"
+						 Height="50"/>
+
+				<TextBlock Grid.Row="3" Grid.Column="6" Classes="title" Text="Зміна категорії"
+						   VerticalAlignment="Top"/>
+				<ComboBox Grid.Row="3" Grid.Column="7"
+						  ItemsSource="{Binding EventTypes}"
+						  SelectedItem="{Binding EventType}"
+						  Classes="enum"
+						  HorizontalAlignment="Stretch"
+						  VerticalAlignment="Top"/>
+
+				<CheckBox Grid.Row="4"
+						  Grid.ColumnSpan="5"
+						  Content="Формувати Акти Списання, якщо відсутній Серійний Номер"
+						  VerticalAlignment="Center"
+						  IsChecked="{Binding GenerateWriteOffActs}"
+						  Margin="5"/>
+
+				<CheckBox Grid.Row="5" Grid.ColumnSpan="5"
+						  Margin="5 5 5 0"
+						  Content="Сформувати пакет документів на списання (витяг з книги втрат, титул, опис, погодження)"
+						  IsChecked="{Binding GenerateWriteOffPackage}" />
+
+				<StackPanel Grid.Row="6" Grid.ColumnSpan="7"
+							Orientation="Horizontal" Margin="5 0"
+							IsEnabled="{Binding GenerateWriteOffPackage}"
+							Classes="parameters">
+
+					<TextBlock Text="Номер книги обліку втрат:" FontWeight="Bold"/>
+					<NumericUpDown Value="{Binding BookOfLossesNumber}" Minimum="0"
+								   VerticalAlignment="Center"
+								   Width="70"/>
+
+					<TextBlock Text="рік:"/>
+					<NumericUpDown Value="{Binding BookOfLossesYear}" Minimum="2000"
+								   Width="70"/>
+
+					<TextBlock Text="сторінка:" />
+					<NumericUpDown Value="{Binding BookOfLossesPage}" Minimum="0"
+								   Width="70"/>
+
+					<TextBlock Text="дата запису:"/>
+					<DatePicker SelectedDate="{Binding BookOfLossesExtractDate}" />
+
+				</StackPanel>
+
+				<ContentControl Grid.Row="7" Grid.ColumnSpan="99"
+								Content="{DynamicResource CommonTechnicalStateViewLayout}"/>
+
+			</Grid>
+		</ContentControl>
+	</UserControl.Resources>
+
+	<UserControl.DataTemplates>
+
+		<DataTemplate DataType="{x:Type reportViewModels:AssetTechnicalStateViewModel}">
+			<ContentControl Content="{DynamicResource TechnicalStateViewLayout}"/>
+		</DataTemplate>
+
+		<DataTemplate DataType="{x:Type reportViewModels:AssetInitialTechnicalStateViewModel}">
+			<Grid Classes="parameters">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition />
+					<RowDefinition Height="5"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="auto" />
+					<ColumnDefinition Width="auto" />
+					<ColumnDefinition Width="120" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<TextBlock Grid.Row="0" Grid.Column="0"
+						   Text="Дата документу:"
+						   VerticalAlignment="Center"/>
+				<DatePicker Grid.Row="0" Grid.Column="1"
+							SelectedDate="{Binding OperationDate}" />
+
+				<TextBlock Grid.Row="0" Grid.Column="2" Text="Зміна категорії"
+						   VerticalAlignment="Center"/>
+				<ComboBox Grid.Row="0" Grid.Column="3"
+						  Width="150"
+						  ItemsSource="{Binding EventTypes}"
+						  SelectedItem="{Binding EventType}"
+						  Classes="enum"
+						  HorizontalAlignment="Left"
+						  VerticalAlignment="Center"/>
+
+				<ContentControl Grid.Row="1" Grid.ColumnSpan="99"
+								Content="{DynamicResource CommonTechnicalStateViewLayout}"/>
+
+				<CheckBox Grid.Row="3" Grid.Column="0"
+						  IsChecked="{Binding IsCommissioningActNeeded}"
+						  Content="Акти вв. в експл."
+						  Margin="5"
+						  VerticalAlignment="Center" />
+
+				<StackPanel Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3"
+							Orientation="Horizontal"
+							IsEnabled="{Binding IsCommissioningActNeeded}"
+							Margin="5 0"
+							Classes="parameters">
+
+					<TextBlock Text="Майно знаходиться у*:" VerticalAlignment="Center"/>
+					<TextBox Text="{Binding CommissioningLocation}"
+							 Width="150"/>
+
+					<TextBlock Text="№№ Актів (через кому):" VerticalAlignment="Center" />
+					<TextBox Text="{Binding CommissioningActNumbers}"
+							 Width="150"/>
+				</StackPanel>
+
+				<CheckBox Grid.Row="4" Grid.Column="0"
+						  IsChecked="{Binding IsInvoiceNeeded}"
+						  Content="Накладна"
+						  Margin="5" VerticalAlignment="Center"/>
+
+				<StackPanel Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3"
+							Orientation="Horizontal"
+							IsEnabled="{Binding IsInvoiceNeeded}"
+							Margin="5 0"
+							Classes="parameters">
+					<TextBlock Text="Номер*:" VerticalAlignment="Center" FontWeight="Bold"/>
+					<TextBox Text="{Binding InvoiceNumber}" Width="60" />
+
+					<CheckBox IsChecked="{Binding IsInvoceInvertedExchange}"
+							  Content="Зворотня передача введеного майна накладною (наприклад, назад на склад)"
+							  VerticalAlignment="Center"
+							  Margin="5 0"/>
+				</StackPanel>
+
+				<controls:AssetAcceptanceView Grid.Row="5" Grid.ColumnSpan="7"
+											  DataContext="{Binding AssetAcceptance}"/>
+			</Grid>
+		</DataTemplate>
+	</UserControl.DataTemplates>
+
+	<Grid Grid.IsSharedSizeScope="True">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="5" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="10" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="5" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="5" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="5" />
+		</Grid.ColumnDefinitions>
+
+		<ContentControl Grid.Row="1" Grid.Column="1"
+						Content="{Binding}"/>
+
+		<StackPanel Grid.Row="3" Grid.Column="1" Classes="buttons">
+			<Button Content="Відкрити конфігурацію" Command="{Binding OpenConfigurationCommand}"/>
+			<Button Content="Створити документ" Command="{Binding GenerateReportCommand}"/>
+			<Button Content="Додати майно" Command="{Binding AssetsTable.AddRowCommand}" />
+			<Button Content="Видалити майно" Command="{Binding AssetsTable.RemoveRowCommand }" />
+			<Button Content="Очистити таблицю" Command="{Binding AssetsTable.ClearTableCommand}"/>
+			<Button Content="Закрити" Command="{Binding CloseCommand}"/>
+		</StackPanel>
+	</Grid>
+</UserControl>

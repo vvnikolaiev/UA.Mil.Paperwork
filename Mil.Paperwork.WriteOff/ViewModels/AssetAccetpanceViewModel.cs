@@ -1,5 +1,5 @@
-﻿using Mil.Paperwork.Infrastructure.DataModels;
-using Mil.Paperwork.Infrastructure.MVVM;
+﻿using Mil.Paperwork.Common.MVVM;
+using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.ViewModels.Dictionaries;
 using System.Collections.ObjectModel;

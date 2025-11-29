@@ -1,12 +1,13 @@
 ﻿using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Services;
+using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.WriteOff.Helpers;
-using System.Windows;
 
 namespace Mil.Paperwork.WriteOff.Managers
 {
     public class ReportManager
     {
+        private readonly IDialogService _dialogService;
         private readonly IReportService<IQualityStateReportData> _qualityStateReportService;
         private readonly IReportService<IResidualValueReportData> _residualValueReportService;
         private readonly IReportService<ITechnicalStateReportData> _technicalStateReportService;
@@ -25,8 +26,11 @@ namespace Mil.Paperwork.WriteOff.Managers
             AssetValuationReportService valuationReportService,
             AssetDismantlingReportService dismantlingReportService,
             CommissioningActService commissioningActService,
-            InvoiceReportService invoiceReportService)
+            InvoiceReportService invoiceReportService,
+            IDialogService dialogService)
         {
+            _dialogService = dialogService;
+
             _qualityStateReportService = qualityStateReportService;
             _technicalStateReportService = technicalStateReportService;
             _writeOffReportsPackageService = writeOffReportsPackageService;
@@ -56,7 +60,7 @@ namespace Mil.Paperwork.WriteOff.Managers
             
             var message = $"{residualValueReportResultStatus}\n{technicalStateReportResultStatus}\n{qualityStateReportResultStatus}\n{assetValuationReportResult}\n{dismantlingReportResultStatus}";
 
-            MessageBox.Show(message);
+            _dialogService.ShowMessage(message);
         }
 
         public void GenerateResidualValueReport(IResidualValueReportData reportData)
@@ -64,7 +68,7 @@ namespace Mil.Paperwork.WriteOff.Managers
             var residualValueReportResult = _residualValueReportService.TryGenerateReport(reportData);
 
             var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.ResidualValueReportName, residualValueReportResult);
-            MessageBox.Show(status);
+            _dialogService.ShowMessage(status);
         }
 
         public void GenerateInitialTechnicalStateReport(IInitialTechnicalStateReportData reportData)
@@ -72,7 +76,7 @@ namespace Mil.Paperwork.WriteOff.Managers
             var technicalStateReportResult = _initialTechnicalStateReportService.TryGenerateReport(reportData);
 
             var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.InitialTechnicalStateReportName, technicalStateReportResult);
-            MessageBox.Show(status);
+            _dialogService.ShowMessage(status);
         }
 
         public void GenerateTechnicalStateReport(ITechnicalStateReportData reportData)
@@ -85,7 +89,7 @@ namespace Mil.Paperwork.WriteOff.Managers
             }
 
             var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.TechnicalStateReportName, technicalStateReportResult);
-            MessageBox.Show(status);
+            _dialogService.ShowMessage(status);
         }
 
         public void GenerateValuationReport(IAssetValuationReportData reportData)
@@ -93,7 +97,7 @@ namespace Mil.Paperwork.WriteOff.Managers
             var assetValuationReportResult = _valuationReportService.TryGenerateReport(reportData);
 
             var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.ValuationReportName, assetValuationReportResult);
-            MessageBox.Show(status);
+            _dialogService.ShowMessage(status);
         }
 
         public void GenerateDismantlingReport(IDismantlingReportData reportData)
@@ -102,7 +106,7 @@ namespace Mil.Paperwork.WriteOff.Managers
             var assetValuationReportResult = _valuationReportService.TryGenerateReport(reportData);
             
             var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.DismantlingReportName, assetDismantlingReportResult);
-            MessageBox.Show(status);
+            _dialogService.ShowMessage(status);
         }
 
         public void GenerateCommissioningAct(ICommissioningActReportData reportData)
@@ -110,7 +114,7 @@ namespace Mil.Paperwork.WriteOff.Managers
             var commissioningActResult = _commissioningActService.TryGenerateReport(reportData);
 
             var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.CommisioninaActName, commissioningActResult);
-            MessageBox.Show(status);
+            _dialogService.ShowMessage(status);
         }
 
         public void GenerateCommissioningAct(IList<ICommissioningActReportData> reportData)
@@ -118,7 +122,7 @@ namespace Mil.Paperwork.WriteOff.Managers
             var commissioningActResult = _commissioningActService.TryGenerateReport(reportData);
 
             var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.CommisioninaActName, commissioningActResult);
-            MessageBox.Show(status);
+            _dialogService.ShowMessage(status);
         }
 
         public void GenerateInvoice(IInvoceReportData reportData)
@@ -126,7 +130,7 @@ namespace Mil.Paperwork.WriteOff.Managers
             var invocieResult = _invoiceReportService.TryGenerateReport(reportData);
 
             var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.InvoiceName, invocieResult);
-            MessageBox.Show(status);
+            _dialogService.ShowMessage(status);
         }
     }
 }

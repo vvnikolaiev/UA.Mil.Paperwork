@@ -92,8 +92,13 @@ namespace Mil.Paperwork.WriteOff.ViewModels.Reports
             set => SetProperty(ref _generateWriteOffPackage, value);
         }
 
-        public AssetTechnicalStateViewModel(ReportManager reportManager, IAssetFactory assetFactory, IDataService dataService, IReportDataService reportDataService) 
-            : base(reportManager, assetFactory, dataService, reportDataService)
+        public AssetTechnicalStateViewModel(
+            ReportManager reportManager, 
+            IAssetFactory assetFactory, 
+            IDataService dataService, 
+            IReportDataService reportDataService,
+            IDialogService dialogService) 
+            : base(reportManager, assetFactory, dataService, reportDataService, dialogService)
         {
             _reportManager = reportManager;
         }

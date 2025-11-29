@@ -1,0 +1,108 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="Mil.Paperwork.UI.Views.Dictionaries.ProductsDictionaryView"
+			 xmlns:viewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Dictionaries"
+			 x:DataType="viewModels:ProductsDictionaryViewModel"
+			 x:Name="Root">
+	<DockPanel>
+		<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
+			<Button Content="Додати" Command="{Binding AddItemCommand}" Margin="0,0,5,0"/>
+			<Button Content="Видалити" Command="{Binding RemoveItemCommand}"
+					CommandParameter="{Binding SelectedItem, ElementName=ProductsTable}" Margin="0,0,5,0"/>
+			<Button Content="Зберегти" Command="{Binding SaveCommand}" Margin="0,0,5,0"/>
+			<Button Content="Оновити" Command="{Binding RefreshCommand}" Margin="0,0,5,0"/>
+			<Button Content="Імпортувати" Command="{Binding ImportCommand}" Margin="0,0,5,0" />
+
+			<DropDownButton Content="Експортувати" Margin="0,0,5,0">
+				<DropDownButton.Flyout>
+					<MenuFlyout ItemsSource="{Binding ExportTypes}">
+						<MenuFlyout.ItemTemplate>
+							<DataTemplate>
+								<MenuItem Header="{Binding Converter={StaticResource EnumDescriptionConverter}}"
+										  Command="{Binding #Root.DataContext.ExportDataCommand}"
+										  CommandParameter="{Binding}"/>
+							</DataTemplate>
+						</MenuFlyout.ItemTemplate>
+					</MenuFlyout>
+				</DropDownButton.Flyout>
+			</DropDownButton>
+
+			<Button Content="Закрити" Command="{Binding CloseCommand}" Margin="0,0,5,0"/>
+		</StackPanel>
+
+		<DataGrid x:Name="ProductsTable"
+				  ItemsSource="{Binding Products}"
+				  AutoGenerateColumns="False" Margin="5">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Назва" Binding="{Binding Name}"
+									CellStyleClasses="name"
+									Width="*" />
+
+				<DataGridTextColumn Header="Коротка назва" Binding="{Binding ShortName}"
+									CellStyleClasses="name" />
+
+				<DataGridTemplateColumn Header="Од. виміру">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<ComboBox ItemsSource="{Binding $parent[DataGrid].DataContext.MeasurementUnits}"
+									  Text="{Binding MeasurementUnit}"
+									  DisplayMemberBinding="{Binding ShortName, DataType={x:Type viewModels:MeasurementUnitViewModel}}"
+									  IsEditable="True"
+									  HorizontalAlignment="Stretch"
+									  VerticalAlignment="Center" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTextColumn Header="Код ном." Binding="{Binding NomenclatureCode}" />
+
+				<DataGridTemplateColumn Header="Ціна" MinWidth="75">
+					<DataTemplate>
+						<NumericUpDown Value="{Binding Price, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+									   FormatString="N2"
+									   Minimum="0"/>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn Header="Взято на облік"
+										Width="*" MinWidth="90" MaxWidth="110">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Button Content="{Binding StartDate, StringFormat='dd.MM.yyyy'}"
+									HorizontalAlignment="Stretch"
+									HorizontalContentAlignment="Center">
+								<Button.Flyout>
+									<Flyout>
+										<Calendar SelectedDate="{Binding StartDate}"/>
+									</Flyout>
+								</Button.Flyout>
+							</Button>
+
+							<!--<CalendarDatePicker SelectedDate="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}"  />-->
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn Header="Гар-ія, р."
+										CanUserResize="False">
+					<DataTemplate>
+						<NumericUpDown Value="{Binding WarrantyPeriodMonths}"
+									   ParsingNumberStyle="Integer"
+									   Minimum="0"/>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Ресурс, р."
+										CanUserResize="False">
+					<DataTemplate>
+						<NumericUpDown Value="{Binding ResourceYears}"
+									   ParsingNumberStyle="Integer"
+									   Minimum="0"/>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+	</DockPanel>
+</UserControl>
