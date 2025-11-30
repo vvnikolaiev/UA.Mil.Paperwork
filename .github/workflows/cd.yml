@@ -8,7 +8,14 @@ on:
   push:
     tags:
       - '*'
-
+  #for testing only
+  workflow_dispatch:
+      inputs:
+        version_suffix:
+          description: 'Test version suffix (e.g., -beta-test)'
+          required: true
+          default: '-test-run'
+        
 jobs:
 
   create-release:
@@ -35,8 +42,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref_name )}}
-          release_name: Release ${{ steps.get_version.outputs.VERSION }}
+          #tag_name: ${{ github.ref_name )}}
+          #release_name: Release ${{ steps.get_version.outputs.VERSION }}
+          tag_name: v${{ steps.get_version.outputs.VERSION }}${{ github.event.inputs.version_suffix }} # Uses the manual input
+          release_name: Test Release v${{ steps.get_version.outputs.VERSION }}${{ github.event.inputs.version_suffix }}
           draft: false
           prerelease: false
           
