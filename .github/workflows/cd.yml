@@ -25,7 +25,7 @@ jobs:
       version_tag: ${{ steps.get_version.outputs.VERSION }}
     steps:
       - name: Checkout
-        uses: actions/checout@v4
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Setup GitVersion
