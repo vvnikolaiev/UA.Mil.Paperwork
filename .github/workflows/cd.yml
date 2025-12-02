@@ -53,18 +53,19 @@ jobs:
     needs: create-release
     strategy:
       fail-fast: false
-      matrix:          
-        channel: [Release]
+      matrix:            
         include:
           # Windows x64
           - os: windows-latest
             targetPlatform: x64
             rid: win-64
+            channel: Release
             is_windows: true
           # macOS Silicon
           - os: macos-latest
             targetPlatform: arm64
             rid: osx-arm64
+            channel: Release
             is_windows: false
           
     uses: ./.github/workflows/cd_common.yml
