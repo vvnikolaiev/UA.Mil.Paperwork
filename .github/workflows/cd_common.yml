@@ -111,6 +111,13 @@ jobs:
         & $env:MsbuildCmd $env:Solution_Path /p:Platform=${{ inputs.targetPlatform }} /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=SideLoadOnly /p:AppxBundle=Never /p:PackageCertificateKeyFile=$env:SigningCertificate /p:PackageCertificatePassword=${{ secrets.Pfx_Key }}
       shell: pwsh
 
+    - name: Create WAP Archive (Windows Only)
+      if: inputs.is_windows
+      run: |
+        $appPackagesPath = Join-Path -Path $env:Wap_Project_Directory -ChildPath $env:App_Packages_Directory
+        # Zip everything in AppPackages folder into a file named AppPackages.zip
+        Compress-Archive -Path "$appPackagesPath\*" -DestinationPath "$appPackagesPath\AppPackages.zip" -Force
+      shell: pwsh
     # --- UPLOADING ---
 
     # Upload macOS Zip
