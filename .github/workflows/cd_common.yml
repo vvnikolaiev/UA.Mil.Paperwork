@@ -40,6 +40,7 @@ jobs:
       UI_Project_Path: Mil.Paperwork.UI/Mil.Paperwork.UI.csproj
       # Windows Specifics
       Wap_Project_Directory: Mil.Paperwork.Package
+      App_Packages_Archive: AppPackages.zip
       App_Packages_Directory: AppPackages
       SigningCertificate: certificate.pfx
       MsbuildCmd: msbuild
@@ -144,11 +145,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ inputs.upload_url }}
-        # Simplified logic: Zipping the whole AppPackages output for safety
-        asset_path: ${{ env.Wap_Project_Directory }}/${{ env.App_Packages_Directory }}/AppPackages.zip
+        upload_url: ${{ inputs.upload_url }}  # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+        asset_path: ${{ env.Wap_Project_Directory }}\${{ env.App_Packages_Directory }}\${{ env.App_Packages_Archive }}
         asset_name: UA.Mil.Paperwork-${{ inputs.version }}-MSIX-${{ inputs.targetPlatform }}.zip
         asset_content_type: application/zip
-        # Pre-step to zip the WAP output if not already zipped by build
-        # (Added a small inline script to zip before upload if needed)
-        working-directory: ${{ env.Wap_Project_Directory }}/${{ env.App_Packages_Directory }}
