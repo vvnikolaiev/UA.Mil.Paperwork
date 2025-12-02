@@ -58,7 +58,7 @@ jobs:
           # Windows x64
           - os: windows-latest
             targetPlatform: x64
-            rid: win-64
+            rid: win-x64
             channel: Release
             is_windows: true
           # macOS Silicon
