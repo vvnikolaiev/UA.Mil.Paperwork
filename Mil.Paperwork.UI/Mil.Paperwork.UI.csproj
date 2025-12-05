@@ -15,9 +15,12 @@
 
   <PropertyGroup Condition="$(OperatingSystem) == 'maccatalyst' or $(RuntimeIdentifier.StartsWith('osx'))">
     <UseLocalAppHost>true</UseLocalAppHost>
-    <ApplicationIcon>Assets/temp-logo.icns</ApplicationIcon>
     <ApplicationId>com.vvnikolaiev.mil.paperwork</ApplicationId>
   </PropertyGroup>
+
+  <ItemGroup Condition="$(RuntimeIdentifier.StartsWith('osx'))">
+    <BundleResource Include="Assets\temp-logo.icns" />
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Models\" />
