@@ -89,13 +89,110 @@ jobs:
 
     # --- PACKAGING ---
 
+    # Create macOS app bundle (needed when using PublishSingleFile=true)
+    - name: Create macOS App Bundle
+      if: inputs.is_windows == false
+      run: |
+        APP_NAME="Mil.Paperwork.UI"
+        APP_BUNDLE_NAME="${APP_NAME}.app"
+        BUNDLE_DIR="publish/${APP_BUNDLE_NAME}"
+        CONTENTS_DIR="${BUNDLE_DIR}/Contents"
+        MACOS_DIR="${CONTENTS_DIR}/MacOS"
+        RESOURCES_DIR="${CONTENTS_DIR}/Resources"
+        
+        echo "Creating macOS app bundle structure..."
+        
+        # Create app bundle directory structure
+        mkdir -p "${MACOS_DIR}"
+        mkdir -p "${RESOURCES_DIR}"
+        
+        # Move the executable to MacOS directory
+        if [ -f "publish/${APP_NAME}" ]; then
+          mv "publish/${APP_NAME}" "${MACOS_DIR}/${APP_NAME}"
+          chmod +x "${MACOS_DIR}/${APP_NAME}"
+          echo "✓ Moved executable to MacOS directory"
+        else
+          echo "✗ Error: Executable publish/${APP_NAME} not found"
+          exit 1
+        fi
+        
+        # Copy icon to Resources if it exists
+        if [ -f "publish/Assets/temp-logo.icns" ]; then
+          cp "publish/Assets/temp-logo.icns" "${RESOURCES_DIR}/temp-logo.icns"
+          echo "✓ Copied icon to Resources"
+        elif [ -f "Mil.Paperwork.UI/Assets/temp-logo.icns" ]; then
+          cp "Mil.Paperwork.UI/Assets/temp-logo.icns" "${RESOURCES_DIR}/temp-logo.icns"
+          echo "✓ Copied icon to Resources"
+        fi
+        
+        # Copy Data and Templates to MacOS directory (needed for AppDomain.CurrentDomain.BaseDirectory)
+        if [ -d "publish/Data" ]; then
+          cp -r "publish/Data" "${MACOS_DIR}/"
+          echo "✓ Copied Data directory to MacOS"
+        fi
+        
+        if [ -d "publish/Templates" ]; then
+          cp -r "publish/Templates" "${MACOS_DIR}/"
+          echo "✓ Copied Templates directory to MacOS"
+        fi
+        
+        # Copy native libraries to MacOS directory
+        for lib in publish/*.dylib; do
+          if [ -f "$lib" ]; then
+            cp "$lib" "${MACOS_DIR}/"
+            echo "✓ Copied $(basename "$lib")"
+          fi
+        done
+        
+        # Create Info.plist
+        cat > "${CONTENTS_DIR}/Info.plist" << 'EOF'
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+        <dict>
+            <key>CFBundleExecutable</key>
+            <string>Mil.Paperwork.UI</string>
+            <key>CFBundleIdentifier</key>
+            <string>com.vvnikolaiev.mil.paperwork</string>
+            <key>CFBundleName</key>
+            <string>Mil.Paperwork.UI</string>
+            <key>CFBundlePackageType</key>
+            <string>APPL</string>
+            <key>CFBundleVersion</key>
+            <string>1.0</string>
+            <key>CFBundleShortVersionString</key>
+            <string>1.0</string>
+            <key>CFBundleIconFile</key>
+            <string>temp-logo</string>
+            <key>LSMinimumSystemVersion</key>
+            <string>10.15</string>
+        </dict>
+        </plist>
+        EOF
+        echo "✓ Created Info.plist"
+        
+        # Create PkgInfo
+        echo "APPL????" > "${CONTENTS_DIR}/PkgInfo"
+        echo "✓ Created PkgInfo"
+        
+        echo "✓ App bundle created: ${BUNDLE_DIR}"
+
     # ZIP for macOS (Crucial for preserving permissions)
     - name: Zip macOS Artifact
       if: inputs.is_windows == false
       run: |
         cd publish
-        # Avalonia on Mac usually outputs 'AppName.app'
-        zip -r ../MacOS-${{ inputs.rid }}.zip *.app
+        # Find .app bundles
+        APP_BUNDLES=$(find . -maxdepth 1 -type d -name "*.app" 2>/dev/null)
+        if [ -n "$APP_BUNDLES" ]; then
+          APP_NAME=$(echo "$APP_BUNDLES" | head -n1 | sed 's|^\./||')
+          zip -r "../MacOS-${{ inputs.rid }}.zip" "$APP_NAME"
+          echo "✓ Created MacOS-${{ inputs.rid }}.zip with $APP_NAME"
+        else
+          echo "✗ Error: No .app bundle found in publish directory"
+          ls -la
+          exit 1
+        fi
 
     # ZIP for Windows (Portable)
     - name: Zip Windows Artifact
