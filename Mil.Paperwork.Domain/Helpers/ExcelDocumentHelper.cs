@@ -1,7 +1,10 @@
 ﻿using OfficeOpenXml;
 using OfficeOpenXml.Style;
-using System.Drawing;
 using System.Text.RegularExpressions;
+using System.Runtime.InteropServices;
+#if WINDOWS
+using System.Drawing;
+#endif
 
 namespace Mil.Paperwork.Domain.Helpers
 {
@@ -37,6 +40,16 @@ namespace Mil.Paperwork.Domain.Helpers
         {
             if (string.IsNullOrEmpty(text)) return 0.0;
 
+            #if WINDOWS
+                return MeasureTextHeightWindows(text, font, width);
+            #else
+                return MeasureTextHeightCrossPlatform(text, font, width);
+            #endif
+        }
+
+#if WINDOWS
+        private static double MeasureTextHeightWindows(string text, ExcelFont font, double width)
+        {
             using (var bitmap = new Bitmap(1, 1))
             using (var graphics = Graphics.FromImage(bitmap))
             {
@@ -49,7 +62,19 @@ namespace Mil.Paperwork.Domain.Helpers
                 return Math.Min(Convert.ToDouble(size.Height) * 72 / 96, 409);
             }
         }
-
+#else
+        private static double MeasureTextHeightCrossPlatform(string text, ExcelFont font, double width)
+        {
+            var fontSize = font.Size * 0.75;
+            var pixelWidth = width * 7; // 7 pixels per Excel column width
+            var charsPerLine = Math.Max(1, (int)(pixelWidth / (fontSize * 0.6))); // Approximate chars per line
+            var lineCount = Math.Max(1, (int)Math.Ceiling((double)text.Length / charsPerLine));
+            var estimatedHeight = lineCount * fontSize * 1.2; // Add 20% for line spacing
+            
+            // Excel height in points with max of 409 per Excel requirements
+            return Math.Min(estimatedHeight, 409);
+        }
+#endif
         public static void MapDataToTheNamedFields(this ExcelWorksheet sheet, Dictionary<string, string> fieldsMap)
         {
             var namedFields = sheet.GetNamedFieldRanges();
