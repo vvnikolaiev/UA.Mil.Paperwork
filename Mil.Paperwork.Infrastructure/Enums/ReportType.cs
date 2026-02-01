@@ -22,6 +22,8 @@ namespace Mil.Paperwork.Infrastructure.Enums
         Invoice,
         [Description("Акт введення в експлуатацію")]
         CommissioningAct,
+        [Description("Акт прийому-передачі основних засобів (додаток 23)")]
+        Handover23Act,
         [Description("Пакет документів для списання")]
         WriteOffPackage
     }

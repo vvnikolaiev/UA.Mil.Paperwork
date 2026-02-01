@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Mil.Paperwork.UI.ViewModels.Tabs
 {
-    internal class ServicesConfigViewModel : ObservableItem, ISettingsTabViewModel
+    internal class ServicesConfigViewModel : SettingsTabViewModel
     {
         private readonly IReportDataService _reportDataService;
         private readonly IDialogService _dialogService;
@@ -36,11 +36,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             }
         }
 
-        public string Header => "Налаштування служб";
-
-        public bool IsClosed { get; private set; }
-
-        public event EventHandler<ITabViewModel> TabCloseRequested;
+        public override string Header => "Налаштування служб";
 
         public IDelegateCommand AddNewServiceCommand { get; }
         public IDelegateCommand MarkAsDefaultCommand { get; }
@@ -48,12 +44,10 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         public IDelegateCommand SaveCommand { get; }
         public IDelegateCommand SaveLocalCommand { get; }
         public IDelegateCommand RefreshCommand { get; }
-        public IDelegateCommand CloseCommand { get; }
-
 
         public ServicesConfigViewModel(
             IReportDataService reportDataService,
-            IDialogService dialogService)
+            IDialogService dialogService) : base(dialogService)
         {
             _reportDataService = reportDataService;
             _dialogService = dialogService;
@@ -64,7 +58,6 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             SaveCommand = new DelegateCommand(SaveCommandExecute);
             SaveLocalCommand = new DelegateCommand(SaveLocalCommandExecute);
             RefreshCommand = new DelegateCommand(RefreshCommandExecute);
-            CloseCommand = new DelegateCommand(CloseCommandExecute);
 
             AssetTypes = [.. EnumHelper.GetValues<AssetType>()];
 
@@ -202,12 +195,6 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             {
                 LoadServicesData(withReload: true);
             }
-        }
-
-        private void CloseCommandExecute()
-        {
-            IsClosed = true;
-            TabCloseRequested?.Invoke(this, this);
         }
     }
 }

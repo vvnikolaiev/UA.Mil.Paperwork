@@ -1,8 +1,11 @@
 ﻿namespace Mil.Paperwork.Domain.Helpers
 {
-    public class InvoiceReportHelper
+    internal class InvoiceReportHelper
     {
+        public const string SummaryRowTotalText = "Всього:";
+
         public const string REPORT_TEMPLATE_NAME = "InvoiceTemplate.docx";
+
         public const string OUTPUT_REPORT_NAME_TEMPLATE = "Накладна {0}.docx";
 
         public const string FIELD_DUE_DAY = "DUE_DAY";

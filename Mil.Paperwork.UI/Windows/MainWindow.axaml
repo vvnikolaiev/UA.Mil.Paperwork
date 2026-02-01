@@ -57,6 +57,10 @@
             <reportViews:InvoiceView />
         </DataTemplate>
 
+		<DataTemplate DataType="reportViewModels:Handover23ActViewModel">
+			<reportViews:Handover23ActView />
+		</DataTemplate>
+
 		<DataTemplate DataType="{x:Type reportViewModels:AssetValuationViewModel}">
 
             <Grid Grid.IsSharedSizeScope="True">

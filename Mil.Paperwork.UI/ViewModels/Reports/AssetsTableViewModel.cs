@@ -33,6 +33,11 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public IDelegateCommand AddRowCommand { get; }
         public IDelegateCommand RemoveRowCommand { get; }
 
+        public AssetsTableViewModel(IDataService dataService, IDialogService dialogService) 
+            : this(new DummyAssetFactory(), dataService, dialogService)
+        { 
+        }
+
         public AssetsTableViewModel(
             IAssetFactory assetFactory,
             IDataService dataService,
@@ -43,7 +48,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             _dialogService = dialogService;
 
             ProductsSelector = new ProductSelectionViewModel(dataService);
-            AssetsCollection = new ObservableCollection<WriteOffAssetViewModel>();
+            AssetsCollection = [];
 
             MeasurementUnits = [.. _dataService.LoadMeasurementUnitsData().Select(x => new MeasurementUnitViewModel(x))];
 

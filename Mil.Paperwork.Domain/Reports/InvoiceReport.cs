@@ -6,14 +6,11 @@ using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;
 using Spire.Doc;
 using Spire.Doc.Documents;
-using System.IO;
 
 namespace Mil.Paperwork.Domain.Reports
 {
     internal class InvoiceReport : IReport
     {
-        private const string SummaryRowTotalText = "Всього:";
-
         private readonly IReportDataService _reportDataService;
 
         private byte[] _reportBytes;
@@ -152,7 +149,7 @@ namespace Mil.Paperwork.Domain.Reports
             var countMergedColumns = InvoiceReportHelper.COLUMN_COUNT_IN - InvoiceReportHelper.COLUMN_INDEX;
             var summaryCell = textSummaryRow.CreateMergedCell(InvoiceReportHelper.COLUMN_INDEX, countMergedColumns);
 
-            textSummaryRow.Cells[0].AddText(SummaryRowTotalText, nameCellParameters);
+            textSummaryRow.Cells[0].AddText(InvoiceReportHelper.SummaryRowTotalText, nameCellParameters);
             textSummaryRow.Cells[InvoiceReportHelper.COLUMN_COUNT_IN].AddNumber(totalCount, cellParameters);
             textSummaryRow.Cells[InvoiceReportHelper.COLUMN_COUNT_OUT].AddNumber(totalCount, cellParameters);
             textSummaryRow.Cells[InvoiceReportHelper.COLUMN_TOTAL_PRICE].AddPrice(totalSum, cellParameters);

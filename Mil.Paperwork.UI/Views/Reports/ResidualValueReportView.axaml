@@ -213,7 +213,7 @@
 			<Button Content="Додати рядок" Command="{Binding AssetsTable.AddRowCommand}" />
 			<Button Content="Видалити рядок" Command="{Binding AssetsTable.RemoveRowCommand }" />
 			<Button Content="Очистити таблицю" Command="{Binding AssetsTable.ClearTableCommand}"/>
-			<Button Content="Закрити" Command="{Binding CloseCommand}"/>
+			<Button Classes="CloseTab" Content="Закрити" Command="{Binding CloseTabCommand}" />
 		</StackPanel>
 	</Grid>
 </UserControl>

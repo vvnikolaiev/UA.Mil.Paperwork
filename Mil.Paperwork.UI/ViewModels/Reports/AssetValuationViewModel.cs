@@ -140,7 +140,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public IDelegateCommand ClearCommand { get; }
         public IDelegateCommand OkCommand { get; }
         public IDelegateCommand CancelCommand { get; }
-        public IDelegateCommand CloseTabCommand { get; }
         public IDelegateCommand GenerateReportCommand { get; }
         public IDelegateCommand OpenConfigurationCommand { get; }
 
@@ -166,7 +165,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             ClearCommand = new DelegateCommand(ClearTableExecute);
             OkCommand = new DelegateCommand(OKCommandExecute);
             CancelCommand = new DelegateCommand(CancelCommandExecute);
-            CloseTabCommand = new DelegateCommand(CloseTabCommandExecute);
             GenerateReportCommand = new DelegateCommand(GenerateReportCommandExecute);
             OpenConfigurationCommand = new DelegateCommand(OpenConfigurationCommandExecute);
 
@@ -345,11 +343,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             // there will be a bug when User closes the window with "X" button.
             RestoreState();
             CloseWindow();
-        }
-
-        private void CloseTabCommandExecute()
-        {
-            Close();
         }
 
         protected void CalculatePrices()

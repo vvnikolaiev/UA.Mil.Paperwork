@@ -75,7 +75,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         public IDelegateCommand GenerateReportCommand { get; }
         public IDelegateCommand SelectFolderCommand { get; }
-        public IDelegateCommand CloseCommand { get; }
 
         public ResidualValueReportViewModel(
             ReportManager reportManager,
@@ -96,7 +95,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             GenerateReportCommand = new DelegateCommand(GenerateReport);
             SelectFolderCommand = new DelegateCommand(SelectFolder);
-            CloseCommand = new DelegateCommand(CloseCommandExecute);
         }
 
         private void GenerateReport()
@@ -137,11 +135,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             {
                 DestinationFolderPath = folderName;
             }
-        }
-
-        private void CloseCommandExecute()
-        {
-            Close();
         }
     }
 

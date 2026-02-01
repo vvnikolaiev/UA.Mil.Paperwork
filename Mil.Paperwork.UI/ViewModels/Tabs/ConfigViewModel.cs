@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace Mil.Paperwork.UI.ViewModels.Tabs
 {
-    internal abstract class ConfigViewModel : ObservableItem, ISettingsTabViewModel
+    internal abstract class ConfigViewModel : SettingsTabViewModel
     {
         private const string ImportFileFilter = "JSON Files|*.json";
         private const string ImportFileTitle = "Виберіть файл JSON для імпорту";
@@ -18,19 +18,13 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
 
         public abstract List<object> ExportData { get; }
 
-        public abstract string Header { get; }
-        public bool IsClosed { get; private set; }
-
-        public event EventHandler<ITabViewModel> TabCloseRequested;
-
         public IDelegateCommand<ExportType> ExportDataCommand { get; }
         public IDelegateCommand ImportCommand { get; }
-        public IDelegateCommand CloseCommand { get; }
 
         public ConfigViewModel(
             IExportService exportService,
             IImportService importService,
-            IDialogService dialogService)
+            IDialogService dialogService) : base(dialogService)
         {
             _exportService = exportService;
             _importService = importService;
@@ -38,7 +32,6 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
 
             ExportDataCommand = new DelegateCommand<ExportType>(ExportDataCommandExecute);
             ImportCommand = new DelegateCommand(ImportCommandExecute);
-            CloseCommand = new DelegateCommand(CloseCommandExecute);
         }
 
         protected abstract void UpdateCurrentConfig(bool withReload = false);
@@ -99,12 +92,6 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         {
             _dialogService.TryPickFile(out var filePath, ImportFileFilter, ImportFileTitle);
             return filePath;
-        }
-
-        private void CloseCommandExecute()
-        {
-            IsClosed = true;
-            TabCloseRequested?.Invoke(this, this);
         }
 
         protected abstract string ExportFileTitle { get; }

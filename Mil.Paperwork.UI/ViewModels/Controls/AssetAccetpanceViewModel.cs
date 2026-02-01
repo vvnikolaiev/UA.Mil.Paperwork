@@ -87,12 +87,12 @@ namespace Mil.Paperwork.UI.ViewModels
             People = [.. dataService.LoadPeopleData().Select(x => new PersonViewModel(x))];
         }
 
-        public PersonDTO GetReceiverDTO()
+        public PersonDTO GetAcceptedDTO()
         {
             return new PersonDTO(_personAcceptedName, _personAcceptedPosition, _personAcceptedRank);
         }
 
-        public PersonDTO GetTransmitterDTO()
+        public PersonDTO GetHandedDTO()
         {
             return new PersonDTO(_personHandedName, _personHandedPosition, _personHandedRank);
         }

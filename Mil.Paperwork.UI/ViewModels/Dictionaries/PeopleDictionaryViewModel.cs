@@ -11,29 +11,25 @@ using System.Linq;
 
 namespace Mil.Paperwork.UI.ViewModels.Dictionaries
 {
-    internal class PeopleDictionaryViewModel : ISettingsTabViewModel
+    internal class PeopleDictionaryViewModel : SettingsTabViewModel
     {
         private readonly IDataService _dataService;
         private readonly IImportService _importService;
         private readonly IDialogService _dialogService;
 
         public ObservableCollection<PersonViewModel> People { get; }
-        public string Header => "Довідник осіб";
-        public bool IsClosed { get; private set; }
-
-        public event EventHandler<ITabViewModel> TabCloseRequested;
+        public override string Header => "Довідник осіб";
 
         public IDelegateCommand AddItemCommand { get; }
         public IDelegateCommand<PersonViewModel> RemoveItemCommand { get; }
         public IDelegateCommand SaveCommand { get; }
         public IDelegateCommand RefreshCommand { get; }
         public IDelegateCommand ImportCommand { get; }
-        public IDelegateCommand CloseCommand { get; }
 
         public PeopleDictionaryViewModel(
             IDataService dataService, 
             IImportService importService,
-            IDialogService dialogService)
+            IDialogService dialogService) : base(dialogService)
         {
             _dataService = dataService;
             _importService = importService;
@@ -46,9 +42,7 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
             SaveCommand = new DelegateCommand(SaveCommandExecute);
             RefreshCommand = new DelegateCommand(RefreshCommandExecute);
             ImportCommand = new DelegateCommand(ImportCommandExecute);
-            CloseCommand = new DelegateCommand(CloseCommandExecute);
         }
-
 
         private PersonViewModel[] GetPeopleData()
         {
@@ -97,15 +91,6 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
             if (importViewModel.IsValid)
             {
                 RefreshCommandExecute();
-            }
-        }
-
-        private async void CloseCommandExecute()
-        {
-            if (await _dialogService.ShowMessageAsync("Close tab?", "Confirmation", DialogButtons.YesNo) == DialogResult.Yes)
-            {
-                TabCloseRequested?.Invoke(this, this);
-                IsClosed = true;
             }
         }
     }

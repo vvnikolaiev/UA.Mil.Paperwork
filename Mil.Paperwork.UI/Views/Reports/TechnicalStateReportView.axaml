@@ -48,7 +48,8 @@
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 
-						<DataGridTextColumn Header="С/Н" Binding="{Binding SerialNumber, UpdateSourceTrigger=LostFocus}" Width="80" />
+						<DataGridTextColumn Header="С/Н" Binding="{Binding SerialNumber, UpdateSourceTrigger=LostFocus}"
+											MinWidth="80" />
 
 						<DataGridTextColumn Header="Код ном." Binding="{Binding NomenclatureCode}" Width="70" />
 
@@ -72,7 +73,7 @@
 							</DataTemplate>
 						</DataGridTemplateColumn>
 
-						<DataGridTemplateColumn Header="Ціна" MinWidth="75">
+						<DataGridTemplateColumn Header="Ціна" MinWidth="75" MaxWidth="110">
 							<DataTemplate>
 								<NumericUpDown Value="{Binding Price, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 											   FormatString="N2"
@@ -323,7 +324,7 @@
 			<Button Content="Додати майно" Command="{Binding AssetsTable.AddRowCommand}" />
 			<Button Content="Видалити майно" Command="{Binding AssetsTable.RemoveRowCommand }" />
 			<Button Content="Очистити таблицю" Command="{Binding AssetsTable.ClearTableCommand}"/>
-			<Button Content="Закрити" Command="{Binding CloseCommand}"/>
+			<Button Classes="CloseTab" Content="Закрити" Command="{Binding CloseTabCommand}"/>
 		</StackPanel>
 	</Grid>
 </UserControl>

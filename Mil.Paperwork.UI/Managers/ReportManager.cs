@@ -17,6 +17,7 @@ namespace Mil.Paperwork.UI.Managers
         private readonly IReportService<IDismantlingReportData> _dismantlingReportService;
         private readonly CommissioningActService _commissioningActService;
         private readonly IReportService<IInvoceReportData> _invoiceReportService;
+        private readonly IReportService<IHandoverReportData> _handover23ReportService;
         private readonly IReportService<ITechnicalStateReportData> _writeOffReportsPackageService;
 
         public ReportManager(
@@ -28,6 +29,7 @@ namespace Mil.Paperwork.UI.Managers
             AssetDismantlingReportService dismantlingReportService,
             CommissioningActService commissioningActService,
             InvoiceReportService invoiceReportService,
+            Handover23ReportService handover23ReportService,
             IDialogService dialogService)
         {
             _dialogService = dialogService;
@@ -41,6 +43,7 @@ namespace Mil.Paperwork.UI.Managers
             _dismantlingReportService = dismantlingReportService;
             _commissioningActService = commissioningActService;
             _invoiceReportService = invoiceReportService;
+            _handover23ReportService = handover23ReportService;
         }
 
         public async void GenerateWriteOffReport(ObsoleteWriteOffReportData reportData)
@@ -131,6 +134,14 @@ namespace Mil.Paperwork.UI.Managers
             var invocieResult = _invoiceReportService.TryGenerateReport(reportData);
 
             var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.InvoiceName, invocieResult);
+            await _dialogService.ShowMessageAsync(status);
+        }
+
+        public async void GenerateHandover23Act(IHandoverReportData reportData)
+        {
+            var handoverResult = _handover23ReportService.TryGenerateReport(reportData);
+
+            var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.Handover23Name, handoverResult);
             await _dialogService.ShowMessageAsync(status);
         }
     }

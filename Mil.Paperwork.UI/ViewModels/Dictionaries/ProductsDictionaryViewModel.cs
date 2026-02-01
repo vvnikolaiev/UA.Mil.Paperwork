@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace Mil.Paperwork.UI.ViewModels.Dictionaries
 {
-    internal class ProductsDictionaryViewModel : ISettingsTabViewModel
+    internal class ProductsDictionaryViewModel : SettingsTabViewModel
     {
         private readonly IDataService _dataService;
         private readonly IExportService _exportService;
@@ -23,10 +23,7 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
         public ObservableCollection<ExportType> ExportTypes { get; private set; }
         public ObservableCollection<MeasurementUnitViewModel> MeasurementUnits { get; }
 
-        public string Header => "Довідник майна";
-        public bool IsClosed { get; private set; }
-
-        public event EventHandler<ITabViewModel> TabCloseRequested;
+        public override string Header => "Довідник майна";
 
         public IDelegateCommand AddItemCommand { get; }
         public IDelegateCommand<ProductViewModel> RemoveItemCommand { get; }
@@ -35,13 +32,12 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
         public IDelegateCommand<ExportType> ExportDataCommand { get; }
         public IDelegateCommand ExportTableDataCommand { get; }
         public IDelegateCommand RefreshCommand { get; }
-        public IDelegateCommand CloseCommand { get; }
 
         public ProductsDictionaryViewModel(
             IDataService dataService, 
             IExportService exportService, 
             IImportService importService,
-            IDialogService dialogService)
+            IDialogService dialogService) : base(dialogService)
         {
             _dataService = dataService;
             _exportService = exportService;
@@ -58,7 +54,6 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
             ImportCommand = new DelegateCommand(ImportCommandExecute);
             ExportDataCommand = new DelegateCommand<ExportType>(ExportRawDataCommandExecute);
             RefreshCommand = new DelegateCommand(RefreshCommandExecute);
-            CloseCommand = new DelegateCommand(CloseCommandExecute);
         }
 
         private ProductViewModel[] GetProductsData()
@@ -145,16 +140,6 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
             if (result == DialogResult.Yes)
             {
                 ReloadProductsData();
-            }
-        }
-
-        private async void CloseCommandExecute()
-        {
-            var result = await _dialogService.ShowMessageAsync("Are you sure you want to close this tab?", "Confirmation", DialogButtons.YesNo);
-            if (result == DialogResult.Yes)
-            {
-                TabCloseRequested.Invoke(this, this);
-                IsClosed = true;
             }
         }
     }

@@ -10,26 +10,24 @@ using System.Windows.Input;
 
 namespace Mil.Paperwork.UI.ViewModels.Dictionaries
 {
-    internal class MeasurementUnitsDictionaryViewModel : ISettingsTabViewModel
+    internal class MeasurementUnitsDictionaryViewModel : BaseTabViewModel, ISettingsTabViewModel
     {
         private readonly IDataService _dataService;
         private readonly IDialogService _dialogService;
 
         public ObservableCollection<MeasurementUnitViewModel> Units { get; }
-        public string Header => "Довідник одиниць виміру";
+        public override string Header => "Довідник одиниць виміру";
         public bool IsClosed { get; private set; }
 
         public ObservableCollection<NounGender> Genders { get;}
         
-        public event EventHandler<ITabViewModel> TabCloseRequested;
-
         public IDelegateCommand AddItemCommand { get; }
         public IDelegateCommand<MeasurementUnitViewModel> RemoveItemCommand { get; }
         public IDelegateCommand SaveCommand { get; }
         public IDelegateCommand RefreshCommand { get; }
-        public IDelegateCommand CloseCommand { get; }
 
-        public MeasurementUnitsDictionaryViewModel(IDataService dataService, IDialogService dialogService)
+        public MeasurementUnitsDictionaryViewModel(IDataService dataService, IDialogService dialogService) 
+            : base(dialogService)
         {
             _dataService = dataService;
             _dialogService = dialogService;
@@ -41,7 +39,6 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
             RemoveItemCommand = new DelegateCommand<MeasurementUnitViewModel>(RemoveItemCommandExecute);
             SaveCommand = new DelegateCommand(SaveCommandExecute);
             RefreshCommand = new DelegateCommand(RefreshCommandExecute);
-            CloseCommand = new DelegateCommand(CloseCommandExecute);
         }
 
         private MeasurementUnitViewModel[] GetUnitsData()
@@ -74,15 +71,6 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
             foreach (var unit in units)
             {
                 Units.Add(unit);
-            }
-        }
-
-        private async void CloseCommandExecute()
-        {
-            if (await _dialogService.ShowMessageAsync("Close tab?", "Confirmation", DialogButtons.YesNo) == DialogResult.Yes)
-            {
-                TabCloseRequested?.Invoke(this, this);
-                IsClosed = true;
             }
         }
     }

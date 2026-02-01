@@ -148,6 +148,7 @@ namespace Mil.Paperwork.Infrastructure.Services
                 ReportType.AssetDismantlingReport => config.AssetDismantlingReport,
                 ReportType.CommissioningAct => config.CommissioningAct,
                 ReportType.Invoice => config.Invoice,
+                ReportType.Handover23Act => config.Handover23Act,
                 ReportType.WriteOffPackage => config.WriteOffPackage,
                 _ => []
             };
@@ -361,6 +362,9 @@ namespace Mil.Paperwork.Infrastructure.Services
                     break;
                 case ReportType.Invoice:
                     reportDataConfigDTO.Invoice = [.. parameters];
+                    break;
+                case ReportType.Handover23Act:
+                    reportDataConfigDTO.Handover23Act = [.. parameters];
                     break;
                 case ReportType.WriteOffPackage:
                     reportDataConfigDTO.WriteOffPackage = [.. parameters];
