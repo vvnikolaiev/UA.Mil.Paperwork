@@ -3,9 +3,14 @@ using System.Runtime.CompilerServices;
 
 namespace Mil.Paperwork.Common.MVVM
 {
-    public class ObservableItem : INotifyPropertyChanged
+    public abstract class ObservableItem : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void NotifyValueChanged(object? value, string propertyName)
+        {
+            OnPropertyChanged(propertyName);
+        }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -16,7 +21,7 @@ namespace Mil.Paperwork.Common.MVVM
         {
             if (Equals(field, value)) return false;
             field = value;
-            OnPropertyChanged(propertyName);
+            NotifyValueChanged(value, propertyName);
             return true;
         }
     }

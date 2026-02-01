@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mil.Paperwork.Common.MVVM;
+using System;
 
 namespace Mil.Paperwork.UI.ViewModels.Tabs
 {
@@ -7,5 +8,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         event EventHandler<ITabViewModel> TabCloseRequested;
 
         string Header { get; }
+        
+        IDelegateCommand CloseTabCommand { get; }
     }
 }

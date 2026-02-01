@@ -14,6 +14,7 @@ namespace Mil.Paperwork.UI.ViewModels.Controls
         public string YesText => "Так";
         public string NoText => "Ні";
 
+        public bool IsTitleEmpty => String.IsNullOrEmpty(Title);
         public bool IsOkVisible => Buttons == DialogButtons.OK || Buttons == DialogButtons.OKCancel;
         public bool IsCancelVisible => Buttons == DialogButtons.OKCancel || Buttons == DialogButtons.YesNoCancel;
         public bool IsYesVisible => Buttons == DialogButtons.YesNo || Buttons == DialogButtons.YesNoCancel;

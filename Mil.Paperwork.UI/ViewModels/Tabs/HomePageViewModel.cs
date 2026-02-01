@@ -27,7 +27,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         public event EventHandler<ITabViewModel> TabSelectionRequested;
         public event EventHandler<ITabViewModel> TabCloseRequested;
 
-        public string Header => "HOME PAGE";
+        public string Header => "Головна сторінка";
 
         public bool IsClosed => false;
 
@@ -42,6 +42,8 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         public IDelegateCommand OpenCommissionsConfigurationCommand { get; }
         public IDelegateCommand OpenServicesConfigurationCommand { get; }
         public IDelegateCommand OpenReportConfigurationCommand { get; }
+
+        public IDelegateCommand CloseTabCommand => new DelegateCommand(() => { });
 
         public HomePageViewModel(
             ReportManager reportManager,
@@ -85,6 +87,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
                 new(DocumentTypeEnum.TechnicalState7),
                 new(DocumentTypeEnum.CommisioningAct),
                 new(DocumentTypeEnum.Invoice),
+                new(DocumentTypeEnum.HandoverCertificate23),
             };
 
             return reportTypes;
@@ -115,6 +118,9 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
                     break;
                 case DocumentTypeEnum.CommisioningAct:
                     createdTab = new CommissioningActReportViewModel(_reportManager, _dataService, _reportDataService, _dialogService);
+                    break;
+                case DocumentTypeEnum.HandoverCertificate23:
+                    createdTab = new Handover23ActViewModel(_reportManager, _dataService, _dialogService);
                     break;
                 default:
                     createdTab = null;

@@ -202,7 +202,7 @@
 		<StackPanel Grid.Row="3" Classes="buttons">
 			<Button Content="Згенерувати" Command="{Binding GenerateReportCommand}" />
 			<Button Content="Налаштування" Command="{Binding OpenConfigurationCommand}" />
-			<Button Content="Закрити" Command="{Binding CloseTabCommand}"/>
+			<Button Classes="CloseTab" Content="Закрити" Command="{Binding CloseTabCommand}"/>
 		</StackPanel>
 	</Grid>
 </UserControl>

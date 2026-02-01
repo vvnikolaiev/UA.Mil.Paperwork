@@ -7,7 +7,6 @@ using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Managers;
-using Mil.Paperwork.UI.ViewModels.Assets;
 using Mil.Paperwork.UI.ViewModels.Controls;
 using Mil.Paperwork.UI.ViewModels.Dictionaries;
 using Mil.Paperwork.UI.ViewModels.Tabs;
@@ -15,7 +14,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Input;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
@@ -236,7 +234,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public IDelegateCommand AddNumbersRowCommand { get; }
         public IDelegateCommand RemoveNumbersRowCommand { get; }
         public IDelegateCommand GenerateReportCommand { get; }
-        public IDelegateCommand CloseTabCommand { get; }
         public IDelegateCommand OpenConfigurationCommand { get; }
 
         public CommissioningActReportViewModel(
@@ -260,7 +257,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             RemoveNumbersRowCommand = new DelegateCommand(RemoveRowExecute, RemoveRowCanExecute);
 
             GenerateReportCommand = new DelegateCommand(GenerateReportCommandExecute);
-            CloseTabCommand = new DelegateCommand(CloseTabCommandExecute);
             OpenConfigurationCommand = new DelegateCommand(OpenConfigurationCommandExecute);
 
             ProductIdentifiers.CollectionChanged += OnProductIdentifiersCollectionChanged;
@@ -348,8 +344,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             var identifiers = ProductIdentifiers.Cast<IProductIdentification>().ToList();
 
-            var personAccepted = _assetAcceptance.GetReceiverDTO();
-            var personHanded = _assetAcceptance.GetTransmitterDTO();
+            var personAccepted = _assetAcceptance.GetAcceptedDTO();
+            var personHanded = _assetAcceptance.GetHandedDTO();
 
             var reportData = new CommissioningActReportData
             {
@@ -429,11 +425,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             return SelectedIdentifier != null;
         }
 
-
-        private void CloseTabCommandExecute()
-        {
-            Close();
-        }
 
         private void OpenConfigurationCommandExecute()
         {

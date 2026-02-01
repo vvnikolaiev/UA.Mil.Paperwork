@@ -20,5 +20,9 @@ namespace Mil.Paperwork.UI.Enums
         Invoice,
         [Description("Акт введення в експлуатацію")]
         CommisioningAct,
+        [Description("Акт прийому-передачі ОЗ")]
+        HandoverCertificate23,
+        //[Description("Акт прийому-передачі запасів")]
+        //HandoverCertificate24
     }
 }

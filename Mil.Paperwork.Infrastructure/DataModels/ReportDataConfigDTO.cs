@@ -30,6 +30,9 @@ namespace Mil.Paperwork.Infrastructure.DataModels
         [ReportTypeMapping(ReportType.Invoice)]
         public List<ReportParameter> Invoice { get; set; }
 
+        [ReportTypeMapping(ReportType.Handover23Act)]
+        public List<ReportParameter> Handover23Act { get; set; }
+
         [ReportTypeMapping(ReportType.WriteOffPackage)]
         public List<ReportParameter> WriteOffPackage { get; set; }
     }

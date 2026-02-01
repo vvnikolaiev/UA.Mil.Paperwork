@@ -15,6 +15,7 @@ namespace Mil.Paperwork.UI.Helpers
         public const string DismantlingReportName = "Акт зміни якісного стану - РОЗУКОМПЛЕКТАЦІЇ - майна";
         public const string CommisioninaActName = "Акт введення в експлуатацію";
         public const string InvoiceName = "Накладна (вимога)";
+        public const string Handover23Name = "Акт прийому-передачі основних засобів (додаток 23)";
 
         private const string DismantlingReasonP1TextFormat = "У зв’язку із втратою {0} для {1}, {2},";
         private const string DismantlingReasonP2TextFormat = "необхідно вилучити {0} {1} для {2} подальшого списання";

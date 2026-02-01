@@ -104,7 +104,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public ObservableCollection<MeasurementUnitViewModel> MeasurementUnits { get; }
 
         public IDelegateCommand GenerateReportCommand { get; }
-        public IDelegateCommand CloseCommand { get; }
         public IDelegateCommand OpenConfigurationCommand { get; }
 
         public AssetInitialTechnicalStateViewModel(
@@ -127,7 +126,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             MeasurementUnits = [.. _dataService.LoadMeasurementUnitsData().Select(x => new MeasurementUnitViewModel(x))];
 
             GenerateReportCommand = new DelegateCommand(GenerateReport);
-            CloseCommand = new DelegateCommand(CloseCommandExecute);
             OpenConfigurationCommand = new DelegateCommand(OpenConfigurationCommandExecute);
         }
 
@@ -147,8 +145,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         protected virtual void GenerateReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
         {
 
-            var personAccepted = AssetAcceptance.GetReceiverDTO();
-            var personHanded = AssetAcceptance.GetTransmitterDTO();
+            var personAccepted = AssetAcceptance.GetAcceptedDTO();
+            var personHanded = AssetAcceptance.GetHandedDTO();
 
             var reportData = new InitialTechnicalStateReportData
             {
@@ -248,11 +246,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             //AssetCompliance = "відповідає";
             //CompletionState = "не потрібна";
             //Conclusion = "ввести в експлуатацію";
-        }
-
-        private void CloseCommandExecute()
-        {
-            Close();
         }
 
         private void OpenConfigurationCommandExecute()

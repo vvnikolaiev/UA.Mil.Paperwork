@@ -10,7 +10,6 @@ using Mil.Paperwork.UI.ViewModels.Tabs;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Input;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
@@ -105,7 +104,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public IDelegateCommand AddRowCommand { get; }
         public IDelegateCommand RemoveRowCommand { get; }
         public IDelegateCommand GenerateReportCommand { get; }
-        public IDelegateCommand CloseTabCommand { get; }
         public IDelegateCommand OpenConfigurationCommand { get; }
 
         public InvoiceReportViewModel(ReportManager reportManager, IDataService dataService, IDialogService dialogService) : base(dialogService)
@@ -122,7 +120,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             AssetAcceptance = new AssetAccetpanceViewModel(dataService);
 
             GenerateReportCommand = new DelegateCommand(GenerateReportCommandExecute);
-            CloseTabCommand = new DelegateCommand(CloseTabCommandExecute);
             OpenConfigurationCommand = new DelegateCommand(OpenConfigurationCommandExecute);
 
             AddRowCommand = new DelegateCommand(AddRow);
@@ -183,8 +180,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         protected void GenerateReport(string folderName)
         {
-            var personRecipient = AssetAcceptance.GetReceiverDTO();
-            var personTransmitter = AssetAcceptance.GetTransmitterDTO();
+            var personRecipient = AssetAcceptance.GetAcceptedDTO();
+            var personTransmitter = AssetAcceptance.GetHandedDTO();
 
             var reportData = new InvoceReportData
             {
@@ -203,11 +200,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             // Generate report
             _reportManager.GenerateInvoice(reportData);
-        }
-
-        private void CloseTabCommandExecute()
-        {
-            Close();
         }
 
         private void OpenConfigurationCommandExecute()

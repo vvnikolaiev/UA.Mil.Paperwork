@@ -5,12 +5,18 @@
 		mc:Ignorable="d"
 		x:Class="Mil.Paperwork.UI.Windows.MessageBoxWindow"
 		xmlns:vm="using:Mil.Paperwork.UI.ViewModels.Controls"
+		xmlns:converters="using:Mil.Paperwork.UI.Converters"
+		xmlns:enums="clr-namespace:Mil.Paperwork.Infrastructure.Enums;assembly=Mil.Paperwork.Infrastructure"
 		Width="420" Height="170"
 		CanResize="False"
 		WindowStartupLocation="CenterOwner"
 		x:DataType="vm:MessageBoxViewModel"
 		Title="{Binding Title}">
 
+	<Window.Resources>
+		<converters:InversedBoolConverter x:Key="InversedBoolConverter" />
+		<converters:EnumToBoolConverter x:Key="EnumToBoolConverter" />
+	</Window.Resources>
 
 	<Grid Margin="12">
 		<Grid.ColumnDefinitions>
@@ -25,23 +31,64 @@
 
 		<!-- Icon -->
 		<Border Grid.Row="0" Grid.Column="0" CornerRadius="6" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Top"
-				Background="{DynamicResource SystemControlBackgroundAccentBrush}">
+				Classes.Information="{Binding Icon, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:DialogIcon.Information}}"
+				Classes.Warning="{Binding Icon, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:DialogIcon.Warning}}"
+				Classes.Error="{Binding Icon, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:DialogIcon.Error}}"
+				Classes.Question="{Binding Icon, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:DialogIcon.Question}}">
+			<Border.Styles>
+				<Style Selector="Border.Information">
+					<Setter Property="Background" Value="{DynamicResource NotificationCardInformationBackgroundBrush}"/>
+				</Style>
+				<Style Selector="Border.Warning">
+					<Setter Property="Background" Value="{DynamicResource NotificationCardWarningBackgroundBrush}"/>
+				</Style>
+				<Style Selector="Border.Error">
+					<Setter Property="Background" Value="{DynamicResource NotificationCardErrorBackgroundBrush}"/>
+				</Style>
+				<Style Selector="Border.Question">
+					<Setter Property="Background" Value="{DynamicResource NotificationCardInformationBackgroundBrush}"/>
+				</Style>
+			</Border.Styles>
+
 			<TextBlock Text="{Binding IconGlyph}" VerticalAlignment="Center" HorizontalAlignment="Center"
+					   Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
 					   FontSize="30" FontWeight="Bold" />
 		</Border>
 
 
 		<StackPanel Grid.Row="0" Grid.Column="1" Margin="12,0,0,0">
-			<TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="16" />
+			<TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="16" 
+					   IsVisible="{Binding IsTitleEmpty, Converter={StaticResource InversedBoolConverter}}"/>
 			<TextBlock Text="{Binding Message}" TextWrapping="Wrap" Margin="0,8,0,0" />
 		</StackPanel>
 
 
 		<StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,16,0,0">
-			<Button Content="{Binding OkText}" IsVisible="{Binding IsOkVisible}" Command="{Binding OkCommand}" MinWidth="80" />
-			<Button Content="{Binding YesText}" IsVisible="{Binding IsYesVisible}" Command="{Binding YesCommand}" MinWidth="80" />
-			<Button Content="{Binding NoText}" IsVisible="{Binding IsNoVisible}" Command="{Binding NoCommand}" MinWidth="80" />
-			<Button Content="{Binding CancelText}" IsVisible="{Binding IsCancelVisible}" Command="{Binding CancelCommand}" MinWidth="80" />
+
+			<Button Content="{Binding OkText}"
+					IsVisible="{Binding IsOkVisible}"
+					Command="{Binding OkCommand}"
+					MinWidth="100"
+					IsDefault="True" />
+
+			<Button Content="{Binding YesText}"
+					IsVisible="{Binding IsYesVisible}"
+					Command="{Binding YesCommand}"
+					MinWidth="100"
+					IsDefault="{Binding IsOkVisible, Converter={StaticResource InversedBoolConverter}}"/>
+
+			<Button Content="{Binding NoText}"
+					IsVisible="{Binding IsNoVisible}"
+					Command="{Binding NoCommand}"
+					MinWidth="100"
+					IsCancel="{Binding IsCancelVisible, Converter={StaticResource InversedBoolConverter}}" />
+
+			<Button Content="{Binding CancelText}"
+					IsVisible="{Binding IsCancelVisible}"
+					Command="{Binding CancelCommand}"
+					MinWidth="100"
+					IsCancel="True" />
+
 		</StackPanel>
 	</Grid>
 </Window>
