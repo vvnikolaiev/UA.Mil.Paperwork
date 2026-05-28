@@ -63,7 +63,7 @@ namespace Mil.Paperwork.Domain.Reports.WriteOff
                 for (int i = 0; i < parameters.Assets.Count; i++)
                 {
                     var asset = parameters.Assets[i];
-                    var calculator = ResidualPriceCalculatorFactory.CreateCalculator(asset.Service);
+                    var calculator = asset.GetCalculator();
 
                     TableRow row = table.AddRow(true);
 

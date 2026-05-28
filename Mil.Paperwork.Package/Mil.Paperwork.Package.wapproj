@@ -61,7 +61,7 @@
     <NoWarn>$(NoWarn);NU1702</NoWarn>
     <EntryPointProjectUniqueName>..\Mil.Paperwork.UI\Mil.Paperwork.UI.csproj</EntryPointProjectUniqueName>
     <UserSecretsId>2d9452c1-7fea-475e-bac4-c645df386973</UserSecretsId>
-    <PackageCertificateThumbprint>26FB21C26B38956D21672F6B21C83233738BCB23</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>080855F35CBD4D94E73BFB09F107533851279700</PackageCertificateThumbprint>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>

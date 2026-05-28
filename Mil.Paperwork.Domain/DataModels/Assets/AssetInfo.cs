@@ -1,6 +1,6 @@
-﻿using Mil.Paperwork.Domain.Enums;
+﻿using Mil.Paperwork.Domain.Calculators;
+using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Infrastructure.DataModels;
-using Mil.Paperwork.Infrastructure.Enums;
 
 namespace Mil.Paperwork.Domain.DataModels.Assets
 {
@@ -16,7 +16,6 @@ namespace Mil.Paperwork.Domain.DataModels.Assets
         public int Count { get; set; } = 1;
         public DateTime StartDate { get; set; } = new DateTime(2023, 01, 01);
         public EventType EventType { get; set; }
-        public virtual AssetType Service => AssetType.Default;
 
         public string TSRegisterNumber { get; set; }
         public string TSDocumentNumber { get; set; }
@@ -40,6 +39,12 @@ namespace Mil.Paperwork.Domain.DataModels.Assets
             ResourceYears = productData.ResourceYears;
             StartDate = productData.StartDate;
             NomenclatureCode = productData.NomenclatureCode;
+        }
+
+        public virtual IResidualPriceCalculator GetCalculator()
+        {
+            var calculator = new DefaultResidualPriceCalculator();
+            return calculator;
         }
     }
 }

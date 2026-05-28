@@ -1,4 +1,5 @@
-﻿using Mil.Paperwork.Domain.Enums;
+﻿using Mil.Paperwork.Domain.Calculators;
+using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
 
@@ -15,6 +16,6 @@ namespace Mil.Paperwork.Domain.DataModels.Assets
 
         EventType EventType { get; set; }
 
-        AssetType Service { get; }
+        IResidualPriceCalculator GetCalculator();
     }
 }

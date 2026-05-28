@@ -3,7 +3,7 @@
     internal class QualityStateReportHelper
     {
         public const string REPORT_TEMPLATE_NAME = "QualityStateReportTemplate.docx";
-        public const string OUTPUT_REPORT_NAME_TEMPLATE = "Акт зміни якісного стану {0}.docx";
+        public const string OUTPUT_REPORT_NAME_TEMPLATE = "АЗЯС {0}.docx";
 
         public const string TOTAL_TEXT_FORMAT = "{0} на суму: {1}";
 
@@ -12,7 +12,11 @@
 
         public const string FIELD_REGISTRATION_NUMBER = "«REGISTRATION_NUMBER»";
         public const string FIELD_DOCUMENT_NUMBER = "«DOCUMENT_NUMBER»";
-        public const string FIELD_WHAT_HAPPENED = "«WHAT_HAPPENED»";
+        public const string FIELD_DOCUMENT_DATE = "«DOC_DATE»";
+        public const string FIELD_REASON = "«REASON»";
+        public const string FIELD_EVENT_DATE = "«EVENT_DATE»";
+        public const string FIELD_ORDEN_NUMBER = "«ORDEN_NUM»";
+        public const string FIELD_ORDEN_DATE = "«ORDEN_DATE»";
 
         public const int COLUMN_INDEX = 0;
         public const int COLUMN_NAME = 1;

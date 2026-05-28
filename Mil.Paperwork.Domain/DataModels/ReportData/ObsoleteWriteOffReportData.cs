@@ -8,7 +8,7 @@ using Mil.Paperwork.Infrastructure.Enums;
 namespace Mil.Paperwork.Domain.DataModels.ReportData
 {
     [Obsolete]
-    public class ObsoleteWriteOffReportData : ITechnicalStateReportData, IDismantlingReportData, IAssetValuationReportData, IResidualValueReportData, IQualityStateReportData
+    public class ObsoleteWriteOffReportData : ITechnicalStateReportData, IDismantlingReportData, IAssetValuationReportData, IResidualValueReportData, ICommonWriteOffReportData
     {
         public int? EventReportNumber { get; set; }
 

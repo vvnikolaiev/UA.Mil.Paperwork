@@ -6,6 +6,7 @@ using Mil.Paperwork.UI.Factories;
 using Mil.Paperwork.UI.Managers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
@@ -20,13 +21,20 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         private string _reason = string.Empty;
         private bool _generateWriteOffActs = true;
         private bool _generateWriteOffPackage = true;
+        private bool _generateQualityStateReportInstead = false;
+        private string _qsrRegNumber = string.Empty;
+        private string _qsrDocNumber = string.Empty;
+        private string _writeOffRegNumber = string.Empty;
+        private string _writeOffDocNumber = string.Empty;
 
         private int _bookOfLossesYear = DateTimeOffset.Now.Year;
         private int _bookOfLossesNumber;
         private int _bookOfLossesPage;
         private DateTimeOffset _bookOfLossesExtractDate = DateTimeOffset.Now.Date;
 
-        public override string Header => "Тех. стан (№11)";
+        private const string HeaderText = "Пакет списання";
+
+        public override string Header => OrdenNumber > 0 ? $"{HeaderText} (н. {OrdenNumber})" : HeaderText;
 
         public string Reason
         {
@@ -49,7 +57,13 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public int OrdenNumber
         {
             get => _ordenNumber;
-            set => SetProperty(ref _ordenNumber, value);
+            set
+            {
+                if (SetProperty(ref _ordenNumber, value))
+                {
+                    OnPropertyChanged(nameof(Header));
+                }
+            }
         }
 
         public DateTime OrdenDate
@@ -94,12 +108,42 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             set => SetProperty(ref _generateWriteOffPackage, value);
         }
 
+        public bool GenerateQualityStateReportInstead
+        {
+            get => _generateQualityStateReportInstead;
+            set => SetProperty(ref _generateQualityStateReportInstead, value);
+        }
+
+        public string QSRDocNumber
+        {
+            get => _qsrDocNumber;
+            set => SetProperty(ref _qsrDocNumber, value);
+        }
+
+        public string QSRRegNumber
+        {
+            get => _qsrRegNumber;
+            set => SetProperty(ref _qsrRegNumber, value);
+        }
+
+        public string WriteOffDocNumber
+        {
+            get => _writeOffDocNumber;
+            set => SetProperty(ref _writeOffDocNumber, value);
+        }
+
+        public string WriteOffRegNumber
+        {
+            get => _writeOffRegNumber;
+            set => SetProperty(ref _writeOffRegNumber, value);
+        }
+
         public AssetTechnicalStateViewModel(
-            ReportManager reportManager, 
-            IAssetFactory assetFactory, 
-            IDataService dataService, 
+            ReportManager reportManager,
+            IAssetFactory assetFactory,
+            IDataService dataService,
             IReportDataService reportDataService,
-            IDialogService dialogService) 
+            IDialogService dialogService)
             : base(reportManager, assetFactory, dataService, reportDataService, dialogService)
         {
             _reportManager = reportManager;
@@ -107,19 +151,70 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         protected override void GenerateReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
         {
-            BookExtractData? extract = null;
-
             if (GenerateWriteOffPackage)
             {
-                extract = new BookExtractData
-                {
-                    Year = BookOfLossesYear,
-                    Number = BookOfLossesNumber,
-                    PageNumber = BookOfLossesPage,
-                    RecordDate = BookOfLossesExtractDate.Date
-                };
+                GenerateWriteOffReports(assets, destinationFolder);
             }
 
+            // inroduce a new parameter to IAssetInfo to mark assets for write-off, and use it here instead of checking SerialNumber
+            var valuableAssets = _generateWriteOffActs ? [.. assets.Where(x => !string.IsNullOrEmpty(x.SerialNumber))] : assets;
+            var writeOffAssets = _generateWriteOffActs ? [.. assets.Where(x => string.IsNullOrEmpty(x.SerialNumber))] : Array.Empty<IAssetInfo>();
+
+            if (GenerateQualityStateReportInstead)
+            {
+                GenerateQualityStateReport(valuableAssets, destinationFolder);
+            }
+            else
+            {
+                GenerateTechnicalStateReport(valuableAssets, destinationFolder);
+            }
+
+            if (_generateWriteOffActs && writeOffAssets.Any())
+            {
+                GenerateWriteOffActReport(writeOffAssets, destinationFolder);
+            }
+        }
+
+        private void GenerateQualityStateReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
+        {
+            var reportData = new CommonWriteOffReportData
+            {
+                DocumentNumber = QSRDocNumber,
+                RegistrationNumber = QSRRegNumber,
+                DocumentDate = _documentDate.Date,
+                Reason = _reason,
+                EventDate = _eventDate.Date,
+                EventType = EventType,
+                Assets = [.. assets],
+                DestinationFolder = destinationFolder,
+                OrdenNumber = _ordenNumber,
+                OrdenDate = _ordenDate.Date,
+            };
+
+            _reportManager.GenerateQualityStateReport(reportData);
+        }
+
+        private void GenerateWriteOffActReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
+        {
+            var writeOffReportData = new CommonWriteOffReportData
+            {
+                DocumentNumber = WriteOffDocNumber,
+                RegistrationNumber = WriteOffRegNumber,
+                DocumentDate = _documentDate.Date,
+                Reason = _reason,
+                EventDate = _eventDate.Date,
+                EventType = EventType,
+                Assets = [.. assets],
+                DestinationFolder = destinationFolder,
+                OrdenNumber = _ordenNumber,
+                OrdenDate = _ordenDate.Date,
+            };
+
+            _reportManager.GenerateWriteOffActReport(writeOffReportData);
+        }
+
+        private void GenerateTechnicalStateReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
+        {
             var reportData = new TechnicalStateReportData
             {
                 DocumentDate = _documentDate.Date,
@@ -130,12 +225,34 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                 DestinationFolder = destinationFolder,
                 OrdenNumber = _ordenNumber,
                 OrdenDate = _ordenDate.Date,
-                GenerateWriteOffActs = _generateWriteOffActs,
+                GenerateWriteOffActs = _generateWriteOffActs
+            };
+
+            _reportManager.GenerateTechnicalStateReport(reportData);
+        }
+
+        private void GenerateWriteOffReports(IEnumerable<IAssetInfo> assets, string destinationFolder)
+        {
+            var extract = new BookExtractData
+            {
+                Year = BookOfLossesYear,
+                Number = BookOfLossesNumber,
+                PageNumber = BookOfLossesPage,
+                RecordDate = BookOfLossesExtractDate.Date
+            };
+
+            var writeOffPackageData = new WriteOffPackageReportData
+            {
+                DocumentDate = _documentDate.Date,
+                EventDate = _eventDate.Date,
+                Assets = [.. assets],
+                DestinationFolder = destinationFolder,
+                OrdenNumber = _ordenNumber,
+                OrdenDate = _ordenDate.Date,
                 BookOfLossesExtractData = extract
             };
 
-
-            _reportManager.GenerateTechnicalStateReport(reportData);
+            _reportManager.GenerateWriteOffPackage(writeOffPackageData);
         }
     }
 }

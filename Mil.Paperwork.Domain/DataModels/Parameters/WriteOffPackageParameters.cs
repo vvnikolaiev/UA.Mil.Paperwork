@@ -13,7 +13,7 @@ namespace Mil.Paperwork.Domain.DataModels.Parameters
         public decimal TotalWriteOffSum { get; set; }
         public IList<IAssetInfo> Assets { get; set; }
 
-        public static WriteOffPackageParameters FromReportData(ITechnicalStateReportData reportData)
+        public static WriteOffPackageParameters FromReportData(IWriteOffPackageReportData reportData)
         {
             return new WriteOffPackageParameters
             {

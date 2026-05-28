@@ -9,6 +9,7 @@ namespace Mil.Paperwork.UI.Helpers
 
         public const string ResidualValueReportName = "Акт залишкової вартості";
         public const string QualityStateReportName = "Акт зміни якісного стану";
+        public const string WriteOffActReportName = "Акт списання";
         public const string InitialTechnicalStateReportName = "Акт технічного стану (№7)";
         public const string TechnicalStateReportName = "Акт технічного стану (№11)";
         public const string ValuationReportName = "Акт оцінки майна";
@@ -16,6 +17,7 @@ namespace Mil.Paperwork.UI.Helpers
         public const string CommisioninaActName = "Акт введення в експлуатацію";
         public const string InvoiceName = "Накладна (вимога)";
         public const string Handover23Name = "Акт прийому-передачі основних засобів (додаток 23)";
+        public const string WriteOffPackageName = "Пакет документів для списання";
 
         private const string DismantlingReasonP1TextFormat = "У зв’язку із втратою {0} для {1}, {2},";
         private const string DismantlingReasonP2TextFormat = "необхідно вилучити {0} {1} для {2} подальшого списання";

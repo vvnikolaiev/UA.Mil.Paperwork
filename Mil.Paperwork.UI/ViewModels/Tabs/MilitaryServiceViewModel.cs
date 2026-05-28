@@ -2,7 +2,7 @@
 using Mil.Paperwork.Infrastructure.DataModels.Configuration;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
-using Mil.Paperwork.Common.MVVM;
+using Mil.MVVM.Common;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,6 +1,6 @@
-﻿using Mil.Paperwork.Common.Enums;
+﻿using Mil.MVVM.Common.Enums;
 
-namespace Mil.Paperwork.Common.Attributes
+namespace Mil.MVVM.Common.Attributes
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class DataGridColumnAttribute : Attribute

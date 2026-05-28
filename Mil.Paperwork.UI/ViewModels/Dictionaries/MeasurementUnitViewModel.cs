@@ -1,6 +1,6 @@
 ﻿using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
-using Mil.Paperwork.Common.MVVM;
+using Mil.MVVM.Common;
 
 namespace Mil.Paperwork.UI.ViewModels.Dictionaries
 {

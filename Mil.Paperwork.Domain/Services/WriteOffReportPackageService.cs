@@ -7,7 +7,7 @@ using System.IO;
 
 namespace Mil.Paperwork.Domain.Services
 {
-    public class WriteOffReportPackageService : IReportService<ITechnicalStateReportData>
+    public class WriteOffReportPackageService : IReportService<IWriteOffPackageReportData>
     {
         private readonly IReportDataService _reportDataService;
         private readonly IFileStorageService _fileStorage;
@@ -18,7 +18,7 @@ namespace Mil.Paperwork.Domain.Services
             _fileStorage = fileStorage;
         }
 
-        public bool TryGenerateReport(ITechnicalStateReportData reportData)
+        public bool TryGenerateReport(IWriteOffPackageReportData reportData)
         {
             var reports = new List<IWriteOffPackageReport>()
             {

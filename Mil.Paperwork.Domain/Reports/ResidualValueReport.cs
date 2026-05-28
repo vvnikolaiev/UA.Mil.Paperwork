@@ -318,7 +318,7 @@ namespace Mil.Paperwork.Domain.Reports
 
         private static void FillCoefficients(IAssetInfo asset, DateTime reportDate, int row, ExcelWorksheet sheet)
         {
-            var residualPriceCalculator = ResidualPriceCalculatorFactory.CreateCalculator(asset.Service);
+            var residualPriceCalculator = asset.GetCalculator();
             var coefficients = residualPriceCalculator.GetCoefficients(asset, reportDate);
 
             var column = ResidualValueReportHelper.TABLE_FIRST_COEFF_COLUMN;

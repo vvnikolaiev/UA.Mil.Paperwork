@@ -1,6 +1,6 @@
 ﻿using Mil.Paperwork.Domain.DataModels.Assets;
 using Mil.Paperwork.Infrastructure.DataModels;
-using Mil.Paperwork.Common.MVVM;
+using Mil.MVVM.Common;
 using System;
 
 namespace Mil.Paperwork.UI.ViewModels.Assets

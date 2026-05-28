@@ -4,6 +4,6 @@ namespace Mil.Paperwork.Domain.Reports
 {
     public interface IQualityStateReport : IReport
     {
-        bool TryCreate(IQualityStateReportData reportData);
+        bool TryCreate(ICommonWriteOffReportData reportData);
     }
 }
