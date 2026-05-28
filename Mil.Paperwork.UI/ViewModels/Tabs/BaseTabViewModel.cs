@@ -28,7 +28,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             var dlgResult = await _dialogService.ShowMessageAsync(TabCloseConfirmation, "Підтвердження", DialogButtons.YesNo);
             if (dlgResult == DialogResult.Yes)
             {
-                TabCloseRequested.Invoke(this, this);
+                TabCloseRequested?.Invoke(this, this);
             }
         }
 
