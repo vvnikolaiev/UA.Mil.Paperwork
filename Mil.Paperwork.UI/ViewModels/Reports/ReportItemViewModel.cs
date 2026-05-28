@@ -1,5 +1,5 @@
 ﻿using Mil.Paperwork.Infrastructure.Helpers;
-using Mil.Paperwork.Common.MVVM;
+using Mil.MVVM.Common;
 using Mil.Paperwork.UI.Enums;
 
 namespace Mil.Paperwork.UI.ViewModels

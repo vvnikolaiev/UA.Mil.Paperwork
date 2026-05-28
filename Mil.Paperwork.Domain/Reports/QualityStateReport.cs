@@ -20,7 +20,7 @@ namespace Mil.Paperwork.Domain.Reports
             _reportDataService = reportDataService;
         }
 
-        public bool TryCreate(IQualityStateReportData reportData)
+        public bool TryCreate(ICommonWriteOffReportData reportData)
         {
             try
             {
@@ -64,7 +64,7 @@ namespace Mil.Paperwork.Domain.Reports
             document.ReplaceFields(dictCommissionFields);
         }
 
-        private void FillTheFields(IQualityStateReportData reportData, Document document)
+        private void FillTheFields(ICommonWriteOffReportData reportData, Document document)
         {
             var reportConfig = ReportParametersHelper.GetFullParametersDictionary(ReportType.QualityStateReport, _reportDataService);
 
@@ -72,12 +72,15 @@ namespace Mil.Paperwork.Domain.Reports
 
             document.ReplaceField(QualityStateReportHelper.FIELD_REGISTRATION_NUMBER, reportData.RegistrationNumber);
             document.ReplaceField(QualityStateReportHelper.FIELD_DOCUMENT_NUMBER, reportData.DocumentNumber);
+            document.ReplaceField(QualityStateReportHelper.FIELD_DOCUMENT_DATE, reportData.DocumentDate.ToString(ReportHelper.DATE_FORMAT));
 
-            var assetStateText = ReportHelper.ConvertEventTypeToText(reportData.EventType);
-            document.ReplaceField(QualityStateReportHelper.FIELD_WHAT_HAPPENED, assetStateText);
+            document.ReplaceField(QualityStateReportHelper.FIELD_REASON, reportData.Reason);
+            document.ReplaceField(QualityStateReportHelper.FIELD_EVENT_DATE, reportData.EventDate.ToString(ReportHelper.DATE_FORMAT));
+            document.ReplaceField(QualityStateReportHelper.FIELD_ORDEN_NUMBER, reportData.OrdenNumber.ToString());
+            document.ReplaceField(QualityStateReportHelper.FIELD_ORDEN_DATE, reportData.OrdenDate.ToString(ReportHelper.DATE_FORMAT));
         }
 
-        private static void FillTheTable(IQualityStateReportData reportData, Table table)
+        private static void FillTheTable(ICommonWriteOffReportData reportData, Table table)
         {
             var firstRow = table.LastRow;
 
@@ -99,6 +102,8 @@ namespace Mil.Paperwork.Domain.Reports
                 var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
                 var nomenclatureCode = asset.NomenclatureCode?.ToUpper() ?? string.Empty;
                 var monthsOperated = (int)((reportData.EventDate - asset.StartDate).TotalDays / 30);
+                
+                var exploitationNorm = asset.ResourceYears != 0 ? asset.ResourceYears * 12 : 60;
 
                 row.Cells[QualityStateReportHelper.COLUMN_INDEX].AddNumber(i + 1, cellParameters);
                 row.Cells[QualityStateReportHelper.COLUMN_NAME].AddText(assetName, nameCellParameters);
@@ -109,7 +114,7 @@ namespace Mil.Paperwork.Domain.Reports
                 row.Cells[QualityStateReportHelper.COLUMN_PRICE].AddPrice(asset.Price, cellParameters);
                 row.Cells[QualityStateReportHelper.COLUMN_TOTAL_PRICE].AddPrice(asset.Count * asset.Price, cellParameters);
                 row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_FACT].AddNumber(monthsOperated, cellParameters);
-                row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_NORM].AddNumber(60, cellParameters); // ???
+                row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_NORM].AddNumber(exploitationNorm, cellParameters);
                 row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_NAME].AddText(assetName, nameCellParameters);
                 row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_NOMENCLATURE_CODE].AddText(nomenclatureCode, cellParameters);
                 row.Cells[QualityStateReportHelper.COLUMN_EXPLOITATION_MEASUREMENT_UNIT].AddText(asset.MeasurementUnit, cellParameters);
@@ -124,7 +129,7 @@ namespace Mil.Paperwork.Domain.Reports
             AddSummaryRow(reportData, table);
         }
 
-        private static void AddSummaryRow(IQualityStateReportData reportData, Table table)
+        private static void AddSummaryRow(ICommonWriteOffReportData reportData, Table table)
         {
             var cellParameters = new WordCellParameters(QualityStateReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Left);
             var totalSumClear = ResidualPriceHelper.CalculateTotalReportSum(reportData.Assets, reportData.EventDate, false);

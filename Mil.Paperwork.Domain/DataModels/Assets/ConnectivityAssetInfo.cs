@@ -1,13 +1,15 @@
-﻿using Mil.Paperwork.Domain.Helpers;
-using Mil.Paperwork.Infrastructure.Enums;
+﻿using Mil.Paperwork.Domain.Calculators;
 
 namespace Mil.Paperwork.Domain.DataModels.Assets
 {
     public class ConnectivityAssetInfo : AssetInfo
     {
-        public override AssetType Service => AssetType.Connectivity;
-        
         public decimal WearAndTearCoeff { get; set; } = 0.8m;
 
+        public override IResidualPriceCalculator GetCalculator()
+        {
+            var calculator = new ConnectivityResidualPriceCalculator();
+            return calculator;
+        }
     }
 }

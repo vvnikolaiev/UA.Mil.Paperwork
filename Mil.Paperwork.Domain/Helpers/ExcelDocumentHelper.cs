@@ -69,7 +69,7 @@ namespace Mil.Paperwork.Domain.Helpers
             var pixelWidth = width * 7; // 7 pixels per Excel column width
             var charsPerLine = Math.Max(1, (int)(pixelWidth / (fontSize * 0.6))); // Approximate chars per line
             var lineCount = Math.Max(1, (int)Math.Ceiling((double)text.Length / charsPerLine));
-            var estimatedHeight = lineCount * fontSize * 1.2; // Add 20% for line spacing
+            var estimatedHeight = lineCount * fontSize * 1.7; // Add 20% for line spacing
             
             // Excel height in points with max of 409 per Excel requirements
             return Math.Min(estimatedHeight, 409);

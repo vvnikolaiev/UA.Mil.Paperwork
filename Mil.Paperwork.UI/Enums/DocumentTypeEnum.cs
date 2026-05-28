@@ -8,8 +8,8 @@ namespace Mil.Paperwork.UI.Enums
         WriteOff,
         [Description("Залишкова вартість")]
         ResidualValue,
-        [Description("Акт тех. стану (№11)")]
-        TechnicalState11,
+        [Description("Пакет зі списання")]
+        WriteOffPackage,
         [Description("Акт тех. стану (№7)")]
         TechnicalState7,
         [Description("Акт оцінки")]

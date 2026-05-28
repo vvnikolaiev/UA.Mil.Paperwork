@@ -1,4 +1,4 @@
-﻿using Mil.Paperwork.Common.MVVM;
+﻿using Mil.MVVM.Common;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;
@@ -81,7 +81,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             {
                 //new(DocumentTypeEnum.WriteOff),
                 new(DocumentTypeEnum.ResidualValue),
-                new(DocumentTypeEnum.TechnicalState11),
+                new(DocumentTypeEnum.WriteOffPackage),
                 new(DocumentTypeEnum.Valuation),
                 new(DocumentTypeEnum.Dismantling),
                 new(DocumentTypeEnum.TechnicalState7),
@@ -110,7 +110,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
                 case DocumentTypeEnum.TechnicalState7:
                     createdTab = new AssetInitialTechnicalStateViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _dialogService);
                     break;
-                case DocumentTypeEnum.TechnicalState11:
+                case DocumentTypeEnum.WriteOffPackage:
                     createdTab = new AssetTechnicalStateViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _dialogService);
                     break;
                 case DocumentTypeEnum.Invoice:

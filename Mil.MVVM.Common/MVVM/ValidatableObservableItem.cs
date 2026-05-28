@@ -2,7 +2,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Mil.Paperwork.Common.MVVM
+namespace Mil.MVVM.Common
 {
     public abstract class ValidatableObservableItem : ObservableItem, INotifyDataErrorInfo
     {

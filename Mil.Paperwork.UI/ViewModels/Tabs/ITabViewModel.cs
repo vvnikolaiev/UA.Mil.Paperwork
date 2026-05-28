@@ -1,4 +1,4 @@
-﻿using Mil.Paperwork.Common.MVVM;
+﻿using Mil.MVVM.Common;
 using System;
 
 namespace Mil.Paperwork.UI.ViewModels.Tabs

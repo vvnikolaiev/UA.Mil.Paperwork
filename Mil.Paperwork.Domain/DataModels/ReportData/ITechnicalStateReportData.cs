@@ -1,4 +1,5 @@
 ﻿using Mil.Paperwork.Domain.DataModels.Parameters;
+using Mil.Paperwork.Domain.Enums;
 
 namespace Mil.Paperwork.Domain.DataModels.ReportData
 {
@@ -15,8 +16,5 @@ namespace Mil.Paperwork.Domain.DataModels.ReportData
         DateTime OrdenDate { get; }
 
         bool GenerateWriteOffActs { get; }
-
-        // TODO: move into a separate ReportData interface?
-        IBookExtractData BookOfLossesExtractData { get; }
     }
 }

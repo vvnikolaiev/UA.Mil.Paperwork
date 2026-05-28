@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using Mil.Paperwork.Common.MVVM;
+using Mil.MVVM.Common;
 using Mil.Paperwork.UI.ViewModels;
 using System;
 

@@ -16,7 +16,5 @@ namespace Mil.Paperwork.Domain.DataModels.ReportData
 
         public bool GenerateWriteOffActs { get; set; } = true;
 
-        public IBookExtractData? BookOfLossesExtractData { get; set; }
-
     }
 }

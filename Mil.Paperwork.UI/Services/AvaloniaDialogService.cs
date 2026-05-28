@@ -2,7 +2,6 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using Microsoft.Extensions.DependencyInjection;
-using Mil.Paperwork.Common.MVVM;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.ViewModels.Controls;

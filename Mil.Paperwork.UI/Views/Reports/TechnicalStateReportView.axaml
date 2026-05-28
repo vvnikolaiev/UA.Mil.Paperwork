@@ -136,7 +136,7 @@
 		<ContentControl x:Key="TechnicalStateViewLayout"
 						x:DataType="reportViewModels:AssetTechnicalStateViewModel">
 			<Grid Grid.Row="5" Classes="parameters"
-				  Grid.RowDefinitions="Auto,5,Auto,Auto,Auto,Auto,Auto,*"
+				  Grid.RowDefinitions="Auto,5,Auto,Auto,Auto,Auto,Auto,Auto,*"
 				  Grid.ColumnDefinitions="130,115,100,115,100,115,100,115,*">
 
 				<!--<TextBlock Grid.Row="0" Grid.Column="4" Text="Коеф. зберігання"/>-->
@@ -171,19 +171,57 @@
 						  HorizontalAlignment="Stretch"
 						  VerticalAlignment="Top"/>
 
-				<CheckBox Grid.Row="4"
-						  Grid.ColumnSpan="5"
-						  Content="Формувати Акти Списання, якщо відсутній Серійний Номер"
-						  VerticalAlignment="Center"
-						  IsChecked="{Binding GenerateWriteOffActs}"
-						  Margin="5"/>
+				<StackPanel Grid.Row="4" Grid.ColumnSpan="5"
+							Orientation="Horizontal" Margin="5 0"
+							Classes="parameters"
+							Spacing="5">
+
+					<CheckBox Content="Формувати Акти Списання, якщо відсутній Серійний Номер"
+							  VerticalAlignment="Center"
+							  IsChecked="{Binding GenerateWriteOffActs}"/>
+
+					<TextBlock Text="Номер документу:" />
+					<TextBox Text="{Binding WriteOffRegNumber}"
+							 Width="70"
+							 IsEnabled="{Binding GenerateWriteOffActs}" />
+
+					<TextBlock Text="Код документу:"/>
+					<TextBox Text="{Binding WriteOffDocNumber}"
+							 Width="70"
+							 IsEnabled="{Binding GenerateWriteOffActs}" />
+
+				</StackPanel>
+
 
 				<CheckBox Grid.Row="5" Grid.ColumnSpan="5"
 						  Margin="5 5 5 0"
 						  Content="Сформувати пакет документів на списання (витяг з книги втрат, титул, опис, погодження)"
 						  IsChecked="{Binding GenerateWriteOffPackage}" />
 
-				<StackPanel Grid.Row="6" Grid.ColumnSpan="7"
+				<!-- TEMPORARY SOLUTION -->
+				<StackPanel Grid.Row="6" Grid.ColumnSpan="5"
+							Orientation="Horizontal" Margin="5 0"
+
+							Classes="parameters"
+							Spacing="5">
+					<CheckBox Content="Формувати АЗЯС замість АТС (№11)?" FontWeight="Bold"
+							  ToolTip.Tip="Формувати Акт зміни якісного (технічного) стану замість Акту Технічного Стану (№11)?"
+							  IsChecked="{Binding GenerateQualityStateReportInstead}" />
+
+					<TextBlock Text="Номер документу:" />
+					<TextBox Text="{Binding QSRRegNumber}"
+							 Width="70"
+							 IsEnabled="{Binding GenerateQualityStateReportInstead}" />
+
+					<TextBlock Text="Код документу:"/>
+					<TextBox Text="{Binding QSRDocNumber}"
+							 Width="70"
+							 IsEnabled="{Binding GenerateQualityStateReportInstead}" />
+
+				</StackPanel>
+
+
+				<StackPanel Grid.Row="7" Grid.ColumnSpan="7"
 							Orientation="Horizontal" Margin="5 0"
 							IsEnabled="{Binding GenerateWriteOffPackage}"
 							Classes="parameters">
@@ -206,7 +244,7 @@
 
 				</StackPanel>
 
-				<ContentControl Grid.Row="7" Grid.ColumnSpan="99"
+				<ContentControl Grid.Row="8" Grid.ColumnSpan="99"
 								Content="{DynamicResource CommonTechnicalStateViewLayout}"/>
 
 			</Grid>

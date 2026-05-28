@@ -1,4 +1,4 @@
-﻿namespace Mil.Paperwork.Common.MVVM
+﻿namespace Mil.MVVM.Common
 {
     public class DelegateCommand : IDelegateCommand
     {

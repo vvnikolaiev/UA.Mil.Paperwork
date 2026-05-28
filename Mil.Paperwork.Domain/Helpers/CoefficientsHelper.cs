@@ -98,20 +98,18 @@
             { 2022, 1.166m },
             { 2023, 1m },
             { 2024, 1.02m },
-            { 2025, 1m }
+            { 2025, 1m },
+            { 2026, 1m }
         };
 
         public static decimal GetIndexationCoefficient(int startYear, int? endYear)
         {
-            if (endYear == null || endYear < startYear)
+            if (endYear == null || endYear <= startYear)
             {
                 return 1.0m;
             }
 
             const int MinYear = 1997;
-
-            if (endYear < startYear)
-                return 1m;
 
             decimal coefficient = 1m;
             for (int year = startYear; year < endYear; year++)

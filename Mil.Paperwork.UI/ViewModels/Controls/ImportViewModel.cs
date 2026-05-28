@@ -2,7 +2,7 @@
 using Mil.Paperwork.Common.Enums;
 using Mil.Paperwork.Common.Factories;
 using Mil.Paperwork.Common.Helpers;
-using Mil.Paperwork.Common.MVVM;
+using Mil.MVVM.Common;
 using Mil.Paperwork.Common.Strategies;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.Enums;

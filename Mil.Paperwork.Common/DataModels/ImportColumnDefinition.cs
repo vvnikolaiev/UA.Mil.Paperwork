@@ -1,4 +1,4 @@
-﻿using Mil.Paperwork.Common.MVVM;
+﻿using Mil.MVVM.Common;
 
 namespace Mil.Paperwork.Common.DataModels
 {

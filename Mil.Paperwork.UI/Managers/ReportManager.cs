@@ -9,7 +9,8 @@ namespace Mil.Paperwork.UI.Managers
     public class ReportManager
     {
         private readonly IDialogService _dialogService;
-        private readonly IReportService<IQualityStateReportData> _qualityStateReportService;
+        private readonly IReportService<ICommonWriteOffReportData> _qualityStateReportService;
+        private readonly IReportService<ICommonWriteOffReportData> _writeOffActReportService;
         private readonly IReportService<IResidualValueReportData> _residualValueReportService;
         private readonly IReportService<ITechnicalStateReportData> _technicalStateReportService;
         private readonly IReportService<IInitialTechnicalStateReportData> _initialTechnicalStateReportService;
@@ -18,11 +19,12 @@ namespace Mil.Paperwork.UI.Managers
         private readonly CommissioningActService _commissioningActService;
         private readonly IReportService<IInvoceReportData> _invoiceReportService;
         private readonly IReportService<IHandoverReportData> _handover23ReportService;
-        private readonly IReportService<ITechnicalStateReportData> _writeOffReportsPackageService;
+        private readonly IReportService<IWriteOffPackageReportData> _writeOffReportsPackageService;
 
         public ReportManager(
             QualityStateReportService qualityStateReportService,
             TechnicalStateReportService technicalStateReportService,
+            WriteOffActReportService writeOffActReportService, 
             WriteOffReportPackageService writeOffReportsPackageService,
             ResidualValueReportService residualValueService,
             AssetValuationReportService valuationReportService,
@@ -36,6 +38,7 @@ namespace Mil.Paperwork.UI.Managers
 
             _qualityStateReportService = qualityStateReportService;
             _technicalStateReportService = technicalStateReportService;
+            _writeOffActReportService = writeOffActReportService;
             _writeOffReportsPackageService = writeOffReportsPackageService;
             _initialTechnicalStateReportService = technicalStateReportService;
             _residualValueReportService = residualValueService;
@@ -87,14 +90,34 @@ namespace Mil.Paperwork.UI.Managers
         {
             var technicalStateReportResult = _technicalStateReportService.TryGenerateReport(reportData);
 
-            if (reportData.BookOfLossesExtractData != null)
-            {
-                _writeOffReportsPackageService.TryGenerateReport(reportData);
-            }
-
             var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.TechnicalStateReportName, technicalStateReportResult);
             await _dialogService.ShowMessageAsync(status);
         }
+
+        public async void GenerateQualityStateReport(ICommonWriteOffReportData reportData)
+        {
+            var qualityStateReportResult = _qualityStateReportService.TryGenerateReport(reportData);
+
+            var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.QualityStateReportName, qualityStateReportResult);
+            await _dialogService.ShowMessageAsync(status);
+        }
+
+        public async void GenerateWriteOffActReport(ICommonWriteOffReportData reportData)
+        {
+            var writeOffActResult = _writeOffActReportService.TryGenerateReport(reportData);
+
+            var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.WriteOffActReportName, writeOffActResult);
+            await _dialogService.ShowMessageAsync(status);
+        }
+
+        public async void GenerateWriteOffPackage(IWriteOffPackageReportData reportData)
+        {
+            var result = _writeOffReportsPackageService.TryGenerateReport(reportData);
+
+            var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.WriteOffPackageName, result);
+            await _dialogService.ShowMessageAsync(status);
+        }
+
 
         public async void GenerateValuationReport(IAssetValuationReportData reportData)
         {

@@ -9,6 +9,7 @@ namespace Mil.Paperwork.Domain
         {
             services.AddSingleton<QualityStateReportService>();
             services.AddSingleton<TechnicalStateReportService>();
+            services.AddSingleton<WriteOffActReportService>();
             services.AddSingleton<WriteOffReportPackageService>();
             services.AddSingleton<ResidualValueReportService>();
             services.AddSingleton<AssetDismantlingReportService>();

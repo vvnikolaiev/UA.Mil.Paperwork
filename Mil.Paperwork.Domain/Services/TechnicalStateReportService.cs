@@ -33,17 +33,8 @@ namespace Mil.Paperwork.Domain.Services
                 ITechnicalStateReport report;
                 string fileNameFormat;
 
-                // TODO: figure out a better way to choose report type
-                if (reportData.GenerateWriteOffActs && string.IsNullOrEmpty(asset.SerialNumber))
-                {
-                    report = new WriteOffActReport(_reportDataService);
-                    fileNameFormat = TechnicalStateReportHelper.OUTPUT_WRITE_OFF_ACT_NAME_FORMAT;
-                }
-                else
-                {
-                    report = new TechnicalStateReport(_reportDataService);
-                    fileNameFormat = TechnicalStateReportHelper.OUTPUT_REPORT_11_NAME_FORMAT;
-                }
+                report = new TechnicalStateReport(_reportDataService);
+                fileNameFormat = TechnicalStateReportHelper.OUTPUT_REPORT_11_NAME_FORMAT;
 
                 result = report.TryCreate(parameters);
 

@@ -22,7 +22,8 @@ namespace Mil.Paperwork.Domain.Calculators
             var workCoefficient = GetWorkCoefficient(asset, reportDate);
             var technicalStateCoefficient = CoefficientsHelper.GetTechnicalStateCoefficient(category);
 
-            var coeficients = new List<decimal>() { explotationCoefficient, workCoefficient, wearAndTearCoeff, technicalStateCoefficient };
+            var coeficients = new List<decimal>() { 1, 1, 1, 1 }; // ЗИМІНИ ДО МЕТОДИКИ ОБЧИСЛЮВАННЯ
+            //var coeficients = new List<decimal>() { explotationCoefficient, workCoefficient, wearAndTearCoeff, technicalStateCoefficient };
             return coeficients;
         }
 

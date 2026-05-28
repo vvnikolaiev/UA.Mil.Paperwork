@@ -1,4 +1,4 @@
-﻿using Mil.Paperwork.Common.MVVM;
+﻿using Mil.MVVM.Common;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Factories;
@@ -6,6 +6,7 @@ using Mil.Paperwork.UI.Managers;
 using Mil.Paperwork.UI.ViewModels.Tabs;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 
 namespace Mil.Paperwork.UI.ViewModels
 {
@@ -19,13 +20,25 @@ namespace Mil.Paperwork.UI.ViewModels
         private readonly IImportService _importService;
         private readonly IDialogService _dialogService;
         private ITabViewModel? _selectedTab;
+        private int _selectedTabIndex;
 
         public ITabViewModel? SelectedTab
         {
             get => _selectedTab;
             set => SetProperty(ref _selectedTab, value);
         }
+
+        public int SelectedTabIndex
+        {
+            get => _selectedTabIndex;
+            set => SetProperty(ref _selectedTabIndex, value);
+        }
+
         public ObservableCollection<ITabViewModel> Tabs { get; set; } = [];
+
+        public ICommand NextTabCommand { get; }
+        public ICommand PreviousTabCommand { get; }
+
 
         public MainWindowViewModel(
             ReportManager reportManager,
@@ -44,7 +57,20 @@ namespace Mil.Paperwork.UI.ViewModels
             _importService = importService;
             _dialogService = dialogService;
 
+            NextTabCommand = new DelegateCommand(MoveToNextTabCommandExecute);
+            PreviousTabCommand = new DelegateCommand(MoveToPrevTabCommandExecute);
+
             AddHomeTab();
+        }
+
+        private void MoveToNextTabCommandExecute()
+        {
+            SelectedTabIndex = (SelectedTabIndex + 1) % Tabs.Count;
+        }
+
+        private void MoveToPrevTabCommandExecute()
+        {
+            SelectedTabIndex = (SelectedTabIndex + Tabs.Count - 1) % Tabs.Count;
         }
 
         private void AddHomeTab()

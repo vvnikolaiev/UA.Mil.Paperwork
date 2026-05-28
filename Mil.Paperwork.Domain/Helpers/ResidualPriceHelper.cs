@@ -1,5 +1,4 @@
-﻿using Mil.Paperwork.Domain.Calculators;
-using Mil.Paperwork.Domain.DataModels.Assets;
+﻿using Mil.Paperwork.Domain.DataModels.Assets;
 
 namespace Mil.Paperwork.Domain.Helpers
 {
@@ -24,7 +23,7 @@ namespace Mil.Paperwork.Domain.Helpers
         
         public static decimal CalculateResidualPriceForItem(IAssetInfo asset, DateTime reportDate, int count = 1)
         {
-            var calculator = ResidualPriceCalculatorFactory.CreateCalculator(asset.Service);
+            var calculator = asset.GetCalculator();
             
             var indexationCoefficient = CoefficientsHelper.GetIndexationCoefficient(asset.StartDate.Year, reportDate.Year);
 

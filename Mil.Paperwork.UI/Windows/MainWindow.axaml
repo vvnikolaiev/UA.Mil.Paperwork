@@ -12,7 +12,7 @@
 		xmlns:configViews="using:Mil.Paperwork.UI.Views.Configuration"
 		xmlns:configViewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Tabs"
 		xmlns:reportViews="using:Mil.Paperwork.UI.Views.Reports"
-        xmlns:reports="using:Mil.Paperwork.Domain.Reports"
+		xmlns:reports="using:Mil.Paperwork.Domain.Reports"
 		xmlns:reportViewModels="using:Mil.Paperwork.UI.ViewModels.Reports"
 		xmlns:dictionaryViews="using:Mil.Paperwork.UI.Views.Dictionaries"
 		xmlns:dictionaryViewModels="using:Mil.Paperwork.UI.ViewModels.Dictionaries"
@@ -45,17 +45,17 @@
 			<reportViews:TechnicalStateReportView />
 		</DataTemplate>
 
-        <DataTemplate DataType="{x:Type reportViewModels:AssetTechnicalStateViewModel}">
-            <reportViews:TechnicalStateReportView />
-        </DataTemplate>
+		<DataTemplate DataType="{x:Type reportViewModels:AssetTechnicalStateViewModel}">
+			<reportViews:TechnicalStateReportView />
+		</DataTemplate>
 
-        <DataTemplate DataType="{x:Type reportViewModels:CommissioningActReportViewModel}">
-            <reportViews:CommissioningActReportView />
-        </DataTemplate>
+		<DataTemplate DataType="{x:Type reportViewModels:CommissioningActReportViewModel}">
+			<reportViews:CommissioningActReportView />
+		</DataTemplate>
 
-        <DataTemplate DataType="{x:Type reportViewModels:InvoiceReportViewModel}">
-            <reportViews:InvoiceView />
-        </DataTemplate>
+		<DataTemplate DataType="{x:Type reportViewModels:InvoiceReportViewModel}">
+			<reportViews:InvoiceView />
+		</DataTemplate>
 
 		<DataTemplate DataType="reportViewModels:Handover23ActViewModel">
 			<reportViews:Handover23ActView />
@@ -63,42 +63,42 @@
 
 		<DataTemplate DataType="{x:Type reportViewModels:AssetValuationViewModel}">
 
-            <Grid Grid.IsSharedSizeScope="True">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+			<Grid Grid.IsSharedSizeScope="True">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
 
-                <reportViews:AssetValuationView />
+				<reportViews:AssetValuationView />
 
-                <StackPanel Classes="buttons" Grid.Row="1">
-                    <Button Content="Створити документ" Command="{Binding GenerateReportCommand}" />
-                    <Button Content="Додати рядок" Command="{Binding AddRowCommand}" />
-                    <Button Content="Імпортувати таблицю" Command="{Binding ImportRowsCommand}" />
-                    <Button Content="Очистити таблицю" Command="{Binding ClearCommand}" />
-                    <Button Content="Закрити" Command="{Binding CloseTabCommand}"/>
-                </StackPanel>
-            </Grid>
-        </DataTemplate>
+				<StackPanel Classes="buttons" Grid.Row="1">
+					<Button Content="Створити документ" Command="{Binding GenerateReportCommand}" />
+					<Button Content="Додати рядок" Command="{Binding AddRowCommand}" />
+					<Button Content="Імпортувати таблицю" Command="{Binding ImportRowsCommand}" />
+					<Button Content="Очистити таблицю" Command="{Binding ClearCommand}" />
+					<Button Content="Закрити" Command="{Binding CloseTabCommand}"/>
+				</StackPanel>
+			</Grid>
+		</DataTemplate>
 
-        <DataTemplate DataType="{x:Type reportViewModels:AssetDismantlingViewModel}">
-            <Grid Grid.IsSharedSizeScope="True">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+		<DataTemplate DataType="{x:Type reportViewModels:AssetDismantlingViewModel}">
+			<Grid Grid.IsSharedSizeScope="True">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
 
-                <reportViews:AssetDismantlingView />
+				<reportViews:AssetDismantlingView />
 
-                <StackPanel Grid.Row="1" Classes="buttons">
-                    <Button Content="Створити документ" Command="{Binding GenerateReportCommand}" />
-                    <Button Content="Додати рядок" Command="{Binding AddRowCommand}" />
-                    <Button Content="Імпортувати таблицю" Command="{Binding ImportRowsCommand}" />
-                    <Button Content="Очистити таблицю" Command="{Binding ClearCommand}" />
-                    <Button Content="Закрити" Command="{Binding CloseTabCommand}"/>
-                </StackPanel>
-            </Grid>
-        </DataTemplate>
+				<StackPanel Grid.Row="1" Classes="buttons">
+					<Button Content="Створити документ" Command="{Binding GenerateReportCommand}" />
+					<Button Content="Додати рядок" Command="{Binding AddRowCommand}" />
+					<Button Content="Імпортувати таблицю" Command="{Binding ImportRowsCommand}" />
+					<Button Content="Очистити таблицю" Command="{Binding ClearCommand}" />
+					<Button Content="Закрити" Command="{Binding CloseTabCommand}"/>
+				</StackPanel>
+			</Grid>
+		</DataTemplate>
 
 		<!-- CONFIGURATION AND SETTINGS -->
 
@@ -134,7 +134,15 @@
 
 	<Grid>
 		<TabControl ItemsSource="{Binding Tabs}"
-					SelectedItem="{Binding SelectedTab}">
+					SelectedItem="{Binding SelectedTab}"
+					SelectedIndex="{Binding SelectedTabIndex}">
+			<TabControl.KeyBindings>
+				<KeyBinding Gesture="Ctrl+Tab"
+							Command="{Binding NextTabCommand}" />
+				<KeyBinding Gesture="Ctrl+Shift+Tab"
+							Command="{Binding PreviousTabCommand}" />
+			</TabControl.KeyBindings>
+
 			<TabControl.ItemTemplate>
 				<DataTemplate>
 					<TextBlock Text="{Binding Header}" />

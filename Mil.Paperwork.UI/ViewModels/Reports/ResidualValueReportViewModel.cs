@@ -1,4 +1,4 @@
-﻿using Mil.Paperwork.Common.MVVM;
+﻿using Mil.MVVM.Common;
 using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Infrastructure.Enums;

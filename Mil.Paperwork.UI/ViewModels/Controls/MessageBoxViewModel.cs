@@ -1,4 +1,4 @@
-﻿using Mil.Paperwork.Common.MVVM;
+﻿using Mil.MVVM.Common;
 using Mil.Paperwork.Infrastructure.Enums;
 using System;
 
