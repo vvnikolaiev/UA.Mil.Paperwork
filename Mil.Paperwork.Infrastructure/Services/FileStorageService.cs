@@ -49,6 +49,7 @@ namespace Mil.Paperwork.Infrastructure.Services
         public void WriteJsonToFile<T>(T obj, string filePath)
         {
             var jsonContent = JsonHelper.WriteJson(obj);
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
             File.WriteAllText(filePath, jsonContent);
         }
 

@@ -1,7 +1,8 @@
-﻿using Mil.Paperwork.Domain.DataModels.ReportData;
+using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Helpers;
+using System;
 using System.Collections.Generic;
 
 namespace Mil.Paperwork.UI.Managers
@@ -24,7 +25,7 @@ namespace Mil.Paperwork.UI.Managers
         public ReportManager(
             QualityStateReportService qualityStateReportService,
             TechnicalStateReportService technicalStateReportService,
-            WriteOffActReportService writeOffActReportService, 
+            WriteOffActReportService writeOffActReportService,
             WriteOffReportPackageService writeOffReportsPackageService,
             ResidualValueReportService residualValueService,
             AssetValuationReportService valuationReportService,
@@ -51,121 +52,212 @@ namespace Mil.Paperwork.UI.Managers
 
         public async void GenerateWriteOffReport(ObsoleteWriteOffReportData reportData)
         {
-            var qualityStateReportResult = _qualityStateReportService.TryGenerateReport(reportData);
-            var technicalStateReportResult = _technicalStateReportService.TryGenerateReport(reportData);
-            var residualValueReportResult = _residualValueReportService.TryGenerateReport(reportData);
-            var assetValuationReportResult = _valuationReportService.TryGenerateReport(reportData);
-            var dismantlingReportResult = _dismantlingReportService.TryGenerateReport(reportData);
+            try
+            {
+                var qualityStateReportResult = _qualityStateReportService.TryGenerateReport(reportData);
+                var technicalStateReportResult = _technicalStateReportService.TryGenerateReport(reportData);
+                var residualValueReportResult = _residualValueReportService.TryGenerateReport(reportData);
+                var assetValuationReportResult = _valuationReportService.TryGenerateReport(reportData);
+                var dismantlingReportResult = _dismantlingReportService.TryGenerateReport(reportData);
 
-            string qualityStateReportResultStatus, technicalStateReportResultStatus, residualValueReportResultStatus, assetValuationReportResultStatus, dismantlingReportResultStatus;
+                string qualityStateReportResultStatus, technicalStateReportResultStatus, residualValueReportResultStatus, assetValuationReportResultStatus, dismantlingReportResultStatus;
 
-            qualityStateReportResultStatus = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.QualityStateReportName, qualityStateReportResult);
-            technicalStateReportResultStatus = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.TechnicalStateReportName, technicalStateReportResult);
-            residualValueReportResultStatus = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.ResidualValueReportName, residualValueReportResult);
-            assetValuationReportResultStatus = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.ValuationReportName, residualValueReportResult);
-            dismantlingReportResultStatus = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.DismantlingReportName, residualValueReportResult);
-            
-            var message = $"{residualValueReportResultStatus}\n{technicalStateReportResultStatus}\n{qualityStateReportResultStatus}\n{assetValuationReportResult}\n{dismantlingReportResultStatus}";
+                qualityStateReportResultStatus = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.QualityStateReportName, qualityStateReportResult);
+                technicalStateReportResultStatus = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.TechnicalStateReportName, technicalStateReportResult);
+                residualValueReportResultStatus = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.ResidualValueReportName, residualValueReportResult);
+                assetValuationReportResultStatus = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.ValuationReportName, assetValuationReportResult);
+                dismantlingReportResultStatus = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.DismantlingReportName, dismantlingReportResult);
 
-            await _dialogService.ShowMessageAsync(message);
+                var message = $"{residualValueReportResultStatus}\n{technicalStateReportResultStatus}\n{qualityStateReportResultStatus}\n{assetValuationReportResultStatus}\n{dismantlingReportResultStatus}";
+
+                await _dialogService.ShowMessageAsync(message);
+            }
+            catch (Exception ex)
+            {
+                await _dialogService.ShowMessageAsync($"Помилка генерації звітів: {ex.Message}");
+            }
         }
 
         public async void GenerateResidualValueReport(IResidualValueReportData reportData)
         {
-            var residualValueReportResult = _residualValueReportService.TryGenerateReport(reportData);
+            try
+            {
+                var residualValueReportResult = _residualValueReportService.TryGenerateReport(reportData);
 
-            var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.ResidualValueReportName, residualValueReportResult);
-            await _dialogService.ShowMessageAsync(status);
+                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.ResidualValueReportName, residualValueReportResult);
+                await _dialogService.ShowMessageAsync(status);
+            }
+            catch (Exception ex)
+            {
+                await _dialogService.ShowMessageAsync($"Помилка генерації звіту: {ex.Message}");
+            }
         }
 
         public async void GenerateInitialTechnicalStateReport(IInitialTechnicalStateReportData reportData)
         {
-            var technicalStateReportResult = _initialTechnicalStateReportService.TryGenerateReport(reportData);
+            try
+            {
+                var technicalStateReportResult = _initialTechnicalStateReportService.TryGenerateReport(reportData);
 
-            var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.InitialTechnicalStateReportName, technicalStateReportResult);
-            await _dialogService.ShowMessageAsync(status);
+                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.InitialTechnicalStateReportName, technicalStateReportResult);
+                await _dialogService.ShowMessageAsync(status);
+            }
+            catch (Exception ex)
+            {
+                await _dialogService.ShowMessageAsync($"Помилка генерації звіту: {ex.Message}");
+            }
         }
 
         public async void GenerateTechnicalStateReport(ITechnicalStateReportData reportData)
         {
-            var technicalStateReportResult = _technicalStateReportService.TryGenerateReport(reportData);
+            try
+            {
+                var technicalStateReportResult = _technicalStateReportService.TryGenerateReport(reportData);
 
-            var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.TechnicalStateReportName, technicalStateReportResult);
-            await _dialogService.ShowMessageAsync(status);
+                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.TechnicalStateReportName, technicalStateReportResult);
+                await _dialogService.ShowMessageAsync(status);
+            }
+            catch (Exception ex)
+            {
+                await _dialogService.ShowMessageAsync($"Помилка генерації звіту: {ex.Message}");
+            }
         }
 
         public async void GenerateQualityStateReport(ICommonWriteOffReportData reportData)
         {
-            var qualityStateReportResult = _qualityStateReportService.TryGenerateReport(reportData);
+            try
+            {
+                var qualityStateReportResult = _qualityStateReportService.TryGenerateReport(reportData);
 
-            var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.QualityStateReportName, qualityStateReportResult);
-            await _dialogService.ShowMessageAsync(status);
+                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.QualityStateReportName, qualityStateReportResult);
+                await _dialogService.ShowMessageAsync(status);
+            }
+            catch (Exception ex)
+            {
+                await _dialogService.ShowMessageAsync($"Помилка генерації звіту: {ex.Message}");
+            }
         }
 
         public async void GenerateWriteOffActReport(ICommonWriteOffReportData reportData)
         {
-            var writeOffActResult = _writeOffActReportService.TryGenerateReport(reportData);
+            try
+            {
+                var writeOffActResult = _writeOffActReportService.TryGenerateReport(reportData);
 
-            var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.WriteOffActReportName, writeOffActResult);
-            await _dialogService.ShowMessageAsync(status);
+                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.WriteOffActReportName, writeOffActResult);
+                await _dialogService.ShowMessageAsync(status);
+            }
+            catch (Exception ex)
+            {
+                await _dialogService.ShowMessageAsync($"Помилка генерації звіту: {ex.Message}");
+            }
         }
 
         public async void GenerateWriteOffPackage(IWriteOffPackageReportData reportData)
         {
-            var result = _writeOffReportsPackageService.TryGenerateReport(reportData);
+            try
+            {
+                var result = _writeOffReportsPackageService.TryGenerateReport(reportData);
 
-            var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.WriteOffPackageName, result);
-            await _dialogService.ShowMessageAsync(status);
+                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.WriteOffPackageName, result);
+                await _dialogService.ShowMessageAsync(status);
+            }
+            catch (Exception ex)
+            {
+                await _dialogService.ShowMessageAsync($"Помилка генерації пакету: {ex.Message}");
+            }
         }
 
 
         public async void GenerateValuationReport(IAssetValuationReportData reportData)
         {
-            var assetValuationReportResult = _valuationReportService.TryGenerateReport(reportData);
+            try
+            {
+                var assetValuationReportResult = _valuationReportService.TryGenerateReport(reportData);
 
-            var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.ValuationReportName, assetValuationReportResult);
-            await _dialogService.ShowMessageAsync(status);
+                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.ValuationReportName, assetValuationReportResult);
+                await _dialogService.ShowMessageAsync(status);
+            }
+            catch (Exception ex)
+            {
+                await _dialogService.ShowMessageAsync($"Помилка генерації звіту: {ex.Message}");
+            }
         }
 
         public async void GenerateDismantlingReport(IDismantlingReportData reportData)
         {
-            var assetDismantlingReportResult = _dismantlingReportService.TryGenerateReport(reportData);
-            var assetValuationReportResult = _valuationReportService.TryGenerateReport(reportData);
-            
-            var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.DismantlingReportName, assetDismantlingReportResult);
-            await _dialogService.ShowMessageAsync(status);
+            try
+            {
+                var assetDismantlingReportResult = _dismantlingReportService.TryGenerateReport(reportData);
+                var assetValuationReportResult = _valuationReportService.TryGenerateReport(reportData);
+
+                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.DismantlingReportName, assetDismantlingReportResult);
+                await _dialogService.ShowMessageAsync(status);
+            }
+            catch (Exception ex)
+            {
+                await _dialogService.ShowMessageAsync($"Помилка генерації звіту: {ex.Message}");
+            }
         }
 
         public async void GenerateCommissioningAct(ICommissioningActReportData reportData)
         {
-            var commissioningActResult = _commissioningActService.TryGenerateReport(reportData);
+            try
+            {
+                var commissioningActResult = _commissioningActService.TryGenerateReport(reportData);
 
-            var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.CommisioninaActName, commissioningActResult);
-            await _dialogService.ShowMessageAsync(status);
+                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.CommisioninaActName, commissioningActResult);
+                await _dialogService.ShowMessageAsync(status);
+            }
+            catch (Exception ex)
+            {
+                await _dialogService.ShowMessageAsync($"Помилка генерації акту: {ex.Message}");
+            }
         }
 
         public async void GenerateCommissioningAct(IList<ICommissioningActReportData> reportData)
         {
-            var commissioningActResult = _commissioningActService.TryGenerateReport(reportData);
+            try
+            {
+                var commissioningActResult = _commissioningActService.TryGenerateReport(reportData);
 
-            var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.CommisioninaActName, commissioningActResult);
-            await _dialogService.ShowMessageAsync(status);
+                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.CommisioninaActName, commissioningActResult);
+                await _dialogService.ShowMessageAsync(status);
+            }
+            catch (Exception ex)
+            {
+                await _dialogService.ShowMessageAsync($"Помилка генерації акту: {ex.Message}");
+            }
         }
 
         public async void GenerateInvoice(IInvoceReportData reportData)
         {
-            var invocieResult = _invoiceReportService.TryGenerateReport(reportData);
+            try
+            {
+                var invocieResult = _invoiceReportService.TryGenerateReport(reportData);
 
-            var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.InvoiceName, invocieResult);
-            await _dialogService.ShowMessageAsync(status);
+                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.InvoiceName, invocieResult);
+                await _dialogService.ShowMessageAsync(status);
+            }
+            catch (Exception ex)
+            {
+                await _dialogService.ShowMessageAsync($"Помилка генерації накладної: {ex.Message}");
+            }
         }
 
         public async void GenerateHandover23Act(IHandoverReportData reportData)
         {
-            var handoverResult = _handover23ReportService.TryGenerateReport(reportData);
+            try
+            {
+                var handoverResult = _handover23ReportService.TryGenerateReport(reportData);
 
-            var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.Handover23Name, handoverResult);
-            await _dialogService.ShowMessageAsync(status);
+                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.Handover23Name, handoverResult);
+                await _dialogService.ShowMessageAsync(status);
+            }
+            catch (Exception ex)
+            {
+                await _dialogService.ShowMessageAsync($"Помилка генерації акту: {ex.Message}");
+            }
         }
     }
 }

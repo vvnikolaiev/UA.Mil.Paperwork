@@ -23,6 +23,11 @@ namespace Mil.Paperwork.Infrastructure.Services
 
         public void SaveReportConfigExternally(string directoryPath)
         {
+            if (_config == null)
+            {
+                return;
+            }
+
             var json = JsonHelper.WriteJson(_config);
             var configBytes = Encoding.UTF8.GetBytes(json);
             var path = Path.Combine(directoryPath, Path.GetFileName(LocalDataPaths.ReportDataConfig));

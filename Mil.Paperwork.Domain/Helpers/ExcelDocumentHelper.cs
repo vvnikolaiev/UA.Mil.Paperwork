@@ -220,6 +220,11 @@ namespace Mil.Paperwork.Domain.Helpers
 
         public static List<string> GetHeaders(int headerRow, ExcelWorksheet worksheet)
         {
+            if (worksheet.Dimension == null)
+            {
+                return [];
+            }
+
             int lastCol = worksheet.Dimension.End.Column;
 
             var headers = new List<string>();

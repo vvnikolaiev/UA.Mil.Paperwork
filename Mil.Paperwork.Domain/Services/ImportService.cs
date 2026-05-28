@@ -36,7 +36,10 @@ namespace Mil.Paperwork.Domain.Services
             using var package = new ExcelPackage(filePath);
 
             var worksheet = package.Workbook.Worksheets[0];
-            int lastCol = worksheet.Dimension.End.Column;
+            if (worksheet.Dimension == null)
+            {
+                return [];
+            }
 
             var headers = ExcelDocumentHelper.GetHeaders(headerRow, worksheet);
 
@@ -62,6 +65,11 @@ namespace Mil.Paperwork.Domain.Services
         {
             var rows = new List<Dictionary<string, object>>();
 
+            if (worksheet.Dimension == null)
+            {
+                return rows;
+            }
+
             var lastCol = worksheet.Dimension.End.Column;
             var lastRow = worksheet.Dimension.End.Row;
 
@@ -72,7 +80,7 @@ namespace Mil.Paperwork.Domain.Services
             }
 
             // Read data rows
-            for (int row = firstRow; row < lastRow; row++)
+            for (int row = firstRow; row <= lastRow; row++)
             {
                 var rowDict = new Dictionary<string, object>();
                 bool isEmpty = true;
