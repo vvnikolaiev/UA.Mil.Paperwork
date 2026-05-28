@@ -205,7 +205,7 @@ jobs:
     - name: Build WAP MSIX (Windows Only)
       if: inputs.is_windows == true
       run: |
-        & $env:MsbuildCmd $env:Solution_Path /p:Platform=${{ inputs.targetPlatform }} /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=SideLoadOnly /p:AppxBundle=Never /p:PackageCertificateKeyFile=$env:SigningCertificate /p:PackageCertificatePassword=${{ secrets.Pfx_Key }}
+        & $env:MsbuildCmd $env:Solution_Path /p:Platform=${{ inputs.targetPlatform }} /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=SideLoadOnly /p:AppxBundle=Never /p:PackageCertificateKeyFile=$env:SigningCertificate "/p:PackageCertificatePassword=${{ secrets.Pfx_Key }}"
       shell: pwsh
 
     - name: Create WAP Archive (Windows Only)
