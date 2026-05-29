@@ -1,8 +1,7 @@
-﻿using Mil.Paperwork.Domain.DataModels.Parameters;
+using Mil.Paperwork.Domain.DataModels.Parameters;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;
-using Spire.Doc;
 
 namespace Mil.Paperwork.Domain.Reports.WriteOff
 {
@@ -19,23 +18,23 @@ namespace Mil.Paperwork.Domain.Reports.WriteOff
             _reportDataService = reportDataService;
         }
 
-        protected override void FillReportData(IWriteOffPackageParameters reportParameters, Document document)
+        protected override void FillReportData(IWriteOffPackageParameters reportParameters, WordDocument document)
         {
             FillTheFields(reportParameters, document);
             FillTOCTable(reportParameters, document);
         }
 
-        private void FillTheFields(IWriteOffPackageParameters reportParameters, Document document)
+        private void FillTheFields(IWriteOffPackageParameters reportParameters, WordDocument document)
         {
             var reportConfig = ReportParametersHelper.GetFullParametersDictionary(ReportType.WriteOffPackage, _reportDataService);
-            
+
             document.ReplaceField(WriteOffPackageTemplatesHelper.FIELD_ORDEN_NUM, reportParameters.OrdenNumber.ToString());
             document.ReplaceField(WriteOffPackageTemplatesHelper.FIELD_ORDEN_DATE, reportParameters.OrdenDate.ToString(ReportHelper.DATE_FORMAT));
 
             document.ReplaceFields(reportConfig);
         }
 
-        private void FillTOCTable(IWriteOffPackageParameters reportParameters, Document document)
+        private void FillTOCTable(IWriteOffPackageParameters reportParameters, WordDocument document)
         {
             var table = document.GetTable(WriteOffPackageTemplatesHelper.TABLE_OF_CONTENTS_NAME);
 

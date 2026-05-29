@@ -211,36 +211,6 @@
       "Name": "COMMISSIONED_LOCATION",
       "Value": "Взвод правопорядку в/ч 1488",
       "Comment": ""
-    },
-    {
-      "Name": "ACCEPTED_PERSON_POSITION",
-      "Value": "нач. взводу",
-      "Comment": ""
-    },
-    {
-      "Name": "ACCEPTED_PERSON_RANK",
-      "Value": "сержант",
-      "Comment": ""
-    },
-    {
-      "Name": "ACCEPTED_PERSON_NAME",
-      "Value": "Алехандро БУРЛАКА",
-      "Comment": ""
-    },
-    {
-      "Name": "HANDED_PERSON_POSITION",
-      "Value": "нач. складу",
-      "Comment": ""
-    },
-    {
-      "Name": "HANDED_PERSON_RANK",
-      "Value": "солдат",
-      "Comment": ""
-    },
-    {
-      "Name": "HANDED_PERSON_NAME",
-      "Value": "Григорій КВІТКА",
-      "Comment": ""
     }
   ],
   "Invoice": [

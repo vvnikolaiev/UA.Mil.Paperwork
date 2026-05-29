@@ -24,8 +24,8 @@
 
         public const string REPORT_TEMPLATE_NAME = "CommissioningActTemplate.docx";
         public const string OUTPUT_REPORT_NAME_TEMPLATE = "Акт введення в експлуатацію {0}.docx";
-        public const string TABLE_ASSETS_NAME = "TABLE_ASSETS";
 
+        public const string TABLE_ASSETS_NAME = "TABLE_ASSETS";
         public const int TABLE_FONT_SIZE = 9;
 
         public const int COLUMN_InventoryNumber = 0;

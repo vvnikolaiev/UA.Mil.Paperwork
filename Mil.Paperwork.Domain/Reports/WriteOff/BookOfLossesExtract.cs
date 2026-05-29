@@ -1,10 +1,8 @@
-﻿using Mil.Paperwork.Domain.Calculators;
+using Mil.Paperwork.Domain.Calculators;
 using Mil.Paperwork.Domain.DataModels.Parameters;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;
-using Spire.Doc;
-using Spire.Doc.Documents;
 
 namespace Mil.Paperwork.Domain.Reports.WriteOff
 {
@@ -23,13 +21,13 @@ namespace Mil.Paperwork.Domain.Reports.WriteOff
             _reportDataService = reportDataService;
         }
 
-        protected override void FillReportData(IWriteOffPackageParameters reportParameters, Document document)
+        protected override void FillReportData(IWriteOffPackageParameters reportParameters, WordDocument document)
         {
             FillTheFields(reportParameters, document);
             FillTOCTable(reportParameters, document);
         }
 
-        private void FillTheFields(IWriteOffPackageParameters reportParameters, Document document)
+        private void FillTheFields(IWriteOffPackageParameters reportParameters, WordDocument document)
         {
             var reportConfig = ReportParametersHelper.GetFullParametersDictionary(ReportType.WriteOffPackage, _reportDataService);
 
@@ -48,7 +46,7 @@ namespace Mil.Paperwork.Domain.Reports.WriteOff
             document.ReplaceFields(reportConfig);
         }
 
-        private void FillTOCTable(IWriteOffPackageParameters parameters, Document document)
+        private void FillTOCTable(IWriteOffPackageParameters parameters, WordDocument document)
         {
             var table = document.GetTable(WriteOffPackageTemplatesHelper.TABLE_BOOK_RECORD_NAME);
 
@@ -57,44 +55,39 @@ namespace Mil.Paperwork.Domain.Reports.WriteOff
                 var firstRow = table.LastRow;
                 var firstRowIndex = firstRow.GetRowIndex();
 
-                var nameCellParameters = new WordCellParameters(WriteOffPackageTemplatesHelper.TABLE_BOOK_RECORD_FONT_SIZE, HorizontalAlignment.Left, isBold: true);
-                var cellParameters = new WordCellParameters(WriteOffPackageTemplatesHelper.TABLE_BOOK_RECORD_FONT_SIZE, HorizontalAlignment.Center, isBold: true);
+                var nameCellParameters = new WordCellParameters(WriteOffPackageTemplatesHelper.TABLE_BOOK_RECORD_FONT_SIZE, WordHorizontalAlignment.Left, isBold: true);
+                var cellParameters = new WordCellParameters(WriteOffPackageTemplatesHelper.TABLE_BOOK_RECORD_FONT_SIZE, WordHorizontalAlignment.Center, isBold: true);
 
                 for (int i = 0; i < parameters.Assets.Count; i++)
                 {
                     var asset = parameters.Assets[i];
-                    var calculator = asset.GetCalculator();
 
-                    TableRow row = table.AddRow(true);
-
-                    var nomenclatureCode = asset.NomenclatureCode?.ToUpper() ?? string.Empty;
-                    var category = ReportHelper.ConvertCategoryToText(asset.InitialCategory);
                     var price = ResidualPriceHelper.CalculateResidualPriceForItem(asset, parameters.EventDate);
                     var totalPrice = Math.Round(price * asset.Count, 2);
 
                     var name = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
 
-                    row.Cells[WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_ASSET_NAME].AddText(name, nameCellParameters);
-                    row.Cells[WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_ASSET_UNIT].AddText(asset.MeasurementUnit, cellParameters);
-                    row.Cells[WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_ASSET_COUNT].AddNumber(asset.Count, cellParameters);
-                    row.Cells[WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_ASSET_PRICE].AddPrice(price, cellParameters);
-                    row.Cells[WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_ASSET_SUM].AddPrice(totalPrice, cellParameters);
-                    row.Cells[WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_ASSET_WAR_LOSSES].AddPrice(totalPrice, cellParameters);
+                    var row = table.AddRow();
+                    row.GetCell(WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_ASSET_NAME).AddText(name, nameCellParameters);
+                    row.GetCell(WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_ASSET_UNIT).AddText(asset.MeasurementUnit, cellParameters);
+                    row.GetCell(WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_ASSET_COUNT).AddNumber(asset.Count, cellParameters);
+                    row.GetCell(WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_ASSET_PRICE).AddPrice(price, cellParameters);
+                    row.GetCell(WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_ASSET_SUM).AddPrice(totalPrice, cellParameters);
+                    row.GetCell(WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_ASSET_WAR_LOSSES).AddPrice(totalPrice, cellParameters);
                 }
 
-                table.Rows.Remove(firstRow);
+                table.RemoveRow(firstRow);
 
                 var totalCount = parameters.Assets.Sum(x => x.Count);
                 var totalSum = parameters.TotalWriteOffSum;
-
 
                 var dateMergedCell = table.MergeCellsVertically(WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_DATE, firstRowIndex, parameters.Assets.Count);
                 var ordenMergedCell = table.MergeCellsVertically(WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_ORDEN, firstRowIndex, parameters.Assets.Count);
 
                 var recordDate = parameters.BookOfLossesExtractData.RecordDate;
                 dateMergedCell.AddText(recordDate.ToString(ReportHelper.DATE_FORMAT), cellParameters);
-                // get text from Config???
-                cellParameters.VerticalAlignment = VerticalAlignment.Middle;
+
+                cellParameters.VerticalAlignment = WordVerticalAlignment.Middle;
                 var ordenText = $"Наказ командира військової частини {_milUnit}\r\n від {parameters.OrdenDate:dd.MM.yyyy}р №{parameters.OrdenNumber}";
                 ordenMergedCell.AddText(ordenText, cellParameters);
 
@@ -102,20 +95,19 @@ namespace Mil.Paperwork.Domain.Reports.WriteOff
             }
         }
 
-        private static void AddSummaryRow(decimal totalSum, int totalCount, Table table)
+        private static void AddSummaryRow(decimal totalSum, int totalCount, WordTable table)
         {
-            var nameCellParameters = new WordCellParameters(WriteOffPackageTemplatesHelper.TABLE_BOOK_RECORD_FONT_SIZE, HorizontalAlignment.Left, isBold: true);
-            var cellParameters = new WordCellParameters(WriteOffPackageTemplatesHelper.TABLE_BOOK_RECORD_FONT_SIZE, HorizontalAlignment.Center, isBold: true);
+            var nameCellParameters = new WordCellParameters(WriteOffPackageTemplatesHelper.TABLE_BOOK_RECORD_FONT_SIZE, WordHorizontalAlignment.Left, isBold: true);
+            var cellParameters = new WordCellParameters(WriteOffPackageTemplatesHelper.TABLE_BOOK_RECORD_FONT_SIZE, WordHorizontalAlignment.Center, isBold: true);
 
-            var textSummaryRow = table.AddRow(true);
-            var countMergedColumns = 3;
-            var summaryCell = textSummaryRow.CreateMergedCell(WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_DATE, countMergedColumns);
+            var textSummaryRow = table.AddRow();
+            textSummaryRow.CreateMergedCell(WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_DATE, 3);
 
-            textSummaryRow.Cells[WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_DATE].AddText(SummaryRowTotalText, nameCellParameters);
-            
-            textSummaryRow.Cells[WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_ASSET_COUNT].AddNumber(totalCount, cellParameters);
-            textSummaryRow.Cells[WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_ASSET_SUM].AddPrice(totalSum, cellParameters);
-            textSummaryRow.Cells[WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_ASSET_WAR_LOSSES].AddPrice(totalSum, cellParameters);
+            textSummaryRow.GetCell(WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_DATE).AddText(SummaryRowTotalText, nameCellParameters);
+
+            textSummaryRow.GetCell(WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_ASSET_COUNT).AddNumber(totalCount, cellParameters);
+            textSummaryRow.GetCell(WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_ASSET_SUM).AddPrice(totalSum, cellParameters);
+            textSummaryRow.GetCell(WriteOffPackageTemplatesHelper.TABLE_BOOK_COLUMN_ASSET_WAR_LOSSES).AddPrice(totalSum, cellParameters);
         }
     }
 }
