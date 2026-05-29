@@ -1,6 +1,5 @@
-﻿using Mil.Paperwork.Domain.DataModels.Parameters;
-using Spire.Doc;
-using System.IO;
+using Mil.Paperwork.Domain.DataModels.Parameters;
+using Mil.Paperwork.Domain.Helpers;
 
 namespace Mil.Paperwork.Domain.Reports.WriteOff
 {
@@ -16,16 +15,11 @@ namespace Mil.Paperwork.Domain.Reports.WriteOff
         {
             try
             {
-                var templatePath = TemplatePath;
-
-                var document = new Document();
-                document.LoadFromFile(templatePath, FileFormat.Docx);
+                using var document = WordDocument.LoadFromFile(TemplatePath);
 
                 FillReportData(reportParameters, document);
 
-                using var reportStream = new MemoryStream();
-                document.SaveToStream(reportStream, FileFormat.Docx);
-                _reportBytes = reportStream.ToArray();
+                _reportBytes = document.GetBytes();
 
                 return true;
             }
@@ -41,6 +35,6 @@ namespace Mil.Paperwork.Domain.Reports.WriteOff
             return _reportBytes;
         }
 
-        protected abstract void FillReportData(IWriteOffPackageParameters reportParameters, Document document);
+        protected abstract void FillReportData(IWriteOffPackageParameters reportParameters, WordDocument document);
     }
 }

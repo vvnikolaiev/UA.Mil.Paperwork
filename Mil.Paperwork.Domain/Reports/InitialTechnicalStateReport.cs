@@ -1,13 +1,10 @@
-﻿using Mil.Paperwork.Domain.DataModels.Assets;
+using Mil.Paperwork.Domain.DataModels.Assets;
 using Mil.Paperwork.Domain.DataModels.Parameters;
 using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;
-using Spire.Doc;
-using Spire.Doc.Documents;
-using System.IO;
 
 namespace Mil.Paperwork.Domain.Reports
 {
@@ -28,17 +25,14 @@ namespace Mil.Paperwork.Domain.Reports
             {
                 var templatePath = PathsHelper.GetTemplatePath(TechnicalStateReportHelper.REPORT7_TEMPLATE_NAME);
 
-                var document = new Document();
-                document.LoadFromFile(templatePath, FileFormat.Docx);
+                using var document = WordDocument.LoadFromFile(templatePath);
 
                 FillCommission(document);
                 FillTheFields(assetInfo, personAccepted, personHanded, eventType, document);
                 FillAssetTable(assetInfo, eventType, document);
                 FillOperationalTable(assetInfo, document);
 
-                using var reportStream = new MemoryStream();
-                document.SaveToStream(reportStream, FileFormat.Docx);
-                _reportBytes = reportStream.ToArray();
+                _reportBytes = document.GetBytes();
 
                 return true;
             }
@@ -54,14 +48,13 @@ namespace Mil.Paperwork.Domain.Reports
             return _reportBytes;
         }
 
-        private void FillCommission(Document document)
+        private void FillCommission(WordDocument document)
         {
             var dictCommissionFields = ReportParametersHelper.GetCommission(ReportType.TechnicalStateReport, _reportDataService);
-
             document.ReplaceFields(dictCommissionFields);
         }
 
-        private void FillTheFields(IAssetInfo asset, IPerson personAccepted, IPerson personHanded, EventType eventType, Document document)
+        private void FillTheFields(IAssetInfo asset, IPerson personAccepted, IPerson personHanded, EventType eventType, WordDocument document)
         {
             var reportConfig = ReportParametersHelper.GetFullParametersDictionary(ReportType.TechnicalStateReport, _reportDataService);
             var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
@@ -88,79 +81,57 @@ namespace Mil.Paperwork.Domain.Reports
             document.ReplaceFields(reportConfig);
         }
 
-        private static void FillAssetTable(IAssetInfo asset, EventType eventType, Document document)
+        private static void FillAssetTable(IAssetInfo asset, EventType eventType, WordDocument document)
         {
             var table = document.GetTable(TechnicalStateReportHelper.TABLE_ASSET_NAME);
 
             if (table != null)
             {
-                var nameCellParameters = new WordCellParameters(TechnicalStateReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Left);
-                var cellParameters = new WordCellParameters(TechnicalStateReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Center);
-                // TODO: optimize. Make a mapper.
+                var nameCellParameters = new WordCellParameters(TechnicalStateReportHelper.TABLE_FONT_SIZE, WordHorizontalAlignment.Left);
+                var cellParameters = new WordCellParameters(TechnicalStateReportHelper.TABLE_FONT_SIZE, WordHorizontalAlignment.Center);
                 var row = table.LastRow;
 
                 var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
-
                 var initialCategory = ReportHelper.ConvertCategoryToText(asset.InitialCategory);
                 var category = ReportHelper.ConvertEventTypeToCategoryText(asset.InitialCategory, eventType);
-
                 var totalPrice = asset.Price * asset.Count;
                 var nomenclatureCode = asset.NomenclatureCode?.ToUpper() ?? string.Empty;
 
-                row.Cells[TechnicalStateReportHelper.COLUMN_NAME].AddText(assetName, nameCellParameters);
-                row.Cells[TechnicalStateReportHelper.COLUMN_NOMENCLATURE_CODE].AddText(nomenclatureCode, cellParameters);
-                row.Cells[TechnicalStateReportHelper.COLUMN_MEAS_UNIT].AddText(asset.MeasurementUnit, cellParameters);
-                row.Cells[TechnicalStateReportHelper.COLUMN_COUNT].AddNumber(asset.Count, cellParameters);
-                row.Cells[TechnicalStateReportHelper.COLUMN_CATEGORY_INITIAL].AddText(initialCategory, cellParameters);
-                row.Cells[TechnicalStateReportHelper.COLUMN_CATEGORY_RESIDUAL].AddText(initialCategory, cellParameters);
-                row.Cells[TechnicalStateReportHelper.COLUMN_PRICE_INITIAL].AddPrice(asset.Price, cellParameters);
-                row.Cells[TechnicalStateReportHelper.COLUMN_PRICE_RESIDUAL].AddPrice(totalPrice, cellParameters);
-                row.Cells[TechnicalStateReportHelper.COLUMN_FACTORY_NUMBER].AddText(asset.SerialNumber, cellParameters);
-                //row.Cells[TechnicalStateReportHelper.COLUMN_MANUFACTURER].AddText("-");
-                //row.Cells[TechnicalStateReportHelper.COLUMN_PASSPORT_NUMBER].AddText("-");
+                row.GetCell(TechnicalStateReportHelper.COLUMN_NAME).AddText(assetName, nameCellParameters);
+                row.GetCell(TechnicalStateReportHelper.COLUMN_NOMENCLATURE_CODE).AddText(nomenclatureCode, cellParameters);
+                row.GetCell(TechnicalStateReportHelper.COLUMN_MEAS_UNIT).AddText(asset.MeasurementUnit, cellParameters);
+                row.GetCell(TechnicalStateReportHelper.COLUMN_COUNT).AddNumber(asset.Count, cellParameters);
+                row.GetCell(TechnicalStateReportHelper.COLUMN_CATEGORY_INITIAL).AddText(initialCategory, cellParameters);
+                row.GetCell(TechnicalStateReportHelper.COLUMN_CATEGORY_RESIDUAL).AddText(initialCategory, cellParameters);
+                row.GetCell(TechnicalStateReportHelper.COLUMN_PRICE_INITIAL).AddPrice(asset.Price, cellParameters);
+                row.GetCell(TechnicalStateReportHelper.COLUMN_PRICE_RESIDUAL).AddPrice(totalPrice, cellParameters);
+                row.GetCell(TechnicalStateReportHelper.COLUMN_FACTORY_NUMBER).AddText(asset.SerialNumber, cellParameters);
             }
         }
 
-        private static void FillOperationalTable(IAssetInfo asset, Document document)
+        private static void FillOperationalTable(IAssetInfo asset, WordDocument document)
         {
             var table = document.GetTable(TechnicalStateReportHelper.TABLE_OPERATIONAL_INDICATORS_NAME);
-            var cellParameters = new WordCellParameters(TechnicalStateReportHelper.TABLE_FONT_SIZE, HorizontalAlignment.Center);
 
             if (table != null)
             {
-                // TODO: optimize. Make a mapper.
-                var columnNumber = 1;
-                var cellCommisioningYear = table.Rows[TechnicalStateReportHelper.ROW_COMMISIONING_YEAR].Cells[columnNumber];
-                var cellMonthsOperated = table.Rows[TechnicalStateReportHelper.ROW_MONTHS_OPERATED].Cells[columnNumber];
-                var cellHoursOperated = table.Rows[TechnicalStateReportHelper.ROW_HOURS_OPERATED].Cells[columnNumber];
-                var cellTechnicalResource = table.Rows[TechnicalStateReportHelper.ROW_TECHNICAL_RESOURCE].Cells[columnNumber];
-                var cellTechnicalOperationalTerm = table.Rows[TechnicalStateReportHelper.ROW_TECHNICAL_OPERATIONAL_TERM].Cells[columnNumber];
-                var cellWarrantyResource = table.Rows[TechnicalStateReportHelper.ROW_WARRANTY_RESOURCE].Cells[columnNumber];
-                var cellWarrantyPeriodYears = table.Rows[TechnicalStateReportHelper.ROW_WARRANTY_PERIOD_YEARS].Cells[columnNumber];
-                var cellRepairDescriptionAndDate = table.Rows[TechnicalStateReportHelper.ROW_REPAIR_DESCRIPTION_AND_DATE].Cells[columnNumber];
-                var cellInOperatingSinceRepairMonths = table.Rows[TechnicalStateReportHelper.ROW_IN_OPERATING_SINCE_REPAIR_MONTHS].Cells[columnNumber];
-                var cellOperatingResourceSinceRepair = table.Rows[TechnicalStateReportHelper.ROW_OPERATING_RESOURCE_SINCE_REPAIR].Cells[columnNumber];
-                var cellIncompletenessResource = table.Rows[TechnicalStateReportHelper.ROW_INCOMPLETENESS_RESOURCE].Cells[columnNumber];
-                var cellIncompletenessOperationalTerm = table.Rows[TechnicalStateReportHelper.ROW_INCOMPLETENESS_OPERATIONAL_TERM].Cells[columnNumber];
-                var cellIncompletenessWarrantyResource = table.Rows[TechnicalStateReportHelper.ROW_INCOMPLETENESS_WARRANTY_RESOURCE].Cells[columnNumber];
-                var cellIncompletenessWarrantyTerm = table.Rows[TechnicalStateReportHelper.ROW_INCOMPLETENESS_WARRANTY_TERM].Cells[columnNumber];
+                var cellParameters = new WordCellParameters(TechnicalStateReportHelper.TABLE_FONT_SIZE, WordHorizontalAlignment.Center);
+                const int columnNumber = 1;
 
                 var warrantyPeriodYears = ReportHelper.GetYearsText(asset.WarrantyPeriodMonths / 12);
                 var operationalResource = ReportHelper.GetYearsText(asset.ResourceYears);
 
-                // add feminine/masculine/neutral form????
-
-                cellTechnicalResource.AddText("-", cellParameters);
-                cellTechnicalOperationalTerm.AddText(operationalResource, cellParameters);
-                cellWarrantyResource.AddText("-", cellParameters);
-                cellWarrantyPeriodYears.AddText(warrantyPeriodYears, cellParameters);
-                cellRepairDescriptionAndDate.AddText("-", cellParameters);
-                cellInOperatingSinceRepairMonths.AddText("-", cellParameters);
-                cellOperatingResourceSinceRepair.AddText("-", cellParameters);
-                cellIncompletenessResource.AddText("-", cellParameters);
-                cellIncompletenessOperationalTerm.AddText("-", cellParameters);
-                cellIncompletenessWarrantyResource.AddText("-", cellParameters);
-                cellIncompletenessWarrantyTerm.AddText("-", cellParameters);
+                table.GetRow(TechnicalStateReportHelper.ROW_TECHNICAL_RESOURCE).GetCell(columnNumber).AddText("-", cellParameters);
+                table.GetRow(TechnicalStateReportHelper.ROW_TECHNICAL_OPERATIONAL_TERM).GetCell(columnNumber).AddText(operationalResource, cellParameters);
+                table.GetRow(TechnicalStateReportHelper.ROW_WARRANTY_RESOURCE).GetCell(columnNumber).AddText("-", cellParameters);
+                table.GetRow(TechnicalStateReportHelper.ROW_WARRANTY_PERIOD_YEARS).GetCell(columnNumber).AddText(warrantyPeriodYears, cellParameters);
+                table.GetRow(TechnicalStateReportHelper.ROW_REPAIR_DESCRIPTION_AND_DATE).GetCell(columnNumber).AddText("-", cellParameters);
+                table.GetRow(TechnicalStateReportHelper.ROW_IN_OPERATING_SINCE_REPAIR_MONTHS).GetCell(columnNumber).AddText("-", cellParameters);
+                table.GetRow(TechnicalStateReportHelper.ROW_OPERATING_RESOURCE_SINCE_REPAIR).GetCell(columnNumber).AddText("-", cellParameters);
+                table.GetRow(TechnicalStateReportHelper.ROW_INCOMPLETENESS_RESOURCE).GetCell(columnNumber).AddText("-", cellParameters);
+                table.GetRow(TechnicalStateReportHelper.ROW_INCOMPLETENESS_OPERATIONAL_TERM).GetCell(columnNumber).AddText("-", cellParameters);
+                table.GetRow(TechnicalStateReportHelper.ROW_INCOMPLETENESS_WARRANTY_RESOURCE).GetCell(columnNumber).AddText("-", cellParameters);
+                table.GetRow(TechnicalStateReportHelper.ROW_INCOMPLETENESS_WARRANTY_TERM).GetCell(columnNumber).AddText("-", cellParameters);
             }
         }
     }
