@@ -107,6 +107,36 @@
         "Name": "HEAD_OF_JUSTICE_POSITION",
         "Value": "Помічник командира військової частини А1488 з правової роботи",
         "Comment": ""
+      },
+      {
+        "Name": "HEAD_OF_ADMIN_NAME",
+        "Value": "Моніка Грейнджер",
+        "Comment": ""
+      },
+      {
+        "Name": "HEAD_OF_ADMIN_RANK",
+        "Value": "сержант",
+        "Comment": ""
+      },
+      {
+        "Name": "HEAD_OF_ADMIN_POSITION",
+        "Value": "Тимчасово виконуючий обов’язки начальника адміністративної групи",
+        "Comment": ""
+      },
+      {
+        "Name": "HEAD_OF_CORRUPTION_NAME",
+        "Value": "Крістіан НОРГОР",
+        "Comment": ""
+      },
+      {
+        "Name": "HEAD_OF_CORRUPTION_RANK",
+        "Value": "генерал",
+        "Comment": ""
+      },
+      {
+        "Name": "HEAD_OF_CORRUPTION_POSITION",
+        "Value": "Уповноважена особа з питань запобігання та виявлення корупції",
+        "Comment": ""
       }
     ],
     "CommisionsConfig": {
@@ -222,6 +252,23 @@
       "Name": "PLACE_CREATED",
       "Value": "А1488",
       "Comment": "Місце складання"
+    }
+  ],
+  "WriteOffOrder": [
+    {
+      "Name": "REPORT_CREATOR_POSITION",
+      "Value": "",
+      "Comment": "Посада укладача наказу"
+    },
+    {
+      "Name": "REPORT_CREATOR_RANK",
+      "Value": "",
+      "Comment": "Звання укладача наказу"
+    },
+    {
+      "Name": "REPORT_CREATOR_NAME",
+      "Value": "",
+      "Comment": "ПІБ укладача наказу"
     }
   ]
 }

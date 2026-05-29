@@ -9,6 +9,7 @@
         ProductDictionary,
         PeopleDictionary,
         MeasurementUnitsDictionary,
+        ServicesDictionary,
         //CheckSum
     }
 }

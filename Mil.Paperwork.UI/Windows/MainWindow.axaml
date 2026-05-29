@@ -114,6 +114,10 @@
 			<dictionaryViews:MeasurementUnitsDictionaryView />
 		</DataTemplate>
 
+		<DataTemplate DataType="{x:Type dictionaryViewModels:ServicesDictionaryViewModel}">
+			<dictionaryViews:ServicesDictionaryView />
+		</DataTemplate>
+
 		<DataTemplate DataType="configViewModels:ReportConfigViewModel">
 			<configViews:ReportConfigurationView />
 		</DataTemplate>
