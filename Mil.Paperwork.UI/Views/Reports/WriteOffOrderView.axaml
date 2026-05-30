@@ -11,7 +11,11 @@
     <Grid RowDefinitions="*,Auto">
 
         <!-- Main content: left fields + right services -->
-        <Grid Grid.Row="0" ColumnDefinitions="390,*">
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width=".7*" MinWidth="390" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
             <!-- LEFT: Document metadata fields -->
             <ScrollViewer Grid.Column="0"
@@ -38,8 +42,8 @@
                             <TextBlock Grid.Row="1" Grid.Column="2" Text="Дата:"
                                        VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <CalendarDatePicker Grid.Row="1" Grid.Column="3"
-                                               SelectedDate="{Binding ReportDate}"
-                                               Margin="0,2"/>
+                                                SelectedDate="{Binding ReportDate}"
+                                                Margin="0,2"/>
 
                             <!-- Звання + ПІБ (REPORTER_, родовий відмінок) -->
                             <TextBlock Grid.Row="2" Grid.Column="0" Text="Звання:"
@@ -71,8 +75,9 @@
                             <TextBlock Grid.Row="4" Grid.Column="2" Text="Дата:"
                                        VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <CalendarDatePicker Grid.Row="4" Grid.Column="3"
-                                               SelectedDate="{Binding BattleOrderDate}"
-                                               Margin="0,2"/>
+                                                DisplayDateEnd="{Binding ReportDate}"
+                                                SelectedDate="{Binding BattleOrderDate}"
+                                                Margin="0,2"/>
 
                             <!-- Місце виконання -->
                             <TextBlock Grid.Row="5" Grid.Column="0" Text="Місце виконання:"
@@ -85,14 +90,28 @@
                             <TextBlock Grid.Row="6" Grid.Column="0" Text="Дата події:"
                                        VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <CalendarDatePicker Grid.Row="6" Grid.Column="1"
-                                               SelectedDate="{Binding EventDate}"
-                                               Margin="0,2,8,2"/>
+                                                DisplayDateEnd="{Binding ReportDate}"
+                                                SelectedDate="{Binding EventDate}"
+                                                Margin="0,2,8,2"/>
                             <TextBlock Grid.Row="6" Grid.Column="2" Text="Час:"
                                        VerticalAlignment="Center" Margin="0,0,6,0"/>
-                            <TextBox   Grid.Row="6" Grid.Column="3"
-                                       Text="{Binding EventTime, UpdateSourceTrigger=PropertyChanged}"
-                                       Watermark="ГГ:ХХ"
-                                       Margin="0,2"/>
+                            <StackPanel Grid.Row="6" Grid.Column="3"
+                                        Orientation="Horizontal" Spacing="2"
+                                        VerticalAlignment="Center" Margin="0,2">
+                                <NumericUpDown Value="{Binding EventHour}"
+                                               Minimum="0" Maximum="23"
+                                               FormatString="00"
+                                               ParsingNumberStyle="Integer"
+                                               Width="68"
+                                               ToolTip.Tip="Години (0–23)"/>
+                                <TextBlock Text=":" VerticalAlignment="Center" FontWeight="Bold"/>
+                                <NumericUpDown Value="{Binding EventMinute}"
+                                               Minimum="0" Maximum="59"
+                                               FormatString="00"
+                                               ParsingNumberStyle="Integer"
+                                               Width="68"
+                                               ToolTip.Tip="Хвилини (0–59)"/>
+                            </StackPanel>
 
                             <!-- Що сталося -->
                             <TextBlock Grid.Row="7" Grid.ColumnSpan="4" Text="Що сталося:"
@@ -242,13 +261,7 @@
                             <DataTemplate x:DataType="reportViewModels:WriteOffServiceViewModel">
                                 <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}"
                                         BorderThickness="1" CornerRadius="4" Margin="0,0,0,6">
-                                    <Expander IsExpanded="True" HorizontalContentAlignment="Stretch">
-                                        <Expander.Styles>
-                                            <Style Selector="Expander /template/ ToggleButton#PART_toggle">
-                                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                            </Style>
-                                        </Expander.Styles>
+                                    <Expander IsExpanded="True" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch">
                                         <Expander.Header>
                                             <Grid ColumnDefinitions="*,Auto,Auto">
                                                 <TextBlock Grid.Column="0"

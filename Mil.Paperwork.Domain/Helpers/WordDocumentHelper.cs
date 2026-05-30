@@ -171,8 +171,8 @@ namespace Mil.Paperwork.Domain.Helpers
                         HighAnsi = WordDocumentHelper.DOCUMENT_FONT_NAME,
                         ComplexScript = WordDocumentHelper.DOCUMENT_FONT_NAME
                     });
-                    rPr.Append(new FontSize { Val = "24" });
-                    rPr.Append(new FontSizeComplexScript { Val = "24" });
+                    rPr.Append(new FontSize { Val = "28" });
+                    rPr.Append(new FontSizeComplexScript { Val = "28" });
                     if (bp.IsBold)
                         rPr.Append(new Bold());
 

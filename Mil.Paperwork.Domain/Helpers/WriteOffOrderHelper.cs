@@ -36,7 +36,7 @@ namespace Mil.Paperwork.Domain.Helpers
             {
                 var service = services[i];
 
-                paragraphs.Add(new BlockParagraph($"За номенклатурою {service.ServiceName}:", IsBold: true, IndentLevel: 0));
+                paragraphs.Add(new BlockParagraph($"\tЗа номенклатурою {service.ServiceName}:", IsBold: false, IndentLevel: 0));
 
                 foreach (var asset in service.Assets)
                 {
@@ -46,7 +46,7 @@ namespace Mil.Paperwork.Domain.Helpers
 
                 var subtotal = service.Assets.Sum(a => a.Amount);
                 paragraphs.Add(new BlockParagraph(
-                    $"Загальна залишкова вартість {service.ServiceNameGenitive} - {ReportHelper.GetPriceString(subtotal)} грн.",
+                    $"\tЗагальна залишкова вартість {service.ServiceNameGenitive} - {ReportHelper.GetPriceString(subtotal)} грн.",
                     IsBold: false,
                     IndentLevel: 0));
 
@@ -71,8 +71,8 @@ namespace Mil.Paperwork.Domain.Helpers
             var paragraphs = new List<BlockParagraph>();
             foreach (var w in witnesses)
             {
-                var line = $"- {w.Rank} {w.Name}, {w.Position}.";
-                paragraphs.Add(new BlockParagraph(line, IsBold: false, IndentLevel: 0));
+                var line = $"-\t{w.Rank} {w.Name}, {w.Position}.";
+                paragraphs.Add(new BlockParagraph(line, IsBold: false, IndentLevel: 1));
             }
             return paragraphs;
         }

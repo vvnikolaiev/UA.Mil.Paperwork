@@ -27,7 +27,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         private string _reportNum = string.Empty;
         private DateTime _reportDate = DateTime.Today;
         private DateTime _eventDate = DateTime.Today;
-        private string _eventTime = "00:00";
+        private int _eventHour = 0;
+        private int _eventMinute = 0;
         private string _battleOrder = string.Empty;
         private DateTime _battleOrderDate = DateTime.Today;
         private string _battleOrderLocation = string.Empty;
@@ -72,7 +73,17 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public string ReportNum { get => _reportNum; set => SetProperty(ref _reportNum, value); }
         public DateTime ReportDate { get => _reportDate; set => SetProperty(ref _reportDate, value); }
         public DateTime EventDate { get => _eventDate; set => SetProperty(ref _eventDate, value); }
-        public string EventTime { get => _eventTime; set => SetProperty(ref _eventTime, value); }
+        public int EventHour
+        {
+            get => _eventHour;
+            set { SetProperty(ref _eventHour, value); OnPropertyChanged(nameof(EventTime)); }
+        }
+        public int EventMinute
+        {
+            get => _eventMinute;
+            set { SetProperty(ref _eventMinute, value); OnPropertyChanged(nameof(EventTime)); }
+        }
+        public string EventTime => $"{_eventHour:D2}:{_eventMinute:D2}";
         public string BattleOrder { get => _battleOrder; set => SetProperty(ref _battleOrder, value); }
         public DateTime BattleOrderDate { get => _battleOrderDate; set => SetProperty(ref _battleOrderDate, value); }
         public string BattleOrderLocation { get => _battleOrderLocation; set => SetProperty(ref _battleOrderLocation, value); }
