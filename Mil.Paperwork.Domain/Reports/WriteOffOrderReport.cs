@@ -54,9 +54,11 @@ namespace Mil.Paperwork.Domain.Reports
             document.ReplaceField(WriteOffOrderHelper.FIELD_BATTLE_ORDER_DATE, reportData.BattleOrderDate.ToString(ReportHelper.DATE_FORMAT));
             document.ReplaceField(WriteOffOrderHelper.FIELD_BATTLE_ORDER_LOCATION, reportData.BattleOrderLocation);
             document.ReplaceField(WriteOffOrderHelper.FIELD_SUBDIVISION_NAME, reportData.SubdivisionName);
-            document.ReplaceField(WriteOffOrderHelper.FIELD_REPORTER_POSITION, reportData.ReporterPosition);
             document.ReplaceField(WriteOffOrderHelper.FIELD_REPORTER_RANK, reportData.ReporterRank);
             document.ReplaceField(WriteOffOrderHelper.FIELD_REPORTER_NAME, reportData.ReporterName);
+            document.ReplaceField(WriteOffOrderHelper.FIELD_CREATOR_POSITION, reportData.CreatorPosition);
+            document.ReplaceField(WriteOffOrderHelper.FIELD_CREATOR_RANK, reportData.CreatorRank);
+            document.ReplaceField(WriteOffOrderHelper.FIELD_CREATOR_NAME, reportData.CreatorName);
             document.ReplaceField(WriteOffOrderHelper.FIELD_MIL_UNIT_APPROVAL, reportData.MilUnitApproval);
             document.ReplaceField(WriteOffOrderHelper.FIELD_WHAT_HAPPENED, reportData.WhatHappened);
             document.ReplaceField(WriteOffOrderHelper.FIELD_TOTAL_SUM, ReportHelper.GetPriceString(totalSum));

@@ -10,9 +10,11 @@ namespace Mil.Paperwork.Domain.DataModels.ReportData
         DateTime BattleOrderDate { get; set; }
         string BattleOrderLocation { get; set; }
         string SubdivisionName { get; set; }
-        string ReporterPosition { get; set; }
         string ReporterRank { get; set; }
         string ReporterName { get; set; }
+        string CreatorPosition { get; set; }
+        string CreatorRank { get; set; }
+        string CreatorName { get; set; }
         string MilUnitApproval { get; set; }
         string WhatHappened { get; set; }
         IList<WriteOffServiceData> Services { get; set; }

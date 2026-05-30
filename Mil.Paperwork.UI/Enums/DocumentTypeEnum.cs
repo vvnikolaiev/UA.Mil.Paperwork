@@ -6,6 +6,8 @@ namespace Mil.Paperwork.UI.Enums
     {
         [Description("Списання майна")]
         WriteOff,
+        [Description("Наказ про списання")]
+        WriteOffOrder,
         [Description("Залишкова вартість")]
         ResidualValue,
         [Description("Пакет зі списання")]

@@ -21,6 +21,7 @@ namespace Mil.Paperwork.UI.Managers
         private readonly IReportService<IInvoceReportData> _invoiceReportService;
         private readonly IReportService<IHandoverReportData> _handover23ReportService;
         private readonly IReportService<IWriteOffPackageReportData> _writeOffReportsPackageService;
+        private readonly IReportService<IWriteOffOrderReportData> _writeOffOrderReportService;
 
         public ReportManager(
             QualityStateReportService qualityStateReportService,
@@ -33,6 +34,7 @@ namespace Mil.Paperwork.UI.Managers
             CommissioningActService commissioningActService,
             InvoiceReportService invoiceReportService,
             Handover23ReportService handover23ReportService,
+            WriteOffOrderReportService writeOffOrderReportService,
             IDialogService dialogService)
         {
             _dialogService = dialogService;
@@ -48,6 +50,7 @@ namespace Mil.Paperwork.UI.Managers
             _commissioningActService = commissioningActService;
             _invoiceReportService = invoiceReportService;
             _handover23ReportService = handover23ReportService;
+            _writeOffOrderReportService = writeOffOrderReportService;
         }
 
         public async void GenerateWriteOffReport(ObsoleteWriteOffReportData reportData)
@@ -257,6 +260,21 @@ namespace Mil.Paperwork.UI.Managers
             catch (Exception ex)
             {
                 await _dialogService.ShowMessageAsync($"Помилка генерації акту: {ex.Message}");
+            }
+        }
+
+        public async void GenerateWriteOffOrder(IWriteOffOrderReportData reportData)
+        {
+            try
+            {
+                var result = _writeOffOrderReportService.TryGenerateReport(reportData);
+
+                var status = TextFormatHelper.GetReportStatusMessage("Наказ про списання", result);
+                await _dialogService.ShowMessageAsync(status);
+            }
+            catch (Exception ex)
+            {
+                await _dialogService.ShowMessageAsync($"Помилка генерації наказу: {ex.Message}");
             }
         }
     }

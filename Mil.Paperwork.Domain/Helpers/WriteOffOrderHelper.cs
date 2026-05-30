@@ -16,9 +16,11 @@ namespace Mil.Paperwork.Domain.Helpers
         public const string FIELD_BATTLE_ORDER_DATE = "BATTLE_ORDER_DATE";
         public const string FIELD_BATTLE_ORDER_LOCATION = "BATTLE_ORDER_LOCATION";
         public const string FIELD_SUBDIVISION_NAME = "SUBDIVISION_NAME";
-        public const string FIELD_REPORTER_POSITION = "REPORTER_POSITION";
         public const string FIELD_REPORTER_RANK = "REPORTER_RANK";
         public const string FIELD_REPORTER_NAME = "REPORTER_NAME";
+        public const string FIELD_CREATOR_POSITION = "REPORT_CREATOR_POSITION";
+        public const string FIELD_CREATOR_RANK = "REPORT_CREATOR_RANK";
+        public const string FIELD_CREATOR_NAME = "REPORT_CREATOR_NAME";
         public const string FIELD_MIL_UNIT_APPROVAL = "MIL_UNIT_APPROVAL";
         public const string FIELD_WHAT_HAPPENED = "WHAT_HAPPENED";
         public const string FIELD_TOTAL_SUM = "TOTAL_SUM";

@@ -49,6 +49,11 @@
         "Comment": ""
       },
       {
+        "Name": "COMM_POSITION",
+        "Value": "Командир військової частини",
+        "Comment": ""
+      },
+      {
         "Name": "COMM_RANK",
         "Value": "старший лейтенант",
         "Comment": ""

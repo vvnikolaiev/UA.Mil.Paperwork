@@ -82,6 +82,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             var reportTypes = new List<ReportItemViewModel>()
             {
                 //new(DocumentTypeEnum.WriteOff),
+                new(DocumentTypeEnum.WriteOffOrder),
                 new(DocumentTypeEnum.ResidualValue),
                 new(DocumentTypeEnum.WriteOffPackage),
                 new(DocumentTypeEnum.Valuation),
@@ -123,6 +124,9 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
                     break;
                 case DocumentTypeEnum.HandoverCertificate23:
                     createdTab = new Handover23ActViewModel(_reportManager, _dataService, _dialogService);
+                    break;
+                case DocumentTypeEnum.WriteOffOrder:
+                    createdTab = new WriteOffOrderViewModel(_reportManager, _dataService, _reportDataService, _dialogService);
                     break;
                 default:
                     createdTab = null;
