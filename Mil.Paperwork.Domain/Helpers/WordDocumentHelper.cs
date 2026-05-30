@@ -129,21 +129,18 @@ namespace Mil.Paperwork.Domain.Helpers
         public void ReplaceFieldWithBlock(string fieldName, IList<BlockParagraph> paragraphs)
         {
             var cleanName = fieldName.Trim('«', '»');
-            Paragraph? targetParagraph = null;
 
-            foreach (var para in _body.Descendants<Paragraph>())
-            {
-                if (ContainsMergeField(para, cleanName))
-                {
-                    targetParagraph = para;
-                    break;
-                }
-            }
+            // Collect all paragraphs that contain the field (template may have duplicates)
+            var targets = _body.Descendants<Paragraph>()
+                .Where(p => ContainsMergeField(p, cleanName))
+                .ToList();
 
-            if (targetParagraph == null)
+            if (targets.Count == 0)
                 return;
 
-            var pPr = targetParagraph.GetFirstChild<ParagraphProperties>();
+            // Insert block content before the first occurrence
+            var firstTarget = targets[0];
+            var pPr = firstTarget.GetFirstChild<ParagraphProperties>();
 
             foreach (var bp in paragraphs)
             {
@@ -185,10 +182,12 @@ namespace Mil.Paperwork.Domain.Helpers
                     newPara.Append(run);
                 }
 
-                targetParagraph.InsertBeforeSelf(newPara);
+                firstTarget.InsertBeforeSelf(newPara);
             }
 
-            targetParagraph.Remove();
+            // Remove all occurrences of the placeholder paragraph
+            foreach (var target in targets)
+                target.Remove();
         }
 
         private static bool ContainsMergeField(Paragraph para, string fieldName)

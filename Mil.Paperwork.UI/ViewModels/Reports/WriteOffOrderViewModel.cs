@@ -35,6 +35,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         private string _milUnitApproval = string.Empty;
         private string _subdivisionName = string.Empty;
 
+        private WriteOffWitnessViewModel? _selectedWitness;
+
         // REPORTER_ — person who filed the incident report (in the "Подія" section)
         private string _reporterRank = string.Empty;
         private string _reporterName = string.Empty;
@@ -51,6 +53,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public IList<MeasurementUnitViewModel> AvailableMeasurementUnits { get; }
         public ObservableCollection<PersonViewModel> AvailablePeople { get; }
         public ObservableCollection<WriteOffServiceViewModel> Services { get; }
+        public ObservableCollection<WriteOffWitnessViewModel> Witnesses { get; }
 
         public PersonViewModel? SelectedCreator
         {
@@ -82,7 +85,15 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public string CreatorRank { get => _creatorRank; set => SetProperty(ref _creatorRank, value); }
         public string CreatorName { get => _creatorName; set => SetProperty(ref _creatorName, value); }
 
+        public WriteOffWitnessViewModel? SelectedWitness
+        {
+            get => _selectedWitness;
+            set => SetProperty(ref _selectedWitness, value);
+        }
+
         public IDelegateCommand AddServiceCommand { get; }
+        public IDelegateCommand AddWitnessCommand { get; }
+        public IDelegateCommand RemoveWitnessCommand { get; }
         public IDelegateCommand GenerateReportCommand { get; }
         public IDelegateCommand OpenConfigurationCommand { get; }
 
@@ -102,11 +113,14 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             AvailableMeasurementUnits = [.. _dataService.LoadMeasurementUnitsData().Select(u => new MeasurementUnitViewModel(u))];
             AvailablePeople = [.. _dataService.LoadPeopleData().Select(p => new PersonViewModel(p))];
             Services = [];
+            Witnesses = [];
 
             var commonParams = _reportDataService.GetReportParametersDictionary(ReportType.Common);
             MilUnitApproval = commonParams.GetValueOrDefault(MilUnitConfigKey, string.Empty);
 
             AddServiceCommand = new DelegateCommand(AddService);
+            AddWitnessCommand = new DelegateCommand(AddWitness);
+            RemoveWitnessCommand = new DelegateCommand(RemoveSelectedWitness);
             GenerateReportCommand = new DelegateCommand(GenerateReportCommandExecute);
             OpenConfigurationCommand = new DelegateCommand(OpenConfigurationCommandExecute);
         }
@@ -142,6 +156,17 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             Services.Remove(service);
         }
 
+        private void AddWitness()
+        {
+            Witnesses.Add(new WriteOffWitnessViewModel());
+        }
+
+        private void RemoveSelectedWitness()
+        {
+            if (SelectedWitness != null)
+                Witnesses.Remove(SelectedWitness);
+        }
+
         private async void GenerateReportCommandExecute()
         {
             if (!_dialogService.TryPickFolder(out var folderName))
@@ -167,6 +192,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                 MilUnitApproval = MilUnitApproval,
                 WhatHappened = WhatHappened,
                 Services = [.. Services.Select(s => s.ToServiceData())],
+                Witnesses = [.. Witnesses.Select(w => w.ToWitnessData())],
                 DestinationFolder = folderName
             };
 

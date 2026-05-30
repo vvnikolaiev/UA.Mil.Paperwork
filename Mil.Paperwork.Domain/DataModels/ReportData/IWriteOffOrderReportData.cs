@@ -18,5 +18,6 @@ namespace Mil.Paperwork.Domain.DataModels.ReportData
         string MilUnitApproval { get; set; }
         string WhatHappened { get; set; }
         IList<WriteOffServiceData> Services { get; set; }
+        IList<WriteOffWitnessData> Witnesses { get; set; }
     }
 }

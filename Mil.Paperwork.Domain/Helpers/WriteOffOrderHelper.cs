@@ -8,6 +8,7 @@ namespace Mil.Paperwork.Domain.Helpers
         public const string OUTPUT_NAME_FORMAT = "Наказ про списання №{0}.docx";
 
         public const string FIELD_SERVICES_BLOCK = "SERVICES_BLOCK";
+        public const string FIELD_EVENT_WITNESSES = "EVENT_WITNESSES";
         public const string FIELD_REPORT_NUM = "REPORT_NUM";
         public const string FIELD_REPORT_DATE = "REPORT_DATE";
         public const string FIELD_EVENT_DATE = "EVENT_DATE";
@@ -63,6 +64,17 @@ namespace Mil.Paperwork.Domain.Helpers
 
             var parts = services.Select(s => $"Начальнику {s.ServiceNameGenitive}");
             return string.Join(", ", parts);
+        }
+
+        public static IList<BlockParagraph> BuildWitnessesBlock(IList<WriteOffWitnessData> witnesses)
+        {
+            var paragraphs = new List<BlockParagraph>();
+            foreach (var w in witnesses)
+            {
+                var line = $"- {w.Rank} {w.Name}, {w.Position}.";
+                paragraphs.Add(new BlockParagraph(line, IsBold: false, IndentLevel: 0));
+            }
+            return paragraphs;
         }
 
         public static decimal CalculateTotalSum(IList<WriteOffServiceData> services)

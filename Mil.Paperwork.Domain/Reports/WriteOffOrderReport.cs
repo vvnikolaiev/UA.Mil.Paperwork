@@ -25,6 +25,7 @@ namespace Mil.Paperwork.Domain.Reports
 
                 FillSimpleFields(reportData, document);
                 FillServicesBlock(reportData, document);
+                FillWitnessesBlock(reportData, document);
 
                 _reportBytes = document.GetBytes();
                 return true;
@@ -72,6 +73,12 @@ namespace Mil.Paperwork.Domain.Reports
         {
             var blockParagraphs = WriteOffOrderHelper.BuildServicesBlock(reportData.Services);
             document.ReplaceFieldWithBlock(WriteOffOrderHelper.FIELD_SERVICES_BLOCK, blockParagraphs);
+        }
+
+        private static void FillWitnessesBlock(IWriteOffOrderReportData reportData, WordDocument document)
+        {
+            var blockParagraphs = WriteOffOrderHelper.BuildWitnessesBlock(reportData.Witnesses);
+            document.ReplaceFieldWithBlock(WriteOffOrderHelper.FIELD_EVENT_WITNESSES, blockParagraphs);
         }
     }
 }

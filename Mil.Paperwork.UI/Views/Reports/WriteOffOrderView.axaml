@@ -150,6 +150,77 @@
                         </Grid>
                     </Border>
 
+                    <!-- Свідки події -->
+                    <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                            BorderThickness="1" CornerRadius="4" Padding="6">
+                        <StackPanel Spacing="4">
+                            <!-- Header row -->
+                            <Grid ColumnDefinitions="*,Auto,Auto">
+                                <TextBlock Grid.Column="0" Text="Свідки події"
+                                           FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                <Button Grid.Column="1"
+                                        Command="{Binding AddWitnessCommand}"
+                                        Padding="6"
+                                        Margin="0,0,2,0"
+                                        ToolTip.Tip="Додати свідка">
+                                    <PathIcon Width="16" Height="16"
+                                              Foreground="#2E7D32"
+                                              Data="M0,0 H24 V2 H0 Z M0,7 H24 V9 H0 Z M0,13 H24 V15 H0 Z M0,0 H2 V15 H0 Z M22,0 H24 V15 H22 Z M11,0 H13 V15 H11 Z M11,15 H13 V19 H11 Z M7,19 L12,23 L17,19 Z"/>
+                                </Button>
+                                <Button Grid.Column="2"
+                                        Command="{Binding RemoveWitnessCommand}"
+                                        Padding="6"
+                                        ToolTip.Tip="Видалити вибраного свідка">
+                                    <PathIcon Width="16" Height="16"
+                                              Foreground="#C62828"
+                                              Data="M0,0 H24 V2 H0 Z M0,7 H24 V9 H0 Z M0,13 H24 V15 H0 Z M0,0 H2 V15 H0 Z M22,0 H24 V15 H22 Z M11,0 H13 V15 H11 Z M15,16 L17,16 L9,24 L7,24 Z M7,16 L9,16 L17,24 L15,24 Z"/>
+                                </Button>
+                            </Grid>
+
+                            <!-- Witnesses DataGrid -->
+                            <DataGrid ItemsSource="{Binding Witnesses}"
+                                      SelectedItem="{Binding SelectedWitness}"
+                                      MinHeight="60"
+                                      MaxHeight="200"
+                                      AutoGenerateColumns="False"
+                                      GridLinesVisibility="All">
+                                <DataGrid.Columns>
+                                    <DataGridTemplateColumn Header="Звання" Width="110">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBox Text="{Binding Rank, UpdateSourceTrigger=PropertyChanged}"
+                                                         Watermark="молодший сержант"
+                                                         BorderThickness="0"
+                                                         VerticalAlignment="Center"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+                                    <DataGridTemplateColumn Header="ПРІЗВИЩЕ Ім'я По-батькові" Width="*">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                                         Watermark="УДАЛОВ Володимир Віталійович"
+                                                         BorderThickness="0"
+                                                         VerticalAlignment="Center"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+                                    <DataGridTemplateColumn Header="Посада" Width="130">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBox Text="{Binding Position, UpdateSourceTrigger=PropertyChanged}"
+                                                         BorderThickness="0"
+                                                         VerticalAlignment="Center"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                    </Border>
+
                 </StackPanel>
             </ScrollViewer>
 

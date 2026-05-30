@@ -18,6 +18,7 @@ namespace Mil.Paperwork.Domain.DataModels.ReportData
         public string MilUnitApproval { get; set; } = string.Empty;
         public string WhatHappened { get; set; } = string.Empty;
         public IList<WriteOffServiceData> Services { get; set; } = [];
+        public IList<WriteOffWitnessData> Witnesses { get; set; } = [];
 
         public string DestinationFolder { get; set; } = string.Empty;
 
