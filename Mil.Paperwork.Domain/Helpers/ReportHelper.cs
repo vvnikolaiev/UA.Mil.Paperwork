@@ -60,6 +60,12 @@ namespace Mil.Paperwork.Domain.Helpers
             NumberDecimalDigits = 2 // Set number of decimal places
         };
 
+        public static readonly NumberFormatInfo HrnNumberFormatInfo = new()
+        {
+            NumberGroupSeparator = " ", // Use space as the thousands separator
+            NumberDecimalDigits = 0 // Set number of decimal places
+        };
+
         public const string DATE_FORMAT = "dd.MM.yyyy";
         public const string DATE_FORMAT_Ex = "« {0:dd} »    {0:MM}    {0:yyyy} року";
 
@@ -168,6 +174,8 @@ namespace Mil.Paperwork.Domain.Helpers
         public static string ConvertTotalSumToUkrainianString(decimal totalSum)
         {
             var integerPart = (int)totalSum;
+            var hrn = integerPart.ToString("N", HrnNumberFormatInfo);
+
             var fractionalPart = (int)((totalSum - integerPart) * 100);
 
             var caseHryvnas = GetNounFormFromNumber(integerPart);

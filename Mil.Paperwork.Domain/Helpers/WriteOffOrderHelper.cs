@@ -2,10 +2,14 @@ using Mil.Paperwork.Domain.DataModels;
 
 namespace Mil.Paperwork.Domain.Helpers
 {
-    internal static class WriteOffOrderHelper
+    public static class WriteOffOrderHelper
     {
         public const string REPORT_TEMPLATE_NAME = "WriteOffOrderTemplate.docx";
         public const string OUTPUT_NAME_FORMAT = "Наказ про списання №{0}.docx";
+
+        public const int DocumentFontSize = 14;
+
+        public const string MilUnitConfigKey = "MIL_UNIT";
 
         public const string FIELD_SERVICES_BLOCK = "SERVICES_BLOCK";
         public const string FIELD_EVENT_WITNESSES = "EVENT_WITNESSES";
@@ -28,58 +32,68 @@ namespace Mil.Paperwork.Domain.Helpers
         public const string FIELD_TOTAL_SUM_TEXT = "TOTAL_SUM_TEXT";
         public const string FIELD_TO_HEADS_OF_SERVICES = "TO_HEADS_OF_SERVICES";
 
-        public static IList<BlockParagraph> BuildServicesBlock(IList<WriteOffServiceData> services)
+        private const int SumRoundingPrecision = 2;
+        private const string ServicesSeparator = ", ";
+        private const string ServiceHeaderFormat = "\tЗа номенклатурою {0}:";
+        private const string AssetLineFormat = "-\t{0} – {1} {2}., залишковою вартістю {3} грн.;";
+        private const string ServiceSubtotalFormat = "\tЗагальна залишкова вартість майна {0} - {1} грн.";
+        private const string HeadOfServiceFormat = "начальнику {0}";
+        private const string WitnessLineFormat = "-\t{0} {1}, {2} військової частини {3}.";
+
+        internal static IList<BlockParagraph> BuildServicesBlock(IList<WriteOffServiceData> services)
         {
             var paragraphs = new List<BlockParagraph>();
 
             for (int i = 0; i < services.Count; i++)
             {
                 var service = services[i];
+                var serviceNameGen = service.ServiceNameGenitive?.ToLower();
 
-                paragraphs.Add(new BlockParagraph($"\tЗа номенклатурою {service.ServiceName}:", IsBold: false, IndentLevel: 0));
+                paragraphs.Add(new BlockParagraph(
+                    string.Format(ServiceHeaderFormat, serviceNameGen), IndentLevel: 0, FontSize: DocumentFontSize));
 
                 foreach (var asset in service.Assets)
                 {
-                    var line = $"-\t{asset.Name} – {asset.Count} {asset.MeasurementUnit}., залишковою вартістю {ReportHelper.GetPriceString(asset.Amount)} грн.;";
-                    paragraphs.Add(new BlockParagraph(line, IsBold: false, IndentLevel: 1));
+                    var line = string.Format(AssetLineFormat,
+                        asset.Name, asset.Count, asset.MeasurementUnit,
+                        ReportHelper.GetPriceString(asset.Amount));
+                    paragraphs.Add(new BlockParagraph(line, IndentLevel: 1, FontSize: DocumentFontSize));
                 }
 
                 var subtotal = service.Assets.Sum(a => a.Amount);
                 paragraphs.Add(new BlockParagraph(
-                    $"\tЗагальна залишкова вартість {service.ServiceNameGenitive} - {ReportHelper.GetPriceString(subtotal)} грн.",
-                    IsBold: false,
-                    IndentLevel: 0));
+                    string.Format(ServiceSubtotalFormat, serviceNameGen, ReportHelper.GetPriceString(subtotal)), IndentLevel: 0, FontSize: DocumentFontSize));
 
                 if (i < services.Count - 1)
-                    paragraphs.Add(new BlockParagraph(string.Empty, IsBold: false, IndentLevel: 0));
+                    paragraphs.Add(new BlockParagraph(string.Empty, IndentLevel: 0, FontSize: DocumentFontSize));
             }
 
             return paragraphs;
         }
 
-        public static string BuildToHeadsOfServices(IList<WriteOffServiceData> services)
+        internal static string BuildToHeadsOfServices(IList<WriteOffServiceData> services)
         {
             if (services == null || services.Count == 0)
                 return string.Empty;
 
-            var parts = services.Select(s => $"Начальнику {s.ServiceNameGenitive}");
-            return string.Join(", ", parts);
+            var parts = services.Select(s => string.Format(HeadOfServiceFormat, s.ServiceNameGenitive?.ToLower()));
+            return string.Join(ServicesSeparator, parts);
         }
 
-        public static IList<BlockParagraph> BuildWitnessesBlock(IList<WriteOffWitnessData> witnesses)
+        internal static IList<BlockParagraph> BuildWitnessesBlock(IList<WriteOffWitnessData> witnesses, string milUnit)
         {
             var paragraphs = new List<BlockParagraph>();
             foreach (var w in witnesses)
             {
-                var line = $"-\t{w.Rank} {w.Name}, {w.Position}.";
-                paragraphs.Add(new BlockParagraph(line, IsBold: false, IndentLevel: 1));
+                var line = string.Format(WitnessLineFormat, w.Rank, w.Name, w.Position, milUnit);
+                paragraphs.Add(new BlockParagraph(line, IndentLevel: 1, FontSize: DocumentFontSize));
             }
             return paragraphs;
         }
 
-        public static decimal CalculateTotalSum(IList<WriteOffServiceData> services)
+        internal static decimal CalculateTotalSum(IList<WriteOffServiceData> services)
         {
-            return Math.Round(services.Sum(s => s.Assets.Sum(a => a.Amount)), 2);
+            return Math.Round(services.Sum(s => s.Assets.Sum(a => a.Amount)), SumRoundingPrecision);
         }
     }
 }

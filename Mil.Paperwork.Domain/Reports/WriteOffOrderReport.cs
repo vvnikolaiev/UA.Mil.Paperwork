@@ -23,9 +23,12 @@ namespace Mil.Paperwork.Domain.Reports
 
                 using var document = WordDocument.LoadFromFile(templatePath);
 
-                FillSimpleFields(reportData, document);
+                var reportConfig = ReportParametersHelper.GetFullParametersDictionary(ReportType.WriteOffOrder, _reportDataService);
+                var milUnit = reportConfig.GetValueOrDefault(WriteOffOrderHelper.MilUnitConfigKey, string.Empty);
+
+                FillSimpleFields(reportData, reportConfig, document);
                 FillServicesBlock(reportData, document);
-                FillWitnessesBlock(reportData, document);
+                FillWitnessesBlock(reportData, milUnit, document);
 
                 _reportBytes = document.GetBytes();
                 return true;
@@ -39,10 +42,8 @@ namespace Mil.Paperwork.Domain.Reports
 
         public byte[] GetReportBytes() => _reportBytes;
 
-        private void FillSimpleFields(IWriteOffOrderReportData reportData, WordDocument document)
+        private void FillSimpleFields(IWriteOffOrderReportData reportData, Dictionary<string, string> reportConfig, WordDocument document)
         {
-            var reportConfig = ReportParametersHelper.GetFullParametersDictionary(ReportType.WriteOffOrder, _reportDataService);
-
             var totalSum = WriteOffOrderHelper.CalculateTotalSum(reportData.Services);
             var totalSumText = ReportHelper.ConvertTotalSumToUkrainianString(totalSum);
             var toHeads = WriteOffOrderHelper.BuildToHeadsOfServices(reportData.Services);
@@ -75,9 +76,9 @@ namespace Mil.Paperwork.Domain.Reports
             document.ReplaceFieldWithBlock(WriteOffOrderHelper.FIELD_SERVICES_BLOCK, blockParagraphs);
         }
 
-        private static void FillWitnessesBlock(IWriteOffOrderReportData reportData, WordDocument document)
+        private static void FillWitnessesBlock(IWriteOffOrderReportData reportData, string milUnit, WordDocument document)
         {
-            var blockParagraphs = WriteOffOrderHelper.BuildWitnessesBlock(reportData.Witnesses);
+            var blockParagraphs = WriteOffOrderHelper.BuildWitnessesBlock(reportData.Witnesses, milUnit);
             document.ReplaceFieldWithBlock(WriteOffOrderHelper.FIELD_EVENT_WITNESSES, blockParagraphs);
         }
     }

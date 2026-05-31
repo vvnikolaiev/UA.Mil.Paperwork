@@ -1,5 +1,6 @@
 using Mil.MVVM.Common;
 using Mil.Paperwork.Domain.DataModels.ReportData;
+using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;
@@ -16,7 +17,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
     internal class WriteOffOrderViewModel : BaseReportTabViewModel
     {
         private const string HeaderText = "Наказ про списання";
-        private const string MilUnitConfigKey = "MIL_UNIT";
 
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
@@ -27,8 +27,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         private string _reportNum = string.Empty;
         private DateTime _reportDate = DateTime.Today;
         private DateTime _eventDate = DateTime.Today;
-        private int _eventHour = 0;
-        private int _eventMinute = 0;
+        private string _eventTime = string.Empty;
         private string _battleOrder = string.Empty;
         private DateTime _battleOrderDate = DateTime.Today;
         private string _battleOrderLocation = string.Empty;
@@ -71,19 +70,27 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         }
 
         public string ReportNum { get => _reportNum; set => SetProperty(ref _reportNum, value); }
-        public DateTime ReportDate { get => _reportDate; set => SetProperty(ref _reportDate, value); }
+        public DateTime ReportDate
+        {
+            get => _reportDate;
+            set
+            {
+                if (SetProperty(ref _reportDate, value))
+                {
+                    if (BattleOrderDate > _reportDate)
+                    {
+                        BattleOrderDate = _reportDate;
+                    }
+                    if (EventDate > _reportDate)
+                    {
+                        EventDate = _reportDate;
+                    }
+                }
+            }
+        }
+
         public DateTime EventDate { get => _eventDate; set => SetProperty(ref _eventDate, value); }
-        public int EventHour
-        {
-            get => _eventHour;
-            set { SetProperty(ref _eventHour, value); OnPropertyChanged(nameof(EventTime)); }
-        }
-        public int EventMinute
-        {
-            get => _eventMinute;
-            set { SetProperty(ref _eventMinute, value); OnPropertyChanged(nameof(EventTime)); }
-        }
-        public string EventTime => $"{_eventHour:D2}:{_eventMinute:D2}";
+        public string EventTime { get => _eventTime; set => SetProperty(ref _eventTime, value); }
         public string BattleOrder { get => _battleOrder; set => SetProperty(ref _battleOrder, value); }
         public DateTime BattleOrderDate { get => _battleOrderDate; set => SetProperty(ref _battleOrderDate, value); }
         public string BattleOrderLocation { get => _battleOrderLocation; set => SetProperty(ref _battleOrderLocation, value); }
@@ -127,7 +134,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             Witnesses = [];
 
             var commonParams = _reportDataService.GetReportParametersDictionary(ReportType.Common);
-            MilUnitApproval = commonParams.GetValueOrDefault(MilUnitConfigKey, string.Empty);
+            MilUnitApproval = commonParams.GetValueOrDefault(WriteOffOrderHelper.MilUnitConfigKey, string.Empty);
 
             AddServiceCommand = new DelegateCommand(AddService);
             AddWitnessCommand = new DelegateCommand(AddWitness);
@@ -178,8 +185,21 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                 Witnesses.Remove(SelectedWitness);
         }
 
+        private static bool IsValidEventTime(string value)
+        {
+            if (value is null || value.Length != 5 || value[2] != ':') return false;
+            return int.TryParse(value[..2], out int h) && int.TryParse(value[3..], out int m)
+                && h is >= 0 and <= 23 && m is >= 0 and <= 59;
+        }
+
         private async void GenerateReportCommandExecute()
         {
+            if (!IsValidEventTime(EventTime))
+            {
+                await _dialogService.ShowMessageAsync("Невірний формат часу. Введіть час у форматі гг:хх (наприклад, 14:30).", "Помилка валідації", icon: DialogIcon.Warning);
+                return;
+            }
+
             if (!_dialogService.TryPickFolder(out var folderName))
                 return;
 
