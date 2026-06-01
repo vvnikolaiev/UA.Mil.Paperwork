@@ -22,8 +22,7 @@ namespace Mil.Paperwork.UI.Factories
             {
                 AssetType.Connectivity => new ConnectivityAssetInfoViewModel(),
                 AssetType.Radiochemical => new RadiochemicalAssetInfoViewModel(),
-                AssetType.Default => new DefaultAssetInfoViewModel(),
-                _ => throw new ArgumentException("Invalid asset type", nameof(assetType)),
+                _ => new DefaultAssetInfoViewModel(),
             };
 
         }

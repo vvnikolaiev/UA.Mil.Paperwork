@@ -117,8 +117,29 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CoeffCategory" xml:space="preserve">
+    <value>Кк</value>
+  </data>
+  <data name="CoeffChemicalAging" xml:space="preserve">
+    <value>Кх</value>
+  </data>
+  <data name="CoeffDurability" xml:space="preserve">
+    <value>Кд</value>
+  </data>
   <data name="CoeffExploitation" xml:space="preserve">
     <value>Ке</value>
+  </data>
+  <data name="CoeffQuality" xml:space="preserve">
+    <value>Кя</value>
+  </data>
+  <data name="CoeffReliability" xml:space="preserve">
+    <value>Кб</value>
+  </data>
+  <data name="CoeffStorage" xml:space="preserve">
+    <value>Кз</value>
+  </data>
+  <data name="CoeffStoragePeriod" xml:space="preserve">
+    <value>Кт</value>
   </data>
   <data name="CoefficientsMergedColumnTitle" xml:space="preserve">
     <value>Значення коефіцієнтів, які використовуються під час визначення сукупного крефіцієнта зносу</value>

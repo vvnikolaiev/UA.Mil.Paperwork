@@ -61,6 +61,33 @@ namespace Mil.Paperwork.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Кк.
+        /// </summary>
+        internal static string CoeffCategory {
+            get {
+                return ResourceManager.GetString("CoeffCategory", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Кх.
+        /// </summary>
+        internal static string CoeffChemicalAging {
+            get {
+                return ResourceManager.GetString("CoeffChemicalAging", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Кд.
+        /// </summary>
+        internal static string CoeffDurability {
+            get {
+                return ResourceManager.GetString("CoeffDurability", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Ке.
         /// </summary>
         internal static string CoeffExploitation {
@@ -96,6 +123,42 @@ namespace Mil.Paperwork.Domain.Resources {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Кя.
+        /// </summary>
+        internal static string CoeffQuality {
+            get {
+                return ResourceManager.GetString("CoeffQuality", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Кб.
+        /// </summary>
+        internal static string CoeffReliability {
+            get {
+                return ResourceManager.GetString("CoeffReliability", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Кз.
+        /// </summary>
+        internal static string CoeffStorage {
+            get {
+                return ResourceManager.GetString("CoeffStorage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Кт.
+        /// </summary>
+        internal static string CoeffStoragePeriod {
+            get {
+                return ResourceManager.GetString("CoeffStoragePeriod", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Кзб.
         /// </summary>
