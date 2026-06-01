@@ -78,7 +78,7 @@
                             <TextBlock Grid.Row="4" Grid.Column="2" Text="Дата:"
                                        VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <CalendarDatePicker Grid.Row="4" Grid.Column="3"
-                                                DisplayDateEnd="{Binding ReportDate}"
+                                                DisplayDateEnd="{Binding ReportDate, UpdateSourceTrigger=PropertyChanged}"
                                                 SelectedDate="{Binding BattleOrderDate}"
                                                 HorizontalAlignment="Stretch"
                                                 Margin="0,2"/>
@@ -94,7 +94,7 @@
                             <TextBlock Grid.Row="6" Grid.Column="0" Text="Дата події:"
                                        VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <CalendarDatePicker Grid.Row="6" Grid.Column="1"
-                                                DisplayDateEnd="{Binding ReportDate}"
+                                                DisplayDateEnd="{Binding ReportDate, UpdateSourceTrigger=PropertyChanged}"
                                                 SelectedDate="{Binding EventDate}"
                                                 HorizontalAlignment="Stretch"
                                                 Margin="0,2,8,2"/>
@@ -104,7 +104,7 @@
                                            Mask="00:00"
                                            Text="{Binding EventTime}"
                                            Watermark="гг:хх"
-                                           Width="80"
+                                           HorizontalAlignment="Stretch"
                                            VerticalAlignment="Center"
                                            Margin="0,2"/>
 

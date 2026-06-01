@@ -35,8 +35,8 @@ namespace Mil.Paperwork.Domain.Helpers
         private const int SumRoundingPrecision = 2;
         private const string ServicesSeparator = ", ";
         private const string ServiceHeaderFormat = "\tЗа номенклатурою {0}:";
-        private const string AssetLineFormat = "-\t{0} – {1} {2}., залишковою вартістю {3} грн.;";
-        private const string ServiceSubtotalFormat = "\tЗагальна залишкова вартість майна {0} - {1} грн.";
+        private const string AssetLineFormat = "-\t{0} – {1} {2}, залишковою вартістю {3} грн.;";
+        private const string ServiceSubtotalFormat = "\tЗагальна залишкова вартість майна {0} – {1} грн.";
         private const string HeadOfServiceFormat = "начальнику {0}";
         private const string WitnessLineFormat = "-\t{0} {1}, {2} військової частини {3}.";
 
@@ -77,7 +77,10 @@ namespace Mil.Paperwork.Domain.Helpers
                 return string.Empty;
 
             var parts = services.Select(s => string.Format(HeadOfServiceFormat, s.ServiceNameGenitive?.ToLower()));
-            return string.Join(ServicesSeparator, parts);
+            var sServices = string.Join(ServicesSeparator, parts);
+            
+            var result = string.IsNullOrEmpty(sServices) ? sServices : char.ToUpper(sServices[0]) + sServices[1..];
+            return result;
         }
 
         internal static IList<BlockParagraph> BuildWitnessesBlock(IList<WriteOffWitnessData> witnesses, string milUnit)
