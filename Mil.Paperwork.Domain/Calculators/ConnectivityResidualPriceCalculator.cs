@@ -1,11 +1,18 @@
 ﻿using Mil.Paperwork.Domain.DataModels.Assets;
 using Mil.Paperwork.Domain.Helpers;
+using Mil.Paperwork.Domain.Resources;
 
 namespace Mil.Paperwork.Domain.Calculators
 {
     internal class ConnectivityResidualPriceCalculator : IResidualPriceCalculator
     {
         private const decimal DefaultWearAndTearCoeff = 0.8m; // get from storage conditions
+
+        public IList<string> GetColumnHeaders() =>
+            [ResidualValueReportStrings.CoeffExploitation,
+             ResidualValueReportStrings.CoeffWork,
+             ResidualValueReportStrings.CoeffZB,
+             ResidualValueReportStrings.CoeffTechState];
 
         public IList<decimal> GetCoefficients(IAssetInfo asset, DateTime reportDate)
         {
@@ -22,7 +29,7 @@ namespace Mil.Paperwork.Domain.Calculators
             var workCoefficient = GetWorkCoefficient(asset, reportDate);
             var technicalStateCoefficient = CoefficientsHelper.GetTechnicalStateCoefficient(category);
 
-            var coeficients = new List<decimal>() { 1, 1, 1, 1 }; // ЗИМІНИ ДО МЕТОДИКИ ОБЧИСЛЮВАННЯ
+            var coeficients = new List<decimal>() { 1, 1, 1, 1 }; // ЗМІНИ ДО МЕТОДИКИ ОБЧИСЛЮВАННЯ
             //var coeficients = new List<decimal>() { explotationCoefficient, workCoefficient, wearAndTearCoeff, technicalStateCoefficient };
             return coeficients;
         }

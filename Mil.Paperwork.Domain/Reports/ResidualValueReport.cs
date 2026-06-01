@@ -205,7 +205,7 @@ namespace Mil.Paperwork.Domain.Reports
             sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.IndexationCoefficient].ColumnIndex].Value = indexationCoefficient;
             sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.CurrencyConversionRate].ColumnIndex].Value = "-";
 
-            FillCoefficients(asset, reportDate, newRow, sheet);
+            FillCoefficients(asset, assetType, reportDate, newRow, sheet);
 
             sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.ResidualValue].ColumnIndex].Value = residualPrice;
             sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.ValuationReportReference].ColumnIndex].Value = "-";
@@ -316,20 +316,19 @@ namespace Mil.Paperwork.Domain.Reports
             return table;
         }
 
-        private static void FillCoefficients(IAssetInfo asset, DateTime reportDate, int row, ExcelWorksheet sheet)
+        private static void FillCoefficients(IAssetInfo asset, AssetType assetType, DateTime reportDate, int row, ExcelWorksheet sheet)
         {
             var residualPriceCalculator = asset.GetCalculator();
-            var coefficients = residualPriceCalculator.GetCoefficients(asset, reportDate);
+            //var headers = residualPriceCalculator.GetColumnHeaders();
+            var headers = ResidualValueReportHelper.GetCoefficientColumns(assetType);
 
             var column = ResidualValueReportHelper.TABLE_FIRST_COEFF_COLUMN;
 
-            if (coefficients != null)
+            // TODO: use actual coefficients for non-combat losses when that mode is implemented
+            foreach (var _ in headers)
             {
-                foreach (var coefficient in coefficients)
-                {
-                    sheet.Cells[row, column].Value = coefficient;
-                    column++;
-                }
+                sheet.Cells[row, column].Value = ResidualValueReportHelper.DASH_PLACEHOLDER;
+                column++;
             }
 
             var totalWearCoefficient = residualPriceCalculator.CalculateTotalWearCoefficient(asset, reportDate);

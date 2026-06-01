@@ -1,4 +1,4 @@
-﻿using Mil.Paperwork.Domain.Resources;
+﻿using Mil.Paperwork.Domain.Calculators;
 using Mil.Paperwork.Infrastructure.Enums;
 
 namespace Mil.Paperwork.Domain.Helpers
@@ -38,6 +38,8 @@ namespace Mil.Paperwork.Domain.Helpers
 
         public const string RESIDUAL_VALUE_SUM_FORMAT = "# ##0.00_₴";
 
+        public const string DASH_PLACEHOLDER = "-";
+
         public const string TABLE_METALS_NAME= "TableMetals";
 
         public const int TABLE_METALS_COL_WEIGHT = 2;
@@ -55,23 +57,7 @@ namespace Mil.Paperwork.Domain.Helpers
             { MetalType.CU, 6 }
         };
 
-        public static IList<string> GetCoefficientColumns(AssetType assetType)
-        {
-            var columns = new List<string>();
-            switch (assetType)
-            {
-                case AssetType.Connectivity:
-                    columns.Add(ResidualValueReportStrings.CoeffExploitation);
-                    columns.Add(ResidualValueReportStrings.CoeffWork);
-                    columns.Add(ResidualValueReportStrings.CoeffZB);
-                    columns.Add(ResidualValueReportStrings.CoeffTechState);
-                    break;
-                case AssetType.Radiochemical:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(assetType), "Unsupported asset type for coefficient columns.");
-            }
-            return columns;
-        }
+        public static IList<string> GetCoefficientColumns(AssetType assetType) =>
+            ResidualPriceCalculatorFactory.CreateCalculator(assetType).GetColumnHeaders();
     }
 }

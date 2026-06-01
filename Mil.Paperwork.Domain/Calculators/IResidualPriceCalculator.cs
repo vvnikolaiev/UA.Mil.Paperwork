@@ -4,6 +4,8 @@ namespace Mil.Paperwork.Domain.Calculators
 {
     public interface IResidualPriceCalculator
     {
+        IList<string> GetColumnHeaders();
+
         IList<decimal> GetCoefficients(IAssetInfo asset, DateTime reportDate);
 
         decimal CalculateTotalWearCoefficient(IAssetInfo asset, DateTime reportDate);

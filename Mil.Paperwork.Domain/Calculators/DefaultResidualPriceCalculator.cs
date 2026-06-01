@@ -4,6 +4,8 @@ namespace Mil.Paperwork.Domain.Calculators
 {
     internal class DefaultResidualPriceCalculator : IResidualPriceCalculator
     {
+        public virtual IList<string> GetColumnHeaders() => [];
+
         public virtual IList<decimal> GetCoefficients(IAssetInfo asset, DateTime reportDate)
         {
             return [];
