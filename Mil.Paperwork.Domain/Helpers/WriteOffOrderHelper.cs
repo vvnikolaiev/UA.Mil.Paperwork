@@ -50,10 +50,7 @@ namespace Mil.Paperwork.Domain.Helpers
                 var serviceNameGen = service.ServiceNameGenitive?.ToLower();
 
                 paragraphs.Add(new BlockParagraph(
-                    service.ServiceName ?? string.Empty, IsBold: true, IndentLevel: 0, FontSize: DocumentFontSize));
-
-                paragraphs.Add(new BlockParagraph(
-                    string.Format(ServiceHeaderFormat, serviceNameGen), IsBold: false, IndentLevel: 0, FontSize: DocumentFontSize));
+                    string.Format(ServiceHeaderFormat, serviceNameGen), IndentLevel: 0, FontSize: DocumentFontSize));
 
                 foreach (var asset in service.Assets)
                 {
