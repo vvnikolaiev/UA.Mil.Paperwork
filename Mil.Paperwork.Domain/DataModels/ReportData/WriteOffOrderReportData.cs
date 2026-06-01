@@ -22,6 +22,9 @@ namespace Mil.Paperwork.Domain.DataModels.ReportData
 
         public string DestinationFolder { get; set; } = string.Empty;
 
-        public string GetDestinationPath() => DestinationFolder;
+        public string GetDestinationPath()
+        {
+            return DestinationFolder;
+        }
     }
 }

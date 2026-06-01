@@ -13,10 +13,14 @@ namespace Mil.Paperwork.UI.Converters
             {
                 var fi = enumValue.GetType().GetField(enumValue.ToString());
                 var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
-                return attributes.Length > 0 ? attributes[0].Description : enumValue.ToString();
+                var result = attributes.Length > 0 ? attributes[0].Description : enumValue.ToString();
+                return result;
             }
             return value;
         }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotImplementedException();
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

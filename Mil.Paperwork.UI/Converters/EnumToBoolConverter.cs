@@ -9,12 +9,14 @@ namespace Mil.Paperwork.UI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value?.Equals(parameter);
+            var result = value?.Equals(parameter);
+            return result;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value.Equals(true) ? parameter : BindingOperations.DoNothing;
+            var result = value.Equals(true) ? parameter : BindingOperations.DoNothing;
+            return result;
         }
     }
 }

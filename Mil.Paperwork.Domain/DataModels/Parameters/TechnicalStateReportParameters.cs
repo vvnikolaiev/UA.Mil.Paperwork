@@ -16,7 +16,7 @@ namespace Mil.Paperwork.Domain.DataModels.Parameters
 
         public static TechnicalStateReportParameters FromReportData(ITechnicalStateReportData reportData)
         {
-            return new TechnicalStateReportParameters
+            var result = new TechnicalStateReportParameters
             {
                 DocumentDate = reportData.DocumentDate,
                 EventType = reportData.EventType,
@@ -25,6 +25,7 @@ namespace Mil.Paperwork.Domain.DataModels.Parameters
                 OrdenDate = reportData.OrdenDate,
                 Reason = reportData.Reason
             };
+            return result;
         }
     }
 }

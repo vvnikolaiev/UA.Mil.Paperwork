@@ -11,11 +11,15 @@ namespace Mil.Paperwork.UI.Converters
         public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             if (value is bool b && b)
+            {
                 return FontWeight.Bold;
+            }
             return FontWeight.Normal;
         }
 
         public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
-            => BindingOperations.DoNothing;
+        {
+            return BindingOperations.DoNothing;
+        }
     }
 }

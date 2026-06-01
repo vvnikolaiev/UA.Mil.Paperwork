@@ -37,11 +37,15 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
             Gender = dto.Gender;
         }
 
-        public MeasurementUnitDTO ToDTO() => new()
+        public MeasurementUnitDTO ToDTO()
         {
-            Name = Name,
-            ShortName = ShortName,
-            Gender = Gender
-        };
+            var result = new MeasurementUnitDTO
+            {
+                Name = Name,
+                ShortName = ShortName,
+                Gender = Gender
+            };
+            return result;
+        }
     }
 }

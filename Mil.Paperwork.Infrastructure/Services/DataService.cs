@@ -47,7 +47,9 @@ namespace Mil.Paperwork.Infrastructure.Services
         public void SaveProductsData(IList<ProductDTO> products)
         {
             if (products == null)
+            {
                 return;
+            }
 
             // Sort the list alphabetically by name
             var sortedProducts = products?.OrderBy(p => p.Name).ToList();
@@ -59,7 +61,9 @@ namespace Mil.Paperwork.Infrastructure.Services
         public void RemoveProductsData(IList<ProductDTO> productsToRemove)
         {
             if (productsToRemove == null || productsToRemove.Count == 0)
+            {
                 return;
+            }
 
             var namesToRemove = new HashSet<string>(productsToRemove.Select(p => p.AlmostUniqueID));
             _storageData.ProductsData?.RemoveAll(p => namesToRemove.Contains(p.AlmostUniqueID));
@@ -146,7 +150,9 @@ namespace Mil.Paperwork.Infrastructure.Services
         public void SaveMeasurementUnitsData(IList<MeasurementUnitDTO> units)
         {
             if (units == null)
+            {
                 return;
+            }
 
             // Sort the list alphabetically by name
             var sortedUnits = units?.OrderBy(p => p.Name).ToList();
@@ -186,7 +192,9 @@ namespace Mil.Paperwork.Infrastructure.Services
         public void SavePeopleData(IList<PersonDTO> people)
         {
             if (people == null)
+            {
                 return;
+            }
 
             // Sort the list alphabetically by name
             var sortedPeople = people?.OrderBy(p => p.FullName).ToList();
@@ -204,7 +212,9 @@ namespace Mil.Paperwork.Infrastructure.Services
         public void SaveServicesData(IList<MilServiceEntry> services)
         {
             if (services == null)
+            {
                 return;
+            }
 
             var sorted = services.OrderBy(s => s.NominativeName).ToList();
             _storageData.Services = sorted;

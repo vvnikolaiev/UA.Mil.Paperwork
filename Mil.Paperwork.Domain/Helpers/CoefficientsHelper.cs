@@ -127,7 +127,8 @@
                     break;
                 }
             }
-            return Math.Round(coefficient, 3);
+            var result = Math.Round(coefficient, 3);
+            return result;
         }
 
         private static int GetExploitationYears(DateTime startDate, DateTime? endDate)

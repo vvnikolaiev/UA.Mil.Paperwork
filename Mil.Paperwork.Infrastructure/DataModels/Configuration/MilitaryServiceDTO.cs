@@ -48,14 +48,16 @@ namespace Mil.Paperwork.Infrastructure.DataModels.Configuration
 
         public List<ReportParameter> GetAllParameters()
         {
-            return [
+            var result = new List<ReportParameter>
+            {
                 ServiceName,
                 ServiceNameFull,
                 ServiceNameGenitive,
                 HeadOfServiceName,
                 HeadOfServicePosition,
                 HeadOfServiceRank
-            ];
+            };
+            return result;
         }
     }
 }

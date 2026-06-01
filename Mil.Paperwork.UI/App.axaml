@@ -10,8 +10,13 @@
 	</Application.DataTemplates>
 
 	<Application.Resources>
-		<x:Double x:Key="DataGridSortIconMinWidth">0</x:Double>
-		<converters:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="Assets/Icons.axaml"/>
+			</ResourceDictionary.MergedDictionaries>
+			<x:Double x:Key="DataGridSortIconMinWidth">0</x:Double>
+			<converters:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
+		</ResourceDictionary>
 	</Application.Resources>
 
 	<Application.Styles>

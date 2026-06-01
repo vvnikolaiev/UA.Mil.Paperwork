@@ -48,7 +48,8 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
         {
             var people = _dataService.LoadPeopleData();
             var productViewModels = people.Select(x => new PersonViewModel(x));
-            return productViewModels.ToArray();
+            var result = productViewModels.ToArray();
+            return result;
         }
 
         private void AddItemCommandExecute()

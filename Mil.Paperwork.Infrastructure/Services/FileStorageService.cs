@@ -35,7 +35,8 @@ namespace Mil.Paperwork.Infrastructure.Services
             }
 
             var jsonContent = File.ReadAllText(filePath);
-            return JsonHelper.ReadJson<T>(jsonContent);
+            var result = JsonHelper.ReadJson<T>(jsonContent);
+            return result;
         }
 
         public void WriteJsonToFile<T>(T obj, string fileName, string directory = null)

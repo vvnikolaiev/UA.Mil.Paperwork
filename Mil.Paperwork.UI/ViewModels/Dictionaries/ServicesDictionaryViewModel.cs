@@ -31,9 +31,10 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
 
         private MilServiceEntryViewModel[] GetServicesData()
         {
-            return _dataService.LoadServicesData()
+            var result = _dataService.LoadServicesData()
                 .Select(s => new MilServiceEntryViewModel(s))
                 .ToArray();
+            return result;
         }
 
         private void AddItemCommandExecute()
@@ -44,7 +45,9 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
         private void RemoveItemCommandExecute(MilServiceEntryViewModel service)
         {
             if (service != null && Services.Contains(service))
+            {
                 Services.Remove(service);
+            }
         }
 
         private void SaveCommandExecute()
@@ -58,7 +61,9 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
             var services = GetServicesData();
             Services.Clear();
             foreach (var s in services)
+            {
                 Services.Add(s);
+            }
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Mil.Paperwork.Domain.DataModels.Parameters
 
         public static WriteOffPackageParameters FromReportData(IWriteOffPackageReportData reportData)
         {
-            return new WriteOffPackageParameters
+            var result = new WriteOffPackageParameters
             {
                 OrdenNumber = reportData.OrdenNumber,
                 OrdenDate = reportData.OrdenDate,
@@ -24,6 +24,7 @@ namespace Mil.Paperwork.Domain.DataModels.Parameters
                 TotalWriteOffSum = ResidualPriceHelper.CalculateTotalReportSum(reportData.Assets, reportData.EventDate, true),
                 Assets = reportData.Assets,
             };
+            return result;
         }
     }
 }

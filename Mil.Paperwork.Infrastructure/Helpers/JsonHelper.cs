@@ -13,7 +13,8 @@ namespace Mil.Paperwork.Infrastructure.Helpers
         public static string WriteJson<T>(T obj)
         {
             var options = new JsonSerializerOptions { WriteIndented = true };
-            return JsonSerializer.Serialize(obj, options);
+            var result = JsonSerializer.Serialize(obj, options);
+            return result;
         }
     }
 }

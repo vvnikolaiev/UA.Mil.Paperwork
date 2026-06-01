@@ -422,7 +422,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         private bool RemoveRowCanExecute()
         {
-            return SelectedIdentifier != null;
+            var result = SelectedIdentifier != null;
+            return result;
         }
 
 

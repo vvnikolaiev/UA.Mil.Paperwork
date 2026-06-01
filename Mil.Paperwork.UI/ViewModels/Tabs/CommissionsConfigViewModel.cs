@@ -120,12 +120,13 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
 
         private CommissionDTO GetCurrentCommissionDTO()
         {
-            return new CommissionDTO()
+            var result = new CommissionDTO()
             {
                 Name = CommissionName,
                 Description = CommissionDescription,
                 Squad = [.. CurrentCommission]
             };
+            return result;
         }
 
         private async void RefreshCommandExecute()

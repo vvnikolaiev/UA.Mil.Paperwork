@@ -60,7 +60,8 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
         {
             var products = _dataService.LoadProductsData();
             var productViewModels = products.Select(x => new ProductViewModel(x));
-            return productViewModels.ToArray();
+            var result = productViewModels.ToArray();
+            return result;
         }
 
         private void ReloadProductsData()

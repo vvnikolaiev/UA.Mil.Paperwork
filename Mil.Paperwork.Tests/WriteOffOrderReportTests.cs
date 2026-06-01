@@ -15,17 +15,68 @@ namespace Mil.Paperwork.Tests
     {
         private sealed class StubReportDataService : IReportDataService
         {
-            public Dictionary<string, string> GetReportParametersDictionary(ReportType _) => [];
-            public List<ReportParameter> GetReportParameters(ReportType _, bool __ = false) => [];
-            public Dictionary<string, string> GetServiceReportParametersDictionary(string? _ = null) => [];
-            public List<ReportParameter> GetServiceReportParameters(string? _ = null, bool __ = false) => [];
-            public Dictionary<string, MilitaryServiceDTO> GetAllServices(bool _ = false) => [];
-            public string GetSelectedService(bool _ = false) => string.Empty;
-            public CommissionDTO GetCommissionData(CommissionType _, bool __ = false) => new();
-            public AssetType GetAssetType() => AssetType.Default;
-            public ICommisionsConfigSection GetCommissionsConfig() => null!;
-            public CommissionDTO GetCommission(ReportType _) => new();
-            public bool ImportReportConfig(ReportDataConfigDTO _) => true;
+            public Dictionary<string, string> GetReportParametersDictionary(ReportType _)
+            {
+                Dictionary<string, string> result = [];
+                return result;
+            }
+
+            public List<ReportParameter> GetReportParameters(ReportType _, bool __ = false)
+            {
+                List<ReportParameter> result = [];
+                return result;
+            }
+
+            public Dictionary<string, string> GetServiceReportParametersDictionary(string? _ = null)
+            {
+                Dictionary<string, string> result = [];
+                return result;
+            }
+
+            public List<ReportParameter> GetServiceReportParameters(string? _ = null, bool __ = false)
+            {
+                List<ReportParameter> result = [];
+                return result;
+            }
+
+            public Dictionary<string, MilitaryServiceDTO> GetAllServices(bool _ = false)
+            {
+                Dictionary<string, MilitaryServiceDTO> result = [];
+                return result;
+            }
+
+            public string GetSelectedService(bool _ = false)
+            {
+                return string.Empty;
+            }
+
+            public CommissionDTO GetCommissionData(CommissionType _, bool __ = false)
+            {
+                var result = new CommissionDTO();
+                return result;
+            }
+
+            public AssetType GetAssetType()
+            {
+                return AssetType.Default;
+            }
+
+            public ICommisionsConfigSection GetCommissionsConfig()
+            {
+                return null!;
+            }
+
+            public CommissionDTO GetCommission(ReportType _)
+            {
+                var result = new CommissionDTO();
+                return result;
+            }
+
+            public bool ImportReportConfig(ReportDataConfigDTO _)
+            {
+                return true;
+            }
+
             public void SaveReportConfigExternally(string _) { }
             public void SaveReportConfig(IReadOnlyCollection<ReportParameter> _, ReportType __) { }
             public void SaveReportConfigTemprorary(IReadOnlyCollection<ReportParameter> _, ReportType __) { }
@@ -39,8 +90,17 @@ namespace Mil.Paperwork.Tests
         private sealed class CapturingFileStorageService : IFileStorageService
         {
             public byte[]? SavedBytes { get; private set; }
-            public void SaveFile(string _, byte[] bytes) => SavedBytes = bytes;
-            public T? ReadJsonFile<T>(string _, string? __ = null) => default;
+
+            public void SaveFile(string _, byte[] bytes)
+            {
+                SavedBytes = bytes;
+            }
+
+            public T? ReadJsonFile<T>(string _, string? __ = null)
+            {
+                return default;
+            }
+
             public void WriteJsonToFile<T>(T _, string __, string? ___ = null) { }
             public void WriteJsonToFile<T>(T _, string __) { }
         }
@@ -51,54 +111,59 @@ namespace Mil.Paperwork.Tests
             new() { Rank = "старший солдат",   Name = "КОВАЛЬОВ Дмитро Миколайович",  Position = "майстер – номер обслуги мінометного взводу" }
         ];
 
-        private static WriteOffOrderReportData BuildTestData() => new()
+        private static WriteOffOrderReportData BuildTestData()
         {
-            ReportNum = "42",
-            ReportDate = new DateTime(2026, 5, 30),
-            EventDate = new DateTime(2026, 5, 28),
-            EventTime = "14:35",
-            BattleOrder = "7",
-            BattleOrderDate = new DateTime(2026, 5, 20),
-            BattleOrderLocation = "н.п. Тест",
-            SubdivisionName = "1 механізований батальйон",
-            ReporterRank = "солдата",
-            ReporterName = "Тестового Тест Тестовича",
-            CreatorPosition = "Начальник служби",
-            CreatorRank = "майор",
-            CreatorName = "Іванов І.І.",
-            MilUnitApproval = "в/ч А1234",
-            WhatHappened = "Внаслідок бойового зіткнення майно прийшло до непридатності.",
-            Services =
-            [
-                new WriteOffServiceData
-                {
-                    ServiceName = "Інженерна служба",
-                    ServiceNameGenitive = "інженерної служби",
-                    Assets =
-                    [
-                        new() { Name = "Лопата саперна", Count = 3, MeasurementUnit = "шт", Amount = 450.00m },
-                        new() { Name = "Мотузка страховна", Count = 1, MeasurementUnit = "шт", Amount = 1200.50m }
-                    ]
-                },
-                new WriteOffServiceData
-                {
-                    ServiceName = "Служба зв'язку",
-                    ServiceNameGenitive = "служби зв'язку",
-                    Assets =
-                    [
-                        new() { Name = "Радіостанція Р-187П1", Count = 1, MeasurementUnit = "шт", Amount = 35000.00m }
-                    ]
-                }
-            ],
-            DestinationFolder = Path.GetTempPath()
-        };
+            var result = new WriteOffOrderReportData
+            {
+                ReportNum = "42",
+                ReportDate = new DateTime(2026, 5, 30),
+                EventDate = new DateTime(2026, 5, 28),
+                EventTime = "14:35",
+                BattleOrder = "7",
+                BattleOrderDate = new DateTime(2026, 5, 20),
+                BattleOrderLocation = "н.п. Тест",
+                SubdivisionName = "1 механізований батальйон",
+                ReporterRank = "солдата",
+                ReporterName = "Тестового Тест Тестовича",
+                CreatorPosition = "Начальник служби",
+                CreatorRank = "майор",
+                CreatorName = "Іванов І.І.",
+                MilUnitApproval = "в/ч А1234",
+                WhatHappened = "Внаслідок бойового зіткнення майно прийшло до непридатності.",
+                Services =
+                [
+                    new WriteOffServiceData
+                    {
+                        ServiceName = "Інженерна служба",
+                        ServiceNameGenitive = "інженерної служби",
+                        Assets =
+                        [
+                            new() { Name = "Лопата саперна", Count = 3, MeasurementUnit = "шт", Amount = 450.00m },
+                            new() { Name = "Мотузка страховна", Count = 1, MeasurementUnit = "шт", Amount = 1200.50m }
+                        ]
+                    },
+                    new WriteOffServiceData
+                    {
+                        ServiceName = "Служба зв'язку",
+                        ServiceNameGenitive = "служби зв'язку",
+                        Assets =
+                        [
+                            new() { Name = "Радіостанція Р-187П1", Count = 1, MeasurementUnit = "шт", Amount = 35000.00m }
+                        ]
+                    }
+                ],
+                DestinationFolder = Path.GetTempPath()
+            };
+            return result;
+        }
 
         private static string GetDocumentXml(byte[] docxBytes)
         {
             using var zip = new ZipArchive(new MemoryStream(docxBytes), ZipArchiveMode.Read);
             var entry = zip.GetEntry("word/document.xml")!;
             using var reader = new StreamReader(entry.Open(), Encoding.UTF8);
-            return reader.ReadToEnd();
+            var result = reader.ReadToEnd();
+            return result;
         }
 
         [Fact]

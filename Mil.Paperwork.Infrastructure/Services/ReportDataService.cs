@@ -158,7 +158,8 @@ namespace Mil.Paperwork.Infrastructure.Services
                 _ => []
             };
 
-            return [.. result];
+            List<ReportParameter> resultList = [.. result];
+            return resultList;
         }
 
         public Dictionary<string, string> GetReportParametersDictionary(ReportType reportType)
@@ -216,7 +217,8 @@ namespace Mil.Paperwork.Infrastructure.Services
 
             var result = dataExists ? militaryServiceDTO.GetAllParameters() ?? [] : [];
 
-            return [.. result];
+            List<ReportParameter> resultList = [.. result];
+            return resultList;
         }
 
         public CommissionDTO GetCommissionData(CommissionType commissionType, bool withReload = false)

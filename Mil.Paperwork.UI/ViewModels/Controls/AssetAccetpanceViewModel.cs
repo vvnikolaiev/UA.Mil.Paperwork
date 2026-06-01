@@ -89,12 +89,14 @@ namespace Mil.Paperwork.UI.ViewModels
 
         public PersonDTO GetAcceptedDTO()
         {
-            return new PersonDTO(_personAcceptedName, _personAcceptedPosition, _personAcceptedRank);
+            var result = new PersonDTO(_personAcceptedName, _personAcceptedPosition, _personAcceptedRank);
+            return result;
         }
 
         public PersonDTO GetHandedDTO()
         {
-            return new PersonDTO(_personHandedName, _personHandedPosition, _personHandedRank);
+            var result = new PersonDTO(_personHandedName, _personHandedPosition, _personHandedRank);
+            return result;
         }
 
         public bool GetIsReceiverValid()

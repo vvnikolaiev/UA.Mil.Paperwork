@@ -32,7 +32,8 @@ namespace Mil.Paperwork.Domain.Helpers
             stream.Write(bytes, 0, bytes.Length);
             stream.Position = 0;
             var wdoc = WordprocessingDocument.Open(stream, isEditable: true);
-            return new WordDocument(stream, wdoc);
+            var result = new WordDocument(stream, wdoc);
+            return result;
         }
 
         public WordTable? GetTable(string tableName)
@@ -40,13 +41,15 @@ namespace Mil.Paperwork.Domain.Helpers
             var table = _body.Descendants<Table>()
                 .FirstOrDefault(t => t.GetFirstChild<TableProperties>()
                                       ?.GetFirstChild<TableCaption>()?.Val?.Value == tableName);
-            return table != null ? new WordTable(table) : null;
+            var result = table != null ? new WordTable(table) : null;
+            return result;
         }
 
         public WordTable? GetTableByIndex(int index)
         {
             var table = _body.Descendants<Table>().ElementAtOrDefault(index);
-            return table != null ? new WordTable(table) : null;
+            var result = table != null ? new WordTable(table) : null;
+            return result;
         }
 
         public void ReplaceField(string fieldName, string? value)
@@ -61,14 +64,19 @@ namespace Mil.Paperwork.Domain.Helpers
                 {
                     var instr = fld.Instruction?.Value ?? string.Empty;
                     var fldParts = instr.Split(new[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                    if (!fldParts.Contains("MERGEFIELD") || !fldParts.Contains(cleanName)) continue;
+                    if (!fldParts.Contains("MERGEFIELD") || !fldParts.Contains(cleanName))
+                    {
+                        continue;
+                    }
 
                     var existingRPr = fld.GetFirstChild<Run>()?.GetFirstChild<RunProperties>();
                     fld.Elements<Run>().ToList().ForEach(r => r.Remove());
 
                     var newRun = new Run();
                     if (existingRPr != null)
+                    {
                         newRun.Append((RunProperties)existingRPr.CloneNode(true));
+                    }
                     newRun.Append(new Text(value) { Space = SpaceProcessingModeValues.Preserve });
                     fld.Append(newRun);
                 }
@@ -77,7 +85,10 @@ namespace Mil.Paperwork.Domain.Helpers
                 var runs = para.Elements<Run>().ToList();
                 for (int i = 0; i < runs.Count; i++)
                 {
-                    if (GetFldCharType(runs[i]) != FieldCharValues.Begin) continue;
+                    if (GetFldCharType(runs[i]) != FieldCharValues.Begin)
+                    {
+                        continue;
+                    }
 
                     // Collect instrText between Begin and Separate
                     int sepIdx = -1;
@@ -85,23 +96,43 @@ namespace Mil.Paperwork.Domain.Helpers
                     for (int j = i + 1; j < runs.Count; j++)
                     {
                         var charType = GetFldCharType(runs[j]);
-                        if (charType == FieldCharValues.Separate) { sepIdx = j; break; }
-                        if (charType == FieldCharValues.End) break;
+                        if (charType == FieldCharValues.Separate)
+                        {
+                            sepIdx = j;
+                            break;
+                        }
+                        if (charType == FieldCharValues.End)
+                        {
+                            break;
+                        }
                         instrBuilder.Append(runs[j].GetFirstChild<FieldCode>()?.InnerText ?? string.Empty);
                     }
-                    if (sepIdx == -1) continue;
+                    if (sepIdx == -1)
+                    {
+                        continue;
+                    }
 
                     var instrParts = instrBuilder.ToString()
                         .Split(new[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                    if (!instrParts.Contains("MERGEFIELD") || !instrParts.Contains(cleanName)) continue;
+                    if (!instrParts.Contains("MERGEFIELD") || !instrParts.Contains(cleanName))
+                    {
+                        continue;
+                    }
 
                     // Find End run
                     int endIdx = -1;
                     for (int j = sepIdx + 1; j < runs.Count; j++)
                     {
-                        if (GetFldCharType(runs[j]) == FieldCharValues.End) { endIdx = j; break; }
+                        if (GetFldCharType(runs[j]) == FieldCharValues.End)
+                        {
+                            endIdx = j;
+                            break;
+                        }
                     }
-                    if (endIdx == -1) continue;
+                    if (endIdx == -1)
+                    {
+                        continue;
+                    }
 
                     // Clone formatting from first display run
                     var displayRuns = runs.Skip(sepIdx + 1).Take(endIdx - sepIdx - 1).ToList();
@@ -109,10 +140,15 @@ namespace Mil.Paperwork.Domain.Helpers
 
                     var newRun = new Run();
                     if (existingRPr != null)
+                    {
                         newRun.Append((RunProperties)existingRPr.CloneNode(true));
+                    }
                     newRun.Append(new Text(value) { Space = SpaceProcessingModeValues.Preserve });
 
-                    foreach (var dr in displayRuns) dr.Remove();
+                    foreach (var dr in displayRuns)
+                    {
+                        dr.Remove();
+                    }
                     runs[endIdx].InsertBeforeSelf(newRun);
                     i = endIdx;
                 }
@@ -121,9 +157,14 @@ namespace Mil.Paperwork.Domain.Helpers
 
         public void ReplaceFields(Dictionary<string, string> fieldsMap)
         {
-            if (fieldsMap == null) return;
+            if (fieldsMap == null)
+            {
+                return;
+            }
             foreach (var field in fieldsMap)
+            {
                 ReplaceField(field.Key, field.Value);
+            }
         }
 
         public void ReplaceFieldWithBlock(string fieldName, IList<BlockParagraph> paragraphs)
@@ -136,7 +177,9 @@ namespace Mil.Paperwork.Domain.Helpers
                 .ToList();
 
             if (targets.Count == 0)
+            {
                 return;
+            }
 
             // Replace each occurrence of the placeholder with the block content
             foreach (var target in targets)
@@ -173,7 +216,9 @@ namespace Mil.Paperwork.Domain.Helpers
                         rPr.Append(new FontSize { Val = (bp.FontSize * 2).ToString() });
                         rPr.Append(new FontSizeComplexScript { Val = (bp.FontSize * 2).ToString() });
                         if (bp.IsBold)
+                        {
                             rPr.Append(new Bold());
+                        }
 
                         var run = new Run();
                         run.Append(rPr);
@@ -195,26 +240,36 @@ namespace Mil.Paperwork.Domain.Helpers
                 var instr = fld.Instruction?.Value ?? string.Empty;
                 var parts = instr.Split(new[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                 if (parts.Contains("MERGEFIELD") && parts.Contains(fieldName))
+                {
                     return true;
+                }
             }
 
             var runs = para.Elements<Run>().ToList();
             for (int i = 0; i < runs.Count; i++)
             {
-                if (GetFldCharType(runs[i]) != FieldCharValues.Begin) continue;
+                if (GetFldCharType(runs[i]) != FieldCharValues.Begin)
+                {
+                    continue;
+                }
 
                 var instrBuilder = new StringBuilder();
                 for (int j = i + 1; j < runs.Count; j++)
                 {
                     var charType = GetFldCharType(runs[j]);
-                    if (charType == FieldCharValues.Separate || charType == FieldCharValues.End) break;
+                    if (charType == FieldCharValues.Separate || charType == FieldCharValues.End)
+                    {
+                        break;
+                    }
                     instrBuilder.Append(runs[j].GetFirstChild<FieldCode>()?.InnerText ?? string.Empty);
                 }
 
                 var instrParts = instrBuilder.ToString()
                     .Split(new[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                 if (instrParts.Contains("MERGEFIELD") && instrParts.Contains(fieldName))
+                {
                     return true;
+                }
             }
 
             return false;
@@ -226,7 +281,8 @@ namespace Mil.Paperwork.Domain.Helpers
             _wdoc.Dispose();
             _wdoc = null;
             _finalized = true;
-            return _stream.ToArray();
+            var result = _stream.ToArray();
+            return result;
         }
 
         public void Dispose()
@@ -240,7 +296,10 @@ namespace Mil.Paperwork.Domain.Helpers
         }
 
         private static FieldCharValues? GetFldCharType(Run run)
-            => run.GetFirstChild<FieldChar>()?.FieldCharType?.Value;
+        {
+            var result = run.GetFirstChild<FieldChar>()?.FieldCharType?.Value;
+            return result;
+        }
     }
 
     // ---------------------------------------------------------------------------
@@ -256,7 +315,10 @@ namespace Mil.Paperwork.Domain.Helpers
         public WordRow LastRow => new WordRow(_table.Elements<TableRow>().Last(), _table);
 
         public WordRow GetRow(int index)
-            => new WordRow(_table.Elements<TableRow>().ElementAt(index), _table);
+        {
+            var result = new WordRow(_table.Elements<TableRow>().ElementAt(index), _table);
+            return result;
+        }
 
         public WordRow AddRow()
         {
@@ -278,10 +340,14 @@ namespace Mil.Paperwork.Domain.Helpers
             }
 
             _table.Append(newRow);
-            return new WordRow(newRow, _table);
+            var result = new WordRow(newRow, _table);
+            return result;
         }
 
-        public void RemoveRow(WordRow row) => row.Remove();
+        public void RemoveRow(WordRow row)
+        {
+            row.Remove();
+        }
 
         public WordCell MergeCellsVertically(int columnIndex, int startRowIndex, int rowCount)
         {
@@ -291,21 +357,32 @@ namespace Mil.Paperwork.Domain.Helpers
             for (int i = startRowIndex; i < startRowIndex + rowCount && i < rows.Count; i++)
             {
                 var cells = rows[i].Elements<TableCell>().ToList();
-                if (columnIndex >= cells.Count) continue;
+                if (columnIndex >= cells.Count)
+                {
+                    continue;
+                }
                 var cell = cells[columnIndex];
 
                 var tcPr = cell.GetFirstChild<TableCellProperties>();
-                if (tcPr == null) { tcPr = new TableCellProperties(); cell.InsertAt(tcPr, 0); }
+                if (tcPr == null)
+                {
+                    tcPr = new TableCellProperties();
+                    cell.InsertAt(tcPr, 0);
+                }
 
                 tcPr.RemoveAllChildren<VerticalMerge>();
                 tcPr.Append(i == startRowIndex
                     ? new VerticalMerge { Val = MergedCellValues.Restart }
                     : new VerticalMerge());
 
-                if (i == startRowIndex) startCell = cell;
+                if (i == startRowIndex)
+                {
+                    startCell = cell;
+                }
             }
 
-            return new WordCell(startCell!);
+            var result = new WordCell(startCell!);
+            return result;
         }
     }
 
@@ -320,9 +397,16 @@ namespace Mil.Paperwork.Domain.Helpers
 
         internal WordRow(TableRow row, Table table) { _row = row; _table = table; }
 
-        internal void Remove() => _row.Remove();
+        internal void Remove()
+        {
+            _row.Remove();
+        }
 
-        public int GetRowIndex() => _table.Elements<TableRow>().ToList().IndexOf(_row);
+        public int GetRowIndex()
+        {
+            var result = _table.Elements<TableRow>().ToList().IndexOf(_row);
+            return result;
+        }
 
         public int CellCount => _row.Elements<TableCell>()
             .Sum(c => (int)(c.TableCellProperties?.GridSpan?.Val?.Value ?? 1));
@@ -336,24 +420,37 @@ namespace Mil.Paperwork.Domain.Helpers
             {
                 int gridSpan = (int)(cell.TableCellProperties?.GridSpan?.Val?.Value ?? 1);
                 if (currentColumn == logicalColumnIndex)
-                    return new WordCell(cell);
+                {
+                    var wordCell = new WordCell(cell);
+                    return wordCell;
+                }
                 if (logicalColumnIndex < currentColumn + gridSpan)
+                {
                     return WordCell.NoOp;  // inside a merged cell — writes are silently discarded
+                }
                 currentColumn += gridSpan;
             }
 
-            return cells.Count > 0 ? new WordCell(cells.Last()) : WordCell.NoOp;
+            var result = cells.Count > 0 ? new WordCell(cells.Last()) : WordCell.NoOp;
+            return result;
         }
 
         public WordCell CreateMergedCell(int firstColumn, int count)
         {
             var cells = _row.Elements<TableCell>().ToList();
-            if (firstColumn >= cells.Count) return WordCell.NoOp;
+            if (firstColumn >= cells.Count)
+            {
+                return WordCell.NoOp;
+            }
 
             var startCell = cells[firstColumn];
 
             var tcPr = startCell.GetFirstChild<TableCellProperties>();
-            if (tcPr == null) { tcPr = new TableCellProperties(); startCell.InsertAt(tcPr, 0); }
+            if (tcPr == null)
+            {
+                tcPr = new TableCellProperties();
+                startCell.InsertAt(tcPr, 0);
+            }
 
             tcPr.RemoveAllChildren<GridSpan>();
             if (count > 1)
@@ -364,7 +461,8 @@ namespace Mil.Paperwork.Domain.Helpers
             for (int i = firstColumn + 1; i <= lastIdx; i++)
                 cells[i].Remove();
 
-            return new WordCell(startCell);
+            var result = new WordCell(startCell);
+            return result;
         }
     }
 
@@ -386,10 +484,17 @@ namespace Mil.Paperwork.Domain.Helpers
 
         public void AddText(string text, WordCellParameters parameters)
         {
-            if (_isNoOp) return;
+            if (_isNoOp)
+            {
+                return;
+            }
 
             var para = _cell!.GetFirstChild<Paragraph>();
-            if (para == null) { para = new Paragraph(); _cell.Append(para); }
+            if (para == null)
+            {
+                para = new Paragraph();
+                _cell.Append(para);
+            }
 
             // Clear existing runs
             para.Elements<Run>().ToList().ForEach(r => r.Remove());
@@ -401,14 +506,20 @@ namespace Mil.Paperwork.Domain.Helpers
                 pPr.RemoveAllChildren<Justification>();
                 pPr.Append(new Justification { Val = ToJustification(parameters.HorizontalAlignment.Value) });
                 if (para.GetFirstChild<ParagraphProperties>() == null)
+                {
                     para.InsertAt(pPr, 0);
+                }
             }
 
             // Cell vertical alignment
             if (parameters.VerticalAlignment.HasValue)
             {
                 var tcPr = _cell.GetFirstChild<TableCellProperties>();
-                if (tcPr == null) { tcPr = new TableCellProperties(); _cell.InsertAt(tcPr, 0); }
+                if (tcPr == null)
+                {
+                    tcPr = new TableCellProperties();
+                    _cell.InsertAt(tcPr, 0);
+                }
                 tcPr.RemoveAllChildren<TableCellVerticalAlignment>();
                 tcPr.Append(new TableCellVerticalAlignment { Val = ToVerticalAlignment(parameters.VerticalAlignment.Value) });
             }
@@ -418,7 +529,10 @@ namespace Mil.Paperwork.Domain.Helpers
             rPr.Append(new RunFonts { Ascii = FontName, HighAnsi = FontName, ComplexScript = FontName });
             rPr.Append(new FontSize { Val = (parameters.FontSize * 2).ToString() });
             rPr.Append(new FontSizeComplexScript { Val = (parameters.FontSize * 2).ToString() });
-            if (parameters.IsBold) rPr.Append(new Bold());
+            if (parameters.IsBold)
+            {
+                rPr.Append(new Bold());
+            }
 
             var run = new Run();
             run.Append(rPr);
@@ -427,24 +541,36 @@ namespace Mil.Paperwork.Domain.Helpers
         }
 
         public void AddNumber(int value, WordCellParameters parameters)
-            => AddText(value.ToString(), parameters);
+        {
+            AddText(value.ToString(), parameters);
+        }
 
         public void AddPrice(decimal value, WordCellParameters parameters)
-            => AddText(ReportHelper.GetPriceString(value), parameters);
-
-        private static JustificationValues ToJustification(WordHorizontalAlignment alignment) => alignment switch
         {
-            WordHorizontalAlignment.Left => JustificationValues.Left,
-            WordHorizontalAlignment.Right => JustificationValues.Right,
-            _ => JustificationValues.Center
-        };
+            AddText(ReportHelper.GetPriceString(value), parameters);
+        }
 
-        private static TableVerticalAlignmentValues ToVerticalAlignment(WordVerticalAlignment alignment) => alignment switch
+        private static JustificationValues ToJustification(WordHorizontalAlignment alignment)
         {
-            WordVerticalAlignment.Top => TableVerticalAlignmentValues.Top,
-            WordVerticalAlignment.Bottom => TableVerticalAlignmentValues.Bottom,
-            _ => TableVerticalAlignmentValues.Center
-        };
+            var result = alignment switch
+            {
+                WordHorizontalAlignment.Left => JustificationValues.Left,
+                WordHorizontalAlignment.Right => JustificationValues.Right,
+                _ => JustificationValues.Center
+            };
+            return result;
+        }
+
+        private static TableVerticalAlignmentValues ToVerticalAlignment(WordVerticalAlignment alignment)
+        {
+            var result = alignment switch
+            {
+                WordVerticalAlignment.Top => TableVerticalAlignmentValues.Top,
+                WordVerticalAlignment.Bottom => TableVerticalAlignmentValues.Bottom,
+                _ => TableVerticalAlignmentValues.Center
+            };
+            return result;
+        }
     }
 
     // ---------------------------------------------------------------------------

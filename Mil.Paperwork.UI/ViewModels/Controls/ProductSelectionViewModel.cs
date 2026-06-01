@@ -61,7 +61,8 @@ namespace Mil.Paperwork.UI.ViewModels.Controls
 
         private IList<ProductDTO> LoadProductData()
         {
-            return _dataService.LoadProductsData();
+            var result = _dataService.LoadProductsData();
+            return result;
         }
     }
 }
