@@ -10,7 +10,8 @@ namespace Mil.Paperwork.Domain.Helpers
         public static string GetTemplatePath(string templateName)
         {
             var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            return Path.Combine(baseDirectory, TEMPLATES_DIRECTORY, templateName);
+            var result = Path.Combine(baseDirectory, TEMPLATES_DIRECTORY, templateName);
+            return result;
         }
 
         public static string GetDestinationPath(string destinationFolder, int? reportNumber, DateTime reportDate)

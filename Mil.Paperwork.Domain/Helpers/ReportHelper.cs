@@ -268,24 +268,45 @@ namespace Mil.Paperwork.Domain.Helpers
         public static string ConvertNumberToWords(int number, NounGender gender)
         {
             if (number == 0)
+            {
                 return Units[gender][0];
+            }
 
             var units = Units[gender];
 
             if (number < 10)
+            {
                 return units[number];
+            }
             else if (number < 20)
+            {
                 return Teens[number - 10];
+            }
             else if (number < 100)
-                return Tens[number / 10] + (number % 10 > 0 ? " " + units[number % 10] : "");
+            {
+                var result = Tens[number / 10] + (number % 10 > 0 ? " " + units[number % 10] : "");
+                return result;
+            }
             else if (number < 1000)
-                return Hundreds[number / 100] + (number % 100 > 0 ? " " + ConvertNumberToWords(number % 100, gender) : "");
+            {
+                var result = Hundreds[number / 100] + (number % 100 > 0 ? " " + ConvertNumberToWords(number % 100, gender) : "");
+                return result;
+            }
             else if (number < 1000000)
-                return ConvertLargeNumberToWords(number, 1000, Thousands, NounGender.Feminine);
+            {
+                var result = ConvertLargeNumberToWords(number, 1000, Thousands, NounGender.Feminine);
+                return result;
+            }
             else if (number < 1000000000)
-                return ConvertLargeNumberToWords(number, 1000000, Millions, NounGender.Masculine);
+            {
+                var result = ConvertLargeNumberToWords(number, 1000000, Millions, NounGender.Masculine);
+                return result;
+            }
             else
-                return ConvertLargeNumberToWords(number, 1000000000, Billions, NounGender.Masculine);
+            {
+                var result = ConvertLargeNumberToWords(number, 1000000000, Billions, NounGender.Masculine);
+                return result;
+            }
         }
 
         public static string GenerateItemsCountText(int count, MeasurementUnitDTO? measurementUnit)
@@ -301,7 +322,8 @@ namespace Mil.Paperwork.Domain.Helpers
 
         public static string GetPriceString(decimal price)
         {
-            return price.ToString("N", PriceNumberFormatInfo);
+            var result = price.ToString("N", PriceNumberFormatInfo);
+            return result;
         }
 
         // TODO: refactor later?
@@ -320,7 +342,8 @@ namespace Mil.Paperwork.Domain.Helpers
                 _ => forms[0],
             };
 
-            return ConvertNumberToWords(quotient, gender) + " " + form + (remainder > 0 ? " " + ConvertNumberToWords(remainder, gender) : "");
+            var result = ConvertNumberToWords(quotient, gender) + " " + form + (remainder > 0 ? " " + ConvertNumberToWords(remainder, gender) : "");
+            return result;
         }
     }
 }

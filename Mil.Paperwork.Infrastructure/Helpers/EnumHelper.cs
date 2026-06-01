@@ -28,7 +28,8 @@ namespace Mil.Paperwork.Infrastructure.Helpers
 
         public static IEnumerable<T> GetValues<T>() where T : Enum
         {
-            return Enum.GetValues(typeof(T)).Cast<T>();
+            var result = Enum.GetValues(typeof(T)).Cast<T>();
+            return result;
         }
 
         /// <summary>
@@ -36,8 +37,9 @@ namespace Mil.Paperwork.Infrastructure.Helpers
         /// </summary>
         public static IEnumerable<(T Value, string Description)> GetValuesWithDescriptions<T>() where T : Enum
         {
-            return Enum.GetValues(typeof(T)).Cast<T>()
-                       .Select(v => (v, GetDescription(v)));
+            var result = Enum.GetValues(typeof(T)).Cast<T>()
+                             .Select(v => (v, GetDescription(v)));
+            return result;
         }
 
         /// <summary>
@@ -45,7 +47,8 @@ namespace Mil.Paperwork.Infrastructure.Helpers
         /// </summary>
         public static Dictionary<T, string> GetDescriptionDictionary<T>() where T : Enum
         {
-            return GetValuesWithDescriptions<T>().ToDictionary(t => t.Value, t => t.Description);
+            var result = GetValuesWithDescriptions<T>().ToDictionary(t => t.Value, t => t.Description);
+            return result;
         }
     }
 }

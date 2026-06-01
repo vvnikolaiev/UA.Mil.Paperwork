@@ -65,7 +65,9 @@ namespace Mil.Paperwork.Domain.Helpers
                     string.Format(ServiceSubtotalFormat, serviceNameGen, ReportHelper.GetPriceString(subtotal)), IndentLevel: 0, FontSize: DocumentFontSize));
 
                 if (i < services.Count - 1)
+                {
                     paragraphs.Add(new BlockParagraph(string.Empty, IndentLevel: 0, FontSize: DocumentFontSize));
+                }
             }
 
             return paragraphs;
@@ -74,7 +76,9 @@ namespace Mil.Paperwork.Domain.Helpers
         internal static string BuildToHeadsOfServices(IList<WriteOffServiceData> services)
         {
             if (services == null || services.Count == 0)
+            {
                 return string.Empty;
+            }
 
             var parts = services.Select(s => string.Format(HeadOfServiceFormat, s.ServiceNameGenitive?.ToLower()));
             var sServices = string.Join(ServicesSeparator, parts);
@@ -96,7 +100,8 @@ namespace Mil.Paperwork.Domain.Helpers
 
         internal static decimal CalculateTotalSum(IList<WriteOffServiceData> services)
         {
-            return Math.Round(services.Sum(s => s.Assets.Sum(a => a.Amount)), SumRoundingPrecision);
+            var result = Math.Round(services.Sum(s => s.Assets.Sum(a => a.Amount)), SumRoundingPrecision);
+            return result;
         }
     }
 }

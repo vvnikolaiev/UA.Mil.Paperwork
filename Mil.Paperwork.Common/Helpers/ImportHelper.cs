@@ -82,7 +82,10 @@ namespace Mil.Paperwork.Common.Helpers
                     }
 
                     var column = columnsToMap.FirstOrDefault(c => c.Title == attr.Title);
-                    if (column?.SelectedSourceColumn == null) continue;
+                    if (column?.SelectedSourceColumn == null)
+                    {
+                        continue;
+                    }
 
                     if (row.TryGetValue(column.SelectedSourceColumn, out var value) && value != null)
                     {

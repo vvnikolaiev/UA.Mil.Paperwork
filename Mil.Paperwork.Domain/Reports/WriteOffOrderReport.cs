@@ -40,7 +40,10 @@ namespace Mil.Paperwork.Domain.Reports
             }
         }
 
-        public byte[] GetReportBytes() => _reportBytes;
+        public byte[] GetReportBytes()
+        {
+            return _reportBytes;
+        }
 
         private void FillSimpleFields(IWriteOffOrderReportData reportData, Dictionary<string, string> reportConfig, WordDocument document)
         {

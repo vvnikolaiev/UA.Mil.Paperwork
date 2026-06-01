@@ -140,17 +140,21 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             }
         }
 
-        public WriteOffServiceData ToServiceData() => new WriteOffServiceData
+        public WriteOffServiceData ToServiceData()
         {
-            ServiceName = SelectedService?.NominativeName ?? string.Empty,
-            ServiceNameGenitive = SelectedService?.GenitiveName ?? string.Empty,
-            Assets = [.. Assets.Select(a => new WriteOffServiceAssetData
+            var result = new WriteOffServiceData
             {
-                Name = a.Name,
-                Count = a.Count,
-                MeasurementUnit = a.MeasurementUnit,
-                Amount = a.Amount
-            })]
-        };
+                ServiceName = SelectedService?.NominativeName ?? string.Empty,
+                ServiceNameGenitive = SelectedService?.GenitiveName ?? string.Empty,
+                Assets = [.. Assets.Select(a => new WriteOffServiceAssetData
+                {
+                    Name = a.Name,
+                    Count = a.Count,
+                    MeasurementUnit = a.MeasurementUnit,
+                    Amount = a.Amount
+                })]
+            };
+            return result;
+        }
     }
 }

@@ -36,7 +36,8 @@ namespace Mil.Paperwork.Domain.Services
             var destinationPath = reportData.GetDestinationPath();
             var rawFileName = string.Format(WriteOffOrderHelper.OUTPUT_NAME_FORMAT, reportData.ReportNum);
             var fileName = PathsHelper.SanitizeFileName(rawFileName);
-            return Path.Combine(destinationPath, fileName);
+            var result = Path.Combine(destinationPath, fileName);
+            return result;
         }
     }
 }

@@ -95,14 +95,23 @@ public partial class ImportDialogWindow : Window
 
     private void RebuildColumns()
     {
-        if (PreviewDataGrid == null) return;
+        if (PreviewDataGrid == null)
+        {
+            return;
+        }
 
         PreviewDataGrid.Columns.Clear();
 
-        if (_viewModel?.PreviewTable == null) return;
+        if (_viewModel?.PreviewTable == null)
+        {
+            return;
+        }
 
         var first = _viewModel.PreviewTable.Count > 0 ? _viewModel.PreviewTable[0] : null;
-        if (first == null) return;
+        if (first == null)
+        {
+            return;
+        }
 
         if (first is IDictionary<string, object> dict)
         {
@@ -149,21 +158,28 @@ public partial class ImportDialogWindow : Window
         public object? Convert(object? value, Type targetType, object? parameter, System.Globalization.CultureInfo culture)
         {
             if (parameter is not string key)
+            {
                 return null;
+            }
 
             if (value is IDictionary<string, object> dict)
             {
                 if (dict.TryGetValue(key, out var val))
                 {
-                    if (val == null) return null;
+                    if (val == null)
+                    {
+                        return null;
+                    }
 
                     // Format DateTime specially
                     if (val is DateTime dt)
                     {
-                        return dt.ToString("dd.MM.yyyy");
+                        var dtResult = dt.ToString("dd.MM.yyyy");
+                        return dtResult;
                     }
 
-                    return val.ToString();
+                    var strResult = val.ToString();
+                    return strResult;
                 }
             }
 
@@ -175,7 +191,10 @@ public partial class ImportDialogWindow : Window
                 {
                     var dic = value as IDictionary<string, object>;
                     if (dic != null && dic.TryGetValue(k, out var v))
-                        return v?.ToString();
+                    {
+                        var vResult = v?.ToString();
+                        return vResult;
+                    }
                 }
                 catch { }
             }

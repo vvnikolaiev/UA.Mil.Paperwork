@@ -26,7 +26,7 @@ namespace Mil.Paperwork.Domain.DataModels.ReportData
 
         public static CommonWriteOffReportData FromReportData(ICommonWriteOffReportData reportData)
         {
-            return new CommonWriteOffReportData
+            var result = new CommonWriteOffReportData
             {
                 DocumentDate = reportData.DocumentDate,
                 EventType = reportData.EventType,
@@ -36,6 +36,7 @@ namespace Mil.Paperwork.Domain.DataModels.ReportData
                 Reason = reportData.Reason,
                 Assets = reportData.Assets,
             };
+            return result;
         }
 
         public string GetDestinationPath()

@@ -42,7 +42,8 @@ namespace Mil.Paperwork.UI.Services
         public DialogResult ShowMessage(string message, string caption = "", DialogButtons buttons = DialogButtons.OK, DialogIcon icon = DialogIcon.Information)
         {
             // Call async variant but avoid deadlock by ensuring async internals do not capture SynchronizationContext.
-            return ShowMessageAsync(message, caption, buttons, icon).GetAwaiter().GetResult();
+            var result = ShowMessageAsync(message, caption, buttons, icon).GetAwaiter().GetResult();
+            return result;
         }
 
         public async Task<DialogResult> ShowMessageAsync(string message, string caption = "", DialogButtons buttons = DialogButtons.OK, DialogIcon icon = DialogIcon.Information)
@@ -134,7 +135,7 @@ namespace Mil.Paperwork.UI.Services
                 var firstItem = itemsList[0];
                 var localPath = firstItem.TryGetLocalPath();
 
-                path = !string.IsNullOrEmpty(localPath) ? localPath : firstItem.Name;
+                path = string.IsNullOrEmpty(localPath) ? firstItem.Name : localPath;
             }
 
             return result;
@@ -143,11 +144,15 @@ namespace Mil.Paperwork.UI.Services
         private List<FilePickerFileType>? GetFilesFilter(string filter)
         {
             if (string.IsNullOrWhiteSpace(filter))
+            {
                 return null;
+            }
 
             var parts = filter.Split('|');
             if (parts.Length < 2)
+            {
                 return null;
+            }
 
             var result = new List<FilePickerFileType>();
 

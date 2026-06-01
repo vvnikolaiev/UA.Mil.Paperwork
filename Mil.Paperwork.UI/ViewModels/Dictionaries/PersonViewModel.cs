@@ -54,13 +54,17 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
             Rank = dto.Rank;
         }
 
-        public PersonDTO ToDTO() => new()
+        public PersonDTO ToDTO()
         {
-            FirstName = FirstName,
-            LastName = LastName,
-            Patronymic = Patronymic,
-            Position = Position,
-            Rank = Rank
-        };
+            var result = new PersonDTO
+            {
+                FirstName = FirstName,
+                LastName = LastName,
+                Patronymic = Patronymic,
+                Position = Position,
+                Rank = Rank
+            };
+            return result;
+        }
     }
 }

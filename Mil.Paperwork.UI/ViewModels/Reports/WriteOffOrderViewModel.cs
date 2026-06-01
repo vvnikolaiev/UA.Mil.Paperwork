@@ -182,14 +182,20 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         private void RemoveSelectedWitness()
         {
             if (SelectedWitness != null)
+            {
                 Witnesses.Remove(SelectedWitness);
+            }
         }
 
         private static bool IsValidEventTime(string value)
         {
-            if (value is null || value.Length != 5 || value[2] != ':') return false;
-            return int.TryParse(value[..2], out int h) && int.TryParse(value[3..], out int m)
+            if (value is null || value.Length != 5 || value[2] != ':')
+            {
+                return false;
+            }
+            var result = int.TryParse(value[..2], out int h) && int.TryParse(value[3..], out int m)
                 && h is >= 0 and <= 23 && m is >= 0 and <= 59;
+            return result;
         }
 
         private async void GenerateReportCommandExecute()

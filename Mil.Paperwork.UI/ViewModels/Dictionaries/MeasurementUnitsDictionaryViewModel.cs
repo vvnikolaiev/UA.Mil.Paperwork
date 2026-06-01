@@ -45,10 +45,14 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
         {
             var units = _dataService.LoadMeasurementUnitsData();
             var unitViewModels = units.Select(x => new MeasurementUnitViewModel(x));
-            return unitViewModels.ToArray();
+            var result = unitViewModels.ToArray();
+            return result;
         }
 
-        private void AddItemCommandExecute() => Units.Add(new MeasurementUnitViewModel());
+        private void AddItemCommandExecute()
+        {
+            Units.Add(new MeasurementUnitViewModel());
+        }
 
         private void RemoveItemCommandExecute(MeasurementUnitViewModel unit)
         {

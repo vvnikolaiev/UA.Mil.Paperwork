@@ -13,7 +13,9 @@ namespace Mil.Paperwork.Tests
             {
                 var sln = Path.Combine(dir.FullName, "Mil.Paperwork.WriteOff.sln");
                 if (File.Exists(sln))
+                {
                     return dir.FullName;
+                }
 
                 dir = dir.Parent;
             }
@@ -24,7 +26,8 @@ namespace Mil.Paperwork.Tests
         private static string ResolveDataFilePath(string relativePathFromRepoRoot)
         {
             var repoRoot = FindRepoRoot();
-            return Path.GetFullPath(Path.Combine(repoRoot, relativePathFromRepoRoot.Replace('/', Path.DirectorySeparatorChar)));
+            var result = Path.GetFullPath(Path.Combine(repoRoot, relativePathFromRepoRoot.Replace('/', Path.DirectorySeparatorChar)));
+            return result;
         }
 
         [Fact]

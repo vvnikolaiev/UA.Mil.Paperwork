@@ -37,11 +37,15 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
             _genitiveName = dto.GenitiveName;
         }
 
-        public MilServiceEntry ToDTO() => new()
+        public MilServiceEntry ToDTO()
         {
-            Id = Id,
-            NominativeName = NominativeName,
-            GenitiveName = GenitiveName
-        };
+            var result = new MilServiceEntry
+            {
+                Id = Id,
+                NominativeName = NominativeName,
+                GenitiveName = GenitiveName
+            };
+            return result;
+        }
     }
 }

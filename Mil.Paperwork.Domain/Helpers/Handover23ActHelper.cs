@@ -46,7 +46,8 @@
         public static string GetReasonDocProps(string docNumber, DateTime docDate)
         {
             var numberPart = string.IsNullOrEmpty(docNumber) ? WithoutNumberText : docNumber;
-            return string.Format(DocumentPropsFormat, numberPart, docDate.ToString(ReportHelper.DATE_FORMAT));
+            var result = string.Format(DocumentPropsFormat, numberPart, docDate.ToString(ReportHelper.DATE_FORMAT));
+            return result;
         }
 
     }

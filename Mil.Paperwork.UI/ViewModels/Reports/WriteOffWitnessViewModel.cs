@@ -13,11 +13,15 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public string Name { get => _name; set => SetProperty(ref _name, value); }
         public string Position { get => _position; set => SetProperty(ref _position, value); }
 
-        public WriteOffWitnessData ToWitnessData() => new()
+        public WriteOffWitnessData ToWitnessData()
         {
-            Rank = Rank,
-            Name = Name,
-            Position = Position
-        };
+            var result = new WriteOffWitnessData
+            {
+                Rank = Rank,
+                Name = Name,
+                Position = Position
+            };
+            return result;
+        }
     }
 }

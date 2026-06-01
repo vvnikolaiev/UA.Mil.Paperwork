@@ -53,13 +53,17 @@ namespace Mil.Paperwork.UI.ViewModels.Controls
             RequestClose?.Invoke(r);
         }
 
-        private string GetIconGlyph(DialogIcon icon) => icon switch
+        private string GetIconGlyph(DialogIcon icon)
         {
-            DialogIcon.Information => "i",
-            DialogIcon.Warning => "!",
-            DialogIcon.Error => "×",
-            DialogIcon.Question => "?",
-            _ => string.Empty
-        };
+            var result = icon switch
+            {
+                DialogIcon.Information => "i",
+                DialogIcon.Warning => "!",
+                DialogIcon.Error => "×",
+                DialogIcon.Question => "?",
+                _ => string.Empty
+            };
+            return result;
+        }
     }
 }

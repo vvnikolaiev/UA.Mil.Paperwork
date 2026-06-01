@@ -104,7 +104,10 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
 
         private void UpdateServicesDefaultFlags()
         {
-            if (Services == null) return;
+            if (Services == null)
+            {
+                return;
+            }
             foreach (var s in Services)
             {
                 s.SetAsDefault(s.ServiceKey == _defaultServiceKey);

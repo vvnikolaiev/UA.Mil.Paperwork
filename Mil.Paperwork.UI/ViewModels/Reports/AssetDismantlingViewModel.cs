@@ -115,7 +115,10 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         public override void RestoreState()
         {
-            if (_memento == null) return;
+            if (_memento == null)
+            {
+                return;
+            }
 
             IsValid = _memento.IsValid;
             Name = _memento.Name;

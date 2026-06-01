@@ -1,0 +1,18 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Table grid outline + down arrow: used for "add row" buttons -->
+    <StreamGeometry x:Key="IconAddTableRow">
+        M0,0 H24 V2 H0 Z M0,7 H24 V9 H0 Z M0,13 H24 V15 H0 Z
+        M0,0 H2 V15 H0 Z M22,0 H24 V15 H22 Z M11,0 H13 V15 H11 Z
+        M11,15 H13 V19 H11 Z M7,19 L12,23 L17,19 Z
+    </StreamGeometry>
+
+    <!-- Table grid outline + × below: used for "remove row" buttons -->
+    <StreamGeometry x:Key="IconRemoveTableRow">
+        M0,0 H24 V2 H0 Z M0,7 H24 V9 H0 Z M0,13 H24 V15 H0 Z
+        M0,0 H2 V15 H0 Z M22,0 H24 V15 H22 Z M11,0 H13 V15 H11 Z
+        M15,16 L17,16 L9,24 L7,24 Z M7,16 L9,16 L17,24 L15,24 Z
+    </StreamGeometry>
+
+</ResourceDictionary>

@@ -38,12 +38,17 @@ namespace Mil.Paperwork.Domain.Helpers
 
         public static double MeasureTextHeight(string text, ExcelFont font, double width)
         {
-            if (string.IsNullOrEmpty(text)) return 0.0;
+            if (string.IsNullOrEmpty(text))
+            {
+                return 0.0;
+            }
 
             #if WINDOWS
-                return MeasureTextHeightWindows(text, font, width);
+                var result = MeasureTextHeightWindows(text, font, width);
+                return result;
             #else
-                return MeasureTextHeightCrossPlatform(text, font, width);
+                var result = MeasureTextHeightCrossPlatform(text, font, width);
+                return result;
             #endif
         }
 
@@ -59,7 +64,8 @@ namespace Mil.Paperwork.Domain.Helpers
                 var size = graphics.MeasureString(text, drawingFont, pixelWidth, new StringFormat { FormatFlags = StringFormatFlags.MeasureTrailingSpaces });
 
                 // 72 DPI and 96 points per inch. Excel height in points with max of 409 per Excel requirements.
-                return Math.Min(Convert.ToDouble(size.Height) * 72 / 96, 409);
+                var result = Math.Min(Convert.ToDouble(size.Height) * 72 / 96, 409);
+                return result;
             }
         }
 #else
@@ -72,7 +78,8 @@ namespace Mil.Paperwork.Domain.Helpers
             var estimatedHeight = lineCount * fontSize * 1.7; // Add 20% for line spacing
             
             // Excel height in points with max of 409 per Excel requirements
-            return Math.Min(estimatedHeight, 409);
+            var result = Math.Min(estimatedHeight, 409);
+            return result;
         }
 #endif
         public static void MapDataToTheNamedFields(this ExcelWorksheet sheet, Dictionary<string, string> fieldsMap)

@@ -126,7 +126,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
 
         public MilitaryServiceDTO GetDTO()
         {
-            return new MilitaryServiceDTO()
+            var result = new MilitaryServiceDTO()
             {
                 ServiceName = _serviceName,
                 ServiceNameFull = _serviceNameFull,
@@ -138,6 +138,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
                 AssetTypes = [AssetType.ToString()]
                 //AssetTypes = AssetTypes.Select(x => x.ToString()).ToList()
             };
+            return result;
         }
     }
 }

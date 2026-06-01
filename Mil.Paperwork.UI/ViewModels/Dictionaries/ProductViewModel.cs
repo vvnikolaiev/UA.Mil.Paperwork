@@ -79,7 +79,7 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
 
         public ProductDTO ToProductDTO()
         {
-            return new ProductDTO
+            var result = new ProductDTO
             {
                 Name = Name,
                 ShortName = ShortName,
@@ -90,6 +90,7 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
                 WarrantyPeriodMonths = WarrantyPeriodMonths,
                 ResourceYears = ResourceYears
             };
+            return result;
         }
     }
 }
