@@ -61,11 +61,47 @@ namespace Mil.Paperwork.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Кфс.
+        /// </summary>
+        internal static string CoeffActualCondition {
+            get {
+                return ResourceManager.GetString("CoeffActualCondition", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Кк.
         /// </summary>
         internal static string CoeffCategory {
             get {
                 return ResourceManager.GetString("CoeffCategory", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to КК.
+        /// </summary>
+        internal static string CoeffConservation {
+            get {
+                return ResourceManager.GetString("CoeffConservation", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to К.
+        /// </summary>
+        internal static string CoeffFuelStoragePeriod {
+            get {
+                return ResourceManager.GetString("CoeffFuelStoragePeriod", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Куд.
+        /// </summary>
+        internal static string CoeffIndicatorImportance {
+            get {
+                return ResourceManager.GetString("CoeffIndicatorImportance", resourceCulture);
             }
         }
 

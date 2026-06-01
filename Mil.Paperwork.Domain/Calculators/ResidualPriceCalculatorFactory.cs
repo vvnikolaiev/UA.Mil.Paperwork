@@ -21,6 +21,8 @@ namespace Mil.Paperwork.Domain.Calculators
             AssetType.FoodService           => new FoodServiceResidualPriceCalculator(),
             AssetType.ElectronicWarfare     => new ElectronicWarfareResidualPriceCalculator(),
             AssetType.UAV                   => new UAVResidualPriceCalculator(),
+            AssetType.Fuel                  => new FuelResidualPriceCalculator(),
+            AssetType.Naval                 => new NavalResidualPriceCalculator(),
             _                               => new DefaultResidualPriceCalculator()
         };
     }

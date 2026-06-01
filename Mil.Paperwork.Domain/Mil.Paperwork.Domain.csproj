@@ -9,6 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Mil.Paperwork.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Templates\TemplateResidualValue.xlsx" />
     <None Remove="Templates\Відомість залишкової вартості служби зв_язку %28р.____%29.xlsx" />
   </ItemGroup>

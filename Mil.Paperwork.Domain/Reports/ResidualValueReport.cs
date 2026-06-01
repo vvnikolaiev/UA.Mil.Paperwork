@@ -205,7 +205,7 @@ namespace Mil.Paperwork.Domain.Reports
             sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.IndexationCoefficient].ColumnIndex].Value = indexationCoefficient;
             sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.CurrencyConversionRate].ColumnIndex].Value = "-";
 
-            FillCoefficients(asset, reportDate, newRow, sheet);
+            FillCoefficients(asset, assetType, reportDate, newRow, sheet);
 
             sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.ResidualValue].ColumnIndex].Value = residualPrice;
             sheet.Cells[newRow, columnsMapping[ResidualValueTableColumns.ValuationReportReference].ColumnIndex].Value = "-";
@@ -316,10 +316,11 @@ namespace Mil.Paperwork.Domain.Reports
             return table;
         }
 
-        private static void FillCoefficients(IAssetInfo asset, DateTime reportDate, int row, ExcelWorksheet sheet)
+        private static void FillCoefficients(IAssetInfo asset, AssetType assetType, DateTime reportDate, int row, ExcelWorksheet sheet)
         {
             var residualPriceCalculator = asset.GetCalculator();
-            var headers = residualPriceCalculator.GetColumnHeaders();
+            //var headers = residualPriceCalculator.GetColumnHeaders();
+            var headers = ResidualValueReportHelper.GetCoefficientColumns(assetType);
 
             var column = ResidualValueReportHelper.TABLE_FIRST_COEFF_COLUMN;
 

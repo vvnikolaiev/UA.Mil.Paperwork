@@ -117,8 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CoeffActualCondition" xml:space="preserve">
+    <value>Кфс</value>
+  </data>
   <data name="CoeffCategory" xml:space="preserve">
     <value>Кк</value>
+  </data>
+  <data name="CoeffConservation" xml:space="preserve">
+    <value>КК</value>
+  </data>
+  <data name="CoeffFuelStoragePeriod" xml:space="preserve">
+    <value>К</value>
+  </data>
+  <data name="CoeffIndicatorImportance" xml:space="preserve">
+    <value>Куд</value>
   </data>
   <data name="CoeffChemicalAging" xml:space="preserve">
     <value>Кх</value>
