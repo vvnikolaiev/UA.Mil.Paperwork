@@ -40,7 +40,6 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         public IDelegateCommand OpenPeopleDictionaryCommand { get; }
         public IDelegateCommand OpenMeasurementUnitsDictionaryCommand { get; }
         public IDelegateCommand OpenCommissionsConfigurationCommand { get; }
-        public IDelegateCommand OpenServicesConfigurationCommand { get; }
         public IDelegateCommand OpenReportConfigurationCommand { get; }
         public IDelegateCommand OpenServicesDictionaryCommand { get; }
 
@@ -72,7 +71,6 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             OpenPeopleDictionaryCommand = new DelegateCommand(OpenPeopleDictionaryCommandExecute);
             OpenMeasurementUnitsDictionaryCommand = new DelegateCommand(OpenMeasurementUnitsDictionaryCommandExecute);
             OpenCommissionsConfigurationCommand = new DelegateCommand(OpenCommissionsConfigurationCommandExecute);
-            OpenServicesConfigurationCommand = new DelegateCommand(OpenServicesConfigurationCommandExecute);
             OpenReportConfigurationCommand = new DelegateCommand(OpenReportConfigurationCommandExecute);
             OpenServicesDictionaryCommand = new DelegateCommand(OpenServicesDictionaryCommandExecute);
         }
@@ -179,11 +177,6 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             OpenSettingsTab(SettingsTabType.CommissionsConfiguration);
         }
 
-        private void OpenServicesConfigurationCommandExecute()
-        {
-            OpenSettingsTab(SettingsTabType.ServicesConfiguration);
-        }
-
         private void OpenReportConfigurationCommandExecute()
         {
             OpenSettingsTab(SettingsTabType.ReportsConfiguration);
@@ -209,11 +202,10 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
                     SettingsTabType.Settings => new SettingsViewModel(_reportDataService),
                     SettingsTabType.ReportsConfiguration => new ReportConfigViewModel(_reportDataService, _exportService, _importService, _dialogService),
                     SettingsTabType.CommissionsConfiguration => new CommissionsConfigViewModel(_reportDataService, _exportService, _importService, _dialogService),
-                    SettingsTabType.ServicesConfiguration => new ServicesConfigViewModel(_reportDataService, _dialogService),
                     SettingsTabType.ProductDictionary => new ProductsDictionaryViewModel(_dataService, _exportService, _importService, _dialogService),
                     SettingsTabType.PeopleDictionary => new PeopleDictionaryViewModel(_dataService, _importService, _dialogService),
                     SettingsTabType.MeasurementUnitsDictionary => new MeasurementUnitsDictionaryViewModel(_dataService, _dialogService),
-                    SettingsTabType.ServicesDictionary => new ServicesDictionaryViewModel(_dataService, _dialogService),
+                    SettingsTabType.ServicesDictionary => new ServicesDictionaryViewModel(_reportDataService, _dataService, _dialogService),
                     _ => throw new NotImplementedException()
                 };
 
