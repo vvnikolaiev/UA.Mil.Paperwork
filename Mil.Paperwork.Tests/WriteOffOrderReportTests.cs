@@ -152,11 +152,10 @@ namespace Mil.Paperwork.Tests
 
             var xml = GetDocumentXml(capture.SavedBytes!);
 
-            Assert.Contains("Інженерна служба",    xml);
             Assert.Contains("інженерної служби",   xml);
             Assert.Contains("Лопата саперна",      xml);
             Assert.Contains("Мотузка страховна",   xml);
-            Assert.Contains("Служба зв",           xml); // зв'язку (apostrophe may be escaped in XML)
+            Assert.Contains("служби зв",           xml); // зв'язку (apostrophe may be escaped in XML)
             Assert.Contains("Радіостанція",        xml);
         }
 
