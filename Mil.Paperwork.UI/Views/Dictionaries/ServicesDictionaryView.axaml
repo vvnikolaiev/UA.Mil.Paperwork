@@ -1,0 +1,34 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Mil.Paperwork.UI.Views.Dictionaries.ServicesDictionaryView"
+             xmlns:viewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Dictionaries"
+             x:DataType="viewModels:ServicesDictionaryViewModel">
+    <DockPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
+            <Button Content="Додати" Command="{Binding AddItemCommand}" Margin="0,0,5,0"/>
+            <Button Content="Видалити" Command="{Binding RemoveItemCommand}" Margin="0,0,5,0"
+                    CommandParameter="{Binding SelectedItem, ElementName=ServicesDataGrid}"/>
+            <Button Content="Зберегти" Command="{Binding SaveCommand}" Margin="0,0,5,0"/>
+            <Button Content="Оновити" Command="{Binding RefreshCommand}" Margin="0,0,5,0"/>
+            <Button Classes="CloseTab" Content="Закрити" Command="{Binding CloseTabCommand}" Margin="0,0,5,0"/>
+        </StackPanel>
+
+        <DataGrid x:Name="ServicesDataGrid"
+                  ItemsSource="{Binding Services}"
+                  AutoGenerateColumns="False" Margin="5">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Назва (називний відмінок)"
+                                    Binding="{Binding NominativeName, UpdateSourceTrigger=PropertyChanged}"
+                                    Width="*"
+                                    CellStyleClasses="name" />
+                <DataGridTextColumn Header="Назва (родовий відмінок)"
+                                    Binding="{Binding GenitiveName, UpdateSourceTrigger=PropertyChanged}"
+                                    Width="*"
+                                    CellStyleClasses="name" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

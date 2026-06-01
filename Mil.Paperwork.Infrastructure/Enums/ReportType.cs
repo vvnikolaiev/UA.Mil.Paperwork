@@ -25,6 +25,8 @@ namespace Mil.Paperwork.Infrastructure.Enums
         [Description("Акт прийому-передачі основних засобів (додаток 23)")]
         Handover23Act,
         [Description("Пакет документів для списання")]
-        WriteOffPackage
+        WriteOffPackage,
+        [Description("Наказ про списання")]
+        WriteOffOrder
     }
 }

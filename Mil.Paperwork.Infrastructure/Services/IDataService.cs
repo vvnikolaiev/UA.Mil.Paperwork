@@ -17,5 +17,8 @@ namespace Mil.Paperwork.Infrastructure.Services
         void SaveMeasurementUnitsData(IList<MeasurementUnitDTO> units);
         void SavePeopleData(IList<PersonDTO> people);
         void AlterPeople(IList<PersonDTO> people);
+
+        IList<MilServiceEntry> LoadServicesData();
+        void SaveServicesData(IList<MilServiceEntry> services);
     }
 }

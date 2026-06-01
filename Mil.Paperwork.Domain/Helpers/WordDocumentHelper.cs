@@ -114,7 +114,7 @@ namespace Mil.Paperwork.Domain.Helpers
 
                     foreach (var dr in displayRuns) dr.Remove();
                     runs[endIdx].InsertBeforeSelf(newRun);
-                    break;
+                    i = endIdx;
                 }
             }
         }
@@ -124,6 +124,100 @@ namespace Mil.Paperwork.Domain.Helpers
             if (fieldsMap == null) return;
             foreach (var field in fieldsMap)
                 ReplaceField(field.Key, field.Value);
+        }
+
+        public void ReplaceFieldWithBlock(string fieldName, IList<BlockParagraph> paragraphs)
+        {
+            var cleanName = fieldName.Trim('«', '»');
+
+            // Collect all paragraphs that contain the field (template may have duplicates)
+            var targets = _body.Descendants<Paragraph>()
+                .Where(p => ContainsMergeField(p, cleanName))
+                .ToList();
+
+            if (targets.Count == 0)
+                return;
+
+            // Replace each occurrence of the placeholder with the block content
+            foreach (var target in targets)
+            {
+                var pPr = target.GetFirstChild<ParagraphProperties>();
+
+                foreach (var bp in paragraphs)
+                {
+                    var newPara = new Paragraph();
+
+                    var newPPr = new ParagraphProperties();
+                    if (pPr != null)
+                    {
+                        var clonedSpacing = pPr.GetFirstChild<SpacingBetweenLines>();
+                        if (clonedSpacing != null)
+                            newPPr.Append((SpacingBetweenLines)clonedSpacing.CloneNode(true));
+                    }
+
+                    if (bp.IndentLevel > 0)
+                        newPPr.Append(new Indentation { Left = (bp.IndentLevel * 720).ToString() });
+
+                    if (newPPr.HasChildren)
+                        newPara.Append(newPPr);
+
+                    if (!string.IsNullOrEmpty(bp.Text))
+                    {
+                        var rPr = new RunProperties();
+                        rPr.Append(new RunFonts
+                        {
+                            Ascii = WordDocumentHelper.DOCUMENT_FONT_NAME,
+                            HighAnsi = WordDocumentHelper.DOCUMENT_FONT_NAME,
+                            ComplexScript = WordDocumentHelper.DOCUMENT_FONT_NAME
+                        });
+                        rPr.Append(new FontSize { Val = (bp.FontSize * 2).ToString() });
+                        rPr.Append(new FontSizeComplexScript { Val = (bp.FontSize * 2).ToString() });
+                        if (bp.IsBold)
+                            rPr.Append(new Bold());
+
+                        var run = new Run();
+                        run.Append(rPr);
+                        run.Append(new Text(bp.Text) { Space = SpaceProcessingModeValues.Preserve });
+                        newPara.Append(run);
+                    }
+
+                    target.InsertBeforeSelf(newPara);
+                }
+
+                target.Remove();
+            }
+        }
+
+        private static bool ContainsMergeField(Paragraph para, string fieldName)
+        {
+            foreach (var fld in para.Elements<SimpleField>())
+            {
+                var instr = fld.Instruction?.Value ?? string.Empty;
+                var parts = instr.Split(new[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Contains("MERGEFIELD") && parts.Contains(fieldName))
+                    return true;
+            }
+
+            var runs = para.Elements<Run>().ToList();
+            for (int i = 0; i < runs.Count; i++)
+            {
+                if (GetFldCharType(runs[i]) != FieldCharValues.Begin) continue;
+
+                var instrBuilder = new StringBuilder();
+                for (int j = i + 1; j < runs.Count; j++)
+                {
+                    var charType = GetFldCharType(runs[j]);
+                    if (charType == FieldCharValues.Separate || charType == FieldCharValues.End) break;
+                    instrBuilder.Append(runs[j].GetFirstChild<FieldCode>()?.InnerText ?? string.Empty);
+                }
+
+                var instrParts = instrBuilder.ToString()
+                    .Split(new[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                if (instrParts.Contains("MERGEFIELD") && instrParts.Contains(fieldName))
+                    return true;
+            }
+
+            return false;
         }
 
         public byte[] GetBytes()
@@ -340,16 +434,16 @@ namespace Mil.Paperwork.Domain.Helpers
 
         private static JustificationValues ToJustification(WordHorizontalAlignment alignment) => alignment switch
         {
-            WordHorizontalAlignment.Left  => JustificationValues.Left,
+            WordHorizontalAlignment.Left => JustificationValues.Left,
             WordHorizontalAlignment.Right => JustificationValues.Right,
-            _                             => JustificationValues.Center
+            _ => JustificationValues.Center
         };
 
         private static TableVerticalAlignmentValues ToVerticalAlignment(WordVerticalAlignment alignment) => alignment switch
         {
-            WordVerticalAlignment.Top    => TableVerticalAlignmentValues.Top,
+            WordVerticalAlignment.Top => TableVerticalAlignmentValues.Top,
             WordVerticalAlignment.Bottom => TableVerticalAlignmentValues.Bottom,
-            _                            => TableVerticalAlignmentValues.Center
+            _ => TableVerticalAlignmentValues.Center
         };
     }
 
@@ -361,4 +455,10 @@ namespace Mil.Paperwork.Domain.Helpers
     {
         public const string DOCUMENT_FONT_NAME = "Times New Roman";
     }
+
+    // ---------------------------------------------------------------------------
+    // BlockParagraph — used by ReplaceFieldWithBlock for multi-paragraph content
+    // ---------------------------------------------------------------------------
+
+    internal record BlockParagraph(string Text, int IndentLevel, int FontSize = 14, bool IsBold = false);
 }
