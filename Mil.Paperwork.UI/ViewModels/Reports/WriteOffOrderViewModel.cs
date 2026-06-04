@@ -2,7 +2,9 @@ using Mil.MVVM.Common;
 using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.DataModels;
+using Mil.Paperwork.Infrastructure.DataModels.Configuration;
 using Mil.Paperwork.Infrastructure.Enums;
+using Mil.Paperwork.Infrastructure.Helpers;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Managers;
 using Mil.Paperwork.UI.ViewModels.Dictionaries;
@@ -49,7 +51,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         public override string Header => HeaderText;
 
-        public ObservableCollection<MilServiceEntry> AvailableServices { get; }
+        public ObservableCollection<MilitaryServiceViewModel> AvailableServices { get; }
+        public ObservableCollection<AssetType> AssetTypes { get; }
         public IList<MeasurementUnitViewModel> AvailableMeasurementUnits { get; }
         public ObservableCollection<PersonViewModel> AvailablePeople { get; }
         public ObservableCollection<WriteOffServiceViewModel> Services { get; }
@@ -127,11 +130,14 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             _reportDataService = reportDataService;
             _dialogService = dialogService;
 
-            AvailableServices = new ObservableCollection<MilServiceEntry>(_dataService.LoadServicesData());
+            AvailableServices = [];
+            AssetTypes = [.. EnumHelper.GetValues<AssetType>()];
             AvailableMeasurementUnits = [.. _dataService.LoadMeasurementUnitsData().Select(u => new MeasurementUnitViewModel(u))];
             AvailablePeople = [.. _dataService.LoadPeopleData().Select(p => new PersonViewModel(p))];
             Services = [];
             Witnesses = [];
+
+            ReloadServices();
 
             var commonParams = _reportDataService.GetReportParametersDictionary(ReportType.Common);
             MilUnitApproval = commonParams.GetValueOrDefault(WriteOffOrderHelper.MilUnitConfigKey, string.Empty);
@@ -143,26 +149,42 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             OpenConfigurationCommand = new DelegateCommand(OpenConfigurationCommandExecute);
         }
 
-        public MilServiceEntry AddServiceToDictionary(string nominativeName, string genitiveName)
+        private void ReloadServices()
         {
-            var newEntry = new MilServiceEntry
+            var services = _reportDataService.GetAllServices();
+            var vms = services
+                .Select(x => new MilitaryServiceViewModel(x.Key, x.Value))
+                .OrderBy(vm => vm.NominativeName)
+                .ToList();
+
+            AvailableServices.Clear();
+
+            foreach (var vm in vms)
             {
-                NominativeName = nominativeName,
-                GenitiveName = genitiveName
-            };
+                AvailableServices.Add(vm);
+            }
+        }
 
-            var allServices = _dataService.LoadServicesData().ToList();
-            allServices.Add(newEntry);
-            _dataService.SaveServicesData(allServices);
-            AvailableServices.Add(newEntry);
+        public MilitaryServiceViewModel? AddServiceToDictionary(string nominativeName, string genitiveName, AssetType assetType)
+        {
+            var key = Guid.NewGuid().ToString();
+            var dto = new MilitaryServiceDTO();
+            dto.ServiceNameFull.Value = nominativeName;
+            dto.ServiceNameGenitive.Value = genitiveName;
+            dto.AssetTypes = [assetType.ToString()];
 
-            return newEntry;
+            _reportDataService.SaveServiceData(key, dto);
+            ReloadServices();
+
+            var newVm = AvailableServices.FirstOrDefault(vm => vm.ServiceKey == key);
+            return newVm;
         }
 
         private void AddService()
         {
             var service = new WriteOffServiceViewModel(
                 AvailableServices,
+                AssetTypes,
                 AvailableMeasurementUnits,
                 RemoveService,
                 AddServiceToDictionary);

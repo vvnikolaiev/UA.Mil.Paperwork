@@ -45,7 +45,8 @@
                 Padding="10,8,10,10"
                 IsEnabled="{Binding SelectedService, Converter={x:Static ObjectConverters.IsNotNull}}">
             <Grid ColumnDefinitions="Auto,12,*,24,Auto,12,*"
-                  RowDefinitions="Auto,6,Auto,6,Auto,6,Auto">
+                  RowDefinitions="Auto,6,Auto,6,Auto,6,Auto"
+                  Classes="parameters">
 
                 <!-- Ліва колонка -->
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Назва (називний відмінок):" VerticalAlignment="Center"/>
@@ -104,10 +105,22 @@
                 </Style>
             </DataGrid.Styles>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Назва служби"
-                                    Binding="{Binding NominativeName}"
-                                    Width="*"
-                                    CellStyleClasses="name"/>
+                <DataGridTemplateColumn Header="Назва служби" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="tabViewModels:MilitaryServiceViewModel">
+                            <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Margin="4,0">
+                                <TextBlock Text="★"
+                                           Foreground="Gold"
+                                           IsVisible="{Binding IsMarkedAsDefault}"
+                                           FontSize="14"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding NominativeName}"
+                                           Classes="name"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Тип майна"
                                     Binding="{Binding AssetType, Converter={StaticResource EnumDescriptionConverter}}"
                                     Width="160"

@@ -6,6 +6,7 @@
              x:Class="Mil.Paperwork.UI.Views.Reports.WriteOffOrderView"
              xmlns:reportViewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Reports"
              xmlns:dictionaries="clr-namespace:Mil.Paperwork.UI.ViewModels.Dictionaries"
+             xmlns:tabViewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Tabs"
              x:DataType="reportViewModels:WriteOffOrderViewModel">
 
     <Grid RowDefinitions="*,Auto">
@@ -22,7 +23,7 @@
                           HorizontalScrollBarVisibility="Disabled"
                           VerticalScrollBarVisibility="Auto"
                           Margin="4,4,2,4">
-                <StackPanel Spacing="6">
+                <StackPanel Spacing="6" Classes="parameters">
 
                     <!-- Подія section: report info + incident reporter + battle order + event datetime -->
                     <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}"
@@ -60,7 +61,7 @@
                             <TextBox   Grid.Row="2" Grid.Column="3"
                                        Text="{Binding SubdivisionName, UpdateSourceTrigger=PropertyChanged}"
                                        Margin="0,2"/>
-                            
+
                             <!-- Прізвище, ім'я -->
                             <TextBlock Grid.Row="3" Grid.Column="0" Text="Ім'я, прізвище:"
                                        VerticalAlignment="Center" Margin="0,0,6,0"/>
@@ -284,7 +285,7 @@
                                                 <ComboBox Grid.Column="1"
                                                           ItemsSource="{Binding AvailableServices}"
                                                           SelectedItem="{Binding SelectedService}"
-                                                          DisplayMemberBinding="{Binding NominativeName}"
+                                                          DisplayMemberBinding="{Binding NominativeName, DataType={x:Type tabViewModels:MilitaryServiceViewModel}}"
                                                           HorizontalAlignment="Stretch"/>
                                                 <Button Grid.Column="2"
                                                         Content="+ Нова"
@@ -319,13 +320,30 @@
                                             <Border IsVisible="{Binding IsAddingNewService}"
                                                     BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}"
                                                     BorderThickness="1" CornerRadius="3" Padding="6">
-                                                <StackPanel Spacing="4">
-                                                    <TextBlock Text="Нова служба до довідника:" FontStyle="Italic" FontSize="11"/>
-                                                    <TextBox Text="{Binding NewServiceNominative, UpdateSourceTrigger=PropertyChanged}"
+                                                <Grid Classes="parameters"
+                                                      RowDefinitions="Auto,4,Auto,4,Auto,4,Auto,4,Auto"
+                                                      ColumnDefinitions="Auto,4,*">
+                                                    <TextBlock Grid.Row="0" Grid.ColumnSpan="3" 
+                                                               Text="Нова служба до довідника:" FontStyle="Italic" FontSize="11"/>
+
+                                                    <TextBlock Grid.Row="2" Grid.Column="0" 
+                                                               Text="Тип майна:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+
+                                                    <ComboBox Grid.Row="2" Grid.Column="2" 
+                                                              Classes="enum"
+                                                              ItemsSource="{Binding AssetTypes}"
+                                                              SelectedItem="{Binding NewServiceAssetType}"
+                                                              HorizontalAlignment="Stretch"/>
+
+                                                    <TextBox Grid.Row="4" Grid.ColumnSpan="3"
+                                                             Text="{Binding NewServiceNominative, UpdateSourceTrigger=PropertyChanged}"
                                                              Watermark="Назва (називний відмінок): напр. Інженерна служба"/>
-                                                    <TextBox Text="{Binding NewServiceGenitive, UpdateSourceTrigger=PropertyChanged}"
+                                                    <TextBox Grid.Row="6" Grid.ColumnSpan="3"
+                                                             Text="{Binding NewServiceGenitive, UpdateSourceTrigger=PropertyChanged}"
                                                              Watermark="Назва (родовий відмінок): напр. інженерної служби"/>
-                                                    <StackPanel Orientation="Horizontal" Spacing="6">
+
+                                                    <StackPanel Grid.Row="8" Grid.ColumnSpan="3" 
+                                                                Orientation="Horizontal" Spacing="6">
                                                         <Button Content="Зберегти та обрати"
                                                                 Command="{Binding ConfirmAddServiceCommand}"
                                                                 Padding="8,4"/>
@@ -333,7 +351,7 @@
                                                                 Command="{Binding ToggleAddServiceFormCommand}"
                                                                 Padding="8,4"/>
                                                     </StackPanel>
-                                                </StackPanel>
+                                                </Grid>
                                             </Border>
 
                                             <!-- Assets DataGrid -->

@@ -203,25 +203,6 @@ namespace Mil.Paperwork.Infrastructure.Services
             Save();
         }
 
-        public IList<MilServiceEntry> LoadServicesData()
-        {
-            var data = LoadDataStorageData();
-            return data.Services;
-        }
-
-        public void SaveServicesData(IList<MilServiceEntry> services)
-        {
-            if (services == null)
-            {
-                return;
-            }
-
-            var sorted = services.OrderBy(s => s.NominativeName).ToList();
-            _storageData.Services = sorted;
-
-            Save();
-        }
-
         private SimpleDataStorageDTO LoadDataStorageData()
         {
             try

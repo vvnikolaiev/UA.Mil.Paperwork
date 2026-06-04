@@ -6,6 +6,5 @@
         public List<AssetValuationData> ValuationData { get; set; } = [];
         public List<PersonDTO> PeopleData { get; set; } = [];
         public List<MeasurementUnitDTO> MeasurementUnits { get; set; } = [];
-        public List<MilServiceEntry> Services { get; set; } = [];
     }
 }
