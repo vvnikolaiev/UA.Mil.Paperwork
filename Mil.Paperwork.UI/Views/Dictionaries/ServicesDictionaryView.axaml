@@ -110,7 +110,7 @@
                         <DataTemplate x:DataType="tabViewModels:MilitaryServiceViewModel">
                             <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Margin="4,0">
                                 <TextBlock Text="★"
-                                           Foreground="Gold"
+                                           Foreground="{DynamicResource BrushDefaultIndicator}"
                                            IsVisible="{Binding IsMarkedAsDefault}"
                                            FontSize="14"
                                            VerticalAlignment="Center"/>

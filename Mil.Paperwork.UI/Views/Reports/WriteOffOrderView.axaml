@@ -179,16 +179,16 @@
                                         Margin="0,0,2,0"
                                         ToolTip.Tip="Додати свідка">
                                     <PathIcon Width="16" Height="16"
-                                              Foreground="#2E7D32"
-                                              Data="M0,0 H24 V2 H0 Z M0,7 H24 V9 H0 Z M0,13 H24 V15 H0 Z M0,0 H2 V15 H0 Z M22,0 H24 V15 H22 Z M11,0 H13 V15 H11 Z M11,15 H13 V19 H11 Z M7,19 L12,23 L17,19 Z"/>
+                                              Foreground="{DynamicResource BrushActionAdd}"
+                                              Data="{StaticResource IconAddTableRow}"/>
                                 </Button>
                                 <Button Grid.Column="2"
                                         Command="{Binding RemoveWitnessCommand}"
                                         Padding="6"
                                         ToolTip.Tip="Видалити вибраного свідка">
                                     <PathIcon Width="16" Height="16"
-                                              Foreground="#C62828"
-                                              Data="M0,0 H24 V2 H0 Z M0,7 H24 V9 H0 Z M0,13 H24 V15 H0 Z M0,0 H2 V15 H0 Z M22,0 H24 V15 H22 Z M11,0 H13 V15 H11 Z M15,16 L17,16 L9,24 L7,24 Z M7,16 L9,16 L17,24 L15,24 Z"/>
+                                              Foreground="{DynamicResource BrushActionDelete}"
+                                              Data="{StaticResource IconRemoveTableRow}"/>
                                 </Button>
                             </Grid>
 
@@ -299,20 +299,18 @@
                                                         Padding="6"
                                                         Margin="4,0,0,0"
                                                         ToolTip.Tip="Додати рядок майна">
-                                                    <!-- Table grid (2col×2row) + down arrow = add row below -->
                                                     <PathIcon Width="16" Height="16"
-                                                              Foreground="#2E7D32"
-                                                              Data="M0,0 H24 V2 H0 Z M0,7 H24 V9 H0 Z M0,13 H24 V15 H0 Z M0,0 H2 V15 H0 Z M22,0 H24 V15 H22 Z M11,0 H13 V15 H11 Z M11,15 H13 V19 H11 Z M7,19 L12,23 L17,19 Z"/>
+                                                              Foreground="{DynamicResource BrushActionAdd}"
+                                                              Data="{StaticResource IconAddTableRow}"/>
                                                 </Button>
                                                 <Button Grid.Column="4"
                                                         Command="{Binding RemoveAssetCommand}"
                                                         Padding="6"
                                                         Margin="2,0,0,0"
                                                         ToolTip.Tip="Видалити вибраний рядок">
-                                                    <!-- Table grid (2col×2row) + × below = delete row -->
                                                     <PathIcon Width="16" Height="16"
-                                                              Foreground="#C62828"
-                                                              Data="M0,0 H24 V2 H0 Z M0,7 H24 V9 H0 Z M0,13 H24 V15 H0 Z M0,0 H2 V15 H0 Z M22,0 H24 V15 H22 Z M11,0 H13 V15 H11 Z M15,16 L17,16 L9,24 L7,24 Z M7,16 L9,16 L17,24 L15,24 Z"/>
+                                                              Foreground="{DynamicResource BrushActionDelete}"
+                                                              Data="{StaticResource IconRemoveTableRow}"/>
                                                 </Button>
                                             </Grid>
 

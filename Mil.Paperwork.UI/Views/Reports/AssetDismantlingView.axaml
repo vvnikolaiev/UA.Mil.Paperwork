@@ -30,7 +30,7 @@
 
 	</UserControl.Styles>
 
-	<Grid Grid.IsSharedSizeScope="True" Background="Wheat">
+	<Grid Grid.IsSharedSizeScope="True" Background="{DynamicResource BrushDismantlingBackground}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
