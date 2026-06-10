@@ -1,10 +1,8 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 using System.Globalization;
-using System.Linq;
 using System.Threading;
 using System;
 using Mil.Paperwork.UI.Configuration;
@@ -50,8 +48,6 @@ namespace Mil.Paperwork.UI
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                DisableAvaloniaDataAnnotationValidation();
-
                 var mainWindow = new MainWindow();
                 var mainWindowViewModel = provider.GetRequiredService<MainWindowViewModel>();
                 mainWindow.DataContext = mainWindowViewModel;
@@ -60,15 +56,6 @@ namespace Mil.Paperwork.UI
             }
 
             base.OnFrameworkInitializationCompleted();
-        }
-
-        private void DisableAvaloniaDataAnnotationValidation()
-        {
-            var dataValidationPluginsToRemove =
-                BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>().ToArray();
-
-            foreach (var plugin in dataValidationPluginsToRemove)
-                BindingPlugins.DataValidators.Remove(plugin);
         }
 
         private void SetCurrentCulture()

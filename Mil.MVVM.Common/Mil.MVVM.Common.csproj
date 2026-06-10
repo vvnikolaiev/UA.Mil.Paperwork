@@ -6,8 +6,5 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Avalonia.Diagnostics" Version="11.3.12" />
-  </ItemGroup>
 
 </Project>
