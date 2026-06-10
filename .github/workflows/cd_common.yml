@@ -85,7 +85,7 @@ jobs:
 
     - name: Publish Self-Contained App
       run: |
-        dotnet publish ${{ env.UI_Project_Path }} -c Release -r ${{ inputs.rid }} --self-contained true -p:PublishSingleFile=true -o publish/
+        dotnet publish ${{ env.UI_Project_Path }} -c Release -r ${{ inputs.rid }} --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o publish/
 
     # --- PACKAGING ---
 
