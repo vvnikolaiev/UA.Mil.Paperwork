@@ -1,5 +1,6 @@
 <Styles xmlns="https://github.com/avaloniaui"
-		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:behaviors="using:Mil.Paperwork.UI.Behaviors">
 	<Design.PreviewWith>
 		<Border Padding="20">
 			<!-- Add Controls for Previewer Here -->
@@ -14,6 +15,7 @@
 		<Setter Property="CanUserReorderColumns" Value="True" />
 		<Setter Property="CanUserSortColumns" Value="False" />
 		<Setter Property="Margin" Value="10" />
+		<Setter Property="(behaviors:DataGridBehaviors.EnableInstantEdit)" Value="True" />
 	</Style>
 	
 	<Style Selector="DataGridColumnHeader">
