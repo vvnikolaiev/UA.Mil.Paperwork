@@ -6,9 +6,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Avalonia.Diagnostics" Version="11.3.12" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Mil.MVVM.Common\Mil.MVVM.Common.csproj" />
