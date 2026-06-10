@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,13 +28,15 @@ namespace Mil.Paperwork.UI
 
         public override void OnFrameworkInitializationCompleted()
         {
-            // single-instance guard
-            _mutex = new Mutex(true, AppName, out var createdNew);
-            if (!createdNew)
+            if (!Design.IsDesignMode)
             {
-                // another instance exists -> exit
-                Environment.Exit(0);
-                return;
+                // single-instance guard
+                _mutex = new Mutex(true, AppName, out var createdNew);
+                if (!createdNew)
+                {
+                    Environment.Exit(0);
+                    return;
+                }
             }
 
             SetCurrentCulture();

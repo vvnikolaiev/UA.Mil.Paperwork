@@ -52,7 +52,7 @@
                                        VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <TextBox   Grid.Row="2" Grid.Column="1"
                                        Text="{Binding ReporterRank, UpdateSourceTrigger=PropertyChanged}"
-                                       Watermark="родовий відмінок"
+                                       PlaceholderText="родовий відмінок"
                                        Margin="0,2,8,2"/>
 
                             <!-- Підрозділ -->
@@ -67,7 +67,7 @@
                                        VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <TextBox   Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3"
                                        Text="{Binding ReporterName, UpdateSourceTrigger=PropertyChanged}"
-                                       Watermark="родовий відмінок"
+                                       PlaceholderText="родовий відмінок"
                                        Margin="0,2"/>
 
                             <!-- Бойовий наказ № + Дата -->
@@ -106,7 +106,7 @@
                             <MaskedTextBox Grid.Row="6" Grid.Column="3"
                                            Mask="00:00"
                                            Text="{Binding EventTime}"
-                                           Watermark="гг:хх"
+                                           PlaceholderText="гг:хх"
                                            HorizontalAlignment="Stretch"
                                            VerticalAlignment="Center"
                                            Margin="0,2"/>
@@ -206,7 +206,7 @@
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <TextBox Text="{Binding Rank, UpdateSourceTrigger=PropertyChanged}"
-                                                         Watermark="молодший сержант"
+                                                         PlaceholderText="молодший сержант"
                                                          BorderThickness="0"
                                                          VerticalAlignment="Center"/>
                                             </DataTemplate>
@@ -217,7 +217,7 @@
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
-                                                         Watermark="УДАЛОВ Володимир Віталійович"
+                                                         PlaceholderText="УДАЛОВ Володимир Віталійович"
                                                          BorderThickness="0"
                                                          VerticalAlignment="Center"/>
                                             </DataTemplate>
@@ -337,10 +337,10 @@
 
                                                     <TextBox Grid.Row="4" Grid.ColumnSpan="3"
                                                              Text="{Binding NewServiceNominative, UpdateSourceTrigger=PropertyChanged}"
-                                                             Watermark="Назва (називний відмінок): напр. Інженерна служба"/>
+                                                             PlaceholderText="Назва (називний відмінок): напр. Інженерна служба"/>
                                                     <TextBox Grid.Row="6" Grid.ColumnSpan="3"
                                                              Text="{Binding NewServiceGenitive, UpdateSourceTrigger=PropertyChanged}"
-                                                             Watermark="Назва (родовий відмінок): напр. інженерної служби"/>
+                                                             PlaceholderText="Назва (родовий відмінок): напр. інженерної служби"/>
 
                                                     <StackPanel Grid.Row="8" Grid.ColumnSpan="3" 
                                                                 Orientation="Horizontal" Spacing="6">

@@ -52,17 +52,17 @@
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Назва (називний відмінок):" VerticalAlignment="Center"/>
                 <TextBox   Grid.Row="0" Grid.Column="2"
                            Text="{Binding SelectedService.NominativeName}"
-                           Watermark="Наприклад: Служба зв'язку"/>
+                           PlaceholderText="Наприклад: Служба зв'язку"/>
 
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Назва (родовий відмінок):" VerticalAlignment="Center"/>
                 <TextBox   Grid.Row="2" Grid.Column="2"
                            Text="{Binding SelectedService.GenitiveName}"
-                           Watermark="Наприклад: служби зв'язку"/>
+                           PlaceholderText="Наприклад: служби зв'язку"/>
 
                 <TextBlock Grid.Row="4" Grid.Column="0" Text="Коротка назва:" VerticalAlignment="Center"/>
                 <TextBox   Grid.Row="4" Grid.Column="2"
                            Text="{Binding SelectedService.ShortName}"
-                           Watermark="Наприклад: зв'язок"/>
+                           PlaceholderText="Наприклад: зв'язок"/>
 
                 <TextBlock Grid.Row="6" Grid.Column="0" Text="Тип майна*:" VerticalAlignment="Center"/>
                 <ComboBox  Grid.Row="6" Grid.Column="2"
@@ -84,12 +84,12 @@
                 <TextBlock Grid.Row="2" Grid.Column="4" Text="Посада:" VerticalAlignment="Center"/>
                 <TextBox   Grid.Row="2" Grid.Column="6"
                            Text="{Binding SelectedService.HeadPosition}"
-                           Watermark="Наприклад: Начальник служби зв'язку"/>
+                           PlaceholderText="Наприклад: Начальник служби зв'язку"/>
 
                 <TextBlock Grid.Row="4" Grid.Column="4" Text="Звання:" VerticalAlignment="Center"/>
                 <TextBox   Grid.Row="4" Grid.Column="6"
                            Text="{Binding SelectedService.HeadRank}"
-                           Watermark="Наприклад: підполковник"/>
+                           PlaceholderText="Наприклад: підполковник"/>
 
             </Grid>
         </Border>
