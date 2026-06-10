@@ -126,10 +126,6 @@
 			<configViews:ReportConfigurationView />
 		</DataTemplate>
 
-		<DataTemplate DataType="configViewModels:ServicesConfigViewModel">
-			<configViews:MilServicesConfigurationView />
-		</DataTemplate>
-
 		<DataTemplate DataType="configViewModels:CommissionsConfigViewModel">
 			<configViews:CommissionsConfigurationView />
 		</DataTemplate>

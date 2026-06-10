@@ -1,0 +1,60 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ═══════════════════════════════════════════════════════════
+         THEME PALETTE COLORS
+         Referenced by ColorPaletteResources in App.axaml.
+         Note: colors reused across multiple palette slots share
+         the same resource key (e.g. ThemeLightBaseLow appears
+         in BaseLow, ChromeHigh, ChromeBlackLow, etc.).
+    ═══════════════════════════════════════════════════════════ -->
+
+    <!-- Shared accent (same in Light and Dark) -->
+    <Color x:Key="ThemeAccent">#ffcc4d11</Color>
+
+    <!-- Light palette blue scale (darkest → lightest) -->
+    <Color x:Key="ThemeLightBaseMediumHigh">#ff005a83</Color>
+    <Color x:Key="ThemeLightBaseMediumLow">#ff196e96</Color>
+    <Color x:Key="ThemeLightBaseMedium">#ff3282a8</Color>
+    <Color x:Key="ThemeLightBaseLow">#ff7cbee0</Color>
+    <Color x:Key="ThemeLightChromeMedium">#ffb3e0f8</Color>
+    <Color x:Key="ThemeLightChromeLow">#ffc1e9fe</Color>
+    <Color x:Key="ThemeLightRegionColor">#ffcfeaff</Color>
+
+    <!-- Dark palette blue scale (darkest → lightest) -->
+    <Color x:Key="ThemeDarkChromeLow">#ff093b73</Color>
+    <Color x:Key="ThemeDarkChromeMedium">#ff134b82</Color>
+    <Color x:Key="ThemeDarkChromeMediumLow">#ff266b9f</Color>
+    <Color x:Key="ThemeDarkBaseLow">#ff2f7bad</Color>
+    <Color x:Key="ThemeDarkBaseMediumLow">#ff5e9dc6</Color>
+    <Color x:Key="ThemeDarkChromeGray">#ff76aed3</Color>
+    <Color x:Key="ThemeDarkBaseMedium">#ff8dbfdf</Color>
+    <Color x:Key="ThemeDarkBaseMediumHigh">#ffa5d0ec</Color>
+    <Color x:Key="ThemeDarkRegionColor">#ff0d2644</Color>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SEMANTIC UI COLORS
+         Used directly in views via {DynamicResource}.
+    ═══════════════════════════════════════════════════════════ -->
+
+    <!-- Action buttons: add (green) and delete (red) -->
+    <Color x:Key="ColorActionAdd">#2E7D32</Color>
+    <Color x:Key="ColorActionDelete">#C62828</Color>
+
+    <!-- Default-service star indicator -->
+    <Color x:Key="ColorDefaultIndicator">Gold</Color>
+
+    <!-- AssetDismantling view background -->
+    <Color x:Key="ColorDismantlingBackground">Wheat</Color>
+
+    <!-- Expander border (CommissioningActReportView) -->
+    <Color x:Key="ColorExpanderBorder">Black</Color>
+
+    <!-- Brushes built from semantic colors above -->
+    <SolidColorBrush x:Key="BrushActionAdd"          Color="{StaticResource ColorActionAdd}"/>
+    <SolidColorBrush x:Key="BrushActionDelete"        Color="{StaticResource ColorActionDelete}"/>
+    <SolidColorBrush x:Key="BrushDefaultIndicator"    Color="{StaticResource ColorDefaultIndicator}"/>
+    <SolidColorBrush x:Key="BrushDismantlingBackground" Color="{StaticResource ColorDismantlingBackground}"/>
+    <SolidColorBrush x:Key="BrushExpanderBorder"      Color="{StaticResource ColorExpanderBorder}"/>
+
+</ResourceDictionary>

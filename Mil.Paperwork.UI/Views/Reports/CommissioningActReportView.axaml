@@ -113,7 +113,7 @@
 				</WrapPanel>
 
 				<Expander Grid.Row="2" Grid.Column="4"
-						  Grid.RowSpan="11" Grid.ColumnSpan="2" BorderBrush="Black"
+						  Grid.RowSpan="11" Grid.ColumnSpan="2" BorderBrush="{DynamicResource BrushExpanderBorder}"
 						  VerticalAlignment="Top" HorizontalAlignment="Stretch"
 						  Padding="5"
 						  IsExpanded="True">

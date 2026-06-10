@@ -2,33 +2,135 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
              x:Class="Mil.Paperwork.UI.Views.Dictionaries.ServicesDictionaryView"
              xmlns:viewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Dictionaries"
+             xmlns:tabViewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Tabs"
+             xmlns:converters="clr-namespace:Mil.Paperwork.UI.Converters"
              x:DataType="viewModels:ServicesDictionaryViewModel">
+
+    <UserControl.Resources>
+        <converters:BoolToHighlightBrushConverter x:Key="BoolToHighlightBrushConverter"/>
+    </UserControl.Resources>
+
     <DockPanel>
+
+        <!-- Кнопки -->
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
             <Button Content="Додати" Command="{Binding AddItemCommand}" Margin="0,0,5,0"/>
-            <Button Content="Видалити" Command="{Binding RemoveItemCommand}" Margin="0,0,5,0"
-                    CommandParameter="{Binding SelectedItem, ElementName=ServicesDataGrid}"/>
+            <Button Content="Видалити" Command="{Binding RemoveItemCommand}" Margin="0,0,5,0"/>
             <Button Content="Зберегти" Command="{Binding SaveCommand}" Margin="0,0,5,0"/>
+            <Button Content="Зберегти тимчасово" Command="{Binding SaveLocalCommand}" Margin="0,0,5,0"
+                    ToolTip.Tip="Після перезавантаження або кнопки «Оновити» — дані повернуться"/>
             <Button Content="Оновити" Command="{Binding RefreshCommand}" Margin="0,0,5,0"/>
             <Button Classes="CloseTab" Content="Закрити" Command="{Binding CloseTabCommand}" Margin="0,0,5,0"/>
         </StackPanel>
 
-        <DataGrid x:Name="ServicesDataGrid"
-                  ItemsSource="{Binding Services}"
-                  AutoGenerateColumns="False" Margin="5">
+        <!-- Вибір служби за замовчуванням -->
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5,0,5,8" VerticalAlignment="Center">
+            <TextBlock Text="За замовчуванням:" VerticalAlignment="Center" Margin="0,0,8,0" FontWeight="SemiBold"/>
+            <ComboBox ItemsSource="{Binding Services}"
+                      DisplayMemberBinding="{Binding NominativeName, DataType={x:Type tabViewModels:MilitaryServiceViewModel}}"
+                      SelectedItem="{Binding DefaultServiceSelection}"
+                      MinWidth="260"/>
+            <Button Content="Встановити за замовч."
+                    Command="{Binding SetDefaultCommand}"
+                    Margin="8,0,0,0"/>
+        </StackPanel>
+
+        <!-- Форма деталей (знизу) -->
+        <Border DockPanel.Dock="Bottom"
+                BorderBrush="{DynamicResource SystemBaseLowColor}"
+                BorderThickness="0,1,0,0"
+                Padding="10,8,10,10"
+                IsEnabled="{Binding SelectedService, Converter={x:Static ObjectConverters.IsNotNull}}">
+            <Grid ColumnDefinitions="Auto,12,*,24,Auto,12,*"
+                  RowDefinitions="Auto,6,Auto,6,Auto,6,Auto"
+                  Classes="parameters">
+
+                <!-- Ліва колонка -->
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Назва (називний відмінок):" VerticalAlignment="Center"/>
+                <TextBox   Grid.Row="0" Grid.Column="2"
+                           Text="{Binding SelectedService.NominativeName}"
+                           Watermark="Наприклад: Служба зв'язку"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Назва (родовий відмінок):" VerticalAlignment="Center"/>
+                <TextBox   Grid.Row="2" Grid.Column="2"
+                           Text="{Binding SelectedService.GenitiveName}"
+                           Watermark="Наприклад: служби зв'язку"/>
+
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Коротка назва:" VerticalAlignment="Center"/>
+                <TextBox   Grid.Row="4" Grid.Column="2"
+                           Text="{Binding SelectedService.ShortName}"
+                           Watermark="Наприклад: зв'язок"/>
+
+                <TextBlock Grid.Row="6" Grid.Column="0" Text="Тип майна*:" VerticalAlignment="Center"/>
+                <ComboBox  Grid.Row="6" Grid.Column="2"
+                           Classes="enum"
+                           ItemsSource="{Binding AssetTypes}"
+                           SelectedItem="{Binding SelectedService.AssetType}"
+                           HorizontalAlignment="Stretch"/>
+
+                <!-- Права колонка -->
+                <TextBlock Grid.Row="0" Grid.Column="4" Text="Начальник служби:" VerticalAlignment="Center"/>
+                <ComboBox  Grid.Row="0" Grid.Column="6"
+                           ItemsSource="{Binding People}"
+                           Text="{Binding SelectedService.HeadName}"
+                           DisplayMemberBinding="{Binding FullName, DataType={x:Type viewModels:PersonViewModel}}"
+                           SelectedItem="{Binding SelectedHeadPerson, UpdateSourceTrigger=PropertyChanged}"
+                           IsEditable="True"
+                           HorizontalAlignment="Stretch"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="4" Text="Посада:" VerticalAlignment="Center"/>
+                <TextBox   Grid.Row="2" Grid.Column="6"
+                           Text="{Binding SelectedService.HeadPosition}"
+                           Watermark="Наприклад: Начальник служби зв'язку"/>
+
+                <TextBlock Grid.Row="4" Grid.Column="4" Text="Звання:" VerticalAlignment="Center"/>
+                <TextBox   Grid.Row="4" Grid.Column="6"
+                           Text="{Binding SelectedService.HeadRank}"
+                           Watermark="Наприклад: підполковник"/>
+
+            </Grid>
+        </Border>
+
+        <!-- Список служб -->
+        <DataGrid ItemsSource="{Binding Services}"
+                  SelectedItem="{Binding SelectedService, Mode=TwoWay}"
+                  IsReadOnly="True">
+            <DataGrid.Styles>
+                <Style Selector="DataGridRow" x:DataType="tabViewModels:MilitaryServiceViewModel">
+                    <Setter Property="Background"
+                            Value="{Binding IsMarkedAsDefault, Converter={StaticResource BoolToHighlightBrushConverter}}"/>
+                </Style>
+            </DataGrid.Styles>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Назва (називний відмінок)"
-                                    Binding="{Binding NominativeName, UpdateSourceTrigger=PropertyChanged}"
-                                    Width="*"
-                                    CellStyleClasses="name" />
-                <DataGridTextColumn Header="Назва (родовий відмінок)"
-                                    Binding="{Binding GenitiveName, UpdateSourceTrigger=PropertyChanged}"
-                                    Width="*"
-                                    CellStyleClasses="name" />
+                <DataGridTemplateColumn Header="Назва служби" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="tabViewModels:MilitaryServiceViewModel">
+                            <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Margin="4,0">
+                                <TextBlock Text="★"
+                                           Foreground="{DynamicResource BrushDefaultIndicator}"
+                                           IsVisible="{Binding IsMarkedAsDefault}"
+                                           FontSize="14"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding NominativeName}"
+                                           Classes="name"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Тип майна"
+                                    Binding="{Binding AssetType, Converter={StaticResource EnumDescriptionConverter}}"
+                                    Width="160"
+                                    CellStyleClasses="name"/>
+                <DataGridTextColumn Header="Начальник служби"
+                                    Binding="{Binding HeadDisplayString}"
+                                    Width="220"
+                                    CellStyleClasses="name"/>
             </DataGrid.Columns>
         </DataGrid>
+
     </DockPanel>
 </UserControl>

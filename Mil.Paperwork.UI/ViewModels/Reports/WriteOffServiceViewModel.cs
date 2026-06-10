@@ -1,7 +1,8 @@
 using Mil.MVVM.Common;
 using Mil.Paperwork.Domain.DataModels;
-using Mil.Paperwork.Infrastructure.DataModels;
+using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.UI.ViewModels.Dictionaries;
+using Mil.Paperwork.UI.ViewModels.Tabs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,20 +14,22 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 {
     internal class WriteOffServiceViewModel : ObservableItem
     {
-        private MilServiceEntry? _selectedService;
+        private MilitaryServiceViewModel? _selectedService;
         private WriteOffServiceAssetViewModel? _selectedAsset;
         private bool _isAddingNewService;
         private string _newServiceNominative = string.Empty;
         private string _newServiceGenitive = string.Empty;
+        private AssetType _newServiceAssetType;
 
         private readonly Action<WriteOffServiceViewModel> _removeCallback;
-        private readonly Func<string, string, MilServiceEntry> _addServiceCallback;
+        private readonly Func<string, string, AssetType, MilitaryServiceViewModel?> _addServiceCallback;
 
-        public IList<MilServiceEntry> AvailableServices { get; }
+        public IList<MilitaryServiceViewModel> AvailableServices { get; }
+        public ObservableCollection<AssetType> AssetTypes { get; }
         public ObservableCollection<MeasurementUnitViewModel> MeasurementUnits { get; }
         public ObservableCollection<WriteOffServiceAssetViewModel> Assets { get; }
 
-        public MilServiceEntry? SelectedService
+        public MilitaryServiceViewModel? SelectedService
         {
             get => _selectedService;
             set => SetProperty(ref _selectedService, value);
@@ -56,7 +59,20 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             set => SetProperty(ref _newServiceGenitive, value);
         }
 
-        public decimal ServiceSubtotal => Math.Round(Assets.Sum(a => a.Amount), 2);
+        public AssetType NewServiceAssetType
+        {
+            get => _newServiceAssetType;
+            set => SetProperty(ref _newServiceAssetType, value);
+        }
+
+        public decimal ServiceSubtotal
+        {
+            get
+            {
+                var result = Math.Round(Assets.Sum(a => a.Amount), 2);
+                return result;
+            }
+        }
 
         public IDelegateCommand AddAssetCommand { get; }
         public IDelegateCommand RemoveAssetCommand { get; }
@@ -65,12 +81,14 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public IDelegateCommand ConfirmAddServiceCommand { get; }
 
         public WriteOffServiceViewModel(
-            IList<MilServiceEntry> availableServices,
+            IList<MilitaryServiceViewModel> availableServices,
+            ObservableCollection<AssetType> assetTypes,
             IList<MeasurementUnitViewModel> measurementUnits,
             Action<WriteOffServiceViewModel> removeCallback,
-            Func<string, string, MilServiceEntry> addServiceCallback)
+            Func<string, string, AssetType, MilitaryServiceViewModel?> addServiceCallback)
         {
             AvailableServices = availableServices;
+            AssetTypes = assetTypes;
             MeasurementUnits = new ObservableCollection<MeasurementUnitViewModel>(measurementUnits);
             Assets = [];
             Assets.CollectionChanged += OnAssetsCollectionChanged;
@@ -80,9 +98,14 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             AddAssetCommand = new DelegateCommand(AddAsset);
             RemoveAssetCommand = new DelegateCommand(RemoveAsset);
-            RequestRemoveCommand = new DelegateCommand(() => _removeCallback(this));
+            RequestRemoveCommand = new DelegateCommand(RequestRemoveCommandExecute);
             ToggleAddServiceFormCommand = new DelegateCommand(ToggleAddServiceForm);
             ConfirmAddServiceCommand = new DelegateCommand(ConfirmAddService);
+        }
+
+        private void RequestRemoveCommandExecute()
+        {
+            _removeCallback(this);
         }
 
         private void ToggleAddServiceForm()
@@ -92,28 +115,44 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             {
                 NewServiceNominative = string.Empty;
                 NewServiceGenitive = string.Empty;
+                NewServiceAssetType = AssetType.Default;
             }
         }
 
         private void ConfirmAddService()
         {
             if (string.IsNullOrWhiteSpace(NewServiceNominative))
+            {
                 return;
+            }
 
-            var newEntry = _addServiceCallback(NewServiceNominative, NewServiceGenitive);
-            SelectedService = newEntry;
+            if (NewServiceAssetType == AssetType.Default)
+            {
+                return;
+            }
+
+            var newVm = _addServiceCallback(NewServiceNominative, NewServiceGenitive, NewServiceAssetType);
+            SelectedService = newVm;
             IsAddingNewService = false;
         }
 
         private void OnAssetsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.NewItems != null)
+            {
                 foreach (WriteOffServiceAssetViewModel item in e.NewItems)
+                {
                     item.PropertyChanged += OnAssetPropertyChanged;
+                }
+            }
 
             if (e.OldItems != null)
+            {
                 foreach (WriteOffServiceAssetViewModel item in e.OldItems)
+                {
                     item.PropertyChanged -= OnAssetPropertyChanged;
+                }
+            }
 
             OnPropertyChanged(nameof(ServiceSubtotal));
         }
@@ -121,7 +160,9 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         private void OnAssetPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(WriteOffServiceAssetViewModel.Amount))
+            {
                 OnPropertyChanged(nameof(ServiceSubtotal));
+            }
         }
 
         private void AddAsset()

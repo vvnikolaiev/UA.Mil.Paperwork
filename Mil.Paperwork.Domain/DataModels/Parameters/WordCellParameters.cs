@@ -1,6 +1,6 @@
 namespace Mil.Paperwork.Domain.DataModels.Parameters
 {
-    internal enum WordHorizontalAlignment { Left, Center, Right }
+    internal enum WordHorizontalAlignment { Left, Center, Right, Justify }
     internal enum WordVerticalAlignment   { Top, Center, Middle, Bottom }
 
     internal struct WordCellParameters

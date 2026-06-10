@@ -195,14 +195,18 @@ namespace Mil.Paperwork.Domain.Helpers
                     {
                         var clonedSpacing = pPr.GetFirstChild<SpacingBetweenLines>();
                         if (clonedSpacing != null)
+                        {
                             newPPr.Append((SpacingBetweenLines)clonedSpacing.CloneNode(true));
+                        }
                     }
 
                     if (bp.IndentLevel > 0)
+                    {
                         newPPr.Append(new Indentation { Left = (bp.IndentLevel * 720).ToString() });
+                    }
 
-                    if (newPPr.HasChildren)
-                        newPara.Append(newPPr);
+                    newPPr.Append(new Justification { Val = JustificationValues.Both });
+                    newPara.Append(newPPr);
 
                     if (!string.IsNullOrEmpty(bp.Text))
                     {
@@ -556,6 +560,7 @@ namespace Mil.Paperwork.Domain.Helpers
             {
                 WordHorizontalAlignment.Left => JustificationValues.Left,
                 WordHorizontalAlignment.Right => JustificationValues.Right,
+                WordHorizontalAlignment.Justify => JustificationValues.Both,
                 _ => JustificationValues.Center
             };
             return result;

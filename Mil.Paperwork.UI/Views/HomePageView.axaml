@@ -70,9 +70,6 @@
 			<Button Content="Конфігурація Комісій"
 					Command="{Binding OpenCommissionsConfigurationCommand}" />
 
-			<Button Content="Конфігурація Служб"
-					Command="{Binding OpenServicesConfigurationCommand}" />
-
 			<Button Content="Довідник служб"
 					Command="{Binding OpenServicesDictionaryCommand}" />
 

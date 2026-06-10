@@ -45,3 +45,4 @@ appsettings.Development.json
 /Mil.Paperwork.Package/BundleArtifacts
 *.pfx
 /Mil.Paperwork.Package/Package
+/Mil.Paperwork.Release/
