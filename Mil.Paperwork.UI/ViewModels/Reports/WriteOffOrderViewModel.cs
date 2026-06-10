@@ -80,6 +80,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             {
                 if (SetProperty(ref _reportDate, value))
                 {
+                    OnPropertyChanged(nameof(MaxDate));
                     if (BattleOrderDate > _reportDate)
                     {
                         BattleOrderDate = _reportDate;
@@ -92,10 +93,30 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             }
         }
 
-        public DateTime EventDate { get => _eventDate; set => SetProperty(ref _eventDate, value); }
+        public DateTime? MaxDate => _reportDate;
+
+        public DateTime EventDate
+        {
+            get => _eventDate;
+            set
+            {
+                var clamped = value > _reportDate ? _reportDate : value;
+                SetProperty(ref _eventDate, clamped);
+            }
+        }
+
         public string EventTime { get => _eventTime; set => SetProperty(ref _eventTime, value); }
         public string BattleOrder { get => _battleOrder; set => SetProperty(ref _battleOrder, value); }
-        public DateTime BattleOrderDate { get => _battleOrderDate; set => SetProperty(ref _battleOrderDate, value); }
+
+        public DateTime BattleOrderDate
+        {
+            get => _battleOrderDate;
+            set
+            {
+                var clamped = value > _reportDate ? _reportDate : value;
+                SetProperty(ref _battleOrderDate, clamped);
+            }
+        }
         public string BattleOrderLocation { get => _battleOrderLocation; set => SetProperty(ref _battleOrderLocation, value); }
         public string WhatHappened { get => _whatHappened; set => SetProperty(ref _whatHappened, value); }
         public string MilUnitApproval { get => _milUnitApproval; set => SetProperty(ref _milUnitApproval, value); }

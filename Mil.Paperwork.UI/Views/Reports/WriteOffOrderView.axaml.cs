@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Mil.Paperwork.UI.ViewModels.Reports;
 
 namespace Mil.Paperwork.UI.Views.Reports;
 
@@ -7,5 +8,23 @@ public partial class WriteOffOrderView : UserControl
     public WriteOffOrderView()
     {
         InitializeComponent();
+    }
+
+    private void OnRestrictedDateChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (DataContext is not WriteOffOrderViewModel vm)
+        {
+            return;
+        }
+
+        if (sender is not CalendarDatePicker picker)
+        {
+            return;
+        }
+
+        if (picker.SelectedDate.HasValue && picker.SelectedDate.Value.Date > vm.ReportDate.Date)
+        {
+            picker.SelectedDate = vm.ReportDate;
+        }
     }
 }

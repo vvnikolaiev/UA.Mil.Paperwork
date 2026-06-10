@@ -64,14 +64,14 @@
 			<Button Content="Довідник осіб"
 					Command="{Binding OpenPeopleDictionaryCommand}" />
 
+			<Button Content="Довідник служб"
+					Command="{Binding OpenServicesDictionaryCommand}" />
+
 			<Button Content="Конфігурація звітів"
 					Command="{Binding OpenReportConfigurationCommand}" />
 
 			<Button Content="Конфігурація Комісій"
 					Command="{Binding OpenCommissionsConfigurationCommand}" />
-
-			<Button Content="Довідник служб"
-					Command="{Binding OpenServicesDictionaryCommand}" />
 
 		</StackPanel>
 	</Grid>
