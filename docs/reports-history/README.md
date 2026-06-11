@@ -15,6 +15,7 @@ Execute stages in order, one per session. Each stage doc is self-contained: open
 | 5 | [stage-5-reopen.md](stage-5-reopen.md) | Reopen entry → editor tab prefilled (priority types) | 4 |
 | 6 | [stage-6-create-from.md](stage-6-create-from.md) | Cross-type "Create…" conversions | 5 |
 | 7 | [stage-7-remaining.md](stage-7-remaining.md) | Remaining types, ReportDataService move, redesign follow-ups | 6 |
+| 8 | [stage-8-documentation.md](stage-8-documentation.md) | User documentation: Ukrainian History section in the root README | 7 |
 
 ## Global decisions (apply to all stages)
 
