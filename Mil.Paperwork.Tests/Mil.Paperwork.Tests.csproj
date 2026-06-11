@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Mil.Paperwork.DataAccess\Mil.Paperwork.DataAccess.csproj" />
     <ProjectReference Include="..\Mil.Paperwork.Domain\Mil.Paperwork.Domain.csproj" />
   </ItemGroup>
 

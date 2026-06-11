@@ -1,6 +1,6 @@
 ﻿using Mil.Paperwork.Infrastructure.DataModels;
 
-namespace Mil.Paperwork.Infrastructure.Services
+namespace Mil.Paperwork.DataAccess.Services
 {
     public interface IDataService
     {

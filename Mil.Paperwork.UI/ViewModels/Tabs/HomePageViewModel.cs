@@ -1,6 +1,7 @@
 ﻿using Mil.MVVM.Common;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.Enums;
+using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Enums;
 using Mil.Paperwork.UI.Factories;
@@ -33,7 +34,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
 
         public List<ReportItemViewModel> DocumentTypes { get; private set; }
 
-        public IDelegateCommand<DocumentTypeEnum> CreateReportCommand { get; }
+        public IDelegateCommand<ReportType> CreateReportCommand { get; }
 
         public IDelegateCommand OpenSettingsCommand { get; }
         public IDelegateCommand OpenProductsDictionaryCommand { get; }
@@ -65,7 +66,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             _settingTabViewModels = [];
             DocumentTypes = [.. GetAllReportTypes()];
 
-            CreateReportCommand = new DelegateCommand<DocumentTypeEnum>(OpenNewReportTab);
+            CreateReportCommand = new DelegateCommand<ReportType>(OpenNewReportTab);
             OpenSettingsCommand = new DelegateCommand(OpenSettingsExecute);
             OpenProductsDictionaryCommand = new DelegateCommand(OpenProductsDictionaryCommandExecute);
             OpenPeopleDictionaryCommand = new DelegateCommand(OpenPeopleDictionaryCommandExecute);
@@ -79,51 +80,50 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         {
             var reportTypes = new List<ReportItemViewModel>()
             {
-                //new(DocumentTypeEnum.WriteOff),
-                new(DocumentTypeEnum.WriteOffOrder),
-                new(DocumentTypeEnum.ResidualValue),
-                new(DocumentTypeEnum.WriteOffPackage),
-                new(DocumentTypeEnum.Valuation),
-                new(DocumentTypeEnum.Dismantling),
-                new(DocumentTypeEnum.TechnicalState7),
-                new(DocumentTypeEnum.CommisioningAct),
-                new(DocumentTypeEnum.Invoice),
-                new(DocumentTypeEnum.HandoverCertificate23),
+                new(ReportType.WriteOffOrder),
+                new(ReportType.ResidualValueReport),
+                new(ReportType.WriteOffPackage),
+                new(ReportType.AssetValuationReport),
+                new(ReportType.AssetDismantlingReport),
+                new(ReportType.TechnicalStateReport),
+                new(ReportType.CommissioningAct),
+                new(ReportType.Invoice),
+                new(ReportType.Handover23Act),
             };
 
             return reportTypes;
         }
 
-        private async void OpenNewReportTab(DocumentTypeEnum documentType)
+        private async void OpenNewReportTab(ReportType documentType)
         {
             IReportTabViewModel? createdTab;
             switch (documentType)
             {
-                case DocumentTypeEnum.ResidualValue:
+                case ReportType.ResidualValueReport:
                     createdTab = new ResidualValueReportViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _dialogService);
                     break;
-                case DocumentTypeEnum.Valuation:
+                case ReportType.AssetValuationReport:
                     createdTab = new AssetValuationViewModel(_reportManager, _dataService, _importService, _dialogService);
                     break;
-                case DocumentTypeEnum.Dismantling:
+                case ReportType.AssetDismantlingReport:
                     createdTab = new AssetDismantlingViewModel(_reportManager, _dataService, _importService, _dialogService);
                     break;
-                case DocumentTypeEnum.TechnicalState7:
+                case ReportType.TechnicalStateReport:
                     createdTab = new AssetInitialTechnicalStateViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _dialogService);
                     break;
-                case DocumentTypeEnum.WriteOffPackage:
+                case ReportType.WriteOffPackage:
                     createdTab = new AssetTechnicalStateViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _dialogService);
                     break;
-                case DocumentTypeEnum.Invoice:
+                case ReportType.Invoice:
                     createdTab = new InvoiceReportViewModel(_reportManager, _dataService, _dialogService);
                     break;
-                case DocumentTypeEnum.CommisioningAct:
+                case ReportType.CommissioningAct:
                     createdTab = new CommissioningActReportViewModel(_reportManager, _dataService, _reportDataService, _dialogService);
                     break;
-                case DocumentTypeEnum.HandoverCertificate23:
+                case ReportType.Handover23Act:
                     createdTab = new Handover23ActViewModel(_reportManager, _dataService, _dialogService);
                     break;
-                case DocumentTypeEnum.WriteOffOrder:
+                case ReportType.WriteOffOrder:
                     createdTab = new WriteOffOrderViewModel(_reportManager, _dataService, _reportDataService, _dialogService);
                     break;
                 default:

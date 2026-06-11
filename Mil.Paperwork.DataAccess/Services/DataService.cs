@@ -1,7 +1,8 @@
 ﻿using Mil.Paperwork.Infrastructure.DataModels;
+using Mil.Paperwork.Infrastructure.Services;
 using System.IO;
 
-namespace Mil.Paperwork.Infrastructure.Services
+namespace Mil.Paperwork.DataAccess.Services
 {
     internal class DataService : IDataService
     {
