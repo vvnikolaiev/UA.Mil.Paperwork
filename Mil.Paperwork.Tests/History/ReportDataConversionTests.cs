@@ -146,18 +146,6 @@ namespace Mil.Paperwork.Tests.History
             Assert.Equal(DateTime.Now.Date, reportData.OrdenDate);
         }
 
-        [Fact]
-        public void ResidualValueToInitialTechnicalState_MapsAssets()
-        {
-            var conversion = new ResidualValueToInitialTechnicalStateConversion();
-            var residualValueData = CreateResidualValueData();
-
-            var results = conversion.Convert(residualValueData);
-
-            var reportData = Assert.IsType<InitialTechnicalStateReportData>(Assert.Single(results));
-            Assert.Equal(residualValueData.Assets, reportData.Assets);
-        }
-
         private static HandoverReportData CreateHandoverData()
         {
             var handoverData = new HandoverReportData
@@ -358,7 +346,6 @@ namespace Mil.Paperwork.Tests.History
                 new InvoiceToCommissioningActConversion(),
                 new InvoiceToInitialTechnicalStateConversion(),
                 new ResidualValueToWriteOffPackageConversion(),
-                new ResidualValueToInitialTechnicalStateConversion(),
                 new Handover23ToInvoiceConversion(),
                 new InvoiceToHandover23Conversion(),
                 new CommissioningActToInvoiceConversion(),

@@ -18,7 +18,6 @@ namespace Mil.Paperwork.DataAccess
             services.AddSingleton<IReportDataConversion, InvoiceToCommissioningActConversion>();
             services.AddSingleton<IReportDataConversion, InvoiceToInitialTechnicalStateConversion>();
             services.AddSingleton<IReportDataConversion, ResidualValueToWriteOffPackageConversion>();
-            services.AddSingleton<IReportDataConversion, ResidualValueToInitialTechnicalStateConversion>();
             services.AddSingleton<IReportDataConversion, Handover23ToInvoiceConversion>();
             services.AddSingleton<IReportDataConversion, InvoiceToHandover23Conversion>();
             services.AddSingleton<IReportDataConversion, CommissioningActToInvoiceConversion>();
