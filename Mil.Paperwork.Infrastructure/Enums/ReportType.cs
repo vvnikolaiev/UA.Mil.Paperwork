@@ -1,32 +1,32 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 
 namespace Mil.Paperwork.Infrastructure.Enums
 {
     public enum ReportType
     {
         [Description("Загальна інформація")]
-        Common,
+        Common = 0,
         [Description("Акт якісного стану")]
-        QualityStateReport,
-        [Description("Акт технічного стану")]
-        TechnicalStateReport,
+        QualityStateReport = 1,
+        [Description("Акт тех. стану (№7)")]
+        TechnicalStateReport = 2,
         [Description("Акт списання")]
-        WriteOffAct,
+        WriteOffAct = 3,
         [Description("Відомість залишкової вартості")]
-        ResidualValueReport,
+        ResidualValueReport = 4,
         [Description("Акт оцінки")]
-        AssetValuationReport, 
-        [Description("Акт зміни якісного (технічного) стану (розкомплектація)")]
-        AssetDismantlingReport,
+        AssetValuationReport = 5,
+        [Description("Розукомплектування")]
+        AssetDismantlingReport = 6,
         [Description("Накладна (вимога)")]
-        Invoice,
+        Invoice = 7,
         [Description("Акт введення в експлуатацію")]
-        CommissioningAct,
-        [Description("Акт прийому-передачі основних засобів (додаток 23)")]
-        Handover23Act,
-        [Description("Пакет документів для списання")]
-        WriteOffPackage,
+        CommissioningAct = 8,
+        [Description("Акт прийому-передачі ОЗ")]
+        Handover23Act = 9,
+        [Description("Пакет зі списання")]
+        WriteOffPackage = 10,
         [Description("Наказ про списання")]
-        WriteOffOrder
+        WriteOffOrder = 11
     }
 }

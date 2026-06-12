@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Mil.MVVM.Common\Mil.MVVM.Common.csproj" />
+    <ProjectReference Include="..\Mil.Paperwork.DataAccess\Mil.Paperwork.DataAccess.csproj" />
     <ProjectReference Include="..\Mil.Paperwork.Infrastructure\Mil.Paperwork.Infrastructure.csproj" />
   </ItemGroup>
 

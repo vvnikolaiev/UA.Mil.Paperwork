@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Mil.Paperwork.DataAccess;
 using Mil.Paperwork.Domain;
 using Mil.Paperwork.Infrastructure;
 using Mil.Paperwork.Infrastructure.Services;
@@ -32,6 +33,7 @@ namespace Mil.Paperwork.UI.Configuration
             services.AddSingleton<IDialogService, AvaloniaDialogService>();
             
             InfrastructureServicesRegistrator.Register(services);
+            DataAccessServicesRegistrator.Register(services);
             DomainServicesRegistrator.Register(services);
 
             services.AddSingleton<ReportManager>();

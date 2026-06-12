@@ -4,6 +4,7 @@ using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
+using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Managers;
 using Mil.Paperwork.UI.Memento;
@@ -17,7 +18,7 @@ using System.Linq;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
-    internal class AssetValuationViewModel : BaseReportTabViewModel
+    internal class AssetValuationViewModel : BaseReportTabViewModel, IReportDataLoadable<IAssetValuationReportData>
     {
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
@@ -143,11 +144,14 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public IDelegateCommand GenerateReportCommand { get; }
         public IDelegateCommand OpenConfigurationCommand { get; }
 
+        protected override ReportType HistoryReportType => ReportType.AssetValuationReport;
+
         public AssetValuationViewModel(
-            ReportManager reportManager, 
-            IDataService dataService, 
+            ReportManager reportManager,
+            IDataService dataService,
             IImportService importService,
-            IDialogService dialogService) : base(dialogService)
+            IReportHistoryService reportHistoryService,
+            IDialogService dialogService) : base(reportHistoryService, dialogService)
         {
             _reportManager = reportManager;
             _dataService = dataService;
@@ -242,7 +246,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             }
         }
 
-        private void FillAssetComponentsTable(IList<AssetComponent> assetComponents)
+        protected void FillAssetComponentsTable(IList<AssetComponent> assetComponents)
         {
             var items = assetComponents.Select(x => new AssetValuationItemViewModel(x));
             ClearComponents();
@@ -317,17 +321,45 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             OpenSettings(ReportType.AssetValuationReport);
         }
 
-        protected virtual void GenerateReport(string folderName)
+        protected override IReportData BuildReportData()
         {
             var assetValuationData = ToAssetValuationData();
             var reportData = new AssetValuationReportData
             {
-                DestinationFolder = folderName,
                 ValuationData = [assetValuationData]
             };
 
-            _dataService.SaveValuationData([assetValuationData]);
-            _reportManager.GenerateValuationReport(reportData);
+            return reportData;
+        }
+
+        public void LoadReportData(IAssetValuationReportData data)
+        {
+            var valuationData = data.ValuationData?.FirstOrDefault(item => item != null);
+            if (valuationData == null)
+            {
+                return;
+            }
+
+            Name = valuationData.Name;
+            ShortName = valuationData.ShortName;
+            NomenclatureCode = valuationData.NomenclatureCode;
+            Price = valuationData.Price;
+            SerialNumber = valuationData.SerialNumber;
+            Description = valuationData.Description;
+            ValuationDate = valuationData.ValuationDate;
+
+            FillAssetComponentsTable(valuationData.AssetComponents ?? []);
+
+            SaveState();
+        }
+
+        protected virtual void GenerateReport(string folderName)
+        {
+            var reportData = (AssetValuationReportData)BuildReportData();
+            reportData.DestinationFolder = folderName;
+
+            _dataService.SaveValuationData(reportData.ValuationData);
+            _reportManager.GenerateValuationReport(reportData, EnsureHistoryEntryId());
         }
 
         private void OKCommandExecute()

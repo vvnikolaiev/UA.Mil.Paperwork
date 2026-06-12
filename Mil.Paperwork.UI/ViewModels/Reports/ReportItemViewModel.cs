@@ -1,6 +1,6 @@
-﻿using Mil.Paperwork.Infrastructure.Helpers;
+using Mil.Paperwork.Infrastructure.Enums;
+using Mil.Paperwork.Infrastructure.Helpers;
 using Mil.MVVM.Common;
-using Mil.Paperwork.UI.Enums;
 
 namespace Mil.Paperwork.UI.ViewModels
 {
@@ -8,9 +8,9 @@ namespace Mil.Paperwork.UI.ViewModels
     {
         public string Text { get; set; }
 
-        public DocumentTypeEnum DocumentType { get; set; }
+        public ReportType DocumentType { get; set; }
 
-        public ReportItemViewModel(DocumentTypeEnum documentType)
+        public ReportItemViewModel(ReportType documentType)
         {
             Text = documentType.GetDescription();
             DocumentType = documentType;

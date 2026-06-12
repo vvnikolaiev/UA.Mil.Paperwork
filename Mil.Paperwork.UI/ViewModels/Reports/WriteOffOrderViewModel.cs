@@ -5,6 +5,7 @@ using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.DataModels.Configuration;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
+using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Managers;
 using Mil.Paperwork.UI.ViewModels.Dictionaries;
@@ -16,7 +17,7 @@ using System.Linq;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
-    internal class WriteOffOrderViewModel : BaseReportTabViewModel
+    internal class WriteOffOrderViewModel : BaseReportTabViewModel, IReportDataLoadable<IWriteOffOrderReportData>
     {
         private const string HeaderText = "Наказ про списання";
 
@@ -139,12 +140,15 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public IDelegateCommand GenerateReportCommand { get; }
         public IDelegateCommand OpenConfigurationCommand { get; }
 
+        protected override ReportType HistoryReportType => ReportType.WriteOffOrder;
+
         public WriteOffOrderViewModel(
             ReportManager reportManager,
             IDataService dataService,
             IReportDataService reportDataService,
+            IReportHistoryService reportHistoryService,
             IDialogService dialogService)
-            : base(dialogService)
+            : base(reportHistoryService, dialogService)
         {
             _reportManager = reportManager;
             _dataService = dataService;
@@ -254,6 +258,15 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             var creatorDto = new PersonDTO(CreatorName, CreatorPosition, CreatorRank);
 
+            var reportData = (WriteOffOrderReportData)BuildReportData();
+            reportData.DestinationFolder = folderName;
+
+            _dataService.AlterPeople([creatorDto]);
+            _reportManager.GenerateWriteOffOrder(reportData, EnsureHistoryEntryId());
+        }
+
+        protected override IReportData BuildReportData()
+        {
             var reportData = new WriteOffOrderReportData
             {
                 ReportNum = ReportNum,
@@ -273,11 +286,48 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                 WhatHappened = WhatHappened,
                 Services = [.. Services.Select(s => s.ToServiceData())],
                 Witnesses = [.. Witnesses.Select(w => w.ToWitnessData())],
-                DestinationFolder = folderName
             };
 
-            _dataService.AlterPeople([creatorDto]);
-            _reportManager.GenerateWriteOffOrder(reportData);
+            return reportData;
+        }
+
+        public void LoadReportData(IWriteOffOrderReportData data)
+        {
+            ReportNum = data.ReportNum;
+            ReportDate = data.ReportDate;
+            EventDate = data.EventDate;
+            EventTime = data.EventTime;
+            BattleOrder = data.BattleOrder;
+            BattleOrderDate = data.BattleOrderDate;
+            BattleOrderLocation = data.BattleOrderLocation;
+            SubdivisionName = data.SubdivisionName;
+            ReporterRank = data.ReporterRank;
+            ReporterName = data.ReporterName;
+            CreatorPosition = data.CreatorPosition;
+            CreatorRank = data.CreatorRank;
+            CreatorName = data.CreatorName;
+            MilUnitApproval = data.MilUnitApproval;
+            WhatHappened = data.WhatHappened;
+
+            Services.Clear();
+            foreach (var serviceData in data.Services ?? [])
+            {
+                var serviceViewModel = new WriteOffServiceViewModel(
+                    AvailableServices,
+                    AssetTypes,
+                    AvailableMeasurementUnits,
+                    RemoveService,
+                    AddServiceToDictionary);
+
+                serviceViewModel.LoadFrom(serviceData);
+                Services.Add(serviceViewModel);
+            }
+
+            Witnesses.Clear();
+            foreach (var witnessData in data.Witnesses ?? [])
+            {
+                Witnesses.Add(WriteOffWitnessViewModel.FromWitnessData(witnessData));
+            }
         }
 
         private void OpenConfigurationCommandExecute()

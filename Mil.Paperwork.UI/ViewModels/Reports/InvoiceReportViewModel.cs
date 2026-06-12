@@ -1,6 +1,7 @@
 ﻿using Mil.MVVM.Common;
 using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Infrastructure.Enums;
+using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Managers;
 using Mil.Paperwork.UI.ViewModels.Assets;
@@ -13,7 +14,7 @@ using System.Linq;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
-    internal class InvoiceReportViewModel : BaseReportTabViewModel
+    internal class InvoiceReportViewModel : BaseReportTabViewModel, IReportDataLoadable<IInvoceReportData>
     {
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
@@ -106,7 +107,13 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public IDelegateCommand GenerateReportCommand { get; }
         public IDelegateCommand OpenConfigurationCommand { get; }
 
-        public InvoiceReportViewModel(ReportManager reportManager, IDataService dataService, IDialogService dialogService) : base(dialogService)
+        protected override ReportType HistoryReportType => ReportType.Invoice;
+
+        public InvoiceReportViewModel(
+            ReportManager reportManager,
+            IDataService dataService,
+            IReportHistoryService reportHistoryService,
+            IDialogService dialogService) : base(reportHistoryService, dialogService)
         {
             _reportManager = reportManager;
             _dataService = dataService;
@@ -178,28 +185,49 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             return isValid;
         }
 
-        protected void GenerateReport(string folderName)
+        protected override IReportData BuildReportData()
         {
-            var personRecipient = AssetAcceptance.GetAcceptedDTO();
-            var personTransmitter = AssetAcceptance.GetHandedDTO();
-
             var reportData = new InvoceReportData
             {
                 DocumentNumber = DocumentNumber,
                 Assets = [.. AssetsCollection.Select(x => x.ToAssetInfo())],
-                Recipient = personRecipient,
-                Transmitter = personTransmitter,
+                Recipient = AssetAcceptance.GetAcceptedDTO(),
+                Transmitter = AssetAcceptance.GetHandedDTO(),
                 Reason = Reason,
                 DateCreated = DateCreated,
                 DueDate = DueDate,
-
-                DestinationFolder = folderName,
             };
 
-            _dataService.AlterPeople([personRecipient, personTransmitter]);
+            return reportData;
+        }
+
+        protected void GenerateReport(string folderName)
+        {
+            var reportData = (InvoceReportData)BuildReportData();
+            reportData.DestinationFolder = folderName;
+
+            _dataService.AlterPeople([reportData.Recipient, reportData.Transmitter]);
 
             // Generate report
-            _reportManager.GenerateInvoice(reportData);
+            _reportManager.GenerateInvoice(reportData, EnsureHistoryEntryId());
+        }
+
+        public void LoadReportData(IInvoceReportData data)
+        {
+            DocumentNumber = data.DocumentNumber;
+            DateCreated = data.DateCreated;
+            DueDate = data.DueDate;
+            Reason = data.Reason;
+
+            AssetsCollection.Clear();
+            foreach (var assetInfo in data.Assets ?? [])
+            {
+                AssetsCollection.Add(InvoiceAssetViewModel.FromAssetInfo(assetInfo));
+            }
+
+            SelectedAsset = AssetsCollection.FirstOrDefault();
+
+            AssetAcceptance.LoadFrom(data.Recipient, data.Transmitter);
         }
 
         private void OpenConfigurationCommandExecute()

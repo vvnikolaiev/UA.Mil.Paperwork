@@ -77,6 +77,7 @@
 
 				<StackPanel Classes="buttons" Grid.Row="1">
 					<Button Content="Створити документ" Command="{Binding GenerateReportCommand}" />
+					<Button Content="Зберегти чернетку" Command="{Binding SaveDraftCommand}" />
 					<Button Content="Додати рядок" Command="{Binding AddRowCommand}" />
 					<Button Content="Імпортувати таблицю" Command="{Binding ImportRowsCommand}" />
 					<Button Content="Очистити таблицю" Command="{Binding ClearCommand}" />
@@ -96,6 +97,7 @@
 
 				<StackPanel Grid.Row="1" Classes="buttons">
 					<Button Content="Створити документ" Command="{Binding GenerateReportCommand}" />
+					<Button Content="Зберегти чернетку" Command="{Binding SaveDraftCommand}" />
 					<Button Content="Додати рядок" Command="{Binding AddRowCommand}" />
 					<Button Content="Імпортувати таблицю" Command="{Binding ImportRowsCommand}" />
 					<Button Content="Очистити таблицю" Command="{Binding ClearCommand}" />
@@ -132,6 +134,10 @@
 
 		<DataTemplate DataType="{x:Type tabs:HomePageViewModel}">
 			<views:HomePageView />
+		</DataTemplate>
+
+		<DataTemplate DataType="{x:Type tabs:HistoryViewModel}">
+			<views:HistoryView />
 		</DataTemplate>
 
 	</Window.DataTemplates>

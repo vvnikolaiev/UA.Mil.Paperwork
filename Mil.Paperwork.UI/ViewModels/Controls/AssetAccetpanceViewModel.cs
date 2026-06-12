@@ -1,6 +1,6 @@
 ﻿using Mil.MVVM.Common;
 using Mil.Paperwork.Infrastructure.DataModels;
-using Mil.Paperwork.Infrastructure.Services;
+using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.UI.ViewModels.Dictionaries;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -85,6 +85,23 @@ namespace Mil.Paperwork.UI.ViewModels
         {
 
             People = [.. dataService.LoadPeopleData().Select(x => new PersonViewModel(x))];
+        }
+
+        public void LoadFrom(IPerson accepted, IPerson handed)
+        {
+            if (accepted != null)
+            {
+                PersonAcceptedName = accepted.FullName;
+                PersonAcceptedPosition = accepted.Position;
+                PersonAcceptedRank = accepted.Rank;
+            }
+
+            if (handed != null)
+            {
+                PersonHandedName = handed.FullName;
+                PersonHandedPosition = handed.Position;
+                PersonHandedRank = handed.Rank;
+            }
         }
 
         public PersonDTO GetAcceptedDTO()

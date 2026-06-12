@@ -1,6 +1,7 @@
 ﻿using Mil.MVVM.Common;
 using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Infrastructure.Enums;
+using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Managers;
 using Mil.Paperwork.UI.ViewModels.Tabs;
@@ -10,7 +11,7 @@ using System.Linq;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
-    internal class Handover23ActViewModel : BaseReportTabViewModel
+    internal class Handover23ActViewModel : BaseReportTabViewModel, IReportDataLoadable<IHandoverReportData>
     {
         private const string HeaderText = "Додаток №23";
 
@@ -111,8 +112,14 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public IDelegateCommand GenerateReportCommand { get; }
         public IDelegateCommand OpenConfigurationCommand { get; }
 
-        public Handover23ActViewModel(ReportManager reportManager, IDataService dataService, IDialogService dialogService) 
-            : base(dialogService)
+        protected override ReportType HistoryReportType => ReportType.Handover23Act;
+
+        public Handover23ActViewModel(
+            ReportManager reportManager,
+            IDataService dataService,
+            IReportHistoryService reportHistoryService,
+            IDialogService dialogService)
+            : base(reportHistoryService, dialogService)
         {
             _reportManager = reportManager;
             _dataService = dataService;
@@ -159,38 +166,57 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             //return isValid;
         }
 
-        protected void GenerateReport(string folderName)
+        protected override IReportData BuildReportData()
         {
-            var personResponsible = AssetAcceptance.GetHandedDTO();
-            var personRecipient = AssetAcceptance.GetAcceptedDTO();
-
             var assets = AssetsTable.AssetsCollection.Select(x => x.ToAssetInfo());
             var reportData = new HandoverReportData
             {
                 Assets = [.. assets],
                 DocumentNumber = DocumentNumber,
                 DocumentDate = DocumentDate.Date,
-                
+
                 DateStart = DateStart,
                 DateEnd = DateEnd,
 
                 Supplier = SupplierName,
                 Receiver = ReceiverName,
 
-                PersonResponsible = personResponsible,
-                PersonReceiver = personRecipient,
+                PersonResponsible = AssetAcceptance.GetHandedDTO(),
+                PersonReceiver = AssetAcceptance.GetAcceptedDTO(),
 
                 ReasonDocumentName = ReasonDocumentName,
                 ReasonDocumentNumber = ReasonDocumentNumber,
                 ReasonDocumentDate = ReasonDocumentDate,
-
-                DestinationFolder = folderName,
             };
 
-            _dataService.AlterPeople([personResponsible, personRecipient]);
+            return reportData;
+        }
+
+        protected void GenerateReport(string folderName)
+        {
+            var reportData = (HandoverReportData)BuildReportData();
+            reportData.DestinationFolder = folderName;
+
+            _dataService.AlterPeople([reportData.PersonResponsible, reportData.PersonReceiver]);
 
             // Generate report
-            _reportManager.GenerateHandover23Act(reportData);
+            _reportManager.GenerateHandover23Act(reportData, EnsureHistoryEntryId());
+        }
+
+        public void LoadReportData(IHandoverReportData data)
+        {
+            DocumentNumber = data.DocumentNumber;
+            DocumentDate = data.DocumentDate;
+            DateStart = data.DateStart;
+            DateEnd = data.DateEnd;
+            SupplierName = data.Supplier;
+            ReceiverName = data.Receiver;
+            ReasonDocumentName = data.ReasonDocumentName;
+            ReasonDocumentNumber = data.ReasonDocumentNumber;
+            ReasonDocumentDate = data.ReasonDocumentDate;
+
+            AssetsTable.LoadAssets(data.Assets ?? []);
+            AssetAcceptance.LoadFrom(data.PersonReceiver, data.PersonResponsible);
         }
 
         private void OpenConfigurationCommandExecute()

@@ -18,9 +18,10 @@ namespace Mil.Paperwork.Domain.Services
             _fileStorage = fileStorage;
         }
 
-        public bool TryGenerateReport(IAssetValuationReportData reportData)
+        public ReportGenerationResult TryGenerateReport(IAssetValuationReportData reportData)
         {
-            var result = false;
+            var success = false;
+            var outputFiles = new List<string>();
 
             var valuationData = reportData.ValuationData;
 
@@ -32,9 +33,9 @@ namespace Mil.Paperwork.Domain.Services
                 }
 
                 var report = new AssetValuationReport(_reportDataService);
-                result = report.TryCreate(assetValuationData);
+                success = report.TryCreate(assetValuationData);
 
-                if (result)
+                if (success)
                 {
                     byte[] reportBytes = report.GetReportBytes();
 
@@ -43,11 +44,13 @@ namespace Mil.Paperwork.Domain.Services
                     var fileName = GetFileName(assetValuationData, ValuationReportHelper.OUTPUT_REPORT_NAME_FORMAT);
                     var outputPath = Path.Combine(destinationPath, PathsHelper.SanitizeFileName(fileName));
 
-                    _fileStorage.SaveFile(outputPath, reportBytes);
+                    var savedPath = _fileStorage.SaveFile(outputPath, reportBytes);
+                    outputFiles.Add(savedPath);
                 }
 
             }
 
+            var result = ReportGenerationResult.FromResult(success, outputFiles);
             return result;
         }
 

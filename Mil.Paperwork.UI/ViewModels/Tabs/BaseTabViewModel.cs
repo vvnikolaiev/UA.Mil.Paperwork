@@ -23,13 +23,18 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             CloseTabCommand = new DelegateCommand(CloseTabCommandExecute);
         }
 
-        protected async void Close()
+        protected virtual async void Close()
         {
             var dlgResult = await _dialogService.ShowMessageAsync(TabCloseConfirmation, "Підтвердження", DialogButtons.YesNo);
             if (dlgResult == DialogResult.Yes)
             {
-                TabCloseRequested?.Invoke(this, this);
+                RaiseTabCloseRequested();
             }
+        }
+
+        protected void RaiseTabCloseRequested()
+        {
+            TabCloseRequested?.Invoke(this, this);
         }
 
         private async void CloseTabCommandExecute()

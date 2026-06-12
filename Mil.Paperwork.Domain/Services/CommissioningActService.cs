@@ -17,30 +17,38 @@ namespace Mil.Paperwork.Domain.Services
             _fileStorage = fileStorage;
         }
 
-        public bool TryGenerateReport(IList<ICommissioningActReportData> reportData)
+        public ReportGenerationResult TryGenerateReport(IList<ICommissioningActReportData> reportData)
         {
-            var result = true;
+            var success = true;
+            var outputFiles = new List<string>();
+
             foreach (var data in reportData)
             {
-                result &= TryGenerateReport(data);
+                var actResult = TryGenerateReport(data);
+                success &= actResult.Success;
+                outputFiles.AddRange(actResult.OutputFiles);
             }
 
+            var result = ReportGenerationResult.FromResult(success, outputFiles);
             return result;
         }
 
-        public bool TryGenerateReport(ICommissioningActReportData reportData)
+        public ReportGenerationResult TryGenerateReport(ICommissioningActReportData reportData)
         {
             var report = new CommissioningActReport(_reportDataService);
+            var outputFiles = new List<string>();
 
-            var result = report.TryCreate(reportData);
-            if (result)
+            var created = report.TryCreate(reportData);
+            if (created)
             {
                 byte[] reportBytes = report.GetReportBytes();
 
                 var outputPath = GetFileName(reportData);
-                _fileStorage.SaveFile(outputPath, reportBytes);
+                var savedPath = _fileStorage.SaveFile(outputPath, reportBytes);
+                outputFiles.Add(savedPath);
             }
 
+            var result = ReportGenerationResult.FromResult(created, outputFiles);
             return result;
         }
 

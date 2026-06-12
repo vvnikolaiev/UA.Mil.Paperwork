@@ -143,6 +143,24 @@ namespace Mil.Paperwork.UI.ViewModels.Assets
             //ProductSelectedCommand = new DelegateCommand<ProductDTO>(ProductSelectedExecute);
         }
 
+        public void LoadFrom(IAssetInfo assetInfo)
+        {
+            Name = assetInfo.Name;
+            ShortName = assetInfo.ShortName;
+            MeasurementUnit = assetInfo.MeasurementUnit;
+            SerialNumber = assetInfo.SerialNumber;
+            NomenclatureCode = assetInfo.NomenclatureCode;
+            Category = assetInfo.InitialCategory;
+            Price = assetInfo.Price;
+            Count = assetInfo.Count;
+            StartDate = assetInfo.StartDate;
+            TSRegisterNumber = assetInfo.TSRegisterNumber;
+            TSDocumentNumber = assetInfo.TSDocumentNumber;
+            WarrantyPeriodMonths = assetInfo.WarrantyPeriodMonths;
+            YearManufacured = assetInfo.YearManufactured;
+            ResourceYears = assetInfo.ResourceYears;
+        }
+
         public virtual IAssetInfo ToAssetInfo()
         {
             AssetInfo.Name = _name;

@@ -152,6 +152,7 @@
 			<Button Content="Додати рядок" Command="{Binding AssetsTable.AddRowCommand}" />
 			<Button Content="Видалити рядок" Command="{Binding AssetsTable.RemoveRowCommand }" />
 			<Button Content="Згенерувати" Command="{Binding GenerateReportCommand}" />
+			<Button Content="Зберегти чернетку" Command="{Binding SaveDraftCommand}" />
 			<Button Content="Налаштування" Command="{Binding OpenConfigurationCommand}" />
 			<Button Classes="CloseTab" Content="Закрити" Command="{Binding CloseTabCommand}"/>
 		</StackPanel>

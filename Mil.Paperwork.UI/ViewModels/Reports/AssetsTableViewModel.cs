@@ -1,10 +1,13 @@
 ﻿using Mil.MVVM.Common;
+using Mil.Paperwork.Domain.DataModels.Assets;
 using Mil.Paperwork.Infrastructure.Enums;
+using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Factories;
 using Mil.Paperwork.UI.ViewModels.Assets;
 using Mil.Paperwork.UI.ViewModels.Controls;
 using Mil.Paperwork.UI.ViewModels.Dictionaries;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -81,6 +84,19 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
                 SelectedAsset = AssetsCollection.FirstOrDefault();
             }
+        }
+
+        public void LoadAssets(IEnumerable<IAssetInfo> assets)
+        {
+            AssetsCollection.Clear();
+            foreach (var assetInfo in assets)
+            {
+                var vm = _assetFactory.CreateAssetViewModel();
+                vm.LoadFrom(assetInfo);
+                AssetsCollection.Add(vm);
+            }
+
+            SelectedAsset = AssetsCollection.FirstOrDefault();
         }
 
         public void Refresh()

@@ -6,6 +6,7 @@ using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
+using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Factories;
 using Mil.Paperwork.UI.Helpers;
@@ -19,7 +20,7 @@ using System.Linq;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
-    internal class AssetInitialTechnicalStateViewModel : BaseReportTabViewModel
+    internal class AssetInitialTechnicalStateViewModel : BaseReportTabViewModel, IReportDataLoadable<IInitialTechnicalStateReportData>
     {
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
@@ -106,12 +107,15 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public IDelegateCommand GenerateReportCommand { get; }
         public IDelegateCommand OpenConfigurationCommand { get; }
 
+        protected override ReportType HistoryReportType => ReportType.TechnicalStateReport;
+
         public AssetInitialTechnicalStateViewModel(
             ReportManager reportManager,
             IAssetFactory assetFactory,
             IDataService dataService,
             IReportDataService reportDataService,
-            IDialogService dialogService) : base(dialogService)
+            IReportHistoryService reportHistoryService,
+            IDialogService dialogService) : base(reportHistoryService, dialogService)
         {
             _reportManager = reportManager;
             _dataService = dataService;
@@ -142,24 +146,37 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             }
         }
 
-        protected virtual void GenerateReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
+        protected override IReportData BuildReportData()
         {
+            var assets = AssetsTable.AssetsCollection.Select(x => x.ToAssetInfo(EventType)).ToArray();
+            var reportData = BuildTechnicalStateReportData(assets, string.Empty);
 
-            var personAccepted = AssetAcceptance.GetAcceptedDTO();
-            var personHanded = AssetAcceptance.GetHandedDTO();
+            return reportData;
+        }
 
+        protected InitialTechnicalStateReportData BuildTechnicalStateReportData(IEnumerable<IAssetInfo> assets, string destinationFolder)
+        {
             var reportData = new InitialTechnicalStateReportData
             {
                 EventType = _eventType,
                 Assets = [.. assets],
                 DestinationFolder = destinationFolder,
-                PersonAccepted = personAccepted,
-                PersonHanded = personHanded
+                PersonAccepted = AssetAcceptance.GetAcceptedDTO(),
+                PersonHanded = AssetAcceptance.GetHandedDTO()
             };
+
+            return reportData;
+        }
+
+        protected virtual void GenerateReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
+        {
+            var reportData = BuildTechnicalStateReportData(assets, destinationFolder);
+            var personAccepted = AssetAcceptance.GetAcceptedDTO();
+            var personHanded = AssetAcceptance.GetHandedDTO();
 
             _dataService.AlterPeople([personAccepted, personHanded]);
 
-            _reportManager.GenerateInitialTechnicalStateReport(reportData);
+            _reportManager.GenerateInitialTechnicalStateReport(reportData, EnsureHistoryEntryId());
 
             GenerateInvoiceReport(assets, destinationFolder, personAccepted, personHanded);
 
@@ -246,6 +263,13 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             //AssetCompliance = "відповідає";
             //CompletionState = "не потрібна";
             //Conclusion = "ввести в експлуатацію";
+        }
+
+        public void LoadReportData(IInitialTechnicalStateReportData data)
+        {
+            EventType = data.EventType;
+            AssetsTable.LoadAssets(data.Assets ?? []);
+            AssetAcceptance.LoadFrom(data.PersonAccepted, data.PersonHanded);
         }
 
         private void OpenConfigurationCommandExecute()

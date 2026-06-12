@@ -5,6 +5,7 @@ using Mil.Paperwork.Domain.Enums;
 using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
+using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Managers;
 using Mil.Paperwork.UI.ViewModels.Controls;
@@ -17,7 +18,7 @@ using System.Linq;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
-    internal class CommissioningActReportViewModel : BaseReportTabViewModel
+    internal class CommissioningActReportViewModel : BaseReportTabViewModel, IReportDataLoadable<ICommissioningActReportData>
     {
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
@@ -236,11 +237,14 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public IDelegateCommand GenerateReportCommand { get; }
         public IDelegateCommand OpenConfigurationCommand { get; }
 
+        protected override ReportType HistoryReportType => ReportType.CommissioningAct;
+
         public CommissioningActReportViewModel(
             ReportManager reportManager,
             IDataService dataService,
             IReportDataService reportDataService,
-            IDialogService dialogService) : base(dialogService)
+            IReportHistoryService reportHistoryService,
+            IDialogService dialogService) : base(reportHistoryService, dialogService)
         {
             _reportManager = reportManager;
             _dataService = dataService;
@@ -329,7 +333,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             }
         }
 
-        protected virtual void GenerateReport(string folderName)
+        protected override IReportData BuildReportData()
         {
             var product = new ProductDTO()
             {
@@ -344,15 +348,11 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             var identifiers = ProductIdentifiers.Cast<IProductIdentification>().ToList();
 
-            var personAccepted = _assetAcceptance.GetAcceptedDTO();
-            var personHanded = _assetAcceptance.GetHandedDTO();
-
             var reportData = new CommissioningActReportData
             {
                 DocumentNumber = DocumentNumber,
                 DocumentDate = DocumentDate.Date,
                 Asset = product,
-                DestinationFolder = folderName,
                 AssetIds = identifiers,
                 Count = Count,
                 CountText = CountText,
@@ -365,13 +365,26 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                 OtherInfo = OtherInfo,
                 Conclusion = Conclusion,
                 AttachedDocumentation = AttachedDocumentation,
-                PersonAccepted = personAccepted,
-                PersonHanded = personHanded
+                PersonAccepted = _assetAcceptance.GetAcceptedDTO(),
+                PersonHanded = _assetAcceptance.GetHandedDTO()
             };
+
+            return reportData;
+        }
+
+        protected virtual void GenerateReport(string folderName)
+        {
+            var reportData = (CommissioningActReportData)BuildReportData();
+            reportData.DestinationFolder = folderName;
+
+            var product = reportData.Asset;
+            var identifiers = reportData.AssetIds;
+            var personAccepted = (PersonDTO)reportData.PersonAccepted;
+            var personHanded = (PersonDTO)reportData.PersonHanded;
 
             _dataService.AlterPeople([personAccepted, personHanded]);
 
-            _reportManager.GenerateCommissioningAct(reportData);
+            _reportManager.GenerateCommissioningAct(reportData, EnsureHistoryEntryId());
 
             if (IsTechnicalStateActCreationChecked)
             {
@@ -426,6 +439,44 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             return result;
         }
 
+
+        public void LoadReportData(ICommissioningActReportData data)
+        {
+            DocumentNumber = data.DocumentNumber;
+            DocumentDate = new DateTimeOffset(data.DocumentDate);
+            Count = data.Count;
+            CountText = data.CountText;
+            CommissioningLocation = data.CommissioningLocation;
+            ShortCharacteristic = data.ShortCharacteristic;
+            AssetCompliance = data.AssetCompliance;
+            CompletionState = data.CompletionState;
+            TestResults = data.TestResults;
+            OtherInfo = data.OtherInfo;
+            Conclusion = data.Conclusion;
+            AttachedDocumentation = data.AttachedDocumentation;
+
+            var asset = data.Asset;
+            if (asset != null)
+            {
+                ProductName = asset.Name;
+                ShortName = asset.ShortName;
+                Price = asset.Price;
+                MeasurementUnitName = asset.MeasurementUnit;
+                WarrantyPeriodMonths = asset.WarrantyPeriodMonths;
+                YearManufactured = asset.YearManufactured;
+                ResourceYears = asset.ResourceYears;
+            }
+
+            ProductIdentifiers.Clear();
+            foreach (var id in data.AssetIds ?? [])
+            {
+                ProductIdentifiers.Add(new ProductIdentification { SerialNumber = id.SerialNumber, InventoryNumber = id.InventoryNumber });
+            }
+
+            SelectedIdentifier = ProductIdentifiers.FirstOrDefault();
+
+            AssetAcceptance.LoadFrom(data.PersonAccepted, data.PersonHanded);
+        }
 
         private void OpenConfigurationCommandExecute()
         {

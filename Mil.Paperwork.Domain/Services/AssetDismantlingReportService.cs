@@ -19,9 +19,10 @@ namespace Mil.Paperwork.Domain.Services
             _fileStorage = fileStorage;
         }
 
-        public bool TryGenerateReport(IDismantlingReportData reportData)
+        public ReportGenerationResult TryGenerateReport(IDismantlingReportData reportData)
         {
-            var result = false;
+            var success = false;
+            var outputFiles = new List<string>();
 
             foreach (var assetDismantlingData in reportData.Dismantlings)
             {
@@ -31,23 +32,24 @@ namespace Mil.Paperwork.Domain.Services
                 }
 
                 var report = new AssetDismantlingReport(_reportDataService);
-                result = report.TryCreate(assetDismantlingData);
+                success = report.TryCreate(assetDismantlingData);
 
-                if (result)
+                if (success)
                 {
                     byte[] reportBytes = report.GetReportBytes();
 
                     var destinationPath = reportData.GetDestinationPath();
                     // TODO: add short name to the View? Only for the file name
-                    var name = assetDismantlingData.SerialNumber;
                     var fileName = GetFileName(assetDismantlingData,DismantlingReportHelper.OUTPUT_REPORT_NAME_FORMAT);
                     var outputPath = Path.Combine(destinationPath, PathsHelper.SanitizeFileName(fileName));
 
-                    _fileStorage.SaveFile(outputPath, reportBytes);
+                    var savedPath = _fileStorage.SaveFile(outputPath, reportBytes);
+                    outputFiles.Add(savedPath);
                 }
 
             }
 
+            var result = ReportGenerationResult.FromResult(success, outputFiles);
             return result;
         }
 

@@ -44,6 +44,7 @@ git push origin --tags
 | `Mil.Paperwork.UI` | Avalonia UI shell — Views, ViewModels, DI wiring |
 | `Mil.Paperwork.Domain` | Business logic — report services, helpers, calculators, report data models, Word/Excel templates |
 | `Mil.Paperwork.Infrastructure` | Data persistence — JSON file storage, config loading, DTOs |
+| `Mil.Paperwork.DataAccess` | Data access services on top of Infrastructure (`IDataService` for products/people/units) |
 | `Mil.MVVM.Common` | Base MVVM classes (`ObservableItem`, `DelegateCommand`) |
 | `Mil.Paperwork.Common` | Shared utilities (common data models; partially superseded by `Mil.MVVM.Common`) |
 | `Mil.Paperwork.Tests` | xUnit tests targeting `Mil.Paperwork.Domain` |
@@ -54,7 +55,8 @@ git push origin --tags
 ### Dependency Injection
 
 DI is bootstrapped in `Mil.Paperwork.UI/App.axaml.cs` via `ServiceConfigurator`, which calls:
-- `InfrastructureServicesRegistrator.Register()` — registers `IFileStorageService`, `IDataService`, `IReportDataService`
+- `InfrastructureServicesRegistrator.Register()` — registers `IFileStorageService`, `IReportDataService`
+- `DataAccessServicesRegistrator.Register()` — registers `IDataService`
 - `DomainServicesRegistrator.Register()` — registers all `*ReportService` singletons and `IExportService`/`IImportService`
 
 ### Report Generation Flow
