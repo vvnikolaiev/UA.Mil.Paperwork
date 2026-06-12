@@ -311,7 +311,7 @@ namespace Mil.Paperwork.Tests.History
             var emptyTargets = registry.GetTargets(ReportType.WriteOffOrder);
 
             Assert.Equal([ReportType.CommissioningAct, ReportType.TechnicalStateReport, ReportType.Handover23Act], invoiceTargets);
-            Assert.Equal([ReportType.WriteOffPackage, ReportType.TechnicalStateReport], residualValueTargets);
+            Assert.Equal([ReportType.WriteOffPackage], residualValueTargets);
             Assert.Equal([ReportType.Invoice], handoverTargets);
             Assert.Equal([ReportType.Invoice, ReportType.TechnicalStateReport], commissioningActTargets);
             Assert.Empty(emptyTargets);
