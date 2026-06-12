@@ -20,7 +20,7 @@ using System.Linq;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
-    internal class AssetInitialTechnicalStateViewModel : BaseReportTabViewModel
+    internal class AssetInitialTechnicalStateViewModel : BaseReportTabViewModel, IReportDataLoadable<IInitialTechnicalStateReportData>
     {
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
@@ -263,6 +263,13 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             //AssetCompliance = "відповідає";
             //CompletionState = "не потрібна";
             //Conclusion = "ввести в експлуатацію";
+        }
+
+        public void LoadReportData(IInitialTechnicalStateReportData data)
+        {
+            EventType = data.EventType;
+            AssetsTable.LoadAssets(data.Assets ?? []);
+            AssetAcceptance.LoadFrom(data.PersonAccepted, data.PersonHanded);
         }
 
         private void OpenConfigurationCommandExecute()

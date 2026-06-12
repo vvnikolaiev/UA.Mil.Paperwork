@@ -16,7 +16,7 @@ using System.Linq;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
-    internal class ResidualValueReportViewModel : BaseReportTabViewModel
+    internal class ResidualValueReportViewModel : BaseReportTabViewModel, IReportDataLoadable<IResidualValueReportData>
     {
         private readonly IDataService _dataService;
         private readonly ReportManager _reportManager;
@@ -138,6 +138,22 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             var productInfos = reportData.Assets.Select(DTOConvertionHelper.ConvertToProductDTO).ToList();
             _dataService.AlterProductsData(productInfos);
             _reportManager.GenerateResidualValueReport(reportData, EnsureHistoryEntryId());
+        }
+
+        public void LoadReportData(IResidualValueReportData data)
+        {
+            EventReportNumber = data.EventReportNumber;
+            WriteOffDate = new DateTimeOffset(data.EventDate);
+            SelectedAssetType = data.AssetType;
+            AssetsTable.LoadAssets(data.Assets ?? []);
+
+            foreach (var metalCostVm in MetalCostCollection)
+            {
+                if (data.MetalCosts.TryGetValue(metalCostVm.Metal, out var cost))
+                {
+                    metalCostVm.Cost = cost;
+                }
+            }
         }
 
         private void SelectFolder()

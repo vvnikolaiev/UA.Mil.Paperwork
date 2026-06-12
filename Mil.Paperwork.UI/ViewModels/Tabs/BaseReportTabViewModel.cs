@@ -17,7 +17,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
 
         public event EventHandler<ReportType> OpenReportSettingsRequested;
 
-        public Guid? HistoryEntryId { get; protected set; }
+        public Guid? HistoryEntryId { get; internal set; }
 
         public IDelegateCommand SaveDraftCommand { get; }
 

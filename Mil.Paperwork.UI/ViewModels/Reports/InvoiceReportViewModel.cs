@@ -14,7 +14,7 @@ using System.Linq;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
-    internal class InvoiceReportViewModel : BaseReportTabViewModel
+    internal class InvoiceReportViewModel : BaseReportTabViewModel, IReportDataLoadable<IInvoceReportData>
     {
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
@@ -210,6 +210,24 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             // Generate report
             _reportManager.GenerateInvoice(reportData, EnsureHistoryEntryId());
+        }
+
+        public void LoadReportData(IInvoceReportData data)
+        {
+            DocumentNumber = data.DocumentNumber;
+            DateCreated = data.DateCreated;
+            DueDate = data.DueDate;
+            Reason = data.Reason;
+
+            AssetsCollection.Clear();
+            foreach (var assetInfo in data.Assets ?? [])
+            {
+                AssetsCollection.Add(InvoiceAssetViewModel.FromAssetInfo(assetInfo));
+            }
+
+            SelectedAsset = AssetsCollection.FirstOrDefault();
+
+            AssetAcceptance.LoadFrom(data.Recipient, data.Transmitter);
         }
 
         private void OpenConfigurationCommandExecute()

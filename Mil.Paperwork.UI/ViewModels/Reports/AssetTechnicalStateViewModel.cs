@@ -6,13 +6,14 @@ using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Factories;
 using Mil.Paperwork.UI.Managers;
+using Mil.Paperwork.UI.ViewModels.Tabs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
-    internal class AssetTechnicalStateViewModel : AssetInitialTechnicalStateViewModel
+    internal class AssetTechnicalStateViewModel : AssetInitialTechnicalStateViewModel, IReportDataLoadable<IWriteOffPackageReportData>
     {
         private readonly ReportManager _reportManager;
 
@@ -266,6 +267,25 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             };
 
             return writeOffPackageData;
+        }
+
+        public void LoadReportData(IWriteOffPackageReportData data)
+        {
+            DocumentDate = data.DocumentDate;
+            EventDate = data.EventDate;
+            OrdenNumber = data.OrdenNumber;
+            OrdenDate = data.OrdenDate;
+
+            var extract = data.BookOfLossesExtractData;
+            if (extract != null)
+            {
+                BookOfLossesYear = extract.Year;
+                BookOfLossesNumber = extract.Number;
+                BookOfLossesPage = extract.PageNumber;
+                BookOfLossesExtractDate = new DateTimeOffset(extract.RecordDate);
+            }
+
+            AssetsTable.LoadAssets(data.Assets ?? []);
         }
 
         private void GenerateWriteOffReports(IEnumerable<IAssetInfo> assets, string destinationFolder)

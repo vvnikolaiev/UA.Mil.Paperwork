@@ -18,7 +18,7 @@ using System.Linq;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
-    internal class CommissioningActReportViewModel : BaseReportTabViewModel
+    internal class CommissioningActReportViewModel : BaseReportTabViewModel, IReportDataLoadable<ICommissioningActReportData>
     {
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
@@ -439,6 +439,44 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             return result;
         }
 
+
+        public void LoadReportData(ICommissioningActReportData data)
+        {
+            DocumentNumber = data.DocumentNumber;
+            DocumentDate = new DateTimeOffset(data.DocumentDate);
+            Count = data.Count;
+            CountText = data.CountText;
+            CommissioningLocation = data.CommissioningLocation;
+            ShortCharacteristic = data.ShortCharacteristic;
+            AssetCompliance = data.AssetCompliance;
+            CompletionState = data.CompletionState;
+            TestResults = data.TestResults;
+            OtherInfo = data.OtherInfo;
+            Conclusion = data.Conclusion;
+            AttachedDocumentation = data.AttachedDocumentation;
+
+            var asset = data.Asset;
+            if (asset != null)
+            {
+                ProductName = asset.Name;
+                ShortName = asset.ShortName;
+                Price = asset.Price;
+                MeasurementUnitName = asset.MeasurementUnit;
+                WarrantyPeriodMonths = asset.WarrantyPeriodMonths;
+                YearManufactured = asset.YearManufactured;
+                ResourceYears = asset.ResourceYears;
+            }
+
+            ProductIdentifiers.Clear();
+            foreach (var id in data.AssetIds ?? [])
+            {
+                ProductIdentifiers.Add(new ProductIdentification { SerialNumber = id.SerialNumber, InventoryNumber = id.InventoryNumber });
+            }
+
+            SelectedIdentifier = ProductIdentifiers.FirstOrDefault();
+
+            AssetAcceptance.LoadFrom(data.PersonAccepted, data.PersonHanded);
+        }
 
         private void OpenConfigurationCommandExecute()
         {

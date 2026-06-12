@@ -1,8 +1,10 @@
 ﻿using Mil.MVVM.Common;
-using Mil.Paperwork.Domain.Services;
-using Mil.Paperwork.Infrastructure.Enums;
+using Mil.Paperwork.DataAccess.Mappers;
 using Mil.Paperwork.DataAccess.Repositories;
 using Mil.Paperwork.DataAccess.Services;
+using Mil.Paperwork.Domain.DataModels.ReportData;
+using Mil.Paperwork.Domain.Services;
+using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Enums;
 using Mil.Paperwork.UI.Factories;
@@ -16,6 +18,18 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
 {
     internal class HomePageViewModel : ObservableItem, ITabViewModel
     {
+        private const string OpenHistoryNotSupportedMessage = "Відкриття цього типу запису з історії ще не підтримується.";
+        private const string InfoCaption = "Інформація";
+
+        private static readonly HashSet<ReportType> _supportedHistoryTypes =
+        [
+            ReportType.Invoice,
+            ReportType.CommissioningAct,
+            ReportType.TechnicalStateReport,
+            ReportType.ResidualValueReport,
+            ReportType.WriteOffPackage,
+        ];
+
         private readonly ReportManager _reportManager;
         private readonly IAssetFactory _assetFactory;
         private readonly IDataService _dataService;
@@ -104,7 +118,19 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             return reportTypes;
         }
 
-        private async void OpenNewReportTab(ReportType documentType)
+        private void OpenNewReportTab(ReportType documentType)
+        {
+            var createdTab = CreateReportTab(documentType);
+
+            if (createdTab != null)
+            {
+                createdTab.OpenReportSettingsRequested += OnOpenReportSettingsRequested;
+
+                TabAdded?.Invoke(this, createdTab);
+            }
+        }
+
+        private IReportTabViewModel? CreateReportTab(ReportType documentType)
         {
             IReportTabViewModel? createdTab;
             switch (documentType)
@@ -139,15 +165,58 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
                 default:
                     createdTab = null;
                     break;
-
             }
 
-            if (createdTab != null)
+            return createdTab;
+        }
+
+        private async void OnOpenHistoryEntryRequested(object? sender, Guid id)
+        {
+            var entry = _reportHistoryRepository.GetEntry(id);
+            if (entry == null)
             {
-                createdTab.OpenReportSettingsRequested += OnOpenReportSettingsRequested;
-
-                TabAdded?.Invoke(this, createdTab);
+                return;
             }
+
+            if (!_supportedHistoryTypes.Contains(entry.ReportType))
+            {
+                await _dialogService.ShowMessageAsync(OpenHistoryNotSupportedMessage, InfoCaption);
+                return;
+            }
+
+            var reportData = ReportSnapshotMapper.ToReportData(entry.Snapshot);
+            var createdTab = CreateReportTab(entry.ReportType);
+            if (createdTab == null)
+            {
+                return;
+            }
+
+            switch (reportData)
+            {
+                case IInvoceReportData invoiceData when createdTab is InvoiceReportViewModel invoiceVm:
+                    invoiceVm.LoadReportData(invoiceData);
+                    break;
+                case ICommissioningActReportData commActData when createdTab is CommissioningActReportViewModel commActVm:
+                    commActVm.LoadReportData(commActData);
+                    break;
+                case IInitialTechnicalStateReportData initTsData when createdTab is AssetInitialTechnicalStateViewModel initTsVm:
+                    initTsVm.LoadReportData(initTsData);
+                    break;
+                case IResidualValueReportData rvData when createdTab is ResidualValueReportViewModel rvVm:
+                    rvVm.LoadReportData(rvData);
+                    break;
+                case IWriteOffPackageReportData wopData when createdTab is AssetTechnicalStateViewModel wopVm:
+                    wopVm.LoadReportData(wopData);
+                    break;
+            }
+
+            if (createdTab is BaseReportTabViewModel baseTab)
+            {
+                baseTab.HistoryEntryId = entry.Id;
+            }
+
+            createdTab.OpenReportSettingsRequested += OnOpenReportSettingsRequested;
+            TabAdded?.Invoke(this, createdTab);
         }
 
         private void OnOpenReportSettingsRequested(object? sender, ReportType reportType)
@@ -172,6 +241,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             else
             {
                 _historyViewModel = new HistoryViewModel(_reportHistoryRepository, _dialogService);
+                _historyViewModel.OpenHistoryEntryRequested += OnOpenHistoryEntryRequested;
                 TabAdded?.Invoke(this, _historyViewModel);
             }
         }
