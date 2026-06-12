@@ -9,6 +9,7 @@ using Mil.Paperwork.UI.ViewModels.History;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -25,15 +26,23 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         private const string PathNotFoundMessageFormat = "Файл або теку не знайдено:\n{0}";
         private const string OpenPathErrorMessageFormat = "Не вдалося відкрити:\n{0}";
 
+        private const string SortByType = "TypeText";
+        private const string SortByDate = "ModifiedAt";
+        private const string SortByDocument = "NumberSummaryText";
+        private const string SortByFile = "FileName";
+
         private readonly IReportHistoryRepository _historyRepository;
         private readonly ReportConversionRegistry _conversionRegistry;
         private readonly IDialogService _dialogService;
 
         private List<HistoryEntryViewModel> _allEntries;
         private HistoryTypeFilterItem? _selectedTypeFilter;
+        private HistoryEntryViewModel? _selectedEntry;
         private DateTime? _dateFrom;
         private DateTime? _dateTo;
         private string _searchText = string.Empty;
+        private string? _sortMemberPath;
+        private ListSortDirection _sortDirection;
 
         public event EventHandler<Guid> OpenHistoryEntryRequested;
         public event EventHandler<CreateFromRequestedEventArgs> CreateFromRequested;
@@ -45,6 +54,15 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         public ObservableCollection<HistoryEntryViewModel> Entries { get; }
 
         public ObservableCollection<HistoryTypeFilterItem> TypeFilters { get; }
+
+        public HistoryEntryViewModel? SelectedEntry
+        {
+            get => _selectedEntry;
+            set
+            {
+                SetProperty(ref _selectedEntry, value);
+            }
+        }
 
         public HistoryTypeFilterItem? SelectedTypeFilter
         {
@@ -95,8 +113,10 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         }
 
         public IDelegateCommand RefreshCommand { get; }
+        public IDelegateCommand ClearFiltersCommand { get; }
         public IDelegateCommand<HistoryEntryViewModel> OpenEntryCommand { get; }
         public IDelegateCommand<HistoryEntryViewModel> OpenGeneratedFileCommand { get; }
+        public IDelegateCommand<HistoryEntryViewModel> OpenFileFolderCommand { get; }
         public IDelegateCommand<HistoryEntryViewModel> RemoveEntryCommand { get; }
 
         public HistoryViewModel(
@@ -114,8 +134,10 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             TypeFilters = [];
 
             RefreshCommand = new DelegateCommand(Refresh);
+            ClearFiltersCommand = new DelegateCommand(ClearFiltersExecute);
             OpenEntryCommand = new DelegateCommand<HistoryEntryViewModel>(OpenEntryCommandExecute);
             OpenGeneratedFileCommand = new DelegateCommand<HistoryEntryViewModel>(OpenGeneratedFileCommandExecute);
+            OpenFileFolderCommand = new DelegateCommand<HistoryEntryViewModel>(OpenFileFolderCommandExecute);
             RemoveEntryCommand = new DelegateCommand<HistoryEntryViewModel>(RemoveEntryCommandExecute);
 
             TabCloseRequested += OnTabCloseRequested;
@@ -186,6 +208,23 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             SelectedTypeFilter = newSelection;
         }
 
+        public string? CurrentSortMemberPath => _sortMemberPath;
+
+        public ListSortDirection CurrentSortDirection => _sortDirection;
+
+        public void ApplySortMember(string memberPath, ListSortDirection direction)
+        {
+            _sortMemberPath = memberPath;
+            _sortDirection = direction;
+            ApplyFilters();
+        }
+
+        public void ClearSort()
+        {
+            _sortMemberPath = null;
+            ApplyFilters();
+        }
+
         private void ApplyFilters()
         {
             var filtered = _allEntries.AsEnumerable();
@@ -211,11 +250,57 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
                 filtered = filtered.Where(MatchesSearchText);
             }
 
+            filtered = ApplySortToFiltered(filtered);
+
             Entries.Clear();
             foreach (var entry in filtered)
             {
                 Entries.Add(entry);
             }
+        }
+
+        private IEnumerable<HistoryEntryViewModel> ApplySortToFiltered(IEnumerable<HistoryEntryViewModel> entries)
+        {
+            if (_sortMemberPath == null)
+            {
+                var result = entries.OrderByDescending(e => e.ModifiedAt);
+                return result;
+            }
+
+            if (_sortMemberPath == SortByType)
+            {
+                var result = _sortDirection == ListSortDirection.Ascending
+                    ? entries.OrderBy(e => e.TypeText)
+                    : entries.OrderByDescending(e => e.TypeText);
+                return result;
+            }
+
+            if (_sortMemberPath == SortByDate)
+            {
+                var result = _sortDirection == ListSortDirection.Ascending
+                    ? entries.OrderBy(e => e.ModifiedAt)
+                    : entries.OrderByDescending(e => e.ModifiedAt);
+                return result;
+            }
+
+            if (_sortMemberPath == SortByDocument)
+            {
+                var result = _sortDirection == ListSortDirection.Ascending
+                    ? entries.OrderBy(e => e.NumberSummaryText)
+                    : entries.OrderByDescending(e => e.NumberSummaryText);
+                return result;
+            }
+
+            if (_sortMemberPath == SortByFile)
+            {
+                var result = _sortDirection == ListSortDirection.Ascending
+                    ? entries.OrderBy(e => e.FileName)
+                    : entries.OrderByDescending(e => e.FileName);
+                return result;
+            }
+
+            var defaultResult = entries.OrderByDescending(e => e.ModifiedAt);
+            return defaultResult;
         }
 
         private bool MatchesSearchText(HistoryEntryViewModel entry)
@@ -281,6 +366,55 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             catch (Exception)
             {
                 var errorMessage = string.Format(OpenPathErrorMessageFormat, pathToOpen);
+                await _dialogService.ShowMessageAsync(errorMessage, ErrorCaption, DialogButtons.OK, DialogIcon.Error);
+            }
+        }
+
+        private void ClearFiltersExecute()
+        {
+            _dateFrom = null;
+            _dateTo = null;
+            _searchText = string.Empty;
+
+            OnPropertyChanged(nameof(DateFrom));
+            OnPropertyChanged(nameof(DateTo));
+            OnPropertyChanged(nameof(SearchText));
+
+            var allTypesItem = TypeFilters.FirstOrDefault();
+            if (_selectedTypeFilter == allTypesItem)
+            {
+                ApplyFilters();
+            }
+            else
+            {
+                SelectedTypeFilter = allTypesItem;
+            }
+        }
+
+        private async void OpenFileFolderCommandExecute(HistoryEntryViewModel entry)
+        {
+            if (entry == null || !entry.HasGeneratedFiles)
+            {
+                return;
+            }
+
+            var firstFile = entry.IndexEntry.GeneratedFiles[0];
+            var folderPath = Path.GetDirectoryName(firstFile) ?? firstFile;
+
+            if (!Directory.Exists(folderPath))
+            {
+                var notFoundMessage = string.Format(PathNotFoundMessageFormat, folderPath);
+                await _dialogService.ShowMessageAsync(notFoundMessage, ErrorCaption, DialogButtons.OK, DialogIcon.Error);
+                return;
+            }
+
+            try
+            {
+                Process.Start(new ProcessStartInfo(folderPath) { UseShellExecute = true });
+            }
+            catch (Exception)
+            {
+                var errorMessage = string.Format(OpenPathErrorMessageFormat, folderPath);
                 await _dialogService.ShowMessageAsync(errorMessage, ErrorCaption, DialogButtons.OK, DialogIcon.Error);
             }
         }

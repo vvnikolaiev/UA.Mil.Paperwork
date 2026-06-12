@@ -9,10 +9,12 @@
 			 x:DataType="tabs:HistoryViewModel"
 			 x:Name="Root">
 	<DockPanel>
-		<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
+		<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5"
+					Classes="parameters">
 			<ComboBox ItemsSource="{Binding TypeFilters}"
 					  SelectedItem="{Binding SelectedTypeFilter}"
 					  DisplayMemberBinding="{Binding Text, DataType={x:Type history:HistoryTypeFilterItem}}"
+					  VerticalAlignment="Center"
 					  Width="220" Margin="0,0,5,0"/>
 
 			<CalendarDatePicker SelectedDate="{Binding DateFrom}"
@@ -27,14 +29,50 @@
 					 PlaceholderText="Пошук…"
 					 Width="220" Margin="0,0,5,0"/>
 
+			<Button Content="Очистити" Command="{Binding ClearFiltersCommand}" Margin="0,0,5,0"/>
+
 			<Button Content="Оновити" Command="{Binding RefreshCommand}" Margin="0,0,5,0"/>
 
 			<Button Classes="CloseTab" Content="Закрити" Command="{Binding CloseTabCommand}" Margin="0,0,5,0"/>
 		</StackPanel>
 
-		<DataGrid ItemsSource="{Binding Entries}"
+		<DataGrid x:Name="HistoryGrid"
+				  ItemsSource="{Binding Entries}"
+				  SelectedItem="{Binding SelectedEntry, Mode=TwoWay}"
 				  AutoGenerateColumns="False" Margin="5"
-				  IsReadOnly="True">
+				  IsReadOnly="True"
+				  CanUserSortColumns="True"
+				  DoubleTapped="OnGridDoubleTapped"
+				  KeyDown="OnGridKeyDown"
+				  Sorting="OnGridSorting">
+			<DataGrid.ContextMenu>
+				<ContextMenu>
+					<MenuItem Header="Відкрити"
+							  Command="{Binding #Root.DataContext.OpenEntryCommand}"
+							  CommandParameter="{Binding #Root.DataContext.SelectedEntry}"/>
+					<MenuItem Header="Відкрити файл"
+							  Command="{Binding #Root.DataContext.OpenGeneratedFileCommand}"
+							  CommandParameter="{Binding #Root.DataContext.SelectedEntry}"
+							  IsVisible="{Binding #Root.DataContext.SelectedEntry.HasGeneratedFiles}"/>
+					<MenuItem Header="Видалити"
+							  Command="{Binding #Root.DataContext.RemoveEntryCommand}"
+							  CommandParameter="{Binding #Root.DataContext.SelectedEntry}"/>
+					<Separator IsVisible="{Binding #Root.DataContext.SelectedEntry.HasCreateTargets}"/>
+					<MenuItem Header="Створити…"
+							  ItemsSource="{Binding #Root.DataContext.SelectedEntry.CreateTargets}"
+							  IsVisible="{Binding #Root.DataContext.SelectedEntry.HasCreateTargets}">
+						<MenuItem.ItemContainerTheme>
+							<ControlTheme TargetType="MenuItem"
+										  BasedOn="{StaticResource {x:Type MenuItem}}"
+										  x:DataType="history:CreateFromTargetItem">
+								<Setter Property="Header" Value="{Binding Text}"/>
+								<Setter Property="Command" Value="{Binding Command}"/>
+							</ControlTheme>
+						</MenuItem.ItemContainerTheme>
+					</MenuItem>
+				</ContextMenu>
+			</DataGrid.ContextMenu>
+
 			<DataGrid.Styles>
 				<Style Selector="Ellipse.draft">
 					<Setter Property="Fill" Value="{DynamicResource BrushStatusDraft}"/>
@@ -45,7 +83,7 @@
 			</DataGrid.Styles>
 
 			<DataGrid.Columns>
-				<DataGridTemplateColumn Width="40" CanUserResize="False">
+				<DataGridTemplateColumn Width="40" CanUserResize="False" CanUserSort="False">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate x:DataType="history:HistoryEntryViewModel">
 							<Ellipse Width="10" Height="10"
@@ -59,29 +97,33 @@
 				</DataGridTemplateColumn>
 
 				<DataGridTextColumn Header="Тип" Binding="{Binding TypeText}"
+									SortMemberPath="TypeText"
 									CellStyleClasses="name"
 									Width="190"/>
 
 				<DataGridTextColumn Header="Дата" Binding="{Binding ModifiedAt, StringFormat='dd.MM.yyyy HH:mm'}"
+									SortMemberPath="ModifiedAt"
 									Width="140"/>
 
 				<DataGridTextColumn Header="Документ" Binding="{Binding NumberSummaryText}"
+									SortMemberPath="NumberSummaryText"
 									CellStyleClasses="name"
 									Width="*"/>
 
-				<DataGridTemplateColumn Header="Файл" Width="200">
+				<DataGridTemplateColumn Header="Файл" SortMemberPath="FileName" Width="200">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate x:DataType="history:HistoryEntryViewModel">
 							<TextBlock Text="{Binding FileName}"
 									   ToolTip.Tip="{Binding FilePath}"
 									   VerticalAlignment="Center"
 									   Margin="5,0"
-									   TextTrimming="CharacterEllipsis"/>
+									   TextTrimming="CharacterEllipsis"
+									   DoubleTapped="OnFileNameDoubleTapped"/>
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
 
-				<DataGridTemplateColumn Width="60" CanUserResize="False">
+				<DataGridTemplateColumn Width="60" CanUserResize="False" CanUserSort="False">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate x:DataType="history:HistoryEntryViewModel">
 							<Button Content="⋯"
@@ -105,8 +147,8 @@
 												  IsVisible="{Binding HasCreateTargets}">
 											<MenuItem.ItemContainerTheme>
 												<ControlTheme TargetType="MenuItem"
-															  BasedOn="{StaticResource {x:Type MenuItem}}"
-															  x:DataType="history:CreateFromTargetItem">
+																  BasedOn="{StaticResource {x:Type MenuItem}}"
+																  x:DataType="history:CreateFromTargetItem">
 													<Setter Property="Header" Value="{Binding Text}"/>
 													<Setter Property="Command" Value="{Binding Command}"/>
 												</ControlTheme>
