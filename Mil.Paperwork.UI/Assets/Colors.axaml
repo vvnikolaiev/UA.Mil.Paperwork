@@ -50,11 +50,17 @@
     <!-- Expander border (CommissioningActReportView) -->
     <Color x:Key="ColorExpanderBorder">Black</Color>
 
+    <!-- History entry status indicators (HistoryView) -->
+    <Color x:Key="ColorStatusGenerated">#2E7D32</Color>
+    <Color x:Key="ColorStatusDraft">#F9A825</Color>
+
     <!-- Brushes built from semantic colors above -->
     <SolidColorBrush x:Key="BrushActionAdd"          Color="{StaticResource ColorActionAdd}"/>
     <SolidColorBrush x:Key="BrushActionDelete"        Color="{StaticResource ColorActionDelete}"/>
     <SolidColorBrush x:Key="BrushDefaultIndicator"    Color="{StaticResource ColorDefaultIndicator}"/>
     <SolidColorBrush x:Key="BrushDismantlingBackground" Color="{StaticResource ColorDismantlingBackground}"/>
     <SolidColorBrush x:Key="BrushExpanderBorder"      Color="{StaticResource ColorExpanderBorder}"/>
+    <SolidColorBrush x:Key="BrushStatusGenerated"     Color="{StaticResource ColorStatusGenerated}"/>
+    <SolidColorBrush x:Key="BrushStatusDraft"         Color="{StaticResource ColorStatusDraft}"/>
 
 </ResourceDictionary>

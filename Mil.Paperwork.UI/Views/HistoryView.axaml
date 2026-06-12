@@ -1,0 +1,113 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="450"
+			 x:Class="Mil.Paperwork.UI.Views.HistoryView"
+			 xmlns:tabs="using:Mil.Paperwork.UI.ViewModels.Tabs"
+			 xmlns:history="using:Mil.Paperwork.UI.ViewModels.History"
+			 x:DataType="tabs:HistoryViewModel"
+			 x:Name="Root">
+	<DockPanel>
+		<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
+			<ComboBox ItemsSource="{Binding TypeFilters}"
+					  SelectedItem="{Binding SelectedTypeFilter}"
+					  DisplayMemberBinding="{Binding Text, DataType={x:Type history:HistoryTypeFilterItem}}"
+					  Width="220" Margin="0,0,5,0"/>
+
+			<CalendarDatePicker SelectedDate="{Binding DateFrom}"
+								PlaceholderText="Від"
+								Width="140" Margin="0,0,5,0"/>
+
+			<CalendarDatePicker SelectedDate="{Binding DateTo}"
+								PlaceholderText="До"
+								Width="140" Margin="0,0,5,0"/>
+
+			<TextBox Text="{Binding SearchText, Mode=TwoWay}"
+					 PlaceholderText="Пошук…"
+					 Width="220" Margin="0,0,5,0"/>
+
+			<Button Content="Оновити" Command="{Binding RefreshCommand}" Margin="0,0,5,0"/>
+
+			<Button Classes="CloseTab" Content="Закрити" Command="{Binding CloseTabCommand}" Margin="0,0,5,0"/>
+		</StackPanel>
+
+		<DataGrid ItemsSource="{Binding Entries}"
+				  AutoGenerateColumns="False" Margin="5"
+				  IsReadOnly="True">
+			<DataGrid.Styles>
+				<Style Selector="Ellipse.draft">
+					<Setter Property="Fill" Value="{DynamicResource BrushStatusDraft}"/>
+				</Style>
+				<Style Selector="Ellipse.generated">
+					<Setter Property="Fill" Value="{DynamicResource BrushStatusGenerated}"/>
+				</Style>
+			</DataGrid.Styles>
+
+			<DataGrid.Columns>
+				<DataGridTemplateColumn Width="40" CanUserResize="False">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate x:DataType="history:HistoryEntryViewModel">
+							<Ellipse Width="10" Height="10"
+									 HorizontalAlignment="Center"
+									 VerticalAlignment="Center"
+									 Classes.draft="{Binding IsDraft}"
+									 Classes.generated="{Binding IsGenerated}"
+									 ToolTip.Tip="{Binding StatusText}"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTextColumn Header="Тип" Binding="{Binding TypeText}"
+									CellStyleClasses="name"
+									Width="190"/>
+
+				<DataGridTextColumn Header="Дата" Binding="{Binding ModifiedAt, StringFormat='dd.MM.yyyy HH:mm'}"
+									Width="140"/>
+
+				<DataGridTextColumn Header="Документ" Binding="{Binding NumberSummaryText}"
+									CellStyleClasses="name"
+									Width="*"/>
+
+				<DataGridTemplateColumn Header="Файл" Width="200">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate x:DataType="history:HistoryEntryViewModel">
+							<TextBlock Text="{Binding FileName}"
+									   ToolTip.Tip="{Binding FilePath}"
+									   VerticalAlignment="Center"
+									   Margin="5,0"
+									   TextTrimming="CharacterEllipsis"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn Width="60" CanUserResize="False">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate x:DataType="history:HistoryEntryViewModel">
+							<Button Content="⋯"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center">
+								<Button.Flyout>
+									<MenuFlyout>
+										<MenuItem Header="Відкрити"
+												  Command="{Binding #Root.DataContext.OpenEntryCommand}"
+												  CommandParameter="{Binding}"/>
+										<MenuItem Header="Відкрити файл"
+												  Command="{Binding #Root.DataContext.OpenGeneratedFileCommand}"
+												  CommandParameter="{Binding}"
+												  IsVisible="{Binding HasGeneratedFiles}"/>
+										<MenuItem Header="Видалити"
+												  Command="{Binding #Root.DataContext.RemoveEntryCommand}"
+												  CommandParameter="{Binding}"/>
+										<Separator/>
+										<MenuItem Header="Створити…" IsEnabled="False"/>
+									</MenuFlyout>
+								</Button.Flyout>
+							</Button>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+	</DockPanel>
+</UserControl>

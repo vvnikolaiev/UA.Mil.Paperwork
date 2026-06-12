@@ -55,6 +55,9 @@
 		<StackPanel Grid.Row="1" HorizontalAlignment="Left"
 					Orientation="Horizontal">
 
+			<Button Content="Історія"
+					Command="{Binding OpenHistoryCommand}" />
+
 			<Button Content="Довідник майна"
 					Command="{Binding OpenProductsDictionaryCommand}" />
 

@@ -136,6 +136,10 @@
 			<views:HomePageView />
 		</DataTemplate>
 
+		<DataTemplate DataType="{x:Type tabs:HistoryViewModel}">
+			<views:HistoryView />
+		</DataTemplate>
+
 	</Window.DataTemplates>
 
 	<Grid>

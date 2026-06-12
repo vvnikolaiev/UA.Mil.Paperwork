@@ -1,5 +1,6 @@
 ﻿using Mil.MVVM.Common;
 using Mil.Paperwork.Domain.Services;
+using Mil.Paperwork.DataAccess.Repositories;
 using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Factories;
@@ -18,6 +19,7 @@ namespace Mil.Paperwork.UI.ViewModels
         private readonly IDataService _dataService;
         private readonly IReportDataService _reportDataService;
         private readonly IReportHistoryService _reportHistoryService;
+        private readonly IReportHistoryRepository _reportHistoryRepository;
         private readonly IExportService _exportService;
         private readonly IImportService _importService;
         private readonly IDialogService _dialogService;
@@ -48,6 +50,7 @@ namespace Mil.Paperwork.UI.ViewModels
             IDataService dataService,
             IReportDataService reportDataService,
             IReportHistoryService reportHistoryService,
+            IReportHistoryRepository reportHistoryRepository,
             IExportService exportService,
             IImportService importService,
             IDialogService dialogService)
@@ -57,6 +60,7 @@ namespace Mil.Paperwork.UI.ViewModels
             _dataService = dataService;
             _reportDataService = reportDataService;
             _reportHistoryService = reportHistoryService;
+            _reportHistoryRepository = reportHistoryRepository;
             _exportService = exportService;
             _importService = importService;
             _dialogService = dialogService;
@@ -79,7 +83,7 @@ namespace Mil.Paperwork.UI.ViewModels
 
         private void AddHomeTab()
         {
-            var homePageVM = new HomePageViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _reportHistoryService, _exportService, _importService, _dialogService);
+            var homePageVM = new HomePageViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _reportHistoryService, _reportHistoryRepository, _exportService, _importService, _dialogService);
             homePageVM.TabAdded += OnNewTabAdded;
             homePageVM.TabSelectionRequested += OnTabSelectRequested;
 

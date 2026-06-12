@@ -1,6 +1,7 @@
 ﻿using Mil.MVVM.Common;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.Enums;
+using Mil.Paperwork.DataAccess.Repositories;
 using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Enums;
@@ -20,10 +21,12 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         private readonly IDataService _dataService;
         private readonly IReportDataService _reportDataService;
         private readonly IReportHistoryService _reportHistoryService;
+        private readonly IReportHistoryRepository _reportHistoryRepository;
         private readonly IExportService _exportService;
         private readonly IImportService _importService;
         private readonly IDialogService _dialogService;
         private readonly Dictionary<SettingsTabType, ISettingsTabViewModel> _settingTabViewModels;
+        private HistoryViewModel _historyViewModel;
 
         public event EventHandler<ITabViewModel> TabAdded;
         public event EventHandler<ITabViewModel> TabSelectionRequested;
@@ -37,6 +40,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
 
         public IDelegateCommand<ReportType> CreateReportCommand { get; }
 
+        public IDelegateCommand OpenHistoryCommand { get; }
         public IDelegateCommand OpenSettingsCommand { get; }
         public IDelegateCommand OpenProductsDictionaryCommand { get; }
         public IDelegateCommand OpenPeopleDictionaryCommand { get; }
@@ -53,6 +57,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             IDataService dataService,
             IReportDataService reportDataService,
             IReportHistoryService reportHistoryService,
+            IReportHistoryRepository reportHistoryRepository,
             IExportService exportService,
             IImportService importService,
             IDialogService dialogService)
@@ -62,6 +67,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             _dataService = dataService;
             _reportDataService = reportDataService;
             _reportHistoryService = reportHistoryService;
+            _reportHistoryRepository = reportHistoryRepository;
             _exportService = exportService;
             _importService = importService;
             _dialogService = dialogService;
@@ -70,6 +76,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             DocumentTypes = [.. GetAllReportTypes()];
 
             CreateReportCommand = new DelegateCommand<ReportType>(OpenNewReportTab);
+            OpenHistoryCommand = new DelegateCommand(OpenHistoryCommandExecute);
             OpenSettingsCommand = new DelegateCommand(OpenSettingsExecute);
             OpenProductsDictionaryCommand = new DelegateCommand(OpenProductsDictionaryCommandExecute);
             OpenPeopleDictionaryCommand = new DelegateCommand(OpenPeopleDictionaryCommandExecute);
@@ -152,6 +159,20 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
                 {
                     reportConfigViewModel.SelectReportType(reportType);
                 }
+            }
+        }
+
+        private void OpenHistoryCommandExecute()
+        {
+            if (_historyViewModel?.IsClosed == false)
+            {
+                _historyViewModel.Refresh();
+                TabSelectionRequested?.Invoke(this, _historyViewModel);
+            }
+            else
+            {
+                _historyViewModel = new HistoryViewModel(_reportHistoryRepository, _dialogService);
+                TabAdded?.Invoke(this, _historyViewModel);
             }
         }
 
