@@ -18,7 +18,7 @@ using System.Linq;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
-    internal class AssetValuationViewModel : BaseReportTabViewModel
+    internal class AssetValuationViewModel : BaseReportTabViewModel, IReportDataLoadable<IAssetValuationReportData>
     {
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
@@ -246,7 +246,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             }
         }
 
-        private void FillAssetComponentsTable(IList<AssetComponent> assetComponents)
+        protected void FillAssetComponentsTable(IList<AssetComponent> assetComponents)
         {
             var items = assetComponents.Select(x => new AssetValuationItemViewModel(x));
             ClearComponents();
@@ -330,6 +330,27 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             };
 
             return reportData;
+        }
+
+        public void LoadReportData(IAssetValuationReportData data)
+        {
+            var valuationData = data.ValuationData?.FirstOrDefault(item => item != null);
+            if (valuationData == null)
+            {
+                return;
+            }
+
+            Name = valuationData.Name;
+            ShortName = valuationData.ShortName;
+            NomenclatureCode = valuationData.NomenclatureCode;
+            Price = valuationData.Price;
+            SerialNumber = valuationData.SerialNumber;
+            Description = valuationData.Description;
+            ValuationDate = valuationData.ValuationDate;
+
+            FillAssetComponentsTable(valuationData.AssetComponents ?? []);
+
+            SaveState();
         }
 
         protected virtual void GenerateReport(string folderName)

@@ -8,13 +8,14 @@ using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Helpers;
 using Mil.Paperwork.UI.Managers;
 using Mil.Paperwork.UI.Memento;
+using Mil.Paperwork.UI.ViewModels.Tabs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
-    internal class AssetDismantlingViewModel : AssetValuationViewModel
+    internal class AssetDismantlingViewModel : AssetValuationViewModel, IReportDataLoadable<IDismantlingReportData>
     {
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
@@ -204,6 +205,30 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             };
 
             return reportData;
+        }
+
+        public void LoadReportData(IDismantlingReportData data)
+        {
+            var dismantlingData = data.Dismantlings?.FirstOrDefault();
+            if (dismantlingData == null)
+            {
+                return;
+            }
+
+            Name = dismantlingData.Name;
+            RegistrationNumber = dismantlingData.RegistrationNumber;
+            DocumentNumber = dismantlingData.DocumentNumber;
+            NomenclatureCode = dismantlingData.NomenclatureCode;
+            Price = dismantlingData.Price;
+            SerialNumber = dismantlingData.SerialNumber;
+            Description = dismantlingData.Description;
+            ValuationDate = dismantlingData.ValuationDate;
+
+            FillAssetComponentsTable(dismantlingData.AssetComponents ?? []);
+
+            FinalReportReasonText = dismantlingData.Reason;
+
+            SaveState();
         }
 
         protected override void GenerateReport(string folderName)

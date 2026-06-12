@@ -158,6 +158,159 @@ namespace Mil.Paperwork.Tests.History
             Assert.Equal(residualValueData.Assets, reportData.Assets);
         }
 
+        private static HandoverReportData CreateHandoverData()
+        {
+            var handoverData = new HandoverReportData
+            {
+                DocumentNumber = "ПП-7",
+                DocumentDate = new DateTime(2026, 04, 05),
+                ReasonDocumentName = "наказ командира",
+                PersonResponsible = CreatePerson("Тарас", "Бондаренко"),
+                PersonReceiver = CreatePerson("Андрій", "Коваленко"),
+                Assets =
+                [
+                    CreateAsset("Радіостанція", "SN-01", 2),
+                    CreateAsset("Антена", "SN-02")
+                ]
+            };
+
+            return handoverData;
+        }
+
+        private static CommissioningActReportData CreateCommissioningActData()
+        {
+            var actData = new CommissioningActReportData
+            {
+                DocumentNumber = "АВ-3",
+                DocumentDate = new DateTime(2026, 05, 12),
+                Asset = CreateAsset("Генератор", "SN-10"),
+                AssetIds = [new ProductIdentification { SerialNumber = "SN-10" }],
+                Count = 3,
+                PersonAccepted = CreatePerson("Ігор", "Петренко"),
+                PersonHanded = CreatePerson("Олег", "Шевченко")
+            };
+
+            return actData;
+        }
+
+        [Fact]
+        public void Handover23ToInvoice_MapsFields()
+        {
+            var conversion = new Handover23ToInvoiceConversion();
+            var handoverData = CreateHandoverData();
+
+            var results = conversion.Convert(handoverData);
+
+            var invoiceData = Assert.IsType<InvoceReportData>(Assert.Single(results));
+            Assert.Equal(handoverData.DocumentNumber, invoiceData.DocumentNumber);
+            Assert.Equal(handoverData.DocumentDate, invoiceData.DateCreated);
+            Assert.Equal(handoverData.DocumentDate.AddDays(10), invoiceData.DueDate);
+            Assert.Equal(handoverData.ReasonDocumentName, invoiceData.Reason);
+            Assert.Same(handoverData.PersonResponsible, invoiceData.Transmitter);
+            Assert.Same(handoverData.PersonReceiver, invoiceData.Recipient);
+            Assert.Equal(handoverData.Assets, invoiceData.Assets);
+        }
+
+        [Fact]
+        public void Handover23ToInvoice_WrongSourceType_ReturnsEmpty()
+        {
+            var conversion = new Handover23ToInvoiceConversion();
+
+            var results = conversion.Convert(new ResidualValueReportData());
+
+            Assert.Empty(results);
+        }
+
+        [Fact]
+        public void InvoiceToHandover23_MapsFields()
+        {
+            var conversion = new InvoiceToHandover23Conversion();
+            var invoiceData = CreateInvoiceData();
+
+            var results = conversion.Convert(invoiceData);
+
+            var handoverData = Assert.IsType<HandoverReportData>(Assert.Single(results));
+            Assert.Equal(invoiceData.DocumentNumber, handoverData.DocumentNumber);
+            Assert.Equal(invoiceData.DateCreated, handoverData.DocumentDate);
+            Assert.Equal(invoiceData.Reason, handoverData.ReasonDocumentName);
+            Assert.Equal(invoiceData.DateCreated, handoverData.ReasonDocumentDate);
+            Assert.Same(invoiceData.Transmitter, handoverData.PersonResponsible);
+            Assert.Same(invoiceData.Recipient, handoverData.PersonReceiver);
+            Assert.Equal(invoiceData.Assets, handoverData.Assets);
+        }
+
+        [Fact]
+        public void CommissioningActToInvoice_MapsFields()
+        {
+            var conversion = new CommissioningActToInvoiceConversion();
+            var actData = CreateCommissioningActData();
+
+            var results = conversion.Convert(actData);
+
+            var invoiceData = Assert.IsType<InvoceReportData>(Assert.Single(results));
+            Assert.Equal(actData.DocumentNumber, invoiceData.DocumentNumber);
+            Assert.Equal(actData.DocumentDate, invoiceData.DateCreated);
+            Assert.Equal(actData.DocumentDate.AddDays(10), invoiceData.DueDate);
+            Assert.Same(actData.PersonHanded, invoiceData.Transmitter);
+            Assert.Same(actData.PersonAccepted, invoiceData.Recipient);
+
+            var asset = Assert.Single(invoiceData.Assets);
+            Assert.Same(actData.Asset, asset);
+            Assert.Equal(actData.Count, asset.Count);
+        }
+
+        [Fact]
+        public void CommissioningActToInvoice_ProductAsset_WrapsIntoAssetInfo()
+        {
+            var conversion = new CommissioningActToInvoiceConversion();
+            var actData = CreateCommissioningActData();
+            actData.Asset = new ProductDTO
+            {
+                Name = "Генератор",
+                MeasurementUnit = "шт.",
+                NomenclatureCode = "NC-77",
+                Price = 1500.50m,
+                StartDate = new DateTime(2022, 05, 10)
+            };
+
+            var results = conversion.Convert(actData);
+
+            var invoiceData = Assert.IsType<InvoceReportData>(Assert.Single(results));
+            var asset = Assert.Single(invoiceData.Assets);
+            Assert.IsType<AssetInfo>(asset);
+            Assert.Equal(actData.Asset.Name, asset.Name);
+            Assert.Equal(actData.Asset.Price, asset.Price);
+            Assert.Equal("SN-10", asset.SerialNumber);
+            Assert.Equal(actData.Count, asset.Count);
+        }
+
+        [Fact]
+        public void CommissioningActToInvoice_NoAsset_ReturnsEmpty()
+        {
+            var conversion = new CommissioningActToInvoiceConversion();
+            var actData = CreateCommissioningActData();
+            actData.Asset = null;
+
+            var results = conversion.Convert(actData);
+
+            Assert.Empty(results);
+        }
+
+        [Fact]
+        public void CommissioningActToInitialTechnicalState_MapsFields()
+        {
+            var conversion = new CommissioningActToInitialTechnicalStateConversion();
+            var actData = CreateCommissioningActData();
+
+            var results = conversion.Convert(actData);
+
+            var reportData = Assert.IsType<InitialTechnicalStateReportData>(Assert.Single(results));
+            var asset = Assert.Single(reportData.Assets);
+            Assert.Same(actData.Asset, asset);
+            Assert.Same(actData.PersonAccepted, reportData.PersonAccepted);
+            Assert.Same(actData.PersonHanded, reportData.PersonHanded);
+        }
+
         [Fact]
         public void Registry_GetTargets_ReturnsConfiguredTargets()
         {
@@ -165,10 +318,14 @@ namespace Mil.Paperwork.Tests.History
 
             var invoiceTargets = registry.GetTargets(ReportType.Invoice);
             var residualValueTargets = registry.GetTargets(ReportType.ResidualValueReport);
-            var emptyTargets = registry.GetTargets(ReportType.Handover23Act);
+            var handoverTargets = registry.GetTargets(ReportType.Handover23Act);
+            var commissioningActTargets = registry.GetTargets(ReportType.CommissioningAct);
+            var emptyTargets = registry.GetTargets(ReportType.WriteOffOrder);
 
-            Assert.Equal([ReportType.CommissioningAct, ReportType.TechnicalStateReport], invoiceTargets);
+            Assert.Equal([ReportType.CommissioningAct, ReportType.TechnicalStateReport, ReportType.Handover23Act], invoiceTargets);
             Assert.Equal([ReportType.WriteOffPackage, ReportType.TechnicalStateReport], residualValueTargets);
+            Assert.Equal([ReportType.Invoice], handoverTargets);
+            Assert.Equal([ReportType.Invoice, ReportType.TechnicalStateReport], commissioningActTargets);
             Assert.Empty(emptyTargets);
         }
 
@@ -201,7 +358,11 @@ namespace Mil.Paperwork.Tests.History
                 new InvoiceToCommissioningActConversion(),
                 new InvoiceToInitialTechnicalStateConversion(),
                 new ResidualValueToWriteOffPackageConversion(),
-                new ResidualValueToInitialTechnicalStateConversion()
+                new ResidualValueToInitialTechnicalStateConversion(),
+                new Handover23ToInvoiceConversion(),
+                new InvoiceToHandover23Conversion(),
+                new CommissioningActToInvoiceConversion(),
+                new CommissioningActToInitialTechnicalStateConversion()
             ]);
 
             return registry;

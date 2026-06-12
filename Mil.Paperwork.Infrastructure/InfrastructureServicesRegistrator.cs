@@ -8,7 +8,6 @@ namespace Mil.Paperwork.Infrastructure
         public static void Register(IServiceCollection services)
         {
             services.AddSingleton<IFileStorageService, FileStorageService>();
-            services.AddSingleton<IReportDataService, ReportDataService>();
         }
     }
 }

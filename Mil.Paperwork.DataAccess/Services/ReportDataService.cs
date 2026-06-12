@@ -2,10 +2,11 @@
 using Mil.Paperwork.Infrastructure.DataModels.Configuration;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
+using Mil.Paperwork.Infrastructure.Services;
 using System.IO;
 using System.Text;
 
-namespace Mil.Paperwork.Infrastructure.Services
+namespace Mil.Paperwork.DataAccess.Services
 {
     internal class ReportDataService : IReportDataService
     {

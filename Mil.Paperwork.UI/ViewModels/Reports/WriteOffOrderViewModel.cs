@@ -17,7 +17,7 @@ using System.Linq;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
-    internal class WriteOffOrderViewModel : BaseReportTabViewModel
+    internal class WriteOffOrderViewModel : BaseReportTabViewModel, IReportDataLoadable<IWriteOffOrderReportData>
     {
         private const string HeaderText = "Наказ про списання";
 
@@ -289,6 +289,45 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             };
 
             return reportData;
+        }
+
+        public void LoadReportData(IWriteOffOrderReportData data)
+        {
+            ReportNum = data.ReportNum;
+            ReportDate = data.ReportDate;
+            EventDate = data.EventDate;
+            EventTime = data.EventTime;
+            BattleOrder = data.BattleOrder;
+            BattleOrderDate = data.BattleOrderDate;
+            BattleOrderLocation = data.BattleOrderLocation;
+            SubdivisionName = data.SubdivisionName;
+            ReporterRank = data.ReporterRank;
+            ReporterName = data.ReporterName;
+            CreatorPosition = data.CreatorPosition;
+            CreatorRank = data.CreatorRank;
+            CreatorName = data.CreatorName;
+            MilUnitApproval = data.MilUnitApproval;
+            WhatHappened = data.WhatHappened;
+
+            Services.Clear();
+            foreach (var serviceData in data.Services ?? [])
+            {
+                var serviceViewModel = new WriteOffServiceViewModel(
+                    AvailableServices,
+                    AssetTypes,
+                    AvailableMeasurementUnits,
+                    RemoveService,
+                    AddServiceToDictionary);
+
+                serviceViewModel.LoadFrom(serviceData);
+                Services.Add(serviceViewModel);
+            }
+
+            Witnesses.Clear();
+            foreach (var witnessData in data.Witnesses ?? [])
+            {
+                Witnesses.Add(WriteOffWitnessViewModel.FromWitnessData(witnessData));
+            }
         }
 
         private void OpenConfigurationCommandExecute()

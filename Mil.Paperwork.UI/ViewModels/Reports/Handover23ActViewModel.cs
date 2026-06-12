@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
-    internal class Handover23ActViewModel : BaseReportTabViewModel
+    internal class Handover23ActViewModel : BaseReportTabViewModel, IReportDataLoadable<IHandoverReportData>
     {
         private const string HeaderText = "Додаток №23";
 
@@ -201,6 +201,22 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             // Generate report
             _reportManager.GenerateHandover23Act(reportData, EnsureHistoryEntryId());
+        }
+
+        public void LoadReportData(IHandoverReportData data)
+        {
+            DocumentNumber = data.DocumentNumber;
+            DocumentDate = data.DocumentDate;
+            DateStart = data.DateStart;
+            DateEnd = data.DateEnd;
+            SupplierName = data.Supplier;
+            ReceiverName = data.Receiver;
+            ReasonDocumentName = data.ReasonDocumentName;
+            ReasonDocumentNumber = data.ReasonDocumentNumber;
+            ReasonDocumentDate = data.ReasonDocumentDate;
+
+            AssetsTable.LoadAssets(data.Assets ?? []);
+            AssetAcceptance.LoadFrom(data.PersonReceiver, data.PersonResponsible);
         }
 
         private void OpenConfigurationCommandExecute()

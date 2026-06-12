@@ -22,7 +22,6 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         private const string ConfirmationCaption = "Підтвердження";
         private const string ErrorCaption = "Помилка";
         private const string RemoveEntryConfirmation = "Видалити цей запис історії?";
-        private const string OpenEntryNotSupportedMessage = "Відкриття запису з історії ще не підтримується.";
         private const string PathNotFoundMessageFormat = "Файл або теку не знайдено:\n{0}";
         private const string OpenPathErrorMessageFormat = "Не вдалося відкрити:\n{0}";
 
@@ -236,22 +235,14 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             return result;
         }
 
-        private async void OpenEntryCommandExecute(HistoryEntryViewModel entry)
+        private void OpenEntryCommandExecute(HistoryEntryViewModel entry)
         {
             if (entry == null)
             {
                 return;
             }
 
-            var handler = OpenHistoryEntryRequested;
-            if (handler != null)
-            {
-                handler.Invoke(this, entry.Id);
-            }
-            else
-            {
-                await _dialogService.ShowMessageAsync(OpenEntryNotSupportedMessage, ConfirmationCaption);
-            }
+            OpenHistoryEntryRequested?.Invoke(this, entry.Id);
         }
 
         private async void OpenGeneratedFileCommandExecute(HistoryEntryViewModel entry)

@@ -181,6 +181,27 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             }
         }
 
+        public void LoadFrom(WriteOffServiceData data)
+        {
+            SelectedService = AvailableServices.FirstOrDefault(service => service.NominativeName == data.ServiceName);
+
+            Assets.Clear();
+            foreach (var assetData in data.Assets ?? [])
+            {
+                var assetViewModel = new WriteOffServiceAssetViewModel
+                {
+                    Name = assetData.Name,
+                    Count = assetData.Count,
+                    MeasurementUnit = assetData.MeasurementUnit,
+                    Amount = assetData.Amount
+                };
+
+                Assets.Add(assetViewModel);
+            }
+
+            SelectedAsset = Assets.FirstOrDefault();
+        }
+
         public WriteOffServiceData ToServiceData()
         {
             var result = new WriteOffServiceData

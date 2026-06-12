@@ -20,18 +20,6 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
 {
     internal class HomePageViewModel : ObservableItem, ITabViewModel
     {
-        private const string OpenHistoryNotSupportedMessage = "Відкриття цього типу запису з історії ще не підтримується.";
-        private const string InfoCaption = "Інформація";
-
-        private static readonly HashSet<ReportType> _supportedHistoryTypes =
-        [
-            ReportType.Invoice,
-            ReportType.CommissioningAct,
-            ReportType.TechnicalStateReport,
-            ReportType.ResidualValueReport,
-            ReportType.WriteOffPackage,
-        ];
-
         private readonly ReportManager _reportManager;
         private readonly IAssetFactory _assetFactory;
         private readonly IDataService _dataService;
@@ -175,17 +163,11 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             return createdTab;
         }
 
-        private async void OnOpenHistoryEntryRequested(object? sender, Guid id)
+        private void OnOpenHistoryEntryRequested(object? sender, Guid id)
         {
             var entry = _reportHistoryRepository.GetEntry(id);
             if (entry == null)
             {
-                return;
-            }
-
-            if (!_supportedHistoryTypes.Contains(entry.ReportType))
-            {
-                await _dialogService.ShowMessageAsync(OpenHistoryNotSupportedMessage, InfoCaption);
                 return;
             }
 
@@ -251,6 +233,18 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
                     break;
                 case IWriteOffPackageReportData wopData when tab is AssetTechnicalStateViewModel wopVm:
                     wopVm.LoadReportData(wopData);
+                    break;
+                case IDismantlingReportData dismantlingData when tab is AssetDismantlingViewModel dismantlingVm:
+                    dismantlingVm.LoadReportData(dismantlingData);
+                    break;
+                case IAssetValuationReportData valuationData when tab is AssetValuationViewModel valuationVm:
+                    valuationVm.LoadReportData(valuationData);
+                    break;
+                case IHandoverReportData handoverData when tab is Handover23ActViewModel handoverVm:
+                    handoverVm.LoadReportData(handoverData);
+                    break;
+                case IWriteOffOrderReportData writeOffOrderData when tab is WriteOffOrderViewModel writeOffOrderVm:
+                    writeOffOrderVm.LoadReportData(writeOffOrderData);
                     break;
             }
         }
