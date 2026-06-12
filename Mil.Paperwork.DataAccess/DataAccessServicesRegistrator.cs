@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Mil.Paperwork.DataAccess.Conversions;
 using Mil.Paperwork.DataAccess.Repositories;
 using Mil.Paperwork.DataAccess.Services;
 
@@ -11,6 +12,12 @@ namespace Mil.Paperwork.DataAccess
             services.AddSingleton<IDataService, DataService>();
             services.AddSingleton<IReportHistoryRepository, JsonReportHistoryRepository>();
             services.AddSingleton<IReportHistoryService, ReportHistoryService>();
+
+            services.AddSingleton<IReportDataConversion, InvoiceToCommissioningActConversion>();
+            services.AddSingleton<IReportDataConversion, InvoiceToInitialTechnicalStateConversion>();
+            services.AddSingleton<IReportDataConversion, ResidualValueToWriteOffPackageConversion>();
+            services.AddSingleton<IReportDataConversion, ResidualValueToInitialTechnicalStateConversion>();
+            services.AddSingleton<ReportConversionRegistry>();
         }
     }
 }

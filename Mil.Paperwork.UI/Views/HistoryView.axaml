@@ -99,8 +99,19 @@
 										<MenuItem Header="Видалити"
 												  Command="{Binding #Root.DataContext.RemoveEntryCommand}"
 												  CommandParameter="{Binding}"/>
-										<Separator/>
-										<MenuItem Header="Створити…" IsEnabled="False"/>
+										<Separator IsVisible="{Binding HasCreateTargets}"/>
+										<MenuItem Header="Створити…"
+												  ItemsSource="{Binding CreateTargets}"
+												  IsVisible="{Binding HasCreateTargets}">
+											<MenuItem.ItemContainerTheme>
+												<ControlTheme TargetType="MenuItem"
+															  BasedOn="{StaticResource {x:Type MenuItem}}"
+															  x:DataType="history:CreateFromTargetItem">
+													<Setter Property="Header" Value="{Binding Text}"/>
+													<Setter Property="Command" Value="{Binding Command}"/>
+												</ControlTheme>
+											</MenuItem.ItemContainerTheme>
+										</MenuItem>
 									</MenuFlyout>
 								</Button.Flyout>
 							</Button>

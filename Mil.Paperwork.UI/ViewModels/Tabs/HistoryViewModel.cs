@@ -1,4 +1,6 @@
 using Mil.MVVM.Common;
+using Mil.Paperwork.DataAccess.Conversions;
+using Mil.Paperwork.DataAccess.DataModels.History;
 using Mil.Paperwork.DataAccess.Repositories;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
@@ -25,6 +27,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         private const string OpenPathErrorMessageFormat = "Не вдалося відкрити:\n{0}";
 
         private readonly IReportHistoryRepository _historyRepository;
+        private readonly ReportConversionRegistry _conversionRegistry;
         private readonly IDialogService _dialogService;
 
         private List<HistoryEntryViewModel> _allEntries;
@@ -34,7 +37,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         private string _searchText = string.Empty;
 
         public event EventHandler<Guid> OpenHistoryEntryRequested;
-        public event EventHandler<Guid> CreateFromEntryRequested;
+        public event EventHandler<CreateFromRequestedEventArgs> CreateFromRequested;
 
         public override string Header => TabHeader;
 
@@ -97,10 +100,14 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         public IDelegateCommand<HistoryEntryViewModel> OpenGeneratedFileCommand { get; }
         public IDelegateCommand<HistoryEntryViewModel> RemoveEntryCommand { get; }
 
-        public HistoryViewModel(IReportHistoryRepository historyRepository, IDialogService dialogService)
+        public HistoryViewModel(
+            IReportHistoryRepository historyRepository,
+            ReportConversionRegistry conversionRegistry,
+            IDialogService dialogService)
             : base(dialogService)
         {
             _historyRepository = historyRepository;
+            _conversionRegistry = conversionRegistry;
             _dialogService = dialogService;
 
             _allEntries = [];
@@ -121,7 +128,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         {
             var index = _historyRepository.GetIndex();
             var entries = index
-                .Select(entry => new HistoryEntryViewModel(entry))
+                .Select(entry => new HistoryEntryViewModel(entry, BuildCreateTargets(entry)))
                 .OrderByDescending(entry => entry.ModifiedAt)
                 .ToList();
 
@@ -134,6 +141,21 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         protected override void Close()
         {
             RaiseTabCloseRequested();
+        }
+
+        private IReadOnlyList<CreateFromTargetItem> BuildCreateTargets(ReportHistoryIndexEntry indexEntry)
+        {
+            var targetTypes = _conversionRegistry.GetTargets(indexEntry.ReportType);
+            var targets = targetTypes
+                .Select(targetType => new CreateFromTargetItem(indexEntry.Id, targetType, targetType.GetDescription(), RaiseCreateFromRequested))
+                .ToList();
+
+            return targets;
+        }
+
+        private void RaiseCreateFromRequested(Guid entryId, ReportType targetType)
+        {
+            CreateFromRequested?.Invoke(this, new CreateFromRequestedEventArgs(entryId, targetType));
         }
 
         private void OnTabCloseRequested(object? sender, ITabViewModel tabViewModel)

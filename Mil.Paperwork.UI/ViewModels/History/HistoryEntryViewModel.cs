@@ -4,6 +4,7 @@ using Mil.Paperwork.DataAccess.Enums;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -40,7 +41,11 @@ namespace Mil.Paperwork.UI.ViewModels.History
 
         public bool HasGeneratedFiles { get; }
 
-        public HistoryEntryViewModel(ReportHistoryIndexEntry indexEntry)
+        public IReadOnlyList<CreateFromTargetItem> CreateTargets { get; }
+
+        public bool HasCreateTargets { get; }
+
+        public HistoryEntryViewModel(ReportHistoryIndexEntry indexEntry, IReadOnlyList<CreateFromTargetItem> createTargets)
         {
             IndexEntry = indexEntry;
             Id = indexEntry.Id;
@@ -55,6 +60,8 @@ namespace Mil.Paperwork.UI.ViewModels.History
             FilePath = indexEntry.GeneratedFiles.FirstOrDefault() ?? string.Empty;
             FileName = Path.GetFileName(FilePath);
             HasGeneratedFiles = indexEntry.GeneratedFiles.Count > 0;
+            CreateTargets = createTargets;
+            HasCreateTargets = createTargets.Count > 0;
         }
 
         private static string BuildNumberSummaryText(ReportHistoryIndexEntry indexEntry)

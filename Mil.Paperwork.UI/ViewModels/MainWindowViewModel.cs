@@ -1,5 +1,6 @@
 ﻿using Mil.MVVM.Common;
 using Mil.Paperwork.Domain.Services;
+using Mil.Paperwork.DataAccess.Conversions;
 using Mil.Paperwork.DataAccess.Repositories;
 using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Infrastructure.Services;
@@ -20,6 +21,7 @@ namespace Mil.Paperwork.UI.ViewModels
         private readonly IReportDataService _reportDataService;
         private readonly IReportHistoryService _reportHistoryService;
         private readonly IReportHistoryRepository _reportHistoryRepository;
+        private readonly ReportConversionRegistry _conversionRegistry;
         private readonly IExportService _exportService;
         private readonly IImportService _importService;
         private readonly IDialogService _dialogService;
@@ -51,6 +53,7 @@ namespace Mil.Paperwork.UI.ViewModels
             IReportDataService reportDataService,
             IReportHistoryService reportHistoryService,
             IReportHistoryRepository reportHistoryRepository,
+            ReportConversionRegistry conversionRegistry,
             IExportService exportService,
             IImportService importService,
             IDialogService dialogService)
@@ -61,6 +64,7 @@ namespace Mil.Paperwork.UI.ViewModels
             _reportDataService = reportDataService;
             _reportHistoryService = reportHistoryService;
             _reportHistoryRepository = reportHistoryRepository;
+            _conversionRegistry = conversionRegistry;
             _exportService = exportService;
             _importService = importService;
             _dialogService = dialogService;
@@ -83,7 +87,7 @@ namespace Mil.Paperwork.UI.ViewModels
 
         private void AddHomeTab()
         {
-            var homePageVM = new HomePageViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _reportHistoryService, _reportHistoryRepository, _exportService, _importService, _dialogService);
+            var homePageVM = new HomePageViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _reportHistoryService, _reportHistoryRepository, _conversionRegistry, _exportService, _importService, _dialogService);
             homePageVM.TabAdded += OnNewTabAdded;
             homePageVM.TabSelectionRequested += OnTabSelectRequested;
 

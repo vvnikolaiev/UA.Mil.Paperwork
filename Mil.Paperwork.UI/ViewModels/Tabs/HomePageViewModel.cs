@@ -1,4 +1,5 @@
 ﻿using Mil.MVVM.Common;
+using Mil.Paperwork.DataAccess.Conversions;
 using Mil.Paperwork.DataAccess.Mappers;
 using Mil.Paperwork.DataAccess.Repositories;
 using Mil.Paperwork.DataAccess.Services;
@@ -10,6 +11,7 @@ using Mil.Paperwork.UI.Enums;
 using Mil.Paperwork.UI.Factories;
 using Mil.Paperwork.UI.Managers;
 using Mil.Paperwork.UI.ViewModels.Dictionaries;
+using Mil.Paperwork.UI.ViewModels.History;
 using Mil.Paperwork.UI.ViewModels.Reports;
 using System;
 using System.Collections.Generic;
@@ -36,6 +38,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         private readonly IReportDataService _reportDataService;
         private readonly IReportHistoryService _reportHistoryService;
         private readonly IReportHistoryRepository _reportHistoryRepository;
+        private readonly ReportConversionRegistry _conversionRegistry;
         private readonly IExportService _exportService;
         private readonly IImportService _importService;
         private readonly IDialogService _dialogService;
@@ -72,6 +75,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             IReportDataService reportDataService,
             IReportHistoryService reportHistoryService,
             IReportHistoryRepository reportHistoryRepository,
+            ReportConversionRegistry conversionRegistry,
             IExportService exportService,
             IImportService importService,
             IDialogService dialogService)
@@ -82,6 +86,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             _reportDataService = reportDataService;
             _reportHistoryService = reportHistoryService;
             _reportHistoryRepository = reportHistoryRepository;
+            _conversionRegistry = conversionRegistry;
             _exportService = exportService;
             _importService = importService;
             _dialogService = dialogService;
@@ -191,24 +196,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
                 return;
             }
 
-            switch (reportData)
-            {
-                case IInvoceReportData invoiceData when createdTab is InvoiceReportViewModel invoiceVm:
-                    invoiceVm.LoadReportData(invoiceData);
-                    break;
-                case ICommissioningActReportData commActData when createdTab is CommissioningActReportViewModel commActVm:
-                    commActVm.LoadReportData(commActData);
-                    break;
-                case IInitialTechnicalStateReportData initTsData when createdTab is AssetInitialTechnicalStateViewModel initTsVm:
-                    initTsVm.LoadReportData(initTsData);
-                    break;
-                case IResidualValueReportData rvData when createdTab is ResidualValueReportViewModel rvVm:
-                    rvVm.LoadReportData(rvData);
-                    break;
-                case IWriteOffPackageReportData wopData when createdTab is AssetTechnicalStateViewModel wopVm:
-                    wopVm.LoadReportData(wopData);
-                    break;
-            }
+            LoadReportDataIntoTab(createdTab, reportData);
 
             if (createdTab is BaseReportTabViewModel baseTab)
             {
@@ -217,6 +205,54 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
 
             createdTab.OpenReportSettingsRequested += OnOpenReportSettingsRequested;
             TabAdded?.Invoke(this, createdTab);
+        }
+
+        private void OnCreateFromEntryRequested(object? sender, CreateFromRequestedEventArgs args)
+        {
+            var entry = _reportHistoryRepository.GetEntry(args.EntryId);
+            if (entry?.Snapshot == null)
+            {
+                return;
+            }
+
+            var sourceData = ReportSnapshotMapper.ToReportData(entry.Snapshot);
+            var convertedDataItems = _conversionRegistry.Convert(entry.ReportType, args.TargetType, sourceData);
+
+            foreach (var convertedData in convertedDataItems)
+            {
+                var createdTab = CreateReportTab(args.TargetType);
+                if (createdTab == null)
+                {
+                    continue;
+                }
+
+                LoadReportDataIntoTab(createdTab, convertedData);
+
+                createdTab.OpenReportSettingsRequested += OnOpenReportSettingsRequested;
+                TabAdded?.Invoke(this, createdTab);
+            }
+        }
+
+        private static void LoadReportDataIntoTab(IReportTabViewModel tab, IReportData reportData)
+        {
+            switch (reportData)
+            {
+                case IInvoceReportData invoiceData when tab is InvoiceReportViewModel invoiceVm:
+                    invoiceVm.LoadReportData(invoiceData);
+                    break;
+                case ICommissioningActReportData commActData when tab is CommissioningActReportViewModel commActVm:
+                    commActVm.LoadReportData(commActData);
+                    break;
+                case IInitialTechnicalStateReportData initTsData when tab is AssetInitialTechnicalStateViewModel initTsVm:
+                    initTsVm.LoadReportData(initTsData);
+                    break;
+                case IResidualValueReportData rvData when tab is ResidualValueReportViewModel rvVm:
+                    rvVm.LoadReportData(rvData);
+                    break;
+                case IWriteOffPackageReportData wopData when tab is AssetTechnicalStateViewModel wopVm:
+                    wopVm.LoadReportData(wopData);
+                    break;
+            }
         }
 
         private void OnOpenReportSettingsRequested(object? sender, ReportType reportType)
@@ -240,8 +276,9 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             }
             else
             {
-                _historyViewModel = new HistoryViewModel(_reportHistoryRepository, _dialogService);
+                _historyViewModel = new HistoryViewModel(_reportHistoryRepository, _conversionRegistry, _dialogService);
                 _historyViewModel.OpenHistoryEntryRequested += OnOpenHistoryEntryRequested;
+                _historyViewModel.CreateFromRequested += OnCreateFromEntryRequested;
                 TabAdded?.Invoke(this, _historyViewModel);
             }
         }
