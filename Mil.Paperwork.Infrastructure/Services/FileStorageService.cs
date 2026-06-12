@@ -4,24 +4,28 @@ namespace Mil.Paperwork.Infrastructure.Services
 {
     internal class FileStorageService : IFileStorageService
     {
-        public void SaveFile(string path, byte[] fileContent)
+        public string SaveFile(string path, byte[] fileContent)
         {
-            if (!string.IsNullOrEmpty(path))
+            if (string.IsNullOrEmpty(path))
             {
-                var fileInfo = new FileInfo(path);
-
-                if (!fileInfo.Directory?.Exists ?? false)
-                {
-                    Directory.CreateDirectory(fileInfo.DirectoryName);
-                }
-
-                if (fileInfo.Exists)
-                {
-                    path = GetUniqueFileName(path);
-                }
-
-                File.WriteAllBytes(path, fileContent);
+                return string.Empty;
             }
+
+            var fileInfo = new FileInfo(path);
+
+            if (!fileInfo.Directory?.Exists ?? false)
+            {
+                Directory.CreateDirectory(fileInfo.DirectoryName);
+            }
+
+            if (fileInfo.Exists)
+            {
+                path = GetUniqueFileName(path);
+            }
+
+            File.WriteAllBytes(path, fileContent);
+
+            return path;
         }
 
         public T? ReadJsonFile<T>(string fileName, string directory = null)

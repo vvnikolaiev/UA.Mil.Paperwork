@@ -77,12 +77,15 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public IDelegateCommand GenerateReportCommand { get; }
         public IDelegateCommand SelectFolderCommand { get; }
 
+        protected override ReportType HistoryReportType => ReportType.ResidualValueReport;
+
         public ResidualValueReportViewModel(
             ReportManager reportManager,
             IAssetFactory assetFactory,
             IDataService dataService,
             IReportDataService reportDataService,
-            IDialogService dialogService) : base(dialogService)
+            IReportHistoryService reportHistoryService,
+            IDialogService dialogService) : base(reportHistoryService, dialogService)
         {
             _dataService = dataService;
             _reportManager = reportManager;
@@ -98,7 +101,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             SelectFolderCommand = new DelegateCommand(SelectFolder);
         }
 
-        private void GenerateReport()
+        protected override IReportData BuildReportData()
         {
             var assets = AssetsTable.AssetsCollection.Select(x => x.ToAssetInfo(EventType));
             var reportData = new ResidualValueReportData
@@ -110,6 +113,13 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                 Assets = [.. assets],
                 MetalCosts = MetalCostCollection.ToDictionary(x => x.Metal, x => x.Cost)
             };
+
+            return reportData;
+        }
+
+        private void GenerateReport()
+        {
+            var reportData = (ResidualValueReportData)BuildReportData();
 
             reportData.DestinationFolder = Path.Combine(reportData.DestinationFolder, $"{reportData.EventDate:yyyyMMdd} {reportData.EventReportNumber}");
 
@@ -127,7 +137,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             var productInfos = reportData.Assets.Select(DTOConvertionHelper.ConvertToProductDTO).ToList();
             _dataService.AlterProductsData(productInfos);
-            _reportManager.GenerateResidualValueReport(reportData);
+            _reportManager.GenerateResidualValueReport(reportData, EnsureHistoryEntryId());
         }
 
         private void SelectFolder()

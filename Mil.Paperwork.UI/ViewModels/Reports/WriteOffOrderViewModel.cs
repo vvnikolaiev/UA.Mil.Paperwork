@@ -140,12 +140,15 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public IDelegateCommand GenerateReportCommand { get; }
         public IDelegateCommand OpenConfigurationCommand { get; }
 
+        protected override ReportType HistoryReportType => ReportType.WriteOffOrder;
+
         public WriteOffOrderViewModel(
             ReportManager reportManager,
             IDataService dataService,
             IReportDataService reportDataService,
+            IReportHistoryService reportHistoryService,
             IDialogService dialogService)
-            : base(dialogService)
+            : base(reportHistoryService, dialogService)
         {
             _reportManager = reportManager;
             _dataService = dataService;
@@ -255,6 +258,15 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             var creatorDto = new PersonDTO(CreatorName, CreatorPosition, CreatorRank);
 
+            var reportData = (WriteOffOrderReportData)BuildReportData();
+            reportData.DestinationFolder = folderName;
+
+            _dataService.AlterPeople([creatorDto]);
+            _reportManager.GenerateWriteOffOrder(reportData, EnsureHistoryEntryId());
+        }
+
+        protected override IReportData BuildReportData()
+        {
             var reportData = new WriteOffOrderReportData
             {
                 ReportNum = ReportNum,
@@ -274,11 +286,9 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                 WhatHappened = WhatHappened,
                 Services = [.. Services.Select(s => s.ToServiceData())],
                 Witnesses = [.. Witnesses.Select(w => w.ToWitnessData())],
-                DestinationFolder = folderName
             };
 
-            _dataService.AlterPeople([creatorDto]);
-            _reportManager.GenerateWriteOffOrder(reportData);
+            return reportData;
         }
 
         private void OpenConfigurationCommandExecute()

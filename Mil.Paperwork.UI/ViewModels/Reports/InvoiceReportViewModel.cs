@@ -107,7 +107,13 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public IDelegateCommand GenerateReportCommand { get; }
         public IDelegateCommand OpenConfigurationCommand { get; }
 
-        public InvoiceReportViewModel(ReportManager reportManager, IDataService dataService, IDialogService dialogService) : base(dialogService)
+        protected override ReportType HistoryReportType => ReportType.Invoice;
+
+        public InvoiceReportViewModel(
+            ReportManager reportManager,
+            IDataService dataService,
+            IReportHistoryService reportHistoryService,
+            IDialogService dialogService) : base(reportHistoryService, dialogService)
         {
             _reportManager = reportManager;
             _dataService = dataService;
@@ -179,28 +185,31 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             return isValid;
         }
 
-        protected void GenerateReport(string folderName)
+        protected override IReportData BuildReportData()
         {
-            var personRecipient = AssetAcceptance.GetAcceptedDTO();
-            var personTransmitter = AssetAcceptance.GetHandedDTO();
-
             var reportData = new InvoceReportData
             {
                 DocumentNumber = DocumentNumber,
                 Assets = [.. AssetsCollection.Select(x => x.ToAssetInfo())],
-                Recipient = personRecipient,
-                Transmitter = personTransmitter,
+                Recipient = AssetAcceptance.GetAcceptedDTO(),
+                Transmitter = AssetAcceptance.GetHandedDTO(),
                 Reason = Reason,
                 DateCreated = DateCreated,
                 DueDate = DueDate,
-
-                DestinationFolder = folderName,
             };
 
-            _dataService.AlterPeople([personRecipient, personTransmitter]);
+            return reportData;
+        }
+
+        protected void GenerateReport(string folderName)
+        {
+            var reportData = (InvoceReportData)BuildReportData();
+            reportData.DestinationFolder = folderName;
+
+            _dataService.AlterPeople([reportData.Recipient, reportData.Transmitter]);
 
             // Generate report
-            _reportManager.GenerateInvoice(reportData);
+            _reportManager.GenerateInvoice(reportData, EnsureHistoryEntryId());
         }
 
         private void OpenConfigurationCommandExecute()

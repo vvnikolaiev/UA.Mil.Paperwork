@@ -18,7 +18,7 @@ namespace Mil.Paperwork.Domain.Services
             _fileStorage = fileStorage;
         }
 
-        public bool TryGenerateReport(IWriteOffPackageReportData reportData)
+        public ReportGenerationResult TryGenerateReport(IWriteOffPackageReportData reportData)
         {
             var reports = new List<IWriteOffPackageReport>()
             {
@@ -30,31 +30,35 @@ namespace Mil.Paperwork.Domain.Services
 
             var parameters = WriteOffPackageParameters.FromReportData(reportData);
 
-            var globalResult = true;
+            var globalSuccess = true;
+            var outputFiles = new List<string>();
 
             foreach (var report in reports)
             {
-                var result = report.TryCreate(parameters);
+                var created = report.TryCreate(parameters);
 
-                if (result)
+                if (created)
                 {
-                    SaveReport(report, reportData);
+                    var savedPath = SaveReport(report, reportData);
+                    outputFiles.Add(savedPath);
                 }
 
-                globalResult &= result;
+                globalSuccess &= created;
             }
 
-            return globalResult;
+            var result = ReportGenerationResult.FromResult(globalSuccess, outputFiles);
+            return result;
         }
 
-        private void SaveReport(IWriteOffPackageReport report, IReportData reportData)
+        private string SaveReport(IWriteOffPackageReport report, IReportData reportData)
         {
             byte[] reportBytes = report.GetReportBytes();
 
             var destinationPath = reportData.GetDestinationPath();
             var fileName = PathsHelper.SanitizeFileName(report.OutputFileName);
             var outputPath = Path.Combine(destinationPath, fileName);
-            _fileStorage.SaveFile(outputPath, reportBytes);
+            var savedPath = _fileStorage.SaveFile(outputPath, reportBytes);
+            return savedPath;
         }
     }
 }

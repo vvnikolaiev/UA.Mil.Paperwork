@@ -10,6 +10,7 @@ namespace Mil.Paperwork.DataAccess
         {
             services.AddSingleton<IDataService, DataService>();
             services.AddSingleton<IReportHistoryRepository, JsonReportHistoryRepository>();
+            services.AddSingleton<IReportHistoryService, ReportHistoryService>();
         }
     }
 }

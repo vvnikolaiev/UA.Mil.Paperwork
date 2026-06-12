@@ -91,9 +91,10 @@ namespace Mil.Paperwork.Tests
         {
             public byte[]? SavedBytes { get; private set; }
 
-            public void SaveFile(string _, byte[] bytes)
+            public string SaveFile(string path, byte[] bytes)
             {
                 SavedBytes = bytes;
+                return path;
             }
 
             public T? ReadJsonFile<T>(string _, string? __ = null)
@@ -170,7 +171,11 @@ namespace Mil.Paperwork.Tests
         public void TryGenerateReport_WithTwoServices_ReturnsTrue()
         {
             var service = new WriteOffOrderReportService(new StubReportDataService(), new CapturingFileStorageService());
-            Assert.True(service.TryGenerateReport(BuildTestData()));
+            var result = service.TryGenerateReport(BuildTestData());
+
+            Assert.True(result);
+            var outputFile = Assert.Single(result.OutputFiles);
+            Assert.EndsWith(".docx", outputFile);
         }
 
         [Fact]

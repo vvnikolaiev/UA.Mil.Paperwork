@@ -2,7 +2,7 @@
 {
     public interface IFileStorageService
     {
-        void SaveFile(string path, byte[] fileBytes);
+        string SaveFile(string path, byte[] fileBytes);
 
         T? ReadJsonFile<T>(string fileName, string directory = null);
 

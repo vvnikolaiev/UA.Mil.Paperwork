@@ -17,6 +17,7 @@ namespace Mil.Paperwork.UI.ViewModels
         private readonly IAssetFactory _assetFactory;
         private readonly IDataService _dataService;
         private readonly IReportDataService _reportDataService;
+        private readonly IReportHistoryService _reportHistoryService;
         private readonly IExportService _exportService;
         private readonly IImportService _importService;
         private readonly IDialogService _dialogService;
@@ -46,6 +47,7 @@ namespace Mil.Paperwork.UI.ViewModels
             IAssetFactory assetFactory,
             IDataService dataService,
             IReportDataService reportDataService,
+            IReportHistoryService reportHistoryService,
             IExportService exportService,
             IImportService importService,
             IDialogService dialogService)
@@ -54,6 +56,7 @@ namespace Mil.Paperwork.UI.ViewModels
             _assetFactory = assetFactory;
             _dataService = dataService;
             _reportDataService = reportDataService;
+            _reportHistoryService = reportHistoryService;
             _exportService = exportService;
             _importService = importService;
             _dialogService = dialogService;
@@ -76,7 +79,7 @@ namespace Mil.Paperwork.UI.ViewModels
 
         private void AddHomeTab()
         {
-            var homePageVM = new HomePageViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _exportService, _importService, _dialogService);
+            var homePageVM = new HomePageViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _reportHistoryService, _exportService, _importService, _dialogService);
             homePageVM.TabAdded += OnNewTabAdded;
             homePageVM.TabSelectionRequested += OnTabSelectRequested;
 

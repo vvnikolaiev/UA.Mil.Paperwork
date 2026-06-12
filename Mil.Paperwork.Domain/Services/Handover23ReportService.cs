@@ -16,19 +16,22 @@ namespace Mil.Paperwork.Domain.Services
             _fileStorage = fileStorage;
         }
 
-        public bool TryGenerateReport(IHandoverReportData reportData)
+        public ReportGenerationResult TryGenerateReport(IHandoverReportData reportData)
         {
             var report = new Handover23ActReport(_reportDataService);
+            var outputFiles = new List<string>();
 
-            var result = report.TryCreate(reportData);
-            if (result)
+            var created = report.TryCreate(reportData);
+            if (created)
             {
                 byte[] reportBytes = report.GetReportBytes();
 
                 var outputPath = GetFileName(reportData);
-                _fileStorage.SaveFile(outputPath, reportBytes);
+                var savedPath = _fileStorage.SaveFile(outputPath, reportBytes);
+                outputFiles.Add(savedPath);
             }
 
+            var result = ReportGenerationResult.FromResult(created, outputFiles);
             return result;
         }
 

@@ -112,8 +112,14 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public IDelegateCommand GenerateReportCommand { get; }
         public IDelegateCommand OpenConfigurationCommand { get; }
 
-        public Handover23ActViewModel(ReportManager reportManager, IDataService dataService, IDialogService dialogService) 
-            : base(dialogService)
+        protected override ReportType HistoryReportType => ReportType.Handover23Act;
+
+        public Handover23ActViewModel(
+            ReportManager reportManager,
+            IDataService dataService,
+            IReportHistoryService reportHistoryService,
+            IDialogService dialogService)
+            : base(reportHistoryService, dialogService)
         {
             _reportManager = reportManager;
             _dataService = dataService;
@@ -160,38 +166,41 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             //return isValid;
         }
 
-        protected void GenerateReport(string folderName)
+        protected override IReportData BuildReportData()
         {
-            var personResponsible = AssetAcceptance.GetHandedDTO();
-            var personRecipient = AssetAcceptance.GetAcceptedDTO();
-
             var assets = AssetsTable.AssetsCollection.Select(x => x.ToAssetInfo());
             var reportData = new HandoverReportData
             {
                 Assets = [.. assets],
                 DocumentNumber = DocumentNumber,
                 DocumentDate = DocumentDate.Date,
-                
+
                 DateStart = DateStart,
                 DateEnd = DateEnd,
 
                 Supplier = SupplierName,
                 Receiver = ReceiverName,
 
-                PersonResponsible = personResponsible,
-                PersonReceiver = personRecipient,
+                PersonResponsible = AssetAcceptance.GetHandedDTO(),
+                PersonReceiver = AssetAcceptance.GetAcceptedDTO(),
 
                 ReasonDocumentName = ReasonDocumentName,
                 ReasonDocumentNumber = ReasonDocumentNumber,
                 ReasonDocumentDate = ReasonDocumentDate,
-
-                DestinationFolder = folderName,
             };
 
-            _dataService.AlterPeople([personResponsible, personRecipient]);
+            return reportData;
+        }
+
+        protected void GenerateReport(string folderName)
+        {
+            var reportData = (HandoverReportData)BuildReportData();
+            reportData.DestinationFolder = folderName;
+
+            _dataService.AlterPeople([reportData.PersonResponsible, reportData.PersonReceiver]);
 
             // Generate report
-            _reportManager.GenerateHandover23Act(reportData);
+            _reportManager.GenerateHandover23Act(reportData, EnsureHistoryEntryId());
         }
 
         private void OpenConfigurationCommandExecute()

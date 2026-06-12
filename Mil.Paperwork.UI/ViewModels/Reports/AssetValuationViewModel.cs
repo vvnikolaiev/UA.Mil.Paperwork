@@ -144,11 +144,14 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public IDelegateCommand GenerateReportCommand { get; }
         public IDelegateCommand OpenConfigurationCommand { get; }
 
+        protected override ReportType HistoryReportType => ReportType.AssetValuationReport;
+
         public AssetValuationViewModel(
-            ReportManager reportManager, 
-            IDataService dataService, 
+            ReportManager reportManager,
+            IDataService dataService,
             IImportService importService,
-            IDialogService dialogService) : base(dialogService)
+            IReportHistoryService reportHistoryService,
+            IDialogService dialogService) : base(reportHistoryService, dialogService)
         {
             _reportManager = reportManager;
             _dataService = dataService;
@@ -318,17 +321,24 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             OpenSettings(ReportType.AssetValuationReport);
         }
 
-        protected virtual void GenerateReport(string folderName)
+        protected override IReportData BuildReportData()
         {
             var assetValuationData = ToAssetValuationData();
             var reportData = new AssetValuationReportData
             {
-                DestinationFolder = folderName,
                 ValuationData = [assetValuationData]
             };
 
-            _dataService.SaveValuationData([assetValuationData]);
-            _reportManager.GenerateValuationReport(reportData);
+            return reportData;
+        }
+
+        protected virtual void GenerateReport(string folderName)
+        {
+            var reportData = (AssetValuationReportData)BuildReportData();
+            reportData.DestinationFolder = folderName;
+
+            _dataService.SaveValuationData(reportData.ValuationData);
+            _reportManager.GenerateValuationReport(reportData, EnsureHistoryEntryId());
         }
 
         private void OKCommandExecute()

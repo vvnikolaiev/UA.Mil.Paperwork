@@ -19,6 +19,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         private readonly IAssetFactory _assetFactory;
         private readonly IDataService _dataService;
         private readonly IReportDataService _reportDataService;
+        private readonly IReportHistoryService _reportHistoryService;
         private readonly IExportService _exportService;
         private readonly IImportService _importService;
         private readonly IDialogService _dialogService;
@@ -51,6 +52,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             IAssetFactory assetFactory,
             IDataService dataService,
             IReportDataService reportDataService,
+            IReportHistoryService reportHistoryService,
             IExportService exportService,
             IImportService importService,
             IDialogService dialogService)
@@ -59,6 +61,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             _assetFactory = assetFactory;
             _dataService = dataService;
             _reportDataService = reportDataService;
+            _reportHistoryService = reportHistoryService;
             _exportService = exportService;
             _importService = importService;
             _dialogService = dialogService;
@@ -100,31 +103,31 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             switch (documentType)
             {
                 case ReportType.ResidualValueReport:
-                    createdTab = new ResidualValueReportViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _dialogService);
+                    createdTab = new ResidualValueReportViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _reportHistoryService, _dialogService);
                     break;
                 case ReportType.AssetValuationReport:
-                    createdTab = new AssetValuationViewModel(_reportManager, _dataService, _importService, _dialogService);
+                    createdTab = new AssetValuationViewModel(_reportManager, _dataService, _importService, _reportHistoryService, _dialogService);
                     break;
                 case ReportType.AssetDismantlingReport:
-                    createdTab = new AssetDismantlingViewModel(_reportManager, _dataService, _importService, _dialogService);
+                    createdTab = new AssetDismantlingViewModel(_reportManager, _dataService, _importService, _reportHistoryService, _dialogService);
                     break;
                 case ReportType.TechnicalStateReport:
-                    createdTab = new AssetInitialTechnicalStateViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _dialogService);
+                    createdTab = new AssetInitialTechnicalStateViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _reportHistoryService, _dialogService);
                     break;
                 case ReportType.WriteOffPackage:
-                    createdTab = new AssetTechnicalStateViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _dialogService);
+                    createdTab = new AssetTechnicalStateViewModel(_reportManager, _assetFactory, _dataService, _reportDataService, _reportHistoryService, _dialogService);
                     break;
                 case ReportType.Invoice:
-                    createdTab = new InvoiceReportViewModel(_reportManager, _dataService, _dialogService);
+                    createdTab = new InvoiceReportViewModel(_reportManager, _dataService, _reportHistoryService, _dialogService);
                     break;
                 case ReportType.CommissioningAct:
-                    createdTab = new CommissioningActReportViewModel(_reportManager, _dataService, _reportDataService, _dialogService);
+                    createdTab = new CommissioningActReportViewModel(_reportManager, _dataService, _reportDataService, _reportHistoryService, _dialogService);
                     break;
                 case ReportType.Handover23Act:
-                    createdTab = new Handover23ActViewModel(_reportManager, _dataService, _dialogService);
+                    createdTab = new Handover23ActViewModel(_reportManager, _dataService, _reportHistoryService, _dialogService);
                     break;
                 case ReportType.WriteOffOrder:
-                    createdTab = new WriteOffOrderViewModel(_reportManager, _dataService, _reportDataService, _dialogService);
+                    createdTab = new WriteOffOrderViewModel(_reportManager, _dataService, _reportDataService, _reportHistoryService, _dialogService);
                     break;
                 default:
                     createdTab = null;

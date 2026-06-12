@@ -237,11 +237,14 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public IDelegateCommand GenerateReportCommand { get; }
         public IDelegateCommand OpenConfigurationCommand { get; }
 
+        protected override ReportType HistoryReportType => ReportType.CommissioningAct;
+
         public CommissioningActReportViewModel(
             ReportManager reportManager,
             IDataService dataService,
             IReportDataService reportDataService,
-            IDialogService dialogService) : base(dialogService)
+            IReportHistoryService reportHistoryService,
+            IDialogService dialogService) : base(reportHistoryService, dialogService)
         {
             _reportManager = reportManager;
             _dataService = dataService;
@@ -330,7 +333,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             }
         }
 
-        protected virtual void GenerateReport(string folderName)
+        protected override IReportData BuildReportData()
         {
             var product = new ProductDTO()
             {
@@ -345,15 +348,11 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             var identifiers = ProductIdentifiers.Cast<IProductIdentification>().ToList();
 
-            var personAccepted = _assetAcceptance.GetAcceptedDTO();
-            var personHanded = _assetAcceptance.GetHandedDTO();
-
             var reportData = new CommissioningActReportData
             {
                 DocumentNumber = DocumentNumber,
                 DocumentDate = DocumentDate.Date,
                 Asset = product,
-                DestinationFolder = folderName,
                 AssetIds = identifiers,
                 Count = Count,
                 CountText = CountText,
@@ -366,13 +365,26 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                 OtherInfo = OtherInfo,
                 Conclusion = Conclusion,
                 AttachedDocumentation = AttachedDocumentation,
-                PersonAccepted = personAccepted,
-                PersonHanded = personHanded
+                PersonAccepted = _assetAcceptance.GetAcceptedDTO(),
+                PersonHanded = _assetAcceptance.GetHandedDTO()
             };
+
+            return reportData;
+        }
+
+        protected virtual void GenerateReport(string folderName)
+        {
+            var reportData = (CommissioningActReportData)BuildReportData();
+            reportData.DestinationFolder = folderName;
+
+            var product = reportData.Asset;
+            var identifiers = reportData.AssetIds;
+            var personAccepted = (PersonDTO)reportData.PersonAccepted;
+            var personHanded = (PersonDTO)reportData.PersonHanded;
 
             _dataService.AlterPeople([personAccepted, personHanded]);
 
-            _reportManager.GenerateCommissioningAct(reportData);
+            _reportManager.GenerateCommissioningAct(reportData, EnsureHistoryEntryId());
 
             if (IsTechnicalStateActCreationChecked)
             {

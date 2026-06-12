@@ -18,9 +18,10 @@ namespace Mil.Paperwork.Domain.Services
             _fileStorage = fileStorage;
         }
 
-        public bool TryGenerateReport(ITechnicalStateReportData reportData)
+        public ReportGenerationResult TryGenerateReport(ITechnicalStateReportData reportData)
         {
-            var result = false;
+            var success = false;
+            var outputFiles = new List<string>();
 
             var assets = reportData.Assets;
             // aggregate assets here if there are duplications in each field but serial number
@@ -36,48 +37,54 @@ namespace Mil.Paperwork.Domain.Services
                 report = new TechnicalStateReport(_reportDataService);
                 fileNameFormat = TechnicalStateReportHelper.OUTPUT_REPORT_11_NAME_FORMAT;
 
-                result = report.TryCreate(parameters);
+                success = report.TryCreate(parameters);
 
-                if (result)
+                if (success)
                 {
                     var fileName = PathsHelper.GetDetailedFileName(asset, fileNameFormat);
-                    SaveReport(report, reportData, fileName);
+                    var savedPath = SaveReport(report, reportData, fileName);
+                    outputFiles.Add(savedPath);
                 }
             }
 
+            var result = ReportGenerationResult.FromResult(success, outputFiles);
             return result;
         }
 
-        public bool TryGenerateReport(IInitialTechnicalStateReportData reportData)
+        public ReportGenerationResult TryGenerateReport(IInitialTechnicalStateReportData reportData)
         {
-            var result = false;
+            var success = false;
+            var outputFiles = new List<string>();
 
             var assets = reportData.Assets;
             // aggregate assets here if there are duplications in each field but serial number
             foreach (var asset in assets)
             {
                 var report = new InitialTechnicalStateReport(_reportDataService);
-                result = report.TryCreate(asset, reportData.PersonAccepted, reportData.PersonHanded, reportData.EventType);
+                success = report.TryCreate(asset, reportData.PersonAccepted, reportData.PersonHanded, reportData.EventType);
 
-                if (result)
+                if (success)
                 {
                     var fileName = PathsHelper.GetDetailedFileName(asset, TechnicalStateReportHelper.OUTPUT_REPORT_7_NAME_FORMAT);
-                    SaveReport(report, reportData, fileName);
+                    var savedPath = SaveReport(report, reportData, fileName);
+                    outputFiles.Add(savedPath);
                 }
 
             }
 
+            var result = ReportGenerationResult.FromResult(success, outputFiles);
             return result;
         }
 
-        private void SaveReport(IReport report, IReportData reportData, string fileName)
+        private string SaveReport(IReport report, IReportData reportData, string fileName)
         {
             byte[] reportBytes = report.GetReportBytes();
 
             var destinationPath = reportData.GetDestinationPath();
             var outputPath = Path.Combine(destinationPath, PathsHelper.SanitizeFileName(fileName));
 
-            _fileStorage.SaveFile(outputPath, reportBytes);
+            var savedPath = _fileStorage.SaveFile(outputPath, reportBytes);
+            return savedPath;
         }
 
     }

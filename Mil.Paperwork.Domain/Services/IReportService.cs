@@ -2,6 +2,6 @@
 {
     public interface IReportService<T>
     {
-        public bool TryGenerateReport(T reportData);
+        public ReportGenerationResult TryGenerateReport(T reportData);
     }
 }

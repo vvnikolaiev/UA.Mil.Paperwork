@@ -18,9 +18,10 @@ namespace Mil.Paperwork.Domain.Services
             _fileStorage = fileStorage;
         }
 
-        public bool TryGenerateReport(IResidualValueReportData reportData)
+        public ReportGenerationResult TryGenerateReport(IResidualValueReportData reportData)
         {
-            var result = true;
+            var success = true;
+            var outputFiles = new List<string>();
 
             try
             {
@@ -28,16 +29,15 @@ namespace Mil.Paperwork.Domain.Services
 
                 foreach (var asset in reportData.Assets)
                 {
-                    var residualReportData = new ResidualValueReportData();
+                    success &= report.TryCreate(asset, reportData.MetalCosts, reportData.AssetType, reportData.EventDate);
 
-                    result &= report.TryCreate(asset, reportData.MetalCosts, reportData.AssetType, reportData.EventDate);
-
-                    if (result)
+                    if (success)
                     {
                         byte[] reportBytes = report.GetReportBytes();
 
                         var outputPath = GetOutputReportFilePath(asset, reportData);
-                        _fileStorage.SaveFile(outputPath, reportBytes);
+                        var savedPath = _fileStorage.SaveFile(outputPath, reportBytes);
+                        outputFiles.Add(savedPath);
                     }
                 }
 
@@ -45,9 +45,10 @@ namespace Mil.Paperwork.Domain.Services
             }
             catch
             {
-                result = false;
+                success = false;
             }
 
+            var result = ReportGenerationResult.FromResult(success, outputFiles);
             return result;
         }
 

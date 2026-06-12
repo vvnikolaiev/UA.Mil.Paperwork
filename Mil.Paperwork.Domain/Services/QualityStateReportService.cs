@@ -16,25 +16,27 @@ namespace Mil.Paperwork.Domain.Services
             _fileStorage = fileStorage;
         }
 
-        public bool TryGenerateReport(ICommonWriteOffReportData reportData)
+        public ReportGenerationResult TryGenerateReport(ICommonWriteOffReportData reportData)
         {
             var report = new QualityStateReport(_reportDataService);
 
-            var result = report.TryCreate(reportData);
+            var created = report.TryCreate(reportData);
             var rawFileName = String.Format(QualityStateReportHelper.OUTPUT_REPORT_NAME_TEMPLATE, reportData.DocumentNumber);
-            SaveReport(report, reportData, rawFileName);
+            var savedPath = SaveReport(report, reportData, rawFileName);
 
+            var result = ReportGenerationResult.FromResult(created, [savedPath]);
             return result;
         }
 
-        private void SaveReport(IReport report, IReportData reportData, string fileName)
+        private string SaveReport(IReport report, IReportData reportData, string fileName)
         {
             byte[] reportBytes = report.GetReportBytes();
 
             var destinationPath = reportData.GetDestinationPath();
             var outputPath = Path.Combine(destinationPath, PathsHelper.SanitizeFileName(fileName));
 
-            _fileStorage.SaveFile(outputPath, reportBytes);
+            var savedPath = _fileStorage.SaveFile(outputPath, reportBytes);
+            return savedPath;
         }
     }
 
@@ -49,25 +51,27 @@ namespace Mil.Paperwork.Domain.Services
             _fileStorage = fileStorage;
         }
 
-        public bool TryGenerateReport(ICommonWriteOffReportData reportData)
+        public ReportGenerationResult TryGenerateReport(ICommonWriteOffReportData reportData)
         {
             var writeOffReport = new WriteOffActReport(_reportDataService);
-            var result = writeOffReport.TryCreate(reportData);
+            var created = writeOffReport.TryCreate(reportData);
 
             var fileName = String.Format(TechnicalStateReportHelper.OUTPUT_WRITE_OFF_ACT_NAME_FORMAT, reportData.DocumentNumber);
-            SaveReport(writeOffReport, reportData, fileName);
+            var savedPath = SaveReport(writeOffReport, reportData, fileName);
 
+            var result = ReportGenerationResult.FromResult(created, [savedPath]);
             return result;
         }
 
-        private void SaveReport(IReport report, IReportData reportData, string fileName)
+        private string SaveReport(IReport report, IReportData reportData, string fileName)
         {
             byte[] reportBytes = report.GetReportBytes();
 
             var destinationPath = reportData.GetDestinationPath();
             var outputPath = Path.Combine(destinationPath, PathsHelper.SanitizeFileName(fileName));
 
-            _fileStorage.SaveFile(outputPath, reportBytes);
+            var savedPath = _fileStorage.SaveFile(outputPath, reportBytes);
+            return savedPath;
         }
     }
 }

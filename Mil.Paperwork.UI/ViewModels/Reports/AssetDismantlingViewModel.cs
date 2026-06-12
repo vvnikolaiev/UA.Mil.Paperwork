@@ -3,6 +3,7 @@ using Mil.Paperwork.Domain.Helpers;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.DataAccess.Services;
+using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Helpers;
 using Mil.Paperwork.UI.Managers;
@@ -72,12 +73,15 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         public int ItemsToExcludeCount => Components.Count(x => x.Exclude);
 
+        protected override ReportType HistoryReportType => ReportType.AssetDismantlingReport;
+
         public AssetDismantlingViewModel(
             ReportManager reportManager,
             IDataService dataService,
             IImportService importService,
+            IReportHistoryService reportHistoryService,
             IDialogService dialogService)
-            : base(reportManager, dataService, importService, dialogService)
+            : base(reportManager, dataService, importService, reportHistoryService, dialogService)
         {
             _reportManager = reportManager;
             _dataService = dataService;
@@ -191,17 +195,24 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             base.ApplyTemplateData(valuationDataTemplate);
         }
 
-        protected override void GenerateReport(string folderName)
+        protected override IReportData BuildReportData()
         {
             var dismantlingData = ToAssetDismantlingData();
             var reportData = new DismantlingReportData
             {
-                DestinationFolder = folderName,
                 Dismantlings = new List<AssetDismantlingData> { dismantlingData }
             };
 
-            _dataService.SaveValuationData([dismantlingData]);
-            _reportManager.GenerateDismantlingReport(reportData);
+            return reportData;
+        }
+
+        protected override void GenerateReport(string folderName)
+        {
+            var reportData = (DismantlingReportData)BuildReportData();
+            reportData.DestinationFolder = folderName;
+
+            _dataService.SaveValuationData([.. reportData.Dismantlings]);
+            _reportManager.GenerateDismantlingReport(reportData, EnsureHistoryEntryId());
         }
 
         protected override void AddComponent(AssetValuationItemViewModel component)

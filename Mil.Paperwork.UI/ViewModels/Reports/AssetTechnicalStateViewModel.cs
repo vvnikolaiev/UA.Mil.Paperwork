@@ -2,6 +2,7 @@
 using Mil.Paperwork.Domain.DataModels.Parameters;
 using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.DataAccess.Services;
+using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Factories;
 using Mil.Paperwork.UI.Managers;
@@ -139,15 +140,26 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             set => SetProperty(ref _writeOffRegNumber, value);
         }
 
+        protected override ReportType HistoryReportType => ReportType.WriteOffPackage;
+
         public AssetTechnicalStateViewModel(
             ReportManager reportManager,
             IAssetFactory assetFactory,
             IDataService dataService,
             IReportDataService reportDataService,
+            IReportHistoryService reportHistoryService,
             IDialogService dialogService)
-            : base(reportManager, assetFactory, dataService, reportDataService, dialogService)
+            : base(reportManager, assetFactory, dataService, reportDataService, reportHistoryService, dialogService)
         {
             _reportManager = reportManager;
+        }
+
+        protected override IReportData BuildReportData()
+        {
+            var assets = AssetsTable.AssetsCollection.Select(x => x.ToAssetInfo(EventType)).ToArray();
+            var reportData = BuildWriteOffPackageData(assets, string.Empty);
+
+            return reportData;
         }
 
         protected override void GenerateReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
@@ -232,7 +244,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             _reportManager.GenerateTechnicalStateReport(reportData);
         }
 
-        private void GenerateWriteOffReports(IEnumerable<IAssetInfo> assets, string destinationFolder)
+        private WriteOffPackageReportData BuildWriteOffPackageData(IEnumerable<IAssetInfo> assets, string destinationFolder)
         {
             var extract = new BookExtractData
             {
@@ -253,7 +265,14 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                 BookOfLossesExtractData = extract
             };
 
-            _reportManager.GenerateWriteOffPackage(writeOffPackageData);
+            return writeOffPackageData;
+        }
+
+        private void GenerateWriteOffReports(IEnumerable<IAssetInfo> assets, string destinationFolder)
+        {
+            var writeOffPackageData = BuildWriteOffPackageData(assets, destinationFolder);
+
+            _reportManager.GenerateWriteOffPackage(writeOffPackageData, EnsureHistoryEntryId());
         }
     }
 }

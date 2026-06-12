@@ -107,12 +107,15 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public IDelegateCommand GenerateReportCommand { get; }
         public IDelegateCommand OpenConfigurationCommand { get; }
 
+        protected override ReportType HistoryReportType => ReportType.TechnicalStateReport;
+
         public AssetInitialTechnicalStateViewModel(
             ReportManager reportManager,
             IAssetFactory assetFactory,
             IDataService dataService,
             IReportDataService reportDataService,
-            IDialogService dialogService) : base(dialogService)
+            IReportHistoryService reportHistoryService,
+            IDialogService dialogService) : base(reportHistoryService, dialogService)
         {
             _reportManager = reportManager;
             _dataService = dataService;
@@ -143,24 +146,37 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             }
         }
 
-        protected virtual void GenerateReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
+        protected override IReportData BuildReportData()
         {
+            var assets = AssetsTable.AssetsCollection.Select(x => x.ToAssetInfo(EventType)).ToArray();
+            var reportData = BuildTechnicalStateReportData(assets, string.Empty);
 
-            var personAccepted = AssetAcceptance.GetAcceptedDTO();
-            var personHanded = AssetAcceptance.GetHandedDTO();
+            return reportData;
+        }
 
+        protected InitialTechnicalStateReportData BuildTechnicalStateReportData(IEnumerable<IAssetInfo> assets, string destinationFolder)
+        {
             var reportData = new InitialTechnicalStateReportData
             {
                 EventType = _eventType,
                 Assets = [.. assets],
                 DestinationFolder = destinationFolder,
-                PersonAccepted = personAccepted,
-                PersonHanded = personHanded
+                PersonAccepted = AssetAcceptance.GetAcceptedDTO(),
+                PersonHanded = AssetAcceptance.GetHandedDTO()
             };
+
+            return reportData;
+        }
+
+        protected virtual void GenerateReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
+        {
+            var reportData = BuildTechnicalStateReportData(assets, destinationFolder);
+            var personAccepted = AssetAcceptance.GetAcceptedDTO();
+            var personHanded = AssetAcceptance.GetHandedDTO();
 
             _dataService.AlterPeople([personAccepted, personHanded]);
 
-            _reportManager.GenerateInitialTechnicalStateReport(reportData);
+            _reportManager.GenerateInitialTechnicalStateReport(reportData, EnsureHistoryEntryId());
 
             GenerateInvoiceReport(assets, destinationFolder, personAccepted, personHanded);
 
