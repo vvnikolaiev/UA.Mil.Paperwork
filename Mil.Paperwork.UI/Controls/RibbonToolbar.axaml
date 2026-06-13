@@ -1,0 +1,107 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:ribbon="using:Mil.Paperwork.UI.ViewModels.Ribbon"
+             xmlns:converters="using:Mil.Paperwork.UI.Converters"
+             x:Class="Mil.Paperwork.UI.Controls.RibbonToolbar"
+             x:Name="Ribbon">
+
+    <UserControl.Styles>
+        <Style Selector="PathIcon.destructive">
+            <Setter Property="Foreground" Value="{DynamicResource BrushActionDelete}" />
+        </Style>
+        <Style Selector="Button.ribbonAction">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="6,4" />
+            <Setter Property="Width" Value="72" />
+            <Setter Property="Height" Value="64" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="CornerRadius" Value="4" />
+        </Style>
+        <Style Selector="Separator.ribbonGroup">
+            <Setter Property="Width" Value="1" />
+            <Setter Property="Height" Value="44" />
+            <Setter Property="Margin" Value="4,0" />
+            <Setter Property="Background" Value="{DynamicResource BrushBorderSubtle}" />
+        </Style>
+    </UserControl.Styles>
+
+    <Border Background="{DynamicResource BrushSurfaceAlt}"
+            BorderBrush="{DynamicResource BrushBorderSubtle}"
+            BorderThickness="0,0,0,1"
+            Padding="6,3">
+        <DockPanel>
+
+            <!-- Status text on the right -->
+            <TextBlock DockPanel.Dock="Right"
+                       Text="{Binding #Ribbon.StatusContent}"
+                       VerticalAlignment="Center"
+                       FontSize="11"
+                       FontStyle="Italic"
+                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                       Margin="8,0,4,0" />
+
+            <!-- Ribbon groups -->
+            <ItemsControl ItemsSource="{Binding #Ribbon.Groups}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="ribbon:RibbonGroupViewModel">
+                        <StackPanel Orientation="Horizontal">
+
+                            <!-- Group: action buttons stacked above the group title label -->
+                            <DockPanel>
+                                <TextBlock DockPanel.Dock="Bottom"
+                                           Text="{Binding GroupTitle}"
+                                           FontSize="10"
+                                           HorizontalAlignment="Center"
+                                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                           Margin="0,1,0,0" />
+
+                                <ItemsControl ItemsSource="{Binding Actions}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="ribbon:RibbonActionViewModel">
+                                            <Button Classes="ribbonAction"
+                                                    Command="{Binding Command}"
+                                                    ToolTip.Tip="{Binding Caption}">
+                                                <StackPanel Spacing="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <PathIcon Width="22" Height="22"
+                                                              HorizontalAlignment="Center"
+                                                              Data="{Binding IconKey, Converter={StaticResource ResourceKeyToGeometryConverter}}"
+                                                              Classes.destructive="{Binding IsDestructive}" />
+                                                    <TextBlock Text="{Binding Caption}"
+                                                               FontSize="11"
+                                                               MaxWidth="60"
+                                                               TextWrapping="Wrap"
+                                                               TextAlignment="Center"
+                                                               HorizontalAlignment="Center" />
+                                                </StackPanel>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </DockPanel>
+
+                            <!-- Vertical separator after each group -->
+                            <Separator Classes="ribbonGroup" />
+
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+        </DockPanel>
+    </Border>
+</UserControl>

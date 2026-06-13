@@ -8,17 +8,14 @@
 			 xmlns:dictionaries="clr-namespace:Mil.Paperwork.UI.ViewModels.Dictionaries"
 			 xmlns:local="using:Mil.Paperwork.UI.Views.Reports"
 			 xmlns:controls="clr-namespace:Mil.Paperwork.UI.Views.Controls"
+			 xmlns:uiControls="clr-namespace:Mil.Paperwork.UI.Controls"
 			 x:DataType="reportViewModels:Handover23ActViewModel">
 
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="*"/>
-			<RowDefinition Height="10"/>
-			<RowDefinition Height="Auto"/>
-		</Grid.RowDefinitions>
+	<DockPanel>
 
-		<StackPanel Orientation="Horizontal" Classes="parameters">
+		<uiControls:RibbonToolbar DockPanel.Dock="Top" Groups="{Binding RibbonGroups}" StatusContent="{Binding DraftStatusText}" />
+
+		<StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Classes="parameters">
 			<TextBlock Text="Акт п-п основних засобів. Номер документу*:" FontWeight="Bold" FontSize="16"/>
 			<TextBox Text="{Binding DocumentNumber}" Width="60"/>
 
@@ -27,7 +24,7 @@
 
 		</StackPanel>
 
-		<Grid Grid.Row="1" VerticalAlignment="Stretch" Classes="parameters"
+		<Grid VerticalAlignment="Stretch" Classes="parameters"
 			  ColumnDefinitions="125, 150, 125, 150, *"
 			  RowDefinitions="auto, auto, auto, auto, auto, auto, auto, *, auto, auto">
 
@@ -148,13 +145,5 @@
 			</DataGrid>
 		</Grid>
 
-		<StackPanel Grid.Row="3" Classes="buttons">
-			<Button Content="Додати рядок" Command="{Binding AssetsTable.AddRowCommand}" />
-			<Button Content="Видалити рядок" Command="{Binding AssetsTable.RemoveRowCommand }" />
-			<Button Content="Згенерувати" Command="{Binding GenerateReportCommand}" />
-			<Button Content="Зберегти чернетку" Command="{Binding SaveDraftCommand}" />
-			<Button Content="Налаштування" Command="{Binding OpenConfigurationCommand}" />
-			<Button Classes="CloseTab" Content="Закрити" Command="{Binding CloseTabCommand}"/>
-		</StackPanel>
-	</Grid>
+	</DockPanel>
 </UserControl>

@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
+             xmlns:tabs="using:Mil.Paperwork.UI.ViewModels.Tabs"
+             x:Class="Mil.Paperwork.UI.Views.ReportCatalogView"
+             x:DataType="{x:Type tabs:ReportCatalogViewModel}">
+
+	<UserControl.Styles>
+		<Style Selector="Button.reportCard">
+			<Setter Property="Width" Value="170" />
+			<Setter Property="Height" Value="110" />
+			<Setter Property="Margin" Value="8" />
+			<Setter Property="Padding" Value="12" />
+			<Setter Property="CornerRadius" Value="8" />
+			<Setter Property="Background" Value="{DynamicResource BrushCardBackground}" />
+			<Setter Property="BorderBrush" Value="{DynamicResource BrushBorderSubtle}" />
+			<Setter Property="BorderThickness" Value="1" />
+			<Setter Property="HorizontalContentAlignment" Value="Center" />
+			<Setter Property="VerticalContentAlignment" Value="Center" />
+		</Style>
+		<Style Selector="Button.reportCard:pointerover /template/ ContentPresenter">
+			<Setter Property="BorderBrush" Value="{DynamicResource BrushAccent}" />
+		</Style>
+	</UserControl.Styles>
+
+	<ScrollViewer>
+		<StackPanel Margin="24">
+			<TextBlock Text="Створити звіт"
+					   FontSize="24"
+					   FontWeight="SemiBold"
+					   Margin="8 0 0 16" />
+
+			<ItemsControl ItemsSource="{Binding DocumentTypes}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel />
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Button Classes="reportCard"
+								Command="{Binding $parent[ItemsControl].((tabs:ReportCatalogViewModel)DataContext).CreateReportCommand}"
+								CommandParameter="{Binding DocumentType}">
+							<TextBlock Text="{Binding Text}"
+									   TextWrapping="Wrap"
+									   TextAlignment="Center"
+									   VerticalAlignment="Center" />
+						</Button>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

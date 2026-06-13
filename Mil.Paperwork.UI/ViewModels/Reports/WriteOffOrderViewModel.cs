@@ -9,6 +9,7 @@ using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Managers;
 using Mil.Paperwork.UI.ViewModels.Dictionaries;
+using Mil.Paperwork.UI.ViewModels.Ribbon;
 using Mil.Paperwork.UI.ViewModels.Tabs;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,14 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
     internal class WriteOffOrderViewModel : BaseReportTabViewModel, IReportDataLoadable<IWriteOffOrderReportData>
     {
         private const string HeaderText = "Наказ про списання";
+
+        private const string GroupTitlePersonnel = "Виконавці";
+        private const string CaptionAddService = "Додати службу";
+        private const string CaptionAddWitness = "Додати свідка";
+        private const string CaptionRemoveWitness = "Видалити свідка";
+        private const string IconKeyAddService = "IconAddTableRow";
+        private const string IconKeyAddWitness = "IconAddTableRow";
+        private const string IconKeyRemoveWitness = "IconDelete";
 
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
@@ -172,6 +181,23 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             RemoveWitnessCommand = new DelegateCommand(RemoveSelectedWitness);
             GenerateReportCommand = new DelegateCommand(GenerateReportCommandExecute);
             OpenConfigurationCommand = new DelegateCommand(OpenConfigurationCommandExecute);
+
+            ResumeDirtyTracking();
+        }
+
+        protected override IList<RibbonGroupViewModel> BuildRibbonGroups()
+        {
+            var documentGroup = CreateDocumentGroup(GenerateReportCommand);
+            var personnelActions = new List<RibbonActionViewModel>
+            {
+                new RibbonActionViewModel(CaptionAddService, IconKeyAddService, AddServiceCommand),
+                new RibbonActionViewModel(CaptionAddWitness, IconKeyAddWitness, AddWitnessCommand),
+                new RibbonActionViewModel(CaptionRemoveWitness, IconKeyRemoveWitness, RemoveWitnessCommand, isDestructive: true)
+            };
+            var personnelGroup = new RibbonGroupViewModel(GroupTitlePersonnel, personnelActions);
+            var reportGroup = CreateReportGroup(OpenConfigurationCommand, null);
+            var groups = new List<RibbonGroupViewModel> { documentGroup, personnelGroup, reportGroup };
+            return groups;
         }
 
         private void ReloadServices()
@@ -254,7 +280,9 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             }
 
             if (!_dialogService.TryPickFolder(out var folderName))
+            {
                 return;
+            }
 
             var creatorDto = new PersonDTO(CreatorName, CreatorPosition, CreatorRank);
 
@@ -263,6 +291,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             _dataService.AlterPeople([creatorDto]);
             _reportManager.GenerateWriteOffOrder(reportData, EnsureHistoryEntryId());
+
+            ResetDirtyState();
         }
 
         protected override IReportData BuildReportData()
@@ -293,41 +323,44 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         public void LoadReportData(IWriteOffOrderReportData data)
         {
-            ReportNum = data.ReportNum;
-            ReportDate = data.ReportDate;
-            EventDate = data.EventDate;
-            EventTime = data.EventTime;
-            BattleOrder = data.BattleOrder;
-            BattleOrderDate = data.BattleOrderDate;
-            BattleOrderLocation = data.BattleOrderLocation;
-            SubdivisionName = data.SubdivisionName;
-            ReporterRank = data.ReporterRank;
-            ReporterName = data.ReporterName;
-            CreatorPosition = data.CreatorPosition;
-            CreatorRank = data.CreatorRank;
-            CreatorName = data.CreatorName;
-            MilUnitApproval = data.MilUnitApproval;
-            WhatHappened = data.WhatHappened;
-
-            Services.Clear();
-            foreach (var serviceData in data.Services ?? [])
+            WithDirtyTrackingSuspended(() =>
             {
-                var serviceViewModel = new WriteOffServiceViewModel(
-                    AvailableServices,
-                    AssetTypes,
-                    AvailableMeasurementUnits,
-                    RemoveService,
-                    AddServiceToDictionary);
+                ReportNum = data.ReportNum;
+                ReportDate = data.ReportDate;
+                EventDate = data.EventDate;
+                EventTime = data.EventTime;
+                BattleOrder = data.BattleOrder;
+                BattleOrderDate = data.BattleOrderDate;
+                BattleOrderLocation = data.BattleOrderLocation;
+                SubdivisionName = data.SubdivisionName;
+                ReporterRank = data.ReporterRank;
+                ReporterName = data.ReporterName;
+                CreatorPosition = data.CreatorPosition;
+                CreatorRank = data.CreatorRank;
+                CreatorName = data.CreatorName;
+                MilUnitApproval = data.MilUnitApproval;
+                WhatHappened = data.WhatHappened;
 
-                serviceViewModel.LoadFrom(serviceData);
-                Services.Add(serviceViewModel);
-            }
+                Services.Clear();
+                foreach (var serviceData in data.Services ?? [])
+                {
+                    var serviceViewModel = new WriteOffServiceViewModel(
+                        AvailableServices,
+                        AssetTypes,
+                        AvailableMeasurementUnits,
+                        RemoveService,
+                        AddServiceToDictionary);
 
-            Witnesses.Clear();
-            foreach (var witnessData in data.Witnesses ?? [])
-            {
-                Witnesses.Add(WriteOffWitnessViewModel.FromWitnessData(witnessData));
-            }
+                    serviceViewModel.LoadFrom(serviceData);
+                    Services.Add(serviceViewModel);
+                }
+
+                Witnesses.Clear();
+                foreach (var witnessData in data.Witnesses ?? [])
+                {
+                    Witnesses.Add(WriteOffWitnessViewModel.FromWitnessData(witnessData));
+                }
+            });
         }
 
         private void OpenConfigurationCommandExecute()

@@ -10,6 +10,7 @@ using Mil.Paperwork.UI.Managers;
 using Mil.Paperwork.UI.Memento;
 using Mil.Paperwork.UI.ViewModels.Controls;
 using Mil.Paperwork.UI.ViewModels.Dictionaries;
+using Mil.Paperwork.UI.ViewModels.Ribbon;
 using Mil.Paperwork.UI.ViewModels.Tabs;
 using System;
 using System.Collections.Generic;
@@ -173,6 +174,16 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             OpenConfigurationCommand = new DelegateCommand(OpenConfigurationCommandExecute);
 
             SaveState();
+            ResumeDirtyTracking();
+        }
+
+        protected override IList<RibbonGroupViewModel> BuildRibbonGroups()
+        {
+            var documentGroup = CreateDocumentGroup(GenerateReportCommand);
+            var tableGroup = CreateTableGroup(AddRowCommand, null, ImportRowsCommand, ClearCommand);
+            var reportGroup = CreateReportGroup(OpenConfigurationCommand, null);
+            var groups = new List<RibbonGroupViewModel> { documentGroup, tableGroup, reportGroup };
+            return groups;
         }
 
         internal AssetValuationData ToAssetValuationData()
@@ -334,23 +345,26 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         public void LoadReportData(IAssetValuationReportData data)
         {
-            var valuationData = data.ValuationData?.FirstOrDefault(item => item != null);
-            if (valuationData == null)
+            WithDirtyTrackingSuspended(() =>
             {
-                return;
-            }
+                var valuationData = data.ValuationData?.FirstOrDefault(item => item != null);
+                if (valuationData == null)
+                {
+                    return;
+                }
 
-            Name = valuationData.Name;
-            ShortName = valuationData.ShortName;
-            NomenclatureCode = valuationData.NomenclatureCode;
-            Price = valuationData.Price;
-            SerialNumber = valuationData.SerialNumber;
-            Description = valuationData.Description;
-            ValuationDate = valuationData.ValuationDate;
+                Name = valuationData.Name;
+                ShortName = valuationData.ShortName;
+                NomenclatureCode = valuationData.NomenclatureCode;
+                Price = valuationData.Price;
+                SerialNumber = valuationData.SerialNumber;
+                Description = valuationData.Description;
+                ValuationDate = valuationData.ValuationDate;
 
-            FillAssetComponentsTable(valuationData.AssetComponents ?? []);
+                FillAssetComponentsTable(valuationData.AssetComponents ?? []);
 
-            SaveState();
+                SaveState();
+            });
         }
 
         protected virtual void GenerateReport(string folderName)
@@ -360,6 +374,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             _dataService.SaveValuationData(reportData.ValuationData);
             _reportManager.GenerateValuationReport(reportData, EnsureHistoryEntryId());
+            ResetDirtyState();
         }
 
         private void OKCommandExecute()

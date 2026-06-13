@@ -6,19 +6,44 @@ using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
 using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Infrastructure.Services;
+using Mil.Paperwork.UI.ViewModels.Ribbon;
 using Mil.Paperwork.UI.ViewModels.Tabs;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Mil.Paperwork.UI.ViewModels.Dictionaries
 {
-    internal class ProductsDictionaryViewModel : SettingsTabViewModel
+    internal class ProductsDictionaryViewModel : SettingsTabViewModel, ISilentRefreshable
     {
+        private const string GroupRecords = "Записи";
+        private const string GroupData = "Дані";
+        private const string GroupExchange = "Обмін";
+
+        private const string CaptionAdd = "Додати";
+        private const string CaptionRemove = "Видалити";
+        private const string CaptionSave = "Зберегти";
+        private const string CaptionRefresh = "Оновити";
+        private const string CaptionImport = "Імпорт";
+        private const string CaptionExportJson = "Екс. JSON";
+        private const string CaptionExportExcel = "Екс. Excel";
+
+        private const string IconKeyAdd = "IconAdd";
+        private const string IconKeyRemove = "IconDelete";
+        private const string IconKeySave = "IconSaveDraft";
+        private const string IconKeyRefresh = "IconRefresh";
+        private const string IconKeyImport = "IconImport";
+        private const string IconKeyExport = "IconExport";
+
         private readonly IDataService _dataService;
         private readonly IExportService _exportService;
         private readonly IImportService _importService;
         private readonly IDialogService _dialogService;
+
+        private ProductViewModel _selectedProduct;
+        private IDelegateCommand _exportJsonCommand;
+        private IDelegateCommand _exportExcelCommand;
 
         public ObservableCollection<ProductViewModel> Products { get; }
         public ObservableCollection<ExportType> ExportTypes { get; private set; }
@@ -26,17 +51,28 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
 
         public override string Header => "Довідник майна";
 
+        public ProductViewModel SelectedProduct
+        {
+            get => _selectedProduct;
+            set => SetProperty(ref _selectedProduct, value);
+        }
+
         public IDelegateCommand AddItemCommand { get; }
-        public IDelegateCommand<ProductViewModel> RemoveItemCommand { get; }
+        public IDelegateCommand RemoveItemCommand { get; }
         public IDelegateCommand SaveCommand { get; }
         public IDelegateCommand ImportCommand { get; }
         public IDelegateCommand<ExportType> ExportDataCommand { get; }
-        public IDelegateCommand ExportTableDataCommand { get; }
         public IDelegateCommand RefreshCommand { get; }
 
+        private IDelegateCommand ExportJsonCommand =>
+            _exportJsonCommand ??= new DelegateCommand(() => ExportRawDataCommandExecute(ExportType.Json));
+
+        private IDelegateCommand ExportExcelCommand =>
+            _exportExcelCommand ??= new DelegateCommand(() => ExportRawDataCommandExecute(ExportType.Excel));
+
         public ProductsDictionaryViewModel(
-            IDataService dataService, 
-            IExportService exportService, 
+            IDataService dataService,
+            IExportService exportService,
             IImportService importService,
             IDialogService dialogService) : base(dialogService)
         {
@@ -50,11 +86,40 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
             MeasurementUnits = [.. _dataService.LoadMeasurementUnitsData().Select(x => new MeasurementUnitViewModel(x))];
 
             AddItemCommand = new DelegateCommand(AddItemCommandExecute);
-            RemoveItemCommand = new DelegateCommand<ProductViewModel>(RemoveItemCommandExecute);
+            RemoveItemCommand = new DelegateCommand(RemoveItemCommandExecute);
             SaveCommand = new DelegateCommand(SaveCommandExecute);
             ImportCommand = new DelegateCommand(ImportCommandExecute);
             ExportDataCommand = new DelegateCommand<ExportType>(ExportRawDataCommandExecute);
             RefreshCommand = new DelegateCommand(RefreshCommandExecute);
+        }
+
+        protected override IList<RibbonGroupViewModel> BuildRibbonGroups()
+        {
+            var groups = new List<RibbonGroupViewModel>
+            {
+                new RibbonGroupViewModel(GroupRecords, new[]
+                {
+                    new RibbonActionViewModel(CaptionAdd, IconKeyAdd, AddItemCommand),
+                    new RibbonActionViewModel(CaptionRemove, IconKeyRemove, RemoveItemCommand, isDestructive: true)
+                }),
+                new RibbonGroupViewModel(GroupData, new[]
+                {
+                    new RibbonActionViewModel(CaptionSave, IconKeySave, SaveCommand),
+                    new RibbonActionViewModel(CaptionRefresh, IconKeyRefresh, RefreshCommand)
+                }),
+                new RibbonGroupViewModel(GroupExchange, new[]
+                {
+                    new RibbonActionViewModel(CaptionImport, IconKeyImport, ImportCommand),
+                    new RibbonActionViewModel(CaptionExportJson, IconKeyExport, ExportJsonCommand),
+                    new RibbonActionViewModel(CaptionExportExcel, IconKeyExport, ExportExcelCommand)
+                })
+            };
+            return groups;
+        }
+
+        public void SilentRefresh()
+        {
+            ReloadProductsData();
         }
 
         private ProductViewModel[] GetProductsData()
@@ -81,11 +146,11 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
             Products.Add(newProduct);
         }
 
-        private void RemoveItemCommandExecute(ProductViewModel product)
+        private void RemoveItemCommandExecute()
         {
-            if (product != null && Products.Contains(product))
+            if (SelectedProduct != null && Products.Contains(SelectedProduct))
             {
-                Products.Remove(product);
+                Products.Remove(SelectedProduct);
             }
         }
 

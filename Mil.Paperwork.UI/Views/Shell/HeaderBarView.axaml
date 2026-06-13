@@ -1,0 +1,89 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="40"
+             xmlns:vm="using:Mil.Paperwork.UI.ViewModels"
+             xmlns:chrome="using:Avalonia.Controls.Chrome"
+             x:Class="Mil.Paperwork.UI.Views.Shell.HeaderBarView"
+             x:DataType="vm:MainWindowViewModel"
+             Height="40">
+
+	<UserControl.Styles>
+		<Style Selector="Button.headerIcon, ToggleButton.headerIcon">
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="BorderThickness" Value="0" />
+			<Setter Property="Padding" Value="8" />
+			<Setter Property="CornerRadius" Value="6" />
+			<Setter Property="VerticalAlignment" Value="Center" />
+		</Style>
+	</UserControl.Styles>
+
+	<Border Name="HeaderRoot"
+			Background="{DynamicResource BrushSidebar}"
+			BorderBrush="{DynamicResource BrushBorderSubtle}"
+			BorderThickness="0 0 0 1">
+
+		<Grid ColumnDefinitions="Auto,Auto,Auto,*,Auto,*,Auto,Auto">
+
+			<!-- macOS traffic-lights inset (width set in code-behind) -->
+			<Border Grid.Column="0" Name="MacInsetSpacer" Width="0" />
+
+			<Button Grid.Column="1"
+					Classes="headerIcon"
+					Margin="6 0 0 0"
+					Command="{Binding ToggleSidebarCommand}"
+					ToolTip.Tip="Згорнути/розгорнути меню">
+				<PathIcon Data="{StaticResource IconSidebarCollapse}" Width="16" Height="16" />
+			</Button>
+
+			<StackPanel Grid.Column="2"
+						Orientation="Horizontal"
+						Spacing="8"
+						Margin="8 0 0 0"
+						VerticalAlignment="Center"
+						IsHitTestVisible="False">
+				<PathIcon Data="{StaticResource IconDocument}"
+						  Width="16" Height="16"
+						  Foreground="{DynamicResource BrushAccent}" />
+				<TextBlock Text="Списання майна"
+						   FontWeight="SemiBold"
+						   VerticalAlignment="Center" />
+			</StackPanel>
+
+			<!-- draggable empty space -->
+			<Border Grid.Column="3"
+					Background="Transparent"
+					chrome:WindowDecorationProperties.ElementRole="TitleBar" />
+
+			<TextBox Grid.Column="4"
+					 Name="GlobalSearchBox"
+					 Width="320"
+					 VerticalAlignment="Center"
+					 PlaceholderText="Пошук…">
+				<TextBox.InnerLeftContent>
+					<PathIcon Data="{StaticResource IconSearch}"
+							  Width="12" Height="12"
+							  Margin="8 0 0 0"
+							  Opacity="0.6" />
+				</TextBox.InnerLeftContent>
+			</TextBox>
+
+			<!-- draggable empty space -->
+			<Border Grid.Column="5"
+					Background="Transparent"
+					chrome:WindowDecorationProperties.ElementRole="TitleBar" />
+
+			<Button Grid.Column="6"
+					Classes="headerIcon"
+					Command="{Binding ToggleThemeCommand}"
+					ToolTip.Tip="{Binding ThemeTooltip}">
+				<PathIcon Data="{Binding ThemeIconKey, Converter={StaticResource ResourceKeyToGeometryConverter}}"
+						  Width="16" Height="16" />
+			</Button>
+
+			<!-- reserve for system caption buttons (width set in code-behind) -->
+			<Border Grid.Column="7" Name="CaptionButtonsSpacer" Width="176" />
+		</Grid>
+	</Border>
+</UserControl>

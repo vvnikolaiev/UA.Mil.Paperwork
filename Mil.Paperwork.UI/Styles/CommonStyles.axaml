@@ -52,10 +52,6 @@
 		<Setter Property="HorizontalContentAlignment" Value="Center" />
 	</Style>
 
-	<Style Selector="Button">
-		<Setter Property="HorizontalContentAlignment" Value="Center" />
-	</Style>
-
 
 	<Style Selector="Grid.parameters > TextBlock, StackPanel.parameters > TextBlock">
 		<Setter Property="Margin" Value="5" />
@@ -68,21 +64,11 @@
 		<Setter Property="HorizontalAlignment" Value="Stretch" />
 	</Style>
 
-	<Style Selector="StackPanel.buttons">
-		<Setter Property="Orientation" Value="Horizontal" />
-		<Setter Property="HorizontalAlignment" Value="Center" />
-		<Setter Property="Margin" Value="5" />
-	</Style>
-
 	<Style Selector="StackPanel > Button">
 		<Setter Property="Margin" Value="5 0" />
 	</Style>
 
-	<Style Selector="Button.CloseTab">
-		<Setter Property="HotKey" Value="Ctrl+W" />
-	</Style>
-
-	<Style Selector="Grid.parameters > TextBox, StackPanel.parameters > TextBox, WrapPanel.parameters > TextBox">
+<Style Selector="Grid.parameters > TextBox, StackPanel.parameters > TextBox, WrapPanel.parameters > TextBox">
 		<Setter Property="Margin" Value="5 0" />
 	</Style>
 

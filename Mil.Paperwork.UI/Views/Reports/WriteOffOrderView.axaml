@@ -7,12 +7,15 @@
              xmlns:reportViewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Reports"
              xmlns:dictionaries="clr-namespace:Mil.Paperwork.UI.ViewModels.Dictionaries"
              xmlns:tabViewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Tabs"
+             xmlns:controls="clr-namespace:Mil.Paperwork.UI.Controls"
              x:DataType="reportViewModels:WriteOffOrderViewModel">
 
-    <Grid RowDefinitions="*,Auto">
+    <DockPanel>
+
+        <controls:RibbonToolbar DockPanel.Dock="Top" Groups="{Binding RibbonGroups}" StatusContent="{Binding DraftStatusText}" />
 
         <!-- Main content: left fields + right services -->
-        <Grid Grid.Row="0">
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width=".7*" MinWidth="390" />
                 <ColumnDefinition />
@@ -421,13 +424,5 @@
             </Grid>
         </Grid>
 
-        <!-- Bottom buttons row -->
-        <StackPanel Grid.Row="1" Classes="buttons">
-            <Button Content="Згенерувати наказ" Command="{Binding GenerateReportCommand}" FontWeight="SemiBold"/>
-            <Button Content="Зберегти чернетку" Command="{Binding SaveDraftCommand}"/>
-            <Button Content="Налаштування" Command="{Binding OpenConfigurationCommand}"/>
-            <Button Classes="CloseTab" Content="Закрити" Command="{Binding CloseTabCommand}"/>
-        </StackPanel>
-
-    </Grid>
+    </DockPanel>
 </UserControl>

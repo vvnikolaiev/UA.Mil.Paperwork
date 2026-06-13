@@ -7,7 +7,9 @@
 		xmlns:vm="using:Mil.Paperwork.UI.ViewModels.Controls"
 		xmlns:converters="using:Mil.Paperwork.UI.Converters"
 		xmlns:enums="clr-namespace:Mil.Paperwork.Infrastructure.Enums;assembly=Mil.Paperwork.Infrastructure"
-		Width="420" Height="170"
+		Width="420"
+		MinHeight="150"
+		SizeToContent="Height"
 		CanResize="False"
 		WindowStartupLocation="CenterOwner"
 		x:DataType="vm:MessageBoxViewModel"
@@ -18,9 +20,9 @@
 		<converters:EnumToBoolConverter x:Key="EnumToBoolConverter" />
 	</Window.Resources>
 
-	<Grid Margin="12">
+	<Grid Margin="16">
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="48" />
+			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
@@ -28,9 +30,12 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-
-		<!-- Icon -->
-		<Border Grid.Row="0" Grid.Column="0" CornerRadius="6" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Top"
+		<!-- Coloured badge (collapsed when DialogIcon.None) -->
+		<Border Grid.Row="0" Grid.Column="0"
+				CornerRadius="8" Width="44" Height="44"
+				Margin="0,0,14,0"
+				VerticalAlignment="Top"
+				IsVisible="{Binding HasIcon}"
 				Classes.Information="{Binding Icon, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:DialogIcon.Information}}"
 				Classes.Warning="{Binding Icon, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:DialogIcon.Warning}}"
 				Classes.Error="{Binding Icon, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:DialogIcon.Error}}"
@@ -50,43 +55,51 @@
 				</Style>
 			</Border.Styles>
 
-			<TextBlock Text="{Binding IconGlyph}" VerticalAlignment="Center" HorizontalAlignment="Center"
-					   Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
-					   FontSize="30" FontWeight="Bold" />
+			<PathIcon Width="20" Height="20"
+					  HorizontalAlignment="Center" VerticalAlignment="Center"
+					  Data="{Binding IconKey, Converter={StaticResource ResourceKeyToGeometryConverter}}"
+					  Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}" />
 		</Border>
 
-
-		<StackPanel Grid.Row="0" Grid.Column="1" Margin="12,0,0,0">
-			<TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="16" 
+		<!-- Title + message -->
+		<StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
+			<TextBlock Text="{Binding Title}"
+					   FontWeight="SemiBold" FontSize="15"
 					   IsVisible="{Binding IsTitleEmpty, Converter={StaticResource InversedBoolConverter}}"/>
-			<TextBlock Text="{Binding Message}" TextWrapping="Wrap" Margin="0,8,0,0" />
+			<TextBlock Text="{Binding Message}"
+					   TextWrapping="Wrap"
+					   Margin="0,6,0,0" />
 		</StackPanel>
 
-
-		<StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,16,0,0">
+		<!-- Buttons -->
+		<StackPanel Grid.Row="1" Grid.ColumnSpan="2"
+					Orientation="Horizontal" HorizontalAlignment="Right"
+					Spacing="8" Margin="0,14,0,0">
 
 			<Button Content="{Binding OkText}"
+					Classes="accent"
 					IsVisible="{Binding IsOkVisible}"
 					Command="{Binding OkCommand}"
-					MinWidth="100"
+					MinWidth="90"
 					IsDefault="True" />
 
 			<Button Content="{Binding YesText}"
+					Classes="accent"
 					IsVisible="{Binding IsYesVisible}"
 					Command="{Binding YesCommand}"
-					MinWidth="100"
+					MinWidth="90"
 					IsDefault="{Binding IsOkVisible, Converter={StaticResource InversedBoolConverter}}"/>
 
 			<Button Content="{Binding NoText}"
 					IsVisible="{Binding IsNoVisible}"
 					Command="{Binding NoCommand}"
-					MinWidth="100"
+					MinWidth="90"
 					IsCancel="{Binding IsCancelVisible, Converter={StaticResource InversedBoolConverter}}" />
 
 			<Button Content="{Binding CancelText}"
 					IsVisible="{Binding IsCancelVisible}"
 					Command="{Binding CancelCommand}"
-					MinWidth="100"
+					MinWidth="90"
 					IsCancel="True" />
 
 		</StackPanel>

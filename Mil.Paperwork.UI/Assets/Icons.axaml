@@ -15,4 +15,241 @@
         M15,16 L17,16 L9,24 L7,24 Z M7,16 L9,16 L17,24 L15,24 Z
     </StreamGeometry>
 
+    <!-- ═══════════════════════════════════════════════════════════
+         SHELL NAVIGATION ICONS (24×24)
+    ═══════════════════════════════════════════════════════════ -->
+
+    <!-- House: sidebar "Головна" -->
+    <StreamGeometry x:Key="IconDashboard">
+        M12,3 L2,12 L4.4,12 L4.4,21 L19.6,21 L19.6,12 L22,12 Z
+        M10,21 L10,15 L14,15 L14,21 Z
+    </StreamGeometry>
+
+    <!-- Document with plus cut-out: report creation -->
+    <StreamGeometry x:Key="IconCreateReport">
+        M13,2 L6,2 C4.9,2 4,2.9 4,4 L4,20 C4,21.1 4.9,22 6,22 L18,22 C19.1,22 20,21.1 20,20 L20,9 Z
+        M13,3.5 L18.5,9 L13,9 Z
+        M11,12 L13,12 L13,15 L16,15 L16,17 L13,17 L13,20 L11,20 L11,17 L8,17 L8,15 L11,15 Z
+    </StreamGeometry>
+
+    <!-- Plain document with text lines: report configuration -->
+    <StreamGeometry x:Key="IconDocument">
+        M13,2 L6,2 C4.9,2 4,2.9 4,4 L4,20 C4,21.1 4.9,22 6,22 L18,22 C19.1,22 20,21.1 20,20 L20,9 Z
+        M13,3.5 L18.5,9 L13,9 Z
+        M7,12 L17,12 L17,13.5 L7,13.5 Z
+        M7,15.5 L17,15.5 L17,17 L7,17 Z
+        M7,19 L14,19 L14,20.5 L7,20.5 Z
+    </StreamGeometry>
+
+    <!-- Clock: sidebar "Історія" -->
+    <StreamGeometry x:Key="IconHistory">
+        M12,2 A10,10 0 1,0 12,22 A10,10 0 1,0 12,2 Z
+        M12,4 A8,8 0 1,1 12,20 A8,8 0 1,1 12,4 Z
+        M11,6 L13,6 L13,12.2 L17.2,14.6 L16.2,16.3 L11,13.3 Z
+    </StreamGeometry>
+
+    <!-- 3D box: sidebar "Майно" -->
+    <StreamGeometry x:Key="IconProducts">
+        M12,2 L21,7 L21,17 L12,22 L3,17 L3,7 Z
+        M5,8.4 L5,15.8 L11,19.1 L11,11.7 Z
+        M13,11.7 L13,19.1 L19,15.8 L19,8.4 Z
+        M12,4.3 L6.2,7.5 L12,10.7 L17.8,7.5 Z
+    </StreamGeometry>
+
+    <!-- Two persons: sidebar "Особи" -->
+    <StreamGeometry x:Key="IconPeople">
+        M9,4 A3.5,3.5 0 1,0 9,11 A3.5,3.5 0 1,0 9,4 Z
+        M2,20 C2,15.6 5,13.5 9,13.5 C13,13.5 16,15.6 16,20 Z
+        M17,5.5 A3,3 0 1,0 17,11.5 A3,3 0 1,0 17,5.5 Z
+        M16.4,13.9 C19.7,14.3 22,16.2 22,20 L17.7,20 C17.7,17.5 17.3,15.5 16.4,13.9 Z
+    </StreamGeometry>
+
+    <!-- Wrench: sidebar "Служби" -->
+    <StreamGeometry x:Key="IconServices">
+        M21.7,6.3 C21.9,7 22,7.8 22,8.5 C22,12.1 19.1,15 15.5,15 C14.9,15 14.3,14.9 13.7,14.7
+        L7.4,21 C6.1,22.3 4,22.3 2.7,21 C1.4,19.7 1.4,17.6 2.7,16.3 L9,10
+        C8.8,9.4 8.7,8.8 8.7,8.2 C8.7,4.6 11.6,1.7 15.2,1.7 C16,1.7 16.7,1.8 17.4,2.1
+        L13.5,6 L17.7,10.2 Z
+    </StreamGeometry>
+
+    <!-- Ruler with tick marks: sidebar "Од. виміру" -->
+    <StreamGeometry x:Key="IconMeasurementUnits">
+        M2,8 L22,8 L22,16 L2,16 Z
+        M5,9.5 L5,12.5 L6.5,12.5 L6.5,9.5 Z
+        M9,9.5 L9,14 L10.5,14 L10.5,9.5 Z
+        M13,9.5 L13,12.5 L14.5,12.5 L14.5,9.5 Z
+        M17,9.5 L17,14 L18.5,14 L18.5,9.5 Z
+    </StreamGeometry>
+
+    <!-- Cog: sidebar "Налаштування" -->
+    <StreamGeometry x:Key="IconSettings">
+        M12,15.5 A3.5,3.5 0 0,1 8.5,12 A3.5,3.5 0 0,1 12,8.5 A3.5,3.5 0 0,1 15.5,12 A3.5,3.5 0 0,1 12,15.5
+        M19.43,12.97 C19.47,12.65 19.5,12.33 19.5,12 C19.5,11.67 19.47,11.34 19.43,11 L21.54,9.37
+        C21.73,9.22 21.78,8.95 21.66,8.73 L19.66,5.27 C19.54,5.05 19.27,4.96 19.05,5.05 L16.56,6.05
+        C16.04,5.66 15.5,5.32 14.87,5.07 L14.5,2.42 C14.46,2.18 14.25,2 14,2 L10,2
+        C9.75,2 9.54,2.18 9.5,2.42 L9.13,5.07 C8.5,5.32 7.96,5.66 7.44,6.05 L4.95,5.05
+        C4.73,4.96 4.46,5.05 4.34,5.27 L2.34,8.73 C2.21,8.95 2.27,9.22 2.46,9.37 L4.57,11
+        C4.53,11.34 4.5,11.67 4.5,12 C4.5,12.33 4.53,12.65 4.57,12.97 L2.46,14.63
+        C2.27,14.78 2.21,15.05 2.34,15.27 L4.34,18.73 C4.46,18.95 4.73,19.03 4.95,18.95 L7.44,17.94
+        C7.96,18.34 8.5,18.68 9.13,18.93 L9.5,21.58 C9.54,21.82 9.75,22 10,22 L14,22
+        C14.25,22 14.46,21.82 14.5,21.58 L14.87,18.93 C15.5,18.67 16.04,18.34 16.56,17.94 L19.05,18.95
+        C19.27,19.03 19.54,18.95 19.66,18.73 L21.66,15.27 C21.78,15.05 21.73,14.78 21.54,14.63 Z
+    </StreamGeometry>
+
+    <!-- Magnifier: global search -->
+    <StreamGeometry x:Key="IconSearch">
+        M10,2 A8,8 0 1,0 10,18 A8,8 0 1,0 10,2 Z
+        M10,4 A6,6 0 1,1 10,16 A6,6 0 1,1 10,4 Z
+        M15.3,16.7 L16.7,15.3 L22,20.6 L20.6,22 Z
+    </StreamGeometry>
+
+    <!-- Sun: light theme state -->
+    <StreamGeometry x:Key="IconThemeLight">
+        M12,7 A5,5 0 1,0 12,17 A5,5 0 1,0 12,7 Z
+        M11,1 L13,1 L13,4.5 L11,4.5 Z
+        M11,19.5 L13,19.5 L13,23 L11,23 Z
+        M1,11 L4.5,11 L4.5,13 L1,13 Z
+        M19.5,11 L23,11 L23,13 L19.5,13 Z
+        M4.2,2.8 L6.7,5.3 L5.3,6.7 L2.8,4.2 Z
+        M17.3,18.7 L19.8,21.2 L21.2,19.8 L18.7,17.3 Z
+        M2.8,19.8 L5.3,17.3 L6.7,18.7 L4.2,21.2 Z
+        M18.7,6.7 L21.2,4.2 L19.8,2.8 L17.3,5.3 Z
+    </StreamGeometry>
+
+    <!-- Crescent moon: dark theme state -->
+    <StreamGeometry x:Key="IconThemeDark">
+        M12.7,2 C12.3,2 11.9,2 11.5,2.1 C13.6,3.6 15,6.1 15,9 C15,13.7 11.2,17.5 6.5,17.5
+        C5.4,17.5 4.4,17.3 3.4,16.9 C4.9,20 8,22 11.7,22 C17.2,22 21.7,17.5 21.7,12
+        C21.7,6.5 17.9,2 12.7,2 Z
+    </StreamGeometry>
+
+    <!-- Circle outline with right half filled: auto theme state (follows the OS) -->
+    <StreamGeometry x:Key="IconThemeAuto">
+        M12,2 A10,10 0 1,0 12,22 A10,10 0 1,0 12,2 Z
+        M12,4 A8,8 0 1,1 12,20 A8,8 0 1,1 12,4 Z
+        M12,4 A8,8 0 0,1 12,20 Z
+    </StreamGeometry>
+
+    <!-- × cross: close document tab -->
+    <StreamGeometry x:Key="IconClose">
+        M6.4,5 L12,10.6 L17.6,5 L19,6.4 L13.4,12 L19,17.6 L17.6,19 L12,13.4 L6.4,19 L5,17.6 L10.6,12 L5,6.4 Z
+    </StreamGeometry>
+
+    <!-- Hamburger: sidebar collapse toggle -->
+    <StreamGeometry x:Key="IconSidebarCollapse">
+        M3,6 L21,6 L21,8 L3,8 Z M3,11 L21,11 L21,13 L3,13 Z M3,16 L21,16 L21,18 L3,18 Z
+    </StreamGeometry>
+
+    <StreamGeometry x:Key="IconFavorite">
+        M12,2 L14.9,8.26 L22,9.27 L17,14.14 L18.18,21.02 L12,17.77 L5.82,21.02 L7,14.14 L2,9.27 L9.1,8.26 Z
+    </StreamGeometry>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         RIBBON TOOLBAR ICONS (24×24)
+    ═══════════════════════════════════════════════════════════ -->
+
+    <!-- Plus cross: "Додати запис" -->
+    <StreamGeometry x:Key="IconAdd">
+        M11,2 L13,2 L13,11 L22,11 L22,13 L13,13 L13,22 L11,22 L11,13 L2,13 L2,11 L11,11 Z
+    </StreamGeometry>
+
+    <!-- Up arrow from line: "Експортувати" (inverse of IconImport) -->
+    <StreamGeometry x:Key="IconExport">
+        M11,22 L13,22 L13,12 L16,12 L12,7 L8,12 L11,12 Z
+        M4,2 L20,2 L20,5 L4,5 Z
+    </StreamGeometry>
+
+    <!-- Two quarter-ring arcs with arrowheads: "Оновити" -->
+    <StreamGeometry x:Key="IconRefresh">
+        M4,12 A8,8 0 0,1 12,4 L12,2 L15,5 L12,8 L12,6 A6,6 0 0,0 6,12 Z
+        M20,12 A8,8 0 0,1 12,20 L12,22 L9,19 L12,16 L12,18 A6,6 0 0,0 18,12 Z
+    </StreamGeometry>
+
+    <!-- Filled star: "Встановити за замовчуванням" -->
+    <StreamGeometry x:Key="IconSetDefault">
+        M12,2 L14.9,8.26 L22,9.27 L17,14.14 L18.18,21.02 L12,17.77 L5.82,21.02 L7,14.14 L2,9.27 L9.1,8.26 Z
+    </StreamGeometry>
+
+    <!-- Hourglass: "Зберегти тимчасово" -->
+    <StreamGeometry x:Key="IconSaveLocal">
+        M4,2 L20,2 L20,5 L14,11 L14,13 L20,19 L20,22 L4,22 L4,19 L10,13 L10,11 L4,5 Z
+        M7,4 L17,4 L12,9 Z
+        M7,20 L17,20 L12,15 Z
+    </StreamGeometry>
+
+    <!-- Document page with a checkmark: "Сформувати документ" -->
+    <StreamGeometry x:Key="IconGenerateDocument">
+        M13,2 L6,2 C4.9,2 4,2.9 4,4 L4,20 C4,21.1 4.9,22 6,22 L18,22 C19.1,22 20,21.1 20,20 L20,9 Z
+        M13,3.5 L18.5,9 L13,9 Z
+        M8,13.5 L9.5,12 L11.5,14.5 L16,10 L17.5,11.5 L11.5,17.5 Z
+    </StreamGeometry>
+
+    <!-- Floppy disk: "Зберегти чернетку" -->
+    <StreamGeometry x:Key="IconSaveDraft">
+        M4,4 C4,2.9 4.9,2 6,2 L16,2 L20,6 L20,20 C20,21.1 19.1,22 18,22 L6,22 C4.9,22 4,21.1 4,20 Z
+        M7,2 L7,9 L17,9 L17,2
+        M14,3 L14,8 L16,8 L16,3
+        M8,13 L16,13 L16,21 L8,21 Z
+    </StreamGeometry>
+
+    <!-- Down arrow into a line: "Імпортувати" -->
+    <StreamGeometry x:Key="IconImport">
+        M11,2 L13,2 L13,12 L16,12 L12,17 L8,12 L11,12 Z
+        M4,19 L20,19 L20,22 L4,22 Z
+    </StreamGeometry>
+
+    <!-- Trash can: "Очистити таблицю" (used with IsDestructive=true) -->
+    <StreamGeometry x:Key="IconClearTable">
+        M8,1 L16,1 L16,3 L20,3 L20,5 L4,5 L4,3 L8,3 Z
+        M6,6 L18,6 L17,21 C17,21.6 16.5,22 16,22 L8,22 C7.5,22 7,21.6 7,21 Z
+        M9,9 L9,18 L11,18 L11,9 Z M13,9 L13,18 L15,18 L15,9 Z
+    </StreamGeometry>
+
+    <!-- Open folder: "Тека / SelectFolder" -->
+    <StreamGeometry x:Key="IconFolderOpen">
+        M3,8 C3,6.9 3.9,6 5,6 L10,6 L12,8 L21,8 L21,10 L3,10 Z
+        M3,10 L4,19 C4,20.1 4.9,21 6,21 L18,21 C19.1,21 20,20.1 20,19 L21,10 Z
+    </StreamGeometry>
+
+    <!-- Three sliders with handles (tracks split around handles to avoid overlap): "Параметри" -->
+    <StreamGeometry x:Key="IconParameters">
+        M3,5 L6,5 L6,7 L3,7 Z
+        M6,6 A2,2 0 1,0 10,6 A2,2 0 1,0 6,6 Z
+        M10,5 L21,5 L21,7 L10,7 Z
+        M3,11 L14,11 L14,13 L3,13 Z
+        M14,12 A2,2 0 1,0 18,12 A2,2 0 1,0 14,12 Z
+        M18,11 L21,11 L21,13 L18,13 Z
+        M3,17 L6,17 L6,19 L3,19 Z
+        M6,18 A2,2 0 1,0 10,18 A2,2 0 1,0 6,18 Z
+        M10,17 L21,17 L21,19 L10,19 Z
+    </StreamGeometry>
+
+    <!-- Trash can (same as ClearTable — used for destructive "Видалити" actions) -->
+    <StreamGeometry x:Key="IconDelete">
+        M8,1 L16,1 L16,3 L20,3 L20,5 L4,5 L4,3 L8,3 Z
+        M6,6 L18,6 L17,21 C17,21.6 16.5,22 16,22 L8,22 C7.5,22 7,21.6 7,21 Z
+        M9,9 L9,18 L11,18 L11,9 Z M13,9 L13,18 L15,18 L15,9 Z
+    </StreamGeometry>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         DIALOG ICONS (24×24) — rendered inside coloured badge borders
+    ═══════════════════════════════════════════════════════════ -->
+
+    <!-- Letter "i" (dot + bar): information dialogs -->
+    <StreamGeometry x:Key="IconDialogInfo">
+        M11,4 L13,4 L13,7 L11,7 Z
+        M10,9 L14,9 L14,19 L10,19 Z
+    </StreamGeometry>
+
+    <!-- Exclamation "!" (bar + dot): warning dialogs -->
+    <StreamGeometry x:Key="IconDialogWarning">
+        M10.5,4 L13.5,4 L13.5,15 L10.5,15 Z
+        M10.5,17 L13.5,17 L13.5,20 L10.5,20 Z
+    </StreamGeometry>
+
+    <!-- × cross: error dialogs -->
+    <StreamGeometry x:Key="IconDialogError">
+        M6.4,5 L12,10.6 L17.6,5 L19,6.4 L13.4,12 L19,17.6 L17.6,19 L12,13.4 L6.4,19 L5,17.6 L10.6,12 L5,6.4 Z
+    </StreamGeometry>
+
 </ResourceDictionary>

@@ -32,9 +32,24 @@
 			<Button Content="Очистити" Command="{Binding ClearFiltersCommand}" Margin="0,0,5,0"/>
 
 			<Button Content="Оновити" Command="{Binding RefreshCommand}" Margin="0,0,5,0"/>
-
-			<Button Classes="CloseTab" Content="Закрити" Command="{Binding CloseTabCommand}" Margin="0,0,5,0"/>
 		</StackPanel>
+
+		<Grid>
+			<Border IsVisible="{Binding IsEmpty}"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center">
+				<TextBlock Text="Ще немає записів — сформуйте перший звіт"
+						   Opacity="0.55"
+						   FontSize="14"/>
+			</Border>
+
+			<Border IsVisible="{Binding IsFilterEmpty}"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center">
+				<TextBlock Text="Нічого не знайдено — змініть критерії фільтрування"
+						   Opacity="0.55"
+						   FontSize="14"/>
+			</Border>
 
 		<DataGrid x:Name="HistoryGrid"
 				  ItemsSource="{Binding Entries}"
@@ -44,6 +59,7 @@
 				  CanUserSortColumns="True"
 				  DoubleTapped="OnGridDoubleTapped"
 				  KeyDown="OnGridKeyDown"
+				  IsVisible="{Binding HasEntries}"
 				  Sorting="OnGridSorting">
 			<DataGrid.ContextMenu>
 				<ContextMenu>
@@ -73,25 +89,16 @@
 				</ContextMenu>
 			</DataGrid.ContextMenu>
 
-			<DataGrid.Styles>
-				<Style Selector="Ellipse.draft">
-					<Setter Property="Fill" Value="{DynamicResource BrushStatusDraft}"/>
-				</Style>
-				<Style Selector="Ellipse.generated">
-					<Setter Property="Fill" Value="{DynamicResource BrushStatusGenerated}"/>
-				</Style>
-			</DataGrid.Styles>
-
 			<DataGrid.Columns>
-				<DataGridTemplateColumn Width="40" CanUserResize="False" CanUserSort="False">
+				<DataGridTemplateColumn Width="120" CanUserResize="False" CanUserSort="False">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate x:DataType="history:HistoryEntryViewModel">
-							<Ellipse Width="10" Height="10"
-									 HorizontalAlignment="Center"
-									 VerticalAlignment="Center"
-									 Classes.draft="{Binding IsDraft}"
-									 Classes.generated="{Binding IsGenerated}"
-									 ToolTip.Tip="{Binding StatusText}"/>
+							<Border Classes="statusBadge"
+									Classes.draft="{Binding IsDraft}"
+									Classes.generated="{Binding IsGenerated}"
+									Margin="4 0">
+								<TextBlock Text="{Binding StatusText}"/>
+							</Border>
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
@@ -162,5 +169,6 @@
 				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 		</DataGrid>
+		</Grid>
 	</DockPanel>
 </UserControl>

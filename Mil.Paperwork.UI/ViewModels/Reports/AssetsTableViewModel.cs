@@ -98,29 +98,5 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             SelectedAsset = AssetsCollection.FirstOrDefault();
         }
-
-        public void Refresh()
-        {
-            return;
-
-            var assetsWithProdId = AssetsCollection.Select(x => new { Asset = x, x.SelectedProductId }).ToList();
-
-            // restore selected values
-            var products = ProductsSelector.Products
-                .GroupBy(x => x.AlmostUniqueID)
-                .ToDictionary(g => g.Key, g => g.Last());
-
-            foreach (var item in assetsWithProdId)
-            {
-                // If asset.SelectedProductId is not in the new Products, set it to null or a default value
-                var selectedValue = item.SelectedProductId;
-                if (selectedValue != null)
-                {
-                    products.TryGetValue(selectedValue, out var product);
-
-                    item.Asset.SelectedProductId = product?.AlmostUniqueID;
-                }
-            }
-        }
     }
 }

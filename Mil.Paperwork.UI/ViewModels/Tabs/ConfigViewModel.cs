@@ -21,6 +21,9 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         public IDelegateCommand<ExportType> ExportDataCommand { get; }
         public IDelegateCommand ImportCommand { get; }
 
+        protected IDelegateCommand ExportJsonCommand { get; }
+        protected IDelegateCommand ExportExcelCommand { get; }
+
         public ConfigViewModel(
             IExportService exportService,
             IImportService importService,
@@ -32,9 +35,21 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
 
             ExportDataCommand = new DelegateCommand<ExportType>(ExportDataCommandExecute);
             ImportCommand = new DelegateCommand(ImportCommandExecute);
+            ExportJsonCommand = new DelegateCommand(ExportJsonCommandExecute);
+            ExportExcelCommand = new DelegateCommand(ExportExcelCommandExecute);
         }
 
         protected abstract void UpdateCurrentConfig(bool withReload = false);
+
+        private void ExportJsonCommandExecute()
+        {
+            ExportDataCommandExecute(ExportType.Json);
+        }
+
+        private void ExportExcelCommandExecute()
+        {
+            ExportDataCommandExecute(ExportType.Excel);
+        }
 
         private async void ExportDataCommandExecute(ExportType exportType)
         {

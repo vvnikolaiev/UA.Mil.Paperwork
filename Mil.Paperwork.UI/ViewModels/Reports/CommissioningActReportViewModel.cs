@@ -10,6 +10,7 @@ using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Managers;
 using Mil.Paperwork.UI.ViewModels.Controls;
 using Mil.Paperwork.UI.ViewModels.Dictionaries;
+using Mil.Paperwork.UI.ViewModels.Ribbon;
 using Mil.Paperwork.UI.ViewModels.Tabs;
 using System;
 using System.Collections.Generic;
@@ -268,6 +269,16 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             PropertyChanged += OnActPropertyChanged;
 
             FillReportDefaults();
+            ResumeDirtyTracking();
+        }
+
+        protected override IList<RibbonGroupViewModel> BuildRibbonGroups()
+        {
+            var documentGroup = CreateDocumentGroup(GenerateReportCommand);
+            var tableGroup = CreateTableGroup(AddNumbersRowCommand, RemoveNumbersRowCommand, null, null);
+            var reportGroup = CreateReportGroup(OpenConfigurationCommand, null);
+            var groups = new List<RibbonGroupViewModel> { documentGroup, tableGroup, reportGroup };
+            return groups;
         }
 
         private void OnProductIdentifiersCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -386,6 +397,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             _reportManager.GenerateCommissioningAct(reportData, EnsureHistoryEntryId());
 
+            ResetDirtyState();
+
             if (IsTechnicalStateActCreationChecked)
             {
                 var asset = new AssetInfo(product)
@@ -442,40 +455,43 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         public void LoadReportData(ICommissioningActReportData data)
         {
-            DocumentNumber = data.DocumentNumber;
-            DocumentDate = new DateTimeOffset(data.DocumentDate);
-            Count = data.Count;
-            CountText = data.CountText;
-            CommissioningLocation = data.CommissioningLocation;
-            ShortCharacteristic = data.ShortCharacteristic;
-            AssetCompliance = data.AssetCompliance;
-            CompletionState = data.CompletionState;
-            TestResults = data.TestResults;
-            OtherInfo = data.OtherInfo;
-            Conclusion = data.Conclusion;
-            AttachedDocumentation = data.AttachedDocumentation;
-
-            var asset = data.Asset;
-            if (asset != null)
+            WithDirtyTrackingSuspended(() =>
             {
-                ProductName = asset.Name;
-                ShortName = asset.ShortName;
-                Price = asset.Price;
-                MeasurementUnitName = asset.MeasurementUnit;
-                WarrantyPeriodMonths = asset.WarrantyPeriodMonths;
-                YearManufactured = asset.YearManufactured;
-                ResourceYears = asset.ResourceYears;
-            }
+                DocumentNumber = data.DocumentNumber;
+                DocumentDate = new DateTimeOffset(data.DocumentDate);
+                Count = data.Count;
+                CountText = data.CountText;
+                CommissioningLocation = data.CommissioningLocation;
+                ShortCharacteristic = data.ShortCharacteristic;
+                AssetCompliance = data.AssetCompliance;
+                CompletionState = data.CompletionState;
+                TestResults = data.TestResults;
+                OtherInfo = data.OtherInfo;
+                Conclusion = data.Conclusion;
+                AttachedDocumentation = data.AttachedDocumentation;
 
-            ProductIdentifiers.Clear();
-            foreach (var id in data.AssetIds ?? [])
-            {
-                ProductIdentifiers.Add(new ProductIdentification { SerialNumber = id.SerialNumber, InventoryNumber = id.InventoryNumber });
-            }
+                var asset = data.Asset;
+                if (asset != null)
+                {
+                    ProductName = asset.Name;
+                    ShortName = asset.ShortName;
+                    Price = asset.Price;
+                    MeasurementUnitName = asset.MeasurementUnit;
+                    WarrantyPeriodMonths = asset.WarrantyPeriodMonths;
+                    YearManufactured = asset.YearManufactured;
+                    ResourceYears = asset.ResourceYears;
+                }
 
-            SelectedIdentifier = ProductIdentifiers.FirstOrDefault();
+                ProductIdentifiers.Clear();
+                foreach (var id in data.AssetIds ?? [])
+                {
+                    ProductIdentifiers.Add(new ProductIdentification { SerialNumber = id.SerialNumber, InventoryNumber = id.InventoryNumber });
+                }
 
-            AssetAcceptance.LoadFrom(data.PersonAccepted, data.PersonHanded);
+                SelectedIdentifier = ProductIdentifiers.FirstOrDefault();
+
+                AssetAcceptance.LoadFrom(data.PersonAccepted, data.PersonHanded);
+            });
         }
 
         private void OpenConfigurationCommandExecute()

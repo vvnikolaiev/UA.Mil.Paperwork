@@ -7,6 +7,7 @@
 			 xmlns:reportViewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Reports"
 			 xmlns:dictionaries="clr-namespace:Mil.Paperwork.UI.ViewModels.Dictionaries"
 			 xmlns:dataModels="clr-namespace:Mil.Paperwork.Infrastructure.DataModels;assembly=Mil.Paperwork.Infrastructure"
+			 xmlns:controls="clr-namespace:Mil.Paperwork.UI.Controls"
 			 x:DataType="reportViewModels:AssetDismantlingViewModel"
 			 x:Name="Root">
 
@@ -30,7 +31,11 @@
 
 	</UserControl.Styles>
 
-	<Grid Grid.IsSharedSizeScope="True" Background="{DynamicResource BrushDismantlingBackground}">
+	<DockPanel>
+
+		<controls:RibbonToolbar DockPanel.Dock="Top" Groups="{Binding RibbonGroups}" StatusContent="{Binding DraftStatusText}" />
+
+		<Grid Grid.IsSharedSizeScope="True" Background="{DynamicResource BrushSurface}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
@@ -177,4 +182,5 @@
 			</DataGrid.Columns>
 		</DataGrid>
 	</Grid>
+	</DockPanel>
 </UserControl>

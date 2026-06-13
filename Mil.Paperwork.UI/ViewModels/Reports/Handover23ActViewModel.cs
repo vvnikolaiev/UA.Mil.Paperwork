@@ -4,8 +4,10 @@ using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Managers;
+using Mil.Paperwork.UI.ViewModels.Ribbon;
 using Mil.Paperwork.UI.ViewModels.Tabs;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -18,7 +20,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
         private readonly IDialogService _dialogService;
-        private readonly IReportDataService _reportDataService;
 
         private string _documentNumber;
         private DateTimeOffset _documentDate = DateTime.Now;
@@ -130,6 +131,16 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             GenerateReportCommand = new DelegateCommand(GenerateReportCommandExecute);
             OpenConfigurationCommand = new DelegateCommand(OpenConfigurationCommandExecute);
+            ResumeDirtyTracking();
+        }
+
+        protected override IList<RibbonGroupViewModel> BuildRibbonGroups()
+        {
+            var documentGroup = CreateDocumentGroup(GenerateReportCommand);
+            var tableGroup = CreateTableGroup(AssetsTable.AddRowCommand, AssetsTable.RemoveRowCommand, null, null);
+            var reportGroup = CreateReportGroup(OpenConfigurationCommand, null);
+            var groups = new List<RibbonGroupViewModel> { documentGroup, tableGroup, reportGroup };
+            return groups;
         }
 
         private void FillDefaultValues()
@@ -201,22 +212,26 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             // Generate report
             _reportManager.GenerateHandover23Act(reportData, EnsureHistoryEntryId());
+            ResetDirtyState();
         }
 
         public void LoadReportData(IHandoverReportData data)
         {
-            DocumentNumber = data.DocumentNumber;
-            DocumentDate = data.DocumentDate;
-            DateStart = data.DateStart;
-            DateEnd = data.DateEnd;
-            SupplierName = data.Supplier;
-            ReceiverName = data.Receiver;
-            ReasonDocumentName = data.ReasonDocumentName;
-            ReasonDocumentNumber = data.ReasonDocumentNumber;
-            ReasonDocumentDate = data.ReasonDocumentDate;
+            WithDirtyTrackingSuspended(() =>
+            {
+                DocumentNumber = data.DocumentNumber;
+                DocumentDate = data.DocumentDate;
+                DateStart = data.DateStart;
+                DateEnd = data.DateEnd;
+                SupplierName = data.Supplier;
+                ReceiverName = data.Receiver;
+                ReasonDocumentName = data.ReasonDocumentName;
+                ReasonDocumentNumber = data.ReasonDocumentNumber;
+                ReasonDocumentDate = data.ReasonDocumentDate;
 
-            AssetsTable.LoadAssets(data.Assets ?? []);
-            AssetAcceptance.LoadFrom(data.PersonReceiver, data.PersonResponsible);
+                AssetsTable.LoadAssets(data.Assets ?? []);
+                AssetAcceptance.LoadFrom(data.PersonReceiver, data.PersonResponsible);
+            });
         }
 
         private void OpenConfigurationCommandExecute()

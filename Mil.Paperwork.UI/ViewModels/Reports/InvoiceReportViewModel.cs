@@ -7,8 +7,10 @@ using Mil.Paperwork.UI.Managers;
 using Mil.Paperwork.UI.ViewModels.Assets;
 using Mil.Paperwork.UI.ViewModels.Controls;
 using Mil.Paperwork.UI.ViewModels.Dictionaries;
+using Mil.Paperwork.UI.ViewModels.Ribbon;
 using Mil.Paperwork.UI.ViewModels.Tabs;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -19,7 +21,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
         private readonly IDialogService _dialogService;
-        private readonly IReportDataService _reportDataService;
 
         private int _validDays = 10;
         private string _documentNumber;
@@ -131,6 +132,16 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             AddRowCommand = new DelegateCommand(AddRow);
             RemoveRowCommand = new DelegateCommand(RemoveRowExecute);
+            ResumeDirtyTracking();
+        }
+
+        protected override IList<RibbonGroupViewModel> BuildRibbonGroups()
+        {
+            var documentGroup = CreateDocumentGroup(GenerateReportCommand);
+            var tableGroup = CreateTableGroup(AddRowCommand, RemoveRowCommand, null, null);
+            var reportGroup = CreateReportGroup(OpenConfigurationCommand, null);
+            var groups = new List<RibbonGroupViewModel> { documentGroup, tableGroup, reportGroup };
+            return groups;
         }
 
         private void UpdateDueDate()
@@ -208,26 +219,29 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             _dataService.AlterPeople([reportData.Recipient, reportData.Transmitter]);
 
-            // Generate report
             _reportManager.GenerateInvoice(reportData, EnsureHistoryEntryId());
+            ResetDirtyState();
         }
 
         public void LoadReportData(IInvoceReportData data)
         {
-            DocumentNumber = data.DocumentNumber;
-            DateCreated = data.DateCreated;
-            DueDate = data.DueDate;
-            Reason = data.Reason;
-
-            AssetsCollection.Clear();
-            foreach (var assetInfo in data.Assets ?? [])
+            WithDirtyTrackingSuspended(() =>
             {
-                AssetsCollection.Add(InvoiceAssetViewModel.FromAssetInfo(assetInfo));
-            }
+                DocumentNumber = data.DocumentNumber;
+                DateCreated = data.DateCreated;
+                DueDate = data.DueDate;
+                Reason = data.Reason;
 
-            SelectedAsset = AssetsCollection.FirstOrDefault();
+                AssetsCollection.Clear();
+                foreach (var assetInfo in data.Assets ?? [])
+                {
+                    AssetsCollection.Add(InvoiceAssetViewModel.FromAssetInfo(assetInfo));
+                }
 
-            AssetAcceptance.LoadFrom(data.Recipient, data.Transmitter);
+                SelectedAsset = AssetsCollection.FirstOrDefault();
+
+                AssetAcceptance.LoadFrom(data.Recipient, data.Transmitter);
+            });
         }
 
         private void OpenConfigurationCommandExecute()

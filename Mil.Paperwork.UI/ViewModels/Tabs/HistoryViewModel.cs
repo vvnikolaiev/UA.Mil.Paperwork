@@ -5,13 +5,12 @@ using Mil.Paperwork.DataAccess.Repositories;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
 using Mil.Paperwork.Infrastructure.Services;
+using Mil.Paperwork.UI.Helpers;
 using Mil.Paperwork.UI.ViewModels.History;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 
 namespace Mil.Paperwork.UI.ViewModels.Tabs
@@ -21,10 +20,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         private const string TabHeader = "Історія";
         private const string AllTypesFilterText = "Всі";
         private const string ConfirmationCaption = "Підтвердження";
-        private const string ErrorCaption = "Помилка";
         private const string RemoveEntryConfirmation = "Видалити цей запис історії?";
-        private const string PathNotFoundMessageFormat = "Файл або теку не знайдено:\n{0}";
-        private const string OpenPathErrorMessageFormat = "Не вдалося відкрити:\n{0}";
 
         private const string SortByType = "TypeText";
         private const string SortByDate = "ModifiedAt";
@@ -43,11 +39,27 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         private string _searchText = string.Empty;
         private string? _sortMemberPath;
         private ListSortDirection _sortDirection;
+        private bool _isEmpty;
+        private bool _isFilterEmpty;
 
         public event EventHandler<Guid> OpenHistoryEntryRequested;
         public event EventHandler<CreateFromRequestedEventArgs> CreateFromRequested;
 
         public override string Header => TabHeader;
+
+        public bool IsEmpty
+        {
+            get => _isEmpty;
+            private set => SetProperty(ref _isEmpty, value);
+        }
+
+        public bool IsFilterEmpty
+        {
+            get => _isFilterEmpty;
+            private set => SetProperty(ref _isFilterEmpty, value);
+        }
+
+        public bool HasEntries => Entries.Count > 0;
 
         public bool IsClosed { get; private set; }
 
@@ -257,6 +269,10 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             {
                 Entries.Add(entry);
             }
+
+            IsEmpty = _allEntries.Count == 0;
+            IsFilterEmpty = _allEntries.Count > 0 && Entries.Count == 0;
+            OnPropertyChanged(nameof(HasEntries));
         }
 
         private IEnumerable<HistoryEntryViewModel> ApplySortToFiltered(IEnumerable<HistoryEntryViewModel> entries)
@@ -337,37 +353,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
                 return;
             }
 
-            var generatedFiles = entry.IndexEntry.GeneratedFiles;
-
-            string pathToOpen;
-            bool pathExists;
-            if (generatedFiles.Count == 1)
-            {
-                pathToOpen = generatedFiles[0];
-                pathExists = File.Exists(pathToOpen);
-            }
-            else
-            {
-                pathToOpen = Path.GetDirectoryName(generatedFiles[0]) ?? generatedFiles[0];
-                pathExists = Directory.Exists(pathToOpen);
-            }
-
-            if (!pathExists)
-            {
-                var notFoundMessage = string.Format(PathNotFoundMessageFormat, pathToOpen);
-                await _dialogService.ShowMessageAsync(notFoundMessage, ErrorCaption, DialogButtons.OK, DialogIcon.Error);
-                return;
-            }
-
-            try
-            {
-                Process.Start(new ProcessStartInfo(pathToOpen) { UseShellExecute = true });
-            }
-            catch (Exception)
-            {
-                var errorMessage = string.Format(OpenPathErrorMessageFormat, pathToOpen);
-                await _dialogService.ShowMessageAsync(errorMessage, ErrorCaption, DialogButtons.OK, DialogIcon.Error);
-            }
+            await ShellOpenHelper.OpenFilesAsync(entry.IndexEntry.GeneratedFiles, _dialogService);
         }
 
         private void ClearFiltersExecute()
@@ -398,25 +384,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
                 return;
             }
 
-            var firstFile = entry.IndexEntry.GeneratedFiles[0];
-            var folderPath = Path.GetDirectoryName(firstFile) ?? firstFile;
-
-            if (!Directory.Exists(folderPath))
-            {
-                var notFoundMessage = string.Format(PathNotFoundMessageFormat, folderPath);
-                await _dialogService.ShowMessageAsync(notFoundMessage, ErrorCaption, DialogButtons.OK, DialogIcon.Error);
-                return;
-            }
-
-            try
-            {
-                Process.Start(new ProcessStartInfo(folderPath) { UseShellExecute = true });
-            }
-            catch (Exception)
-            {
-                var errorMessage = string.Format(OpenPathErrorMessageFormat, folderPath);
-                await _dialogService.ShowMessageAsync(errorMessage, ErrorCaption, DialogButtons.OK, DialogIcon.Error);
-            }
+            await ShellOpenHelper.OpenFolderAsync(entry.IndexEntry.GeneratedFiles[0], _dialogService);
         }
 
         private async void RemoveEntryCommandExecute(HistoryEntryViewModel entry)
