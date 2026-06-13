@@ -15,6 +15,8 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
 
         public string Header => TabHeader;
 
+        public bool IsDirty => false;
+
         public List<ReportItemViewModel> DocumentTypes { get; }
 
         public IDelegateCommand<ReportType> CreateReportCommand { get; }

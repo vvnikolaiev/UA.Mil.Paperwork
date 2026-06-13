@@ -14,6 +14,8 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         private AssetType _selectedAssetType;
         public string Header => "Settings";
 
+        public bool IsDirty => false;
+
         public bool IsClosed { get; private set; }
 
         public AssetType SelectedAssetType

@@ -67,44 +67,11 @@
 		</DataTemplate>
 
 		<DataTemplate DataType="{x:Type reportViewModels:AssetValuationViewModel}">
-
-			<Grid Grid.IsSharedSizeScope="True">
-				<Grid.RowDefinitions>
-					<RowDefinition Height="*" />
-					<RowDefinition Height="Auto" />
-				</Grid.RowDefinitions>
-
-				<reportViews:AssetValuationView />
-
-				<StackPanel Classes="buttons" Grid.Row="1">
-					<Button Content="Створити документ" Command="{Binding GenerateReportCommand}" />
-					<Button Content="Зберегти чернетку" Command="{Binding SaveDraftCommand}" />
-					<Button Content="Додати рядок" Command="{Binding AddRowCommand}" />
-					<Button Content="Імпортувати таблицю" Command="{Binding ImportRowsCommand}" />
-					<Button Content="Очистити таблицю" Command="{Binding ClearCommand}" />
-					<Button Content="Закрити" Command="{Binding CloseTabCommand}"/>
-				</StackPanel>
-			</Grid>
+			<reportViews:AssetValuationView />
 		</DataTemplate>
 
 		<DataTemplate DataType="{x:Type reportViewModels:AssetDismantlingViewModel}">
-			<Grid Grid.IsSharedSizeScope="True">
-				<Grid.RowDefinitions>
-					<RowDefinition Height="*" />
-					<RowDefinition Height="Auto" />
-				</Grid.RowDefinitions>
-
-				<reportViews:AssetDismantlingView />
-
-				<StackPanel Grid.Row="1" Classes="buttons">
-					<Button Content="Створити документ" Command="{Binding GenerateReportCommand}" />
-					<Button Content="Зберегти чернетку" Command="{Binding SaveDraftCommand}" />
-					<Button Content="Додати рядок" Command="{Binding AddRowCommand}" />
-					<Button Content="Імпортувати таблицю" Command="{Binding ImportRowsCommand}" />
-					<Button Content="Очистити таблицю" Command="{Binding ClearCommand}" />
-					<Button Content="Закрити" Command="{Binding CloseTabCommand}"/>
-				</StackPanel>
-			</Grid>
+			<reportViews:AssetDismantlingView />
 		</DataTemplate>
 
 		<!-- CONFIGURATION AND SETTINGS -->

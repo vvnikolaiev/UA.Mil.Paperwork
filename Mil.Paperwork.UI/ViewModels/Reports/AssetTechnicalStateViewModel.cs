@@ -153,6 +153,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             : base(reportManager, assetFactory, dataService, reportDataService, reportHistoryService, dialogService)
         {
             _reportManager = reportManager;
+            ResumeDirtyTracking();
         }
 
         protected override IReportData BuildReportData()
@@ -187,6 +188,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             {
                 GenerateWriteOffActReport(writeOffAssets, destinationFolder);
             }
+            ResetDirtyState();
         }
 
         private void GenerateQualityStateReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
@@ -271,21 +273,24 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         public void LoadReportData(IWriteOffPackageReportData data)
         {
-            DocumentDate = data.DocumentDate;
-            EventDate = data.EventDate;
-            OrdenNumber = data.OrdenNumber;
-            OrdenDate = data.OrdenDate;
-
-            var extract = data.BookOfLossesExtractData;
-            if (extract != null)
+            WithDirtyTrackingSuspended(() =>
             {
-                BookOfLossesYear = extract.Year;
-                BookOfLossesNumber = extract.Number;
-                BookOfLossesPage = extract.PageNumber;
-                BookOfLossesExtractDate = new DateTimeOffset(extract.RecordDate);
-            }
+                DocumentDate = data.DocumentDate;
+                EventDate = data.EventDate;
+                OrdenNumber = data.OrdenNumber;
+                OrdenDate = data.OrdenDate;
 
-            AssetsTable.LoadAssets(data.Assets ?? []);
+                var extract = data.BookOfLossesExtractData;
+                if (extract != null)
+                {
+                    BookOfLossesYear = extract.Year;
+                    BookOfLossesNumber = extract.Number;
+                    BookOfLossesPage = extract.PageNumber;
+                    BookOfLossesExtractDate = new DateTimeOffset(extract.RecordDate);
+                }
+
+                AssetsTable.LoadAssets(data.Assets ?? []);
+            });
         }
 
         private void GenerateWriteOffReports(IEnumerable<IAssetInfo> assets, string destinationFolder)

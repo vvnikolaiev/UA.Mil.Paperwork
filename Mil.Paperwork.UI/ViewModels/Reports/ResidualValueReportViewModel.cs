@@ -8,8 +8,10 @@ using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Factories;
 using Mil.Paperwork.UI.Helpers;
 using Mil.Paperwork.UI.Managers;
+using Mil.Paperwork.UI.ViewModels.Ribbon;
 using Mil.Paperwork.UI.ViewModels.Tabs;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -99,6 +101,17 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             GenerateReportCommand = new DelegateCommand(GenerateReport);
             SelectFolderCommand = new DelegateCommand(SelectFolder);
+
+            ResumeDirtyTracking();
+        }
+
+        protected override IList<RibbonGroupViewModel> BuildRibbonGroups()
+        {
+            var documentGroup = CreateDocumentGroup(GenerateReportCommand);
+            var tableGroup = CreateTableGroup(AssetsTable.AddRowCommand, AssetsTable.RemoveRowCommand, null, AssetsTable.ClearTableCommand);
+            var reportGroup = CreateReportGroup(null, SelectFolderCommand);
+            var groups = new List<RibbonGroupViewModel> { documentGroup, tableGroup, reportGroup };
+            return groups;
         }
 
         protected override IReportData BuildReportData()
@@ -126,6 +139,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             GenerateReport(reportData);
 
             AssetsTable.Refresh();
+            ResetDirtyState();
         }
 
         private void GenerateReport(IResidualValueReportData reportData)
@@ -142,18 +156,21 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         public void LoadReportData(IResidualValueReportData data)
         {
-            EventReportNumber = data.EventReportNumber;
-            WriteOffDate = new DateTimeOffset(data.EventDate);
-            SelectedAssetType = data.AssetType;
-            AssetsTable.LoadAssets(data.Assets ?? []);
-
-            foreach (var metalCostVm in MetalCostCollection)
+            WithDirtyTrackingSuspended(() =>
             {
-                if (data.MetalCosts.TryGetValue(metalCostVm.Metal, out var cost))
+                EventReportNumber = data.EventReportNumber;
+                WriteOffDate = new DateTimeOffset(data.EventDate);
+                SelectedAssetType = data.AssetType;
+                AssetsTable.LoadAssets(data.Assets ?? []);
+
+                foreach (var metalCostVm in MetalCostCollection)
                 {
-                    metalCostVm.Cost = cost;
+                    if (data.MetalCosts.TryGetValue(metalCostVm.Metal, out var cost))
+                    {
+                        metalCostVm.Cost = cost;
+                    }
                 }
-            }
+            });
         }
 
         private void SelectFolder()

@@ -87,6 +87,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             _reportManager = reportManager;
             _dataService = dataService;
             //SaveState();
+            ResumeDirtyTracking();
         }
 
         #region Memento
@@ -209,26 +210,29 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         public void LoadReportData(IDismantlingReportData data)
         {
-            var dismantlingData = data.Dismantlings?.FirstOrDefault();
-            if (dismantlingData == null)
+            WithDirtyTrackingSuspended(() =>
             {
-                return;
-            }
+                var dismantlingData = data.Dismantlings?.FirstOrDefault();
+                if (dismantlingData == null)
+                {
+                    return;
+                }
 
-            Name = dismantlingData.Name;
-            RegistrationNumber = dismantlingData.RegistrationNumber;
-            DocumentNumber = dismantlingData.DocumentNumber;
-            NomenclatureCode = dismantlingData.NomenclatureCode;
-            Price = dismantlingData.Price;
-            SerialNumber = dismantlingData.SerialNumber;
-            Description = dismantlingData.Description;
-            ValuationDate = dismantlingData.ValuationDate;
+                Name = dismantlingData.Name;
+                RegistrationNumber = dismantlingData.RegistrationNumber;
+                DocumentNumber = dismantlingData.DocumentNumber;
+                NomenclatureCode = dismantlingData.NomenclatureCode;
+                Price = dismantlingData.Price;
+                SerialNumber = dismantlingData.SerialNumber;
+                Description = dismantlingData.Description;
+                ValuationDate = dismantlingData.ValuationDate;
 
-            FillAssetComponentsTable(dismantlingData.AssetComponents ?? []);
+                FillAssetComponentsTable(dismantlingData.AssetComponents ?? []);
 
-            FinalReportReasonText = dismantlingData.Reason;
+                FinalReportReasonText = dismantlingData.Reason;
 
-            SaveState();
+                SaveState();
+            });
         }
 
         protected override void GenerateReport(string folderName)
@@ -238,6 +242,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             _dataService.SaveValuationData([.. reportData.Dismantlings]);
             _reportManager.GenerateDismantlingReport(reportData, EnsureHistoryEntryId());
+            ResetDirtyState();
         }
 
         protected override void AddComponent(AssetValuationItemViewModel component)

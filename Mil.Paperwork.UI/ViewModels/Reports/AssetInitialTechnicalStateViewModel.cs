@@ -12,6 +12,7 @@ using Mil.Paperwork.UI.Factories;
 using Mil.Paperwork.UI.Helpers;
 using Mil.Paperwork.UI.Managers;
 using Mil.Paperwork.UI.ViewModels.Dictionaries;
+using Mil.Paperwork.UI.ViewModels.Ribbon;
 using Mil.Paperwork.UI.ViewModels.Tabs;
 using System;
 using System.Collections.Generic;
@@ -131,6 +132,16 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             GenerateReportCommand = new DelegateCommand(GenerateReport);
             OpenConfigurationCommand = new DelegateCommand(OpenConfigurationCommandExecute);
+            ResumeDirtyTracking();
+        }
+
+        protected override IList<RibbonGroupViewModel> BuildRibbonGroups()
+        {
+            var documentGroup = CreateDocumentGroup(GenerateReportCommand);
+            var tableGroup = CreateTableGroup(AssetsTable.AddRowCommand, AssetsTable.RemoveRowCommand, null, AssetsTable.ClearTableCommand);
+            var reportGroup = CreateReportGroup(OpenConfigurationCommand, null);
+            var groups = new List<RibbonGroupViewModel> { documentGroup, tableGroup, reportGroup };
+            return groups;
         }
 
         private void GenerateReport()
@@ -181,6 +192,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             GenerateInvoiceReport(assets, destinationFolder, personAccepted, personHanded);
 
             GenerateComissioningActReport(assets, destinationFolder, personAccepted, personHanded);
+            ResetDirtyState();
         }
 
         private void GenerateComissioningActReport(IEnumerable<IAssetInfo> assets, string destinationFolder, PersonDTO personAccepted, PersonDTO personHanded)
@@ -267,9 +279,12 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         public void LoadReportData(IInitialTechnicalStateReportData data)
         {
-            EventType = data.EventType;
-            AssetsTable.LoadAssets(data.Assets ?? []);
-            AssetAcceptance.LoadFrom(data.PersonAccepted, data.PersonHanded);
+            WithDirtyTrackingSuspended(() =>
+            {
+                EventType = data.EventType;
+                AssetsTable.LoadAssets(data.Assets ?? []);
+                AssetAcceptance.LoadFrom(data.PersonAccepted, data.PersonHanded);
+            });
         }
 
         private void OpenConfigurationCommandExecute()

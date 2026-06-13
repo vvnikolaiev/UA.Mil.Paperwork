@@ -144,4 +144,59 @@
         M12,2 L14.9,8.26 L22,9.27 L17,14.14 L18.18,21.02 L12,17.77 L5.82,21.02 L7,14.14 L2,9.27 L9.1,8.26 Z
     </StreamGeometry>
 
+    <!-- ═══════════════════════════════════════════════════════════
+         RIBBON TOOLBAR ICONS (24×24)
+    ═══════════════════════════════════════════════════════════ -->
+
+    <!-- Document page with a checkmark: "Сформувати документ" -->
+    <StreamGeometry x:Key="IconGenerateDocument">
+        M13,2 L6,2 C4.9,2 4,2.9 4,4 L4,20 C4,21.1 4.9,22 6,22 L18,22 C19.1,22 20,21.1 20,20 L20,9 Z
+        M13,3.5 L18.5,9 L13,9 Z
+        M8,13.5 L9.5,12 L11.5,14.5 L16,10 L17.5,11.5 L11.5,17.5 Z
+    </StreamGeometry>
+
+    <!-- Floppy disk: "Зберегти чернетку" -->
+    <StreamGeometry x:Key="IconSaveDraft">
+        M4,4 C4,2.9 4.9,2 6,2 L16,2 L20,6 L20,20 C20,21.1 19.1,22 18,22 L6,22 C4.9,22 4,21.1 4,20 Z
+        M7,2 L7,9 L17,9 L17,2
+        M14,3 L14,8 L16,8 L16,3
+        M8,13 L16,13 L16,21 L8,21 Z
+    </StreamGeometry>
+
+    <!-- Down arrow into a line: "Імпортувати" -->
+    <StreamGeometry x:Key="IconImport">
+        M11,2 L13,2 L13,12 L16,12 L12,17 L8,12 L11,12 Z
+        M4,19 L20,19 L20,22 L4,22 Z
+    </StreamGeometry>
+
+    <!-- Trash can: "Очистити таблицю" (used with IsDestructive=true) -->
+    <StreamGeometry x:Key="IconClearTable">
+        M8,1 L16,1 L16,3 L20,3 L20,5 L4,5 L4,3 L8,3 Z
+        M6,6 L18,6 L17,21 C17,21.6 16.5,22 16,22 L8,22 C7.5,22 7,21.6 7,21 Z
+        M9,9 L9,18 L11,18 L11,9 Z M13,9 L13,18 L15,18 L15,9 Z
+    </StreamGeometry>
+
+    <!-- Open folder: "Тека / SelectFolder" -->
+    <StreamGeometry x:Key="IconFolderOpen">
+        M3,8 C3,6.9 3.9,6 5,6 L10,6 L12,8 L21,8 L21,10 L3,10 Z
+        M3,10 L4,19 C4,20.1 4.9,21 6,21 L18,21 C19.1,21 20,20.1 20,19 L21,10 Z
+    </StreamGeometry>
+
+    <!-- Three horizontal bars with circle handles: "Параметри" -->
+    <StreamGeometry x:Key="IconParameters">
+        M4,5 L20,5 L20,7 L4,7 Z
+        M4,11 L20,11 L20,13 L4,13 Z
+        M4,17 L20,17 L20,19 L4,19 Z
+        M7,3 A3,3 0 1,0 7,7 A3,3 0 1,0 7,3 Z
+        M16,9 A3,3 0 1,0 16,13 A3,3 0 1,0 16,9 Z
+        M10,15 A3,3 0 1,0 10,19 A3,3 0 1,0 10,15 Z
+    </StreamGeometry>
+
+    <!-- Trash can (same as ClearTable — used for destructive "Видалити" actions) -->
+    <StreamGeometry x:Key="IconDelete">
+        M8,1 L16,1 L16,3 L20,3 L20,5 L4,5 L4,3 L8,3 Z
+        M6,6 L18,6 L17,21 C17,21.6 16.5,22 16,22 L8,22 C7.5,22 7,21.6 7,21 Z
+        M9,9 L9,18 L11,18 L11,9 Z M13,9 L13,18 L15,18 L15,9 Z
+    </StreamGeometry>
+
 </ResourceDictionary>

@@ -50,6 +50,10 @@
 			<ListBox.ItemTemplate>
 				<DataTemplate x:DataType="tabs:ITabViewModel">
 					<StackPanel Orientation="Horizontal" Spacing="6">
+						<Ellipse Width="6" Height="6"
+								 Fill="{DynamicResource BrushAccent}"
+								 VerticalAlignment="Center"
+								 IsVisible="{Binding IsDirty}" />
 						<TextBlock Text="{Binding Header}" VerticalAlignment="Center" />
 						<Button Classes="tabClose"
 								Command="{Binding CloseTabCommand}"
