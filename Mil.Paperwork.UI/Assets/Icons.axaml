@@ -140,4 +140,8 @@
         M3,6 L21,6 L21,8 L3,8 Z M3,11 L21,11 L21,13 L3,13 Z M3,16 L21,16 L21,18 L3,18 Z
     </StreamGeometry>
 
+    <StreamGeometry x:Key="IconFavorite">
+        M12,2 L14.9,8.26 L22,9.27 L17,14.14 L18.18,21.02 L12,17.77 L5.82,21.02 L7,14.14 L2,9.27 L9.1,8.26 Z
+    </StreamGeometry>
+
 </ResourceDictionary>

@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Mil.Paperwork.UI.ViewModels;
 using System.Runtime.InteropServices;
 
 namespace Mil.Paperwork.UI.Views.Shell
@@ -21,6 +22,24 @@ namespace Mil.Paperwork.UI.Views.Shell
             ApplyPlatformInsets();
 
             HeaderRoot.PointerPressed += OnHeaderPointerPressed;
+            GlobalSearchBox.KeyDown += OnSearchBoxKeyDown;
+        }
+
+        private void OnSearchBoxKeyDown(object? sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter)
+            {
+                return;
+            }
+
+            var vm = DataContext as MainWindowViewModel;
+            if (vm == null)
+            {
+                return;
+            }
+
+            vm.ExecuteGlobalSearch(GlobalSearchBox.Text ?? string.Empty);
+            e.Handled = true;
         }
 
         protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

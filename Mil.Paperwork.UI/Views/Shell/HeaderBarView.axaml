@@ -60,8 +60,7 @@
 					 Name="GlobalSearchBox"
 					 Width="320"
 					 VerticalAlignment="Center"
-					 IsEnabled="False"
-					 Watermark="Пошук (незабаром)">
+					 Watermark="Пошук…">
 				<TextBox.InnerLeftContent>
 					<PathIcon Data="{StaticResource IconSearch}"
 							  Width="12" Height="12"

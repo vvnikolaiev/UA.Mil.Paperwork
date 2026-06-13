@@ -133,6 +133,10 @@
 			<configViews:CommissionsConfigurationView />
 		</DataTemplate>
 
+		<DataTemplate DataType="{x:Type tabs:DashboardViewModel}">
+			<views:DashboardView />
+		</DataTemplate>
+
 		<DataTemplate DataType="{x:Type tabs:ReportCatalogViewModel}">
 			<views:ReportCatalogView />
 		</DataTemplate>

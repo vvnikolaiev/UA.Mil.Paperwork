@@ -87,6 +87,8 @@
 
 		<StyleInclude Source="Styles/DataGridStyles.axaml" />
 
+		<StyleInclude Source="Styles/BadgeStyles.axaml" />
+
 		<!-- Drawn window decorations (extended client area): the HeaderBar provides
 		     its own branding, so hide the framework-drawn title text; the full-screen
 		     caption button is not native on Windows — hide it too. -->

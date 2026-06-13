@@ -1,0 +1,275 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="700"
+             xmlns:tabs="using:Mil.Paperwork.UI.ViewModels.Tabs"
+             xmlns:dashboard="using:Mil.Paperwork.UI.ViewModels.Dashboard"
+             xmlns:history="using:Mil.Paperwork.UI.ViewModels.History"
+             x:Class="Mil.Paperwork.UI.Views.DashboardView"
+             x:DataType="tabs:DashboardViewModel"
+             x:Name="Root">
+
+    <UserControl.Styles>
+        <Style Selector="Border.metricCard">
+            <Setter Property="Background" Value="{DynamicResource BrushCardBackground}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BrushBorderSubtle}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="20 16"/>
+            <Setter Property="Width" Value="200"/>
+        </Style>
+
+        <Style Selector="Button.reportCard">
+            <Setter Property="Width" Value="170"/>
+            <Setter Property="Height" Value="110"/>
+            <Setter Property="Margin" Value="0 0 8 8"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Background" Value="{DynamicResource BrushCardBackground}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BrushBorderSubtle}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="Button.reportCard:pointerover /template/ ContentPresenter">
+            <Setter Property="BorderBrush" Value="{DynamicResource BrushAccent}"/>
+        </Style>
+
+        <Style Selector="Button.otherReportCard">
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="110"/>
+            <Setter Property="Margin" Value="0 0 8 8"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BrushBorderSubtle}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="Button.otherReportCard:pointerover /template/ ContentPresenter">
+            <Setter Property="BorderBrush" Value="{DynamicResource BrushAccent}"/>
+        </Style>
+
+        <Style Selector="Button.linkButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Foreground" Value="{DynamicResource BrushAccent}"/>
+        </Style>
+
+        <Style Selector="ToggleButton.favoriteToggle">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="2"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+        </Style>
+    </UserControl.Styles>
+
+    <ScrollViewer>
+        <StackPanel Margin="24 20">
+
+            <!-- Page title -->
+            <TextBlock Text="Головна"
+                       FontSize="24"
+                       FontWeight="SemiBold"
+                       Margin="0 0 0 20"/>
+
+            <!-- Report cards row -->
+            <StackPanel Margin="0 0 0 24">
+                <TextBlock Text="Створити звіт"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           Opacity="0.6"
+                           Margin="0 0 0 10"/>
+
+                <WrapPanel Orientation="Horizontal">
+                    <ItemsControl ItemsSource="{Binding ReportCards}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="dashboard:ReportCardViewModel">
+                                <Grid Width="170" Height="110" Margin="0 0 8 8">
+                                    <Button Classes="reportCard"
+                                            Width="170" Height="110"
+                                            Margin="0"
+                                            Command="{Binding CreateCommand}">
+                                        <TextBlock Text="{Binding Title}"
+                                                   TextWrapping="Wrap"
+                                                   TextAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0 0 0 12"/>
+                                    </Button>
+                                    <ToggleButton Classes="favoriteToggle"
+                                                  IsChecked="{Binding IsFavorite, Mode=TwoWay}"
+                                                  Margin="4"
+                                                  ToolTip.Tip="Обране"
+                                                  ZIndex="1">
+                                        <PathIcon Data="{StaticResource IconFavorite}"
+                                                  Width="12" Height="12"
+                                                  Foreground="{DynamicResource BrushAccent}"/>
+                                    </ToggleButton>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Button Classes="otherReportCard"
+                            Command="{Binding NavigateToReportCatalogCommand}">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="6">
+                            <TextBlock Text="…"
+                                       FontSize="20"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Інший звіт"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       FontSize="12"/>
+                        </StackPanel>
+                    </Button>
+                </WrapPanel>
+            </StackPanel>
+
+            <!-- Metrics row -->
+            <StackPanel Margin="0 0 0 24">
+                <TextBlock Text="Статистика"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           Opacity="0.6"
+                           Margin="0 0 0 10"/>
+
+                <ItemsControl ItemsSource="{Binding Metrics}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="dashboard:MetricCardViewModel">
+                            <Border Classes="metricCard" Margin="0 0 12 0">
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="{Binding Value}"
+                                               FontSize="32"
+                                               FontWeight="Bold"
+                                               Foreground="{DynamicResource BrushAccent}"/>
+                                    <TextBlock Text="{Binding Label}"
+                                               FontSize="12"
+                                               Opacity="0.7"
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <!-- Recent documents -->
+            <StackPanel>
+                <Grid ColumnDefinitions="*,Auto" Margin="0 0 0 10">
+                    <TextBlock Grid.Column="0"
+                               Text="Останні документи"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Opacity="0.6"
+                               VerticalAlignment="Center"/>
+                    <Button Grid.Column="1"
+                            Classes="linkButton"
+                            Content="Уся історія →"
+                            Command="{Binding NavigateToHistoryCommand}"/>
+                </Grid>
+
+                <DataGrid x:Name="RecentGrid"
+                          ItemsSource="{Binding RecentEntries}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          CanUserSortColumns="False"
+                          DoubleTapped="OnGridDoubleTapped"
+                          KeyDown="OnGridKeyDown">
+
+                    <DataGrid.Styles>
+                        <Style Selector="Ellipse.draft">
+                            <Setter Property="Fill" Value="{DynamicResource BrushStatusDraft}"/>
+                        </Style>
+                        <Style Selector="Ellipse.generated">
+                            <Setter Property="Fill" Value="{DynamicResource BrushStatusGenerated}"/>
+                        </Style>
+                    </DataGrid.Styles>
+
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Width="120" CanUserResize="False">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:DataType="history:HistoryEntryViewModel">
+                                    <Border Classes="statusBadge"
+                                            Classes.draft="{Binding IsDraft}"
+                                            Classes.generated="{Binding IsGenerated}"
+                                            Margin="4 0">
+                                        <TextBlock Text="{Binding StatusText}"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTextColumn Header="Тип"
+                                            Binding="{Binding TypeText}"
+                                            CellStyleClasses="name"
+                                            Width="190"/>
+
+                        <DataGridTextColumn Header="Дата"
+                                            Binding="{Binding ModifiedAt, StringFormat='dd.MM.yyyy HH:mm'}"
+                                            Width="140"/>
+
+                        <DataGridTextColumn Header="Документ"
+                                            Binding="{Binding NumberSummaryText}"
+                                            CellStyleClasses="name"
+                                            Width="*"/>
+
+                        <DataGridTemplateColumn Header="Файл" Width="200">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:DataType="history:HistoryEntryViewModel">
+                                    <TextBlock Text="{Binding FileName}"
+                                               ToolTip.Tip="{Binding FilePath}"
+                                               VerticalAlignment="Center"
+                                               Margin="5 0"
+                                               TextTrimming="CharacterEllipsis"
+                                               DoubleTapped="OnFileNameDoubleTapped"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Width="60" CanUserResize="False">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:DataType="history:HistoryEntryViewModel">
+                                    <Button Content="⋯"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center">
+                                        <Button.Flyout>
+                                            <MenuFlyout>
+                                                <MenuItem Header="Відкрити"
+                                                          Command="{Binding #Root.DataContext.OpenEntryCommand}"
+                                                          CommandParameter="{Binding}"/>
+                                                <MenuItem Header="Відкрити файл"
+                                                          Command="{Binding #Root.DataContext.OpenGeneratedFileCommand}"
+                                                          CommandParameter="{Binding}"
+                                                          IsVisible="{Binding HasGeneratedFiles}"/>
+                                                <MenuItem Header="Відкрити теку"
+                                                          Command="{Binding #Root.DataContext.OpenFileFolderCommand}"
+                                                          CommandParameter="{Binding}"
+                                                          IsVisible="{Binding HasGeneratedFiles}"/>
+                                            </MenuFlyout>
+                                        </Button.Flyout>
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

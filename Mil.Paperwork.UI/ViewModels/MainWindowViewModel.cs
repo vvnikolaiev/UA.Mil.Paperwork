@@ -15,6 +15,7 @@ using Mil.Paperwork.UI.ViewModels.Dictionaries;
 using Mil.Paperwork.UI.ViewModels.History;
 using Mil.Paperwork.UI.ViewModels.Shell;
 using Mil.Paperwork.UI.ViewModels.Tabs;
+using Mil.Paperwork.UI.ViewModels.Dashboard;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -144,6 +145,8 @@ namespace Mil.Paperwork.UI.ViewModels
                 return tooltip;
             }
         }
+
+        private const int RecentReportTypesLimit = 5;
 
         public IDelegateCommand<NavigationItemViewModel> NavigateCommand { get; }
         public ICommand NextTabCommand { get; }
@@ -275,6 +278,11 @@ namespace Mil.Paperwork.UI.ViewModels
                 historyViewModel.Refresh();
             }
 
+            if (page is DashboardViewModel dashboardViewModel)
+            {
+                dashboardViewModel.Refresh();
+            }
+
             SelectedDocument = null;
             ActiveContent = page;
             UpdateNavigationSelection(pageType);
@@ -317,8 +325,9 @@ namespace Mil.Paperwork.UI.ViewModels
             ITabViewModel? page;
             switch (pageType)
             {
-                // Stage 1: the report catalog temporarily serves as the dashboard page
                 case NavigationPageType.Dashboard:
+                    page = CreateDashboardPage();
+                    break;
                 case NavigationPageType.ReportCatalog:
                     page = CreateReportCatalogPage();
                     break;
@@ -354,6 +363,16 @@ namespace Mil.Paperwork.UI.ViewModels
             return page;
         }
 
+        private DashboardViewModel CreateDashboardPage()
+        {
+            var dashboardViewModel = new DashboardViewModel(_reportHistoryRepository, _userSettingsService, _dialogService);
+            dashboardViewModel.ReportCreationRequested += OnReportCreationRequested;
+            dashboardViewModel.OpenHistoryEntryRequested += OnOpenHistoryEntryRequested;
+            dashboardViewModel.NavigateToHistoryRequested += OnDashboardNavigateToHistory;
+            dashboardViewModel.NavigateToReportCatalogRequested += OnDashboardNavigateToReportCatalog;
+            return dashboardViewModel;
+        }
+
         private ReportCatalogViewModel CreateReportCatalogPage()
         {
             var catalogViewModel = new ReportCatalogViewModel();
@@ -375,7 +394,49 @@ namespace Mil.Paperwork.UI.ViewModels
             if (createdTab != null)
             {
                 OpenDocument(createdTab);
+                TrackRecentReportType(reportType);
             }
+        }
+
+        private void OnDashboardNavigateToHistory(object? sender, EventArgs e)
+        {
+            NavigateTo(NavigationPageType.History);
+        }
+
+        private void OnDashboardNavigateToReportCatalog(object? sender, EventArgs e)
+        {
+            NavigateTo(NavigationPageType.ReportCatalog);
+        }
+
+        public void ExecuteGlobalSearch(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return;
+            }
+
+            NavigateTo(NavigationPageType.History);
+
+            if (_pages.TryGetValue(NavigationPageType.History, out var page)
+                && page is HistoryViewModel historyViewModel)
+            {
+                historyViewModel.ClearFiltersCommand.Execute(null);
+                historyViewModel.SearchText = query;
+            }
+        }
+
+        private void TrackRecentReportType(ReportType reportType)
+        {
+            var settings = _userSettingsService.GetSettings();
+            var recent = settings.RecentReportTypes;
+            recent.Remove(reportType);
+            recent.Insert(0, reportType);
+            if (recent.Count > RecentReportTypesLimit)
+            {
+                recent.RemoveRange(RecentReportTypesLimit, recent.Count - RecentReportTypesLimit);
+            }
+
+            _userSettingsService.SaveSettings(settings);
         }
 
         private void OnOpenHistoryEntryRequested(object? sender, Guid entryId)
