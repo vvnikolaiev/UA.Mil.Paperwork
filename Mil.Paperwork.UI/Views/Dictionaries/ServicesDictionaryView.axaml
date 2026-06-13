@@ -6,6 +6,7 @@
              x:Class="Mil.Paperwork.UI.Views.Dictionaries.ServicesDictionaryView"
              xmlns:viewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Dictionaries"
              xmlns:tabViewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Tabs"
+             xmlns:controls="clr-namespace:Mil.Paperwork.UI.Controls"
              xmlns:converters="clr-namespace:Mil.Paperwork.UI.Converters"
              x:DataType="viewModels:ServicesDictionaryViewModel">
 
@@ -15,16 +16,7 @@
 
     <DockPanel>
 
-        <!-- Кнопки -->
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
-            <Button Content="Додати" Command="{Binding AddItemCommand}" Margin="0,0,5,0"/>
-            <Button Content="Видалити" Command="{Binding RemoveItemCommand}" Margin="0,0,5,0"/>
-            <Button Content="Зберегти" Command="{Binding SaveCommand}" Margin="0,0,5,0"/>
-            <Button Content="Зберегти тимчасово" Command="{Binding SaveLocalCommand}" Margin="0,0,5,0"
-                    ToolTip.Tip="Після перезавантаження або кнопки «Оновити» — дані повернуться"/>
-            <Button Content="Оновити" Command="{Binding RefreshCommand}" Margin="0,0,5,0"/>
-            <Button Content="Закрити" Command="{Binding CloseTabCommand}" Margin="0,0,5,0"/>
-        </StackPanel>
+        <controls:RibbonToolbar DockPanel.Dock="Top" Groups="{Binding RibbonGroups}" />
 
         <!-- Вибір служби за замовчуванням -->
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5,0,5,8" VerticalAlignment="Center">

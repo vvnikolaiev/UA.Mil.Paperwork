@@ -31,8 +31,6 @@ namespace Mil.Paperwork.UI.ViewModels
         private const string NavTitlePeople = "Особи";
         private const string NavTitleServices = "Служби";
         private const string NavTitleMeasurementUnits = "Од. виміру";
-        private const string NavTitleReportsConfiguration = "Конфігурація звітів";
-        private const string NavTitleCommissionsConfiguration = "Конфігурація комісій";
         private const string NavTitleSettings = "Налаштування";
 
         private const string IconKeyDashboard = "IconDashboard";
@@ -41,8 +39,6 @@ namespace Mil.Paperwork.UI.ViewModels
         private const string IconKeyPeople = "IconPeople";
         private const string IconKeyServices = "IconServices";
         private const string IconKeyMeasurementUnits = "IconMeasurementUnits";
-        private const string IconKeyReportsConfiguration = "IconDocument";
-        private const string IconKeyCommissionsConfiguration = "IconPeople";
         private const string IconKeySettings = "IconSettings";
 
         private const string IconKeyThemeAuto = "IconThemeAuto";
@@ -203,8 +199,6 @@ namespace Mil.Paperwork.UI.ViewModels
             SidebarDictionaryItems.Add(new NavigationItemViewModel(NavTitleServices, IconKeyServices, NavigationPageType.ServicesDictionary));
             SidebarDictionaryItems.Add(new NavigationItemViewModel(NavTitleMeasurementUnits, IconKeyMeasurementUnits, NavigationPageType.MeasurementUnitsDictionary));
 
-            SidebarFooterItems.Add(new NavigationItemViewModel(NavTitleReportsConfiguration, IconKeyReportsConfiguration, NavigationPageType.ReportsConfiguration));
-            SidebarFooterItems.Add(new NavigationItemViewModel(NavTitleCommissionsConfiguration, IconKeyCommissionsConfiguration, NavigationPageType.CommissionsConfiguration));
             SidebarFooterItems.Add(new NavigationItemViewModel(NavTitleSettings, IconKeySettings, NavigationPageType.Settings));
         }
 
@@ -283,6 +277,11 @@ namespace Mil.Paperwork.UI.ViewModels
                 dashboardViewModel.Refresh();
             }
 
+            if (page is ISilentRefreshable refreshable && !page.IsDirty)
+            {
+                refreshable.SilentRefresh();
+            }
+
             SelectedDocument = null;
             ActiveContent = page;
             UpdateNavigationSelection(pageType);
@@ -347,13 +346,11 @@ namespace Mil.Paperwork.UI.ViewModels
                     page = new MeasurementUnitsDictionaryViewModel(_dataService, _dialogService);
                     break;
                 case NavigationPageType.ReportsConfiguration:
-                    page = new ReportConfigViewModel(_reportDataService, _exportService, _importService, _dialogService);
-                    break;
                 case NavigationPageType.CommissionsConfiguration:
-                    page = new CommissionsConfigViewModel(_reportDataService, _exportService, _importService, _dialogService);
+                    page = null;
                     break;
                 case NavigationPageType.Settings:
-                    page = new SettingsViewModel(_reportDataService);
+                    page = new SettingsHubViewModel(_reportDataService, _exportService, _importService, _dialogService);
                     break;
                 default:
                     page = null;
@@ -459,12 +456,12 @@ namespace Mil.Paperwork.UI.ViewModels
 
         private void OnOpenReportSettingsRequested(object? sender, ReportType reportType)
         {
-            NavigateTo(NavigationPageType.ReportsConfiguration);
+            NavigateTo(NavigationPageType.Settings);
 
-            if (_pages.TryGetValue(NavigationPageType.ReportsConfiguration, out var page)
-                && page is ReportConfigViewModel reportConfigViewModel)
+            if (_pages.TryGetValue(NavigationPageType.Settings, out var page)
+                && page is SettingsHubViewModel settingsHub)
             {
-                reportConfigViewModel.SelectReportType(reportType);
+                settingsHub.SelectReportType(reportType);
             }
         }
 

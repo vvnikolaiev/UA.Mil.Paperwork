@@ -112,6 +112,14 @@
 			<views:HistoryView />
 		</DataTemplate>
 
+		<DataTemplate DataType="{x:Type tabs:SettingsViewModel}">
+			<views:SettingsView />
+		</DataTemplate>
+
+		<DataTemplate DataType="{x:Type tabs:SettingsHubViewModel}">
+			<views:SettingsHubView />
+		</DataTemplate>
+
 	</Window.DataTemplates>
 
 	<Grid RowDefinitions="Auto,*"

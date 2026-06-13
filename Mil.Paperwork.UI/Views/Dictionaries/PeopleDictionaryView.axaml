@@ -5,20 +5,14 @@
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:Class="Mil.Paperwork.UI.Views.Dictionaries.PeopleDictionaryView"
 			 xmlns:viewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Dictionaries"
+			 xmlns:controls="clr-namespace:Mil.Paperwork.UI.Controls"
 			 x:DataType="viewModels:PeopleDictionaryViewModel">
 	<DockPanel>
-		<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
-			<Button Content="Додати" Command="{Binding AddItemCommand}" Margin="0,0,5,0"/>
-			<Button Content="Видалити" Command="{Binding RemoveItemCommand}" Margin="0,0,5,0"
-					CommandParameter="{Binding SelectedItem, ElementName=PeopleDataGrid}"/>
-			<Button Content="Зберегти" Command="{Binding SaveCommand}" Margin="0,0,5,0"/>
-			<Button Content="Оновити" Command="{Binding RefreshCommand}" Margin="0,0,5,0"/>
-			<Button Content="Імпортувати" Command="{Binding ImportCommand}" Margin="0,0,5,0" />
-			<Button Content="Закрити" Command="{Binding CloseTabCommand}" Margin="0,0,5,0"/>
-		</StackPanel>
+		<controls:RibbonToolbar DockPanel.Dock="Top" Groups="{Binding RibbonGroups}" />
 
 		<DataGrid x:Name="PeopleDataGrid"
 				  ItemsSource="{Binding People}"
+				  SelectedItem="{Binding SelectedPerson, Mode=TwoWay}"
 				  AutoGenerateColumns="False" Margin="5">
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Ім'я" Binding="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}" Width=".5*"

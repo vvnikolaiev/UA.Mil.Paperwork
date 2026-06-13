@@ -5,36 +5,15 @@
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:Class="Mil.Paperwork.UI.Views.Dictionaries.ProductsDictionaryView"
 			 xmlns:viewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Dictionaries"
+			 xmlns:controls="clr-namespace:Mil.Paperwork.UI.Controls"
 			 x:DataType="viewModels:ProductsDictionaryViewModel"
 			 x:Name="Root">
 	<DockPanel>
-		<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
-			<Button Content="Додати" Command="{Binding AddItemCommand}" Margin="0,0,5,0"/>
-			<Button Content="Видалити" Command="{Binding RemoveItemCommand}"
-					CommandParameter="{Binding SelectedItem, ElementName=ProductsTable}" Margin="0,0,5,0"/>
-			<Button Content="Зберегти" Command="{Binding SaveCommand}" Margin="0,0,5,0"/>
-			<Button Content="Оновити" Command="{Binding RefreshCommand}" Margin="0,0,5,0"/>
-			<Button Content="Імпортувати" Command="{Binding ImportCommand}" Margin="0,0,5,0" />
-
-			<DropDownButton Content="Експортувати" Margin="0,0,5,0">
-				<DropDownButton.Flyout>
-					<MenuFlyout ItemsSource="{Binding ExportTypes}">
-						<MenuFlyout.ItemTemplate>
-							<DataTemplate>
-								<MenuItem Header="{Binding Converter={StaticResource EnumDescriptionConverter}}"
-										  Command="{Binding #Root.DataContext.ExportDataCommand}"
-										  CommandParameter="{Binding}"/>
-							</DataTemplate>
-						</MenuFlyout.ItemTemplate>
-					</MenuFlyout>
-				</DropDownButton.Flyout>
-			</DropDownButton>
-
-			<Button Content="Закрити" Command="{Binding CloseTabCommand}" Margin="0,0,5,0"/>
-		</StackPanel>
+		<controls:RibbonToolbar DockPanel.Dock="Top" Groups="{Binding RibbonGroups}" />
 
 		<DataGrid x:Name="ProductsTable"
 				  ItemsSource="{Binding Products}"
+				  SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
 				  AutoGenerateColumns="False" Margin="5">
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Назва" Binding="{Binding Name}"

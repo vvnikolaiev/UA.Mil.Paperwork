@@ -1,0 +1,44 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
+             x:Class="Mil.Paperwork.UI.Views.SettingsHubView"
+             xmlns:viewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Tabs"
+             xmlns:controls="clr-namespace:Mil.Paperwork.UI.Controls"
+             x:DataType="viewModels:SettingsHubViewModel">
+
+    <DockPanel>
+
+        <controls:RibbonToolbar DockPanel.Dock="Top" Groups="{Binding RibbonGroups}" />
+
+        <Grid ColumnDefinitions="200,Auto,*">
+
+            <!-- Section navigation list -->
+            <ListBox Grid.Column="0"
+                     ItemsSource="{Binding SectionItems}"
+                     SelectedItem="{Binding SelectedSectionItem}"
+                     Background="{DynamicResource BrushSidebarBackground}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="viewModels:SettingsSectionItem">
+                        <TextBlock Text="{Binding Title}"
+                                   Padding="12,8"
+                                   VerticalAlignment="Center" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <!-- Separator -->
+            <Border Grid.Column="1"
+                    Width="1"
+                    Background="{DynamicResource BrushBorderSubtle}" />
+
+            <!-- Section content -->
+            <ContentControl Grid.Column="2"
+                            Content="{Binding ActiveSectionContent}" />
+
+        </Grid>
+
+    </DockPanel>
+
+</UserControl>

@@ -20,7 +20,8 @@ namespace Mil.Paperwork.UI.ViewModels.Controls
         public bool IsYesVisible => Buttons == DialogButtons.YesNo || Buttons == DialogButtons.YesNoCancel;
         public bool IsNoVisible => Buttons == DialogButtons.YesNo || Buttons == DialogButtons.YesNoCancel;
 
-        public string IconGlyph => GetIconGlyph(Icon);
+        public bool HasIcon => Icon != DialogIcon.None;
+        public string IconKey => GetIconKey(Icon);
 
         public DialogButtons Buttons { get; }
         public DialogIcon Icon { get; }
@@ -53,14 +54,14 @@ namespace Mil.Paperwork.UI.ViewModels.Controls
             RequestClose?.Invoke(r);
         }
 
-        private string GetIconGlyph(DialogIcon icon)
+        private string GetIconKey(DialogIcon icon)
         {
             var result = icon switch
             {
-                DialogIcon.Information => "i",
-                DialogIcon.Warning => "!",
-                DialogIcon.Error => "×",
-                DialogIcon.Question => "?",
+                DialogIcon.Information => "IconDialogInfo",
+                DialogIcon.Warning => "IconDialogWarning",
+                DialogIcon.Error => "IconDialogError",
+                DialogIcon.Question => "IconDialogInfo",
                 _ => string.Empty
             };
             return result;

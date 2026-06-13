@@ -1,22 +1,43 @@
+using Avalonia.Threading;
 using Mil.MVVM.Common;
 using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
 using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Infrastructure.Services;
+using Mil.Paperwork.UI.ViewModels.Ribbon;
 using Mil.Paperwork.UI.ViewModels.Tabs;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 
 namespace Mil.Paperwork.UI.ViewModels.Dictionaries
 {
-    internal class ServicesDictionaryViewModel : SettingsTabViewModel
+    internal class ServicesDictionaryViewModel : SettingsTabViewModel, ISilentRefreshable
     {
         private const string RemoveConfirmation = "Ви впевнені що бажаєте видалити цю службу?";
         private const string SetDefaultConfirmation = "Ви впевнені що бажаєте встановити цю службу за замовчуванням?";
         private const string RefreshConfirmation = "Ви впевнені що бажаєте перезавантажити дані?";
         private const string ConfirmationTitle = "Підтвердження";
+
+        private const string GroupRecords = "Записи";
+        private const string GroupData = "Дані";
+        private const string GroupService = "Служба";
+
+        private const string CaptionAdd = "Додати";
+        private const string CaptionRemove = "Видалити";
+        private const string CaptionSave = "Зберегти";
+        private const string CaptionSaveLocal = "Зберегти тимч.";
+        private const string CaptionRefresh = "Оновити";
+        private const string CaptionSetDefault = "За замовч.";
+
+        private const string IconKeyAdd = "IconAdd";
+        private const string IconKeyRemove = "IconDelete";
+        private const string IconKeySave = "IconSaveDraft";
+        private const string IconKeySaveLocal = "IconSaveLocal";
+        private const string IconKeyRefresh = "IconRefresh";
+        private const string IconKeySetDefault = "IconSetDefault";
 
         private readonly IReportDataService _reportDataService;
         private readonly IDataService _dataService;
@@ -120,6 +141,34 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
             LoadServicesData();
         }
 
+        protected override IList<RibbonGroupViewModel> BuildRibbonGroups()
+        {
+            var groups = new List<RibbonGroupViewModel>
+            {
+                new RibbonGroupViewModel(GroupRecords, new[]
+                {
+                    new RibbonActionViewModel(CaptionAdd, IconKeyAdd, AddItemCommand),
+                    new RibbonActionViewModel(CaptionRemove, IconKeyRemove, RemoveItemCommand, isDestructive: true)
+                }),
+                new RibbonGroupViewModel(GroupData, new[]
+                {
+                    new RibbonActionViewModel(CaptionSave, IconKeySave, SaveCommand),
+                    new RibbonActionViewModel(CaptionSaveLocal, IconKeySaveLocal, SaveLocalCommand),
+                    new RibbonActionViewModel(CaptionRefresh, IconKeyRefresh, RefreshCommand)
+                }),
+                new RibbonGroupViewModel(GroupService, new[]
+                {
+                    new RibbonActionViewModel(CaptionSetDefault, IconKeySetDefault, SetDefaultCommand)
+                })
+            };
+            return groups;
+        }
+
+        public void SilentRefresh()
+        {
+            LoadServicesData(withReload: true);
+        }
+
         private void LoadServicesData(bool withReload = false)
         {
             var services = _reportDataService.GetAllServices(withReload);
@@ -142,7 +191,9 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
 
             var defaultVm = Services.FirstOrDefault(vm => vm.IsMarkedAsDefault);
             DefaultServiceSelection = defaultVm;
-            SelectedService = defaultVm ?? Services.FirstOrDefault();
+
+            var toSelect = defaultVm ?? Services.FirstOrDefault();
+            Dispatcher.UIThread.Post(() => SelectedService = toSelect);
         }
 
         private void ReloadPeople()

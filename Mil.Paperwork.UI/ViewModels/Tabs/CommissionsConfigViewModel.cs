@@ -5,6 +5,7 @@ using Mil.Paperwork.Infrastructure.DataModels.Configuration;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
 using Mil.Paperwork.Infrastructure.Services;
+using Mil.Paperwork.UI.ViewModels.Ribbon;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -13,6 +14,22 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
 {
     internal class CommissionsConfigViewModel : ConfigViewModel
     {
+        private const string GroupData = "Дані";
+        private const string GroupExchange = "Обмін";
+
+        private const string CaptionSave = "Зберегти";
+        private const string CaptionSaveLocal = "Зберегти тимч.";
+        private const string CaptionRefresh = "Оновити";
+        private const string CaptionExportJson = "Екс. JSON";
+        private const string CaptionExportExcel = "Екс. Excel";
+        private const string CaptionImport = "Імпорт";
+
+        private const string IconKeySave = "IconSaveDraft";
+        private const string IconKeySaveLocal = "IconSaveLocal";
+        private const string IconKeyRefresh = "IconRefresh";
+        private const string IconKeyExport = "IconExport";
+        private const string IconKeyImport = "IconImport";
+
         private readonly IReportDataService _reportDataService;
         private readonly IDialogService _dialogService;
         private CommissionType _selectedCommissionType;
@@ -62,6 +79,26 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         public override string Header => "Налаштування комісій";
 
         protected override string ExportFileTitle => SelectedCommissionType.GetDescription();
+
+        protected override IList<RibbonGroupViewModel> BuildRibbonGroups()
+        {
+            var groups = new List<RibbonGroupViewModel>
+            {
+                new RibbonGroupViewModel(GroupData, new[]
+                {
+                    new RibbonActionViewModel(CaptionSave, IconKeySave, SaveCommand),
+                    new RibbonActionViewModel(CaptionSaveLocal, IconKeySaveLocal, SaveLocalCommand),
+                    new RibbonActionViewModel(CaptionRefresh, IconKeyRefresh, RefreshCommand)
+                }),
+                new RibbonGroupViewModel(GroupExchange, new[]
+                {
+                    new RibbonActionViewModel(CaptionExportJson, IconKeyExport, ExportJsonCommand),
+                    new RibbonActionViewModel(CaptionExportExcel, IconKeyExport, ExportExcelCommand),
+                    new RibbonActionViewModel(CaptionImport, IconKeyImport, ImportCommand)
+                })
+            };
+            return groups;
+        }
 
         public CommissionsConfigViewModel(
             IReportDataService reportDataService,

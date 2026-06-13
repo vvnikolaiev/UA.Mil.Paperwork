@@ -20,7 +20,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
 
         public virtual bool IsDirty => false;
 
-        public IList<RibbonGroupViewModel> RibbonGroups
+        public virtual IList<RibbonGroupViewModel> RibbonGroups
         {
             get
             {

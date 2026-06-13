@@ -6,8 +6,8 @@
 
 - [x] Стадія 1 — Shell: сайдбар, навігація, палітра, тема ([STAGE-1.md](STAGE-1.md))
 - [x] Стадія 2 — Дашборд + бейджі історії + глобальний пошук ([STAGE-2.md](STAGE-2.md))
-- [ ] Стадія 3 — Ribbon у редакторах + dirty state ([STAGE-3.md](STAGE-3.md))
-- [ ] Стадія 4 — Довідники, конфігурації, Settings hub ([STAGE-4.md](STAGE-4.md))
+- [x] Стадія 3 — Ribbon у редакторах + dirty state ([STAGE-3.md](STAGE-3.md))
+- [x] Стадія 4 — Довідники, конфігурації, Settings hub ([STAGE-4.md](STAGE-4.md))
 - [ ] Стадія 5 — Полірування + документація ([STAGE-5.md](STAGE-5.md))
 
 ## Контекст
