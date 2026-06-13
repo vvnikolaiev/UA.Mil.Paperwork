@@ -7,14 +7,6 @@
              xmlns:viewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Tabs"
              x:DataType="viewModels:SettingsViewModel">
 
-    <StackPanel Spacing="12" Margin="16" Classes="parameters">
-        <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-            <TextBlock Text="Тип майна за замовчуванням:" VerticalAlignment="Center" />
-            <ComboBox Classes="enum"
-                      ItemsSource="{Binding AssetTypes}"
-                      SelectedItem="{Binding SelectedAssetType}"
-                      MinWidth="200" />
-        </StackPanel>
-    </StackPanel>
+    <StackPanel Spacing="12" Margin="16" Classes="parameters"/>
 
 </UserControl>

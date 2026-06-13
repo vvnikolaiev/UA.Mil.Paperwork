@@ -138,7 +138,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             GenerateReport(reportData);
 
-            AssetsTable.Refresh();
             ResetDirtyState();
         }
 

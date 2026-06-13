@@ -21,7 +21,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
         private readonly IDialogService _dialogService;
-        private readonly IReportDataService _reportDataService;
 
         private int _validDays = 10;
         private string _documentNumber;

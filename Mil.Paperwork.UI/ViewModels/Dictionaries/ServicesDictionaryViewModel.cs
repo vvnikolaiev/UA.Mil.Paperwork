@@ -44,7 +44,6 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
         private readonly IDialogService _dialogService;
 
         private MilitaryServiceViewModel _selectedService;
-        private MilitaryServiceViewModel _defaultServiceSelection;
         private PersonViewModel _selectedHeadPerson;
         private string _defaultServiceKey;
         private bool _suppressHeadPersonSync;
@@ -76,18 +75,6 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
                     SetDefaultCommand.RaiseCanExecuteChanged();
 
                     UpdateSelectedHeadPerson();
-                }
-            }
-        }
-
-        public MilitaryServiceViewModel DefaultServiceSelection
-        {
-            get => _defaultServiceSelection;
-            set
-            {
-                if (SetProperty(ref _defaultServiceSelection, value))
-                {
-                    SetDefaultCommand.RaiseCanExecuteChanged();
                 }
             }
         }
@@ -190,8 +177,6 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
             ReloadPeople();
 
             var defaultVm = Services.FirstOrDefault(vm => vm.IsMarkedAsDefault);
-            DefaultServiceSelection = defaultVm;
-
             var toSelect = defaultVm ?? Services.FirstOrDefault();
             Dispatcher.UIThread.Post(() => SelectedService = toSelect);
         }
@@ -332,7 +317,7 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
 
         private async void SetDefaultCommandExecute()
         {
-            if (DefaultServiceSelection == null)
+            if (SelectedService == null)
             {
                 return;
             }
@@ -347,8 +332,8 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
 
             SaveService(temporary: false);
 
-            _reportDataService.SetDefaultService(DefaultServiceSelection.ServiceKey);
-            _defaultServiceKey = DefaultServiceSelection.ServiceKey;
+            _reportDataService.SetDefaultService(SelectedService.ServiceKey);
+            _defaultServiceKey = SelectedService.ServiceKey;
 
             foreach (var vm in Services)
             {
@@ -369,13 +354,12 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
             }
 
             SelectedService = Services.FirstOrDefault(vm => vm.ServiceKey == selectedKey);
-            DefaultServiceSelection = Services.FirstOrDefault(vm => vm.IsMarkedAsDefault);
         }
 
         private bool SetDefaultCanExecute()
         {
-            var result = DefaultServiceSelection != null
-                && DefaultServiceSelection.ServiceKey != _defaultServiceKey;
+            var result = SelectedService != null
+                && SelectedService.ServiceKey != _defaultServiceKey;
             return result;
         }
 

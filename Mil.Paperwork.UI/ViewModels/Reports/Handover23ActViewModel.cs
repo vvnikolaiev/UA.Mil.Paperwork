@@ -20,7 +20,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
         private readonly IDialogService _dialogService;
-        private readonly IReportDataService _reportDataService;
 
         private string _documentNumber;
         private DateTimeOffset _documentDate = DateTime.Now;

@@ -18,18 +18,6 @@
 
         <controls:RibbonToolbar DockPanel.Dock="Top" Groups="{Binding RibbonGroups}" />
 
-        <!-- Вибір служби за замовчуванням -->
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5,0,5,8" VerticalAlignment="Center">
-            <TextBlock Text="За замовчуванням:" VerticalAlignment="Center" Margin="0,0,8,0" FontWeight="SemiBold"/>
-            <ComboBox ItemsSource="{Binding Services}"
-                      DisplayMemberBinding="{Binding NominativeName, DataType={x:Type tabViewModels:MilitaryServiceViewModel}}"
-                      SelectedItem="{Binding DefaultServiceSelection}"
-                      MinWidth="260"/>
-            <Button Content="Встановити за замовч."
-                    Command="{Binding SetDefaultCommand}"
-                    Margin="8,0,0,0"/>
-        </StackPanel>
-
         <!-- Форма деталей (знизу) -->
         <Border DockPanel.Dock="Bottom"
                 BorderBrush="{DynamicResource SystemBaseLowColor}"
