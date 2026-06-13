@@ -45,6 +45,10 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
 
         public ObservableCollection<HistoryEntryViewModel> RecentEntries { get; }
 
+        public bool HasReportCards => ReportCards.Count > 0;
+
+        public bool HasRecentEntries => RecentEntries.Count > 0;
+
         public IDelegateCommand NavigateToHistoryCommand { get; }
         public IDelegateCommand NavigateToReportCatalogCommand { get; }
         public IDelegateCommand<HistoryEntryViewModel> OpenEntryCommand { get; }
@@ -106,6 +110,8 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             {
                 RecentEntries.Add(new HistoryEntryViewModel(entry, []));
             }
+
+            OnPropertyChanged(nameof(HasRecentEntries));
         }
 
         private void RebuildReportCards()
@@ -126,6 +132,8 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
                 var card = new ReportCardViewModel(reportType, isFavorite, RaiseReportCreationRequested, OnFavoriteChanged);
                 ReportCards.Add(card);
             }
+
+            OnPropertyChanged(nameof(HasReportCards));
         }
 
         private void RaiseReportCreationRequested(ReportType reportType)

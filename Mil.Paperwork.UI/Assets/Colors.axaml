@@ -57,7 +57,6 @@
             <SolidColorBrush x:Key="BrushActionAdd"          Color="#ff2e7d32"/>
             <SolidColorBrush x:Key="BrushActionDelete"       Color="#ffc62828"/>
             <SolidColorBrush x:Key="BrushDefaultIndicator"   Color="Gold"/>
-            <SolidColorBrush x:Key="BrushDismantlingBackground" Color="#fff2ead9"/>
             <SolidColorBrush x:Key="BrushExpanderBorder"     Color="#ff8a8a8a"/>
 
             <!-- Drawn caption buttons (window chrome): subtle neutral hover/pressed,
@@ -86,7 +85,6 @@
             <SolidColorBrush x:Key="BrushActionAdd"          Color="#ff66bb6a"/>
             <SolidColorBrush x:Key="BrushActionDelete"       Color="#ffef5350"/>
             <SolidColorBrush x:Key="BrushDefaultIndicator"   Color="Gold"/>
-            <SolidColorBrush x:Key="BrushDismantlingBackground" Color="#ff39342a"/>
             <SolidColorBrush x:Key="BrushExpanderBorder"     Color="#ff6e6e6e"/>
 
             <!-- Drawn caption buttons (window chrome): subtle neutral hover/pressed,

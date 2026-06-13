@@ -34,6 +34,23 @@
 			<Button Content="Оновити" Command="{Binding RefreshCommand}" Margin="0,0,5,0"/>
 		</StackPanel>
 
+		<Grid>
+			<Border IsVisible="{Binding IsEmpty}"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center">
+				<TextBlock Text="Ще немає записів — сформуйте перший звіт"
+						   Opacity="0.55"
+						   FontSize="14"/>
+			</Border>
+
+			<Border IsVisible="{Binding IsFilterEmpty}"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center">
+				<TextBlock Text="Нічого не знайдено — змініть критерії фільтрування"
+						   Opacity="0.55"
+						   FontSize="14"/>
+			</Border>
+
 		<DataGrid x:Name="HistoryGrid"
 				  ItemsSource="{Binding Entries}"
 				  SelectedItem="{Binding SelectedEntry, Mode=TwoWay}"
@@ -42,6 +59,7 @@
 				  CanUserSortColumns="True"
 				  DoubleTapped="OnGridDoubleTapped"
 				  KeyDown="OnGridKeyDown"
+				  IsVisible="{Binding HasEntries}"
 				  Sorting="OnGridSorting">
 			<DataGrid.ContextMenu>
 				<ContextMenu>
@@ -151,5 +169,6 @@
 				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 		</DataGrid>
+		</Grid>
 	</DockPanel>
 </UserControl>

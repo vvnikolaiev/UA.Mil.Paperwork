@@ -52,7 +52,10 @@ namespace Mil.Paperwork.UI
 
             var provider = serviceCollection.BuildServiceProvider();
 
-            ApplyStoredTheme(provider);
+            var userSettingsService = provider.GetRequiredService<IUserSettingsService>();
+            var settings = userSettingsService.GetSettings();
+
+            ApplyStoredTheme(settings);
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -60,17 +63,53 @@ namespace Mil.Paperwork.UI
                 var mainWindowViewModel = provider.GetRequiredService<MainWindowViewModel>();
                 mainWindow.DataContext = mainWindowViewModel;
 
+                RestoreWindowGeometry(mainWindow, settings);
+                mainWindow.Closing += (s, _) => SaveWindowGeometry((Window)s!, userSettingsService);
+
                 desktop.MainWindow = mainWindow;
             }
 
             base.OnFrameworkInitializationCompleted();
         }
 
-        private void ApplyStoredTheme(IServiceProvider provider)
+        private static void RestoreWindowGeometry(Window window, UserSettingsDTO settings)
         {
-            var userSettingsService = provider.GetRequiredService<IUserSettingsService>();
-            var settings = userSettingsService.GetSettings();
+            if (settings.WindowWidth.HasValue && settings.WindowHeight.HasValue)
+            {
+                window.Width = Math.Max(settings.WindowWidth.Value, window.MinWidth);
+                window.Height = Math.Max(settings.WindowHeight.Value, window.MinHeight);
+            }
 
+            if (settings.WindowPositionX.HasValue && settings.WindowPositionY.HasValue)
+            {
+                window.Position = new PixelPoint(settings.WindowPositionX.Value, settings.WindowPositionY.Value);
+            }
+
+            if (settings.WindowMaximized)
+            {
+                window.WindowState = WindowState.Maximized;
+            }
+        }
+
+        private static void SaveWindowGeometry(Window window, IUserSettingsService userSettingsService)
+        {
+            var settings = userSettingsService.GetSettings();
+            var isMaximized = window.WindowState == WindowState.Maximized;
+            settings.WindowMaximized = isMaximized;
+
+            if (!isMaximized)
+            {
+                settings.WindowPositionX = window.Position.X;
+                settings.WindowPositionY = window.Position.Y;
+                settings.WindowWidth = window.Width;
+                settings.WindowHeight = window.Height;
+            }
+
+            userSettingsService.SaveSettings(settings);
+        }
+
+        private void ApplyStoredTheme(UserSettingsDTO settings)
+        {
             RequestedThemeVariant = settings.Theme switch
             {
                 UserSettingsDTO.ThemeLight => ThemeVariant.Light,

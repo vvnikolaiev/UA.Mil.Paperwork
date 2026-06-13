@@ -35,7 +35,7 @@
 
 		<controls:RibbonToolbar DockPanel.Dock="Top" Groups="{Binding RibbonGroups}" StatusContent="{Binding DraftStatusText}" />
 
-		<Grid Grid.IsSharedSizeScope="True" Background="{DynamicResource BrushDismantlingBackground}">
+		<Grid Grid.IsSharedSizeScope="True" Background="{DynamicResource BrushSurface}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />

@@ -39,11 +39,27 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         private string _searchText = string.Empty;
         private string? _sortMemberPath;
         private ListSortDirection _sortDirection;
+        private bool _isEmpty;
+        private bool _isFilterEmpty;
 
         public event EventHandler<Guid> OpenHistoryEntryRequested;
         public event EventHandler<CreateFromRequestedEventArgs> CreateFromRequested;
 
         public override string Header => TabHeader;
+
+        public bool IsEmpty
+        {
+            get => _isEmpty;
+            private set => SetProperty(ref _isEmpty, value);
+        }
+
+        public bool IsFilterEmpty
+        {
+            get => _isFilterEmpty;
+            private set => SetProperty(ref _isFilterEmpty, value);
+        }
+
+        public bool HasEntries => Entries.Count > 0;
 
         public bool IsClosed { get; private set; }
 
@@ -253,6 +269,10 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             {
                 Entries.Add(entry);
             }
+
+            IsEmpty = _allEntries.Count == 0;
+            IsFilterEmpty = _allEntries.Count > 0 && Entries.Count == 0;
+            OnPropertyChanged(nameof(HasEntries));
         }
 
         private IEnumerable<HistoryEntryViewModel> ApplySortToFiltered(IEnumerable<HistoryEntryViewModel> entries)

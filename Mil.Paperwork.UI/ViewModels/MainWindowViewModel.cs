@@ -184,6 +184,7 @@ namespace Mil.Paperwork.UI.ViewModels
             OpenDocuments.CollectionChanged += OnOpenDocumentsCollectionChanged;
 
             _themeMode = GetStoredThemeMode();
+            _isSidebarCollapsed = GetStoredIsSidebarCollapsed();
 
             FillSidebarItems();
             NavigateTo(NavigationPageType.Dashboard);
@@ -214,6 +215,19 @@ namespace Mil.Paperwork.UI.ViewModels
             };
 
             return themeMode;
+        }
+
+        private bool GetStoredIsSidebarCollapsed()
+        {
+            var settings = _userSettingsService.GetSettings();
+            return settings.IsSidebarCollapsed;
+        }
+
+        private void SaveSidebarCollapsed()
+        {
+            var settings = _userSettingsService.GetSettings();
+            settings.IsSidebarCollapsed = _isSidebarCollapsed;
+            _userSettingsService.SaveSettings(settings);
         }
 
         private void ApplyTheme(ThemeMode themeMode)
@@ -563,6 +577,7 @@ namespace Mil.Paperwork.UI.ViewModels
         private void ToggleSidebarCommandExecute()
         {
             IsSidebarCollapsed = !IsSidebarCollapsed;
+            SaveSidebarCollapsed();
         }
     }
 }

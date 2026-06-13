@@ -120,6 +120,15 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
+                    <TextBlock IsVisible="{Binding !HasReportCards}"
+                               Text="Натисніть ★ на картці після першого звіту, щоб закріпити тут улюблені"
+                               VerticalAlignment="Center"
+                               Opacity="0.55"
+                               FontSize="12"
+                               Margin="0 0 8 8"
+                               Width="170"
+                               TextWrapping="Wrap"/>
+
                     <Button Classes="otherReportCard"
                             Command="{Binding NavigateToReportCatalogCommand}">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="6">
@@ -179,11 +188,20 @@
                                VerticalAlignment="Center"/>
                     <Button Grid.Column="1"
                             Classes="linkButton"
-                            Content="Уся історія →"
+                            Content="Уся Iсторія →"
+                            IsVisible="{Binding HasRecentEntries}"
                             Command="{Binding NavigateToHistoryCommand}"/>
                 </Grid>
 
+                <TextBlock IsVisible="{Binding !HasRecentEntries}"
+                           Text="Ще немає документів — створіть перший звіт"
+                           HorizontalAlignment="Center"
+                           Opacity="0.55"
+                           FontSize="13"
+                           Margin="0 24 0 8"/>
+
                 <DataGrid x:Name="RecentGrid"
+                          IsVisible="{Binding HasRecentEntries}"
                           ItemsSource="{Binding RecentEntries}"
                           AutoGenerateColumns="False"
                           IsReadOnly="True"
