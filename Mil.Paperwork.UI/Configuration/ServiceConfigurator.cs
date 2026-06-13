@@ -28,9 +28,11 @@ namespace Mil.Paperwork.UI.Configuration
 
             // Register Factories
             services.AddSingleton<IAssetFactory, AssetFactory>();
+            services.AddSingleton<ReportTabFactory>();
 
             // Register Services
             services.AddSingleton<IDialogService, AvaloniaDialogService>();
+            services.AddSingleton<IUserSettingsService, UserSettingsService>();
             
             InfrastructureServicesRegistrator.Register(services);
             DataAccessServicesRegistrator.Register(services);

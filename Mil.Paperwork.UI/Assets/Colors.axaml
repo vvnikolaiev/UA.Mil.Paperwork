@@ -3,64 +3,99 @@
 
     <!-- ═══════════════════════════════════════════════════════════
          THEME PALETTE COLORS
-         Referenced by ColorPaletteResources in App.axaml.
-         Note: colors reused across multiple palette slots share
-         the same resource key (e.g. ThemeLightBaseLow appears
-         in BaseLow, ChromeHigh, ChromeBlackLow, etc.).
+         Referenced by ColorPaletteResources in App.axaml via
+         StaticResource — they MUST stay flat (not theme-scoped),
+         App.axaml resolves them once at parse time.
     ═══════════════════════════════════════════════════════════ -->
 
-    <!-- Shared accent (same in Light and Dark) -->
-    <Color x:Key="ThemeAccent">#ffcc4d11</Color>
+    <!-- Shared teal accent (same in Light and Dark) -->
+    <Color x:Key="ThemeAccent">#ff0f766e</Color>
 
-    <!-- Light palette blue scale (darkest → lightest) -->
-    <Color x:Key="ThemeLightBaseMediumHigh">#ff005a83</Color>
-    <Color x:Key="ThemeLightBaseMediumLow">#ff196e96</Color>
-    <Color x:Key="ThemeLightBaseMedium">#ff3282a8</Color>
-    <Color x:Key="ThemeLightBaseLow">#ff7cbee0</Color>
-    <Color x:Key="ThemeLightChromeMedium">#ffb3e0f8</Color>
-    <Color x:Key="ThemeLightChromeLow">#ffc1e9fe</Color>
-    <Color x:Key="ThemeLightRegionColor">#ffcfeaff</Color>
+    <!-- Light palette neutral scale (darkest → lightest) -->
+    <Color x:Key="ThemeLightBaseMediumHigh">#ff3d3d3d</Color>
+    <Color x:Key="ThemeLightBaseMediumLow">#ff6e6e6e</Color>
+    <Color x:Key="ThemeLightBaseMedium">#ff8a8a8a</Color>
+    <Color x:Key="ThemeLightBaseLow">#ffd1d1d1</Color>
+    <Color x:Key="ThemeLightChromeMedium">#ffe6e6e6</Color>
+    <Color x:Key="ThemeLightChromeLow">#fff0f0f0</Color>
+    <Color x:Key="ThemeLightRegionColor">#fffafafa</Color>
 
-    <!-- Dark palette blue scale (darkest → lightest) -->
-    <Color x:Key="ThemeDarkChromeLow">#ff093b73</Color>
-    <Color x:Key="ThemeDarkChromeMedium">#ff134b82</Color>
-    <Color x:Key="ThemeDarkChromeMediumLow">#ff266b9f</Color>
-    <Color x:Key="ThemeDarkBaseLow">#ff2f7bad</Color>
-    <Color x:Key="ThemeDarkBaseMediumLow">#ff5e9dc6</Color>
-    <Color x:Key="ThemeDarkChromeGray">#ff76aed3</Color>
-    <Color x:Key="ThemeDarkBaseMedium">#ff8dbfdf</Color>
-    <Color x:Key="ThemeDarkBaseMediumHigh">#ffa5d0ec</Color>
-    <Color x:Key="ThemeDarkRegionColor">#ff0d2644</Color>
+    <!-- Dark palette neutral scale (darkest → lightest) -->
+    <Color x:Key="ThemeDarkChromeLow">#ff1f1f1f</Color>
+    <Color x:Key="ThemeDarkChromeMedium">#ff2b2b2b</Color>
+    <Color x:Key="ThemeDarkChromeMediumLow">#ff3d3d3d</Color>
+    <Color x:Key="ThemeDarkBaseLow">#ff3d3d3d</Color>
+    <Color x:Key="ThemeDarkBaseMediumLow">#ff8a8a8a</Color>
+    <Color x:Key="ThemeDarkChromeGray">#ff767676</Color>
+    <Color x:Key="ThemeDarkBaseMedium">#ff9e9e9e</Color>
+    <Color x:Key="ThemeDarkBaseMediumHigh">#ffc7c7c7</Color>
+    <Color x:Key="ThemeDarkRegionColor">#ff1a1a1a</Color>
 
     <!-- ═══════════════════════════════════════════════════════════
-         SEMANTIC UI COLORS
-         Used directly in views via {DynamicResource}.
+         SEMANTIC UI BRUSHES
+         Theme-aware: resolved via {DynamicResource} in views.
     ═══════════════════════════════════════════════════════════ -->
 
-    <!-- Action buttons: add (green) and delete (red) -->
-    <Color x:Key="ColorActionAdd">#2E7D32</Color>
-    <Color x:Key="ColorActionDelete">#C62828</Color>
+    <ResourceDictionary.ThemeDictionaries>
 
-    <!-- Default-service star indicator -->
-    <Color x:Key="ColorDefaultIndicator">Gold</Color>
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="BrushSurface"            Color="#ffffffff"/>
+            <SolidColorBrush x:Key="BrushSurfaceAlt"         Color="#fff4f4f4"/>
+            <SolidColorBrush x:Key="BrushSidebar"            Color="#ffebebeb"/>
+            <SolidColorBrush x:Key="BrushCardBackground"     Color="#ffffffff"/>
+            <SolidColorBrush x:Key="BrushBorderSubtle"       Color="#ffdedede"/>
+            <SolidColorBrush x:Key="BrushAccent"             Color="#ff0f766e"/>
 
-    <!-- AssetDismantling view background -->
-    <Color x:Key="ColorDismantlingBackground">Wheat</Color>
+            <SolidColorBrush x:Key="BrushStatusDraftBg"      Color="#fffef3c7"/>
+            <SolidColorBrush x:Key="BrushStatusDraftFg"      Color="#ff92400e"/>
+            <SolidColorBrush x:Key="BrushStatusGeneratedBg"  Color="#ffd1fae5"/>
+            <SolidColorBrush x:Key="BrushStatusGeneratedFg"  Color="#ff065f46"/>
 
-    <!-- Expander border (CommissioningActReportView) -->
-    <Color x:Key="ColorExpanderBorder">Black</Color>
+            <SolidColorBrush x:Key="BrushStatusGenerated"    Color="#ff2e7d32"/>
+            <SolidColorBrush x:Key="BrushStatusDraft"        Color="#fff9a825"/>
 
-    <!-- History entry status indicators (HistoryView) -->
-    <Color x:Key="ColorStatusGenerated">#2E7D32</Color>
-    <Color x:Key="ColorStatusDraft">#F9A825</Color>
+            <SolidColorBrush x:Key="BrushActionAdd"          Color="#ff2e7d32"/>
+            <SolidColorBrush x:Key="BrushActionDelete"       Color="#ffc62828"/>
+            <SolidColorBrush x:Key="BrushDefaultIndicator"   Color="Gold"/>
+            <SolidColorBrush x:Key="BrushDismantlingBackground" Color="#fff2ead9"/>
+            <SolidColorBrush x:Key="BrushExpanderBorder"     Color="#ff8a8a8a"/>
 
-    <!-- Brushes built from semantic colors above -->
-    <SolidColorBrush x:Key="BrushActionAdd"          Color="{StaticResource ColorActionAdd}"/>
-    <SolidColorBrush x:Key="BrushActionDelete"        Color="{StaticResource ColorActionDelete}"/>
-    <SolidColorBrush x:Key="BrushDefaultIndicator"    Color="{StaticResource ColorDefaultIndicator}"/>
-    <SolidColorBrush x:Key="BrushDismantlingBackground" Color="{StaticResource ColorDismantlingBackground}"/>
-    <SolidColorBrush x:Key="BrushExpanderBorder"      Color="{StaticResource ColorExpanderBorder}"/>
-    <SolidColorBrush x:Key="BrushStatusGenerated"     Color="{StaticResource ColorStatusGenerated}"/>
-    <SolidColorBrush x:Key="BrushStatusDraft"         Color="{StaticResource ColorStatusDraft}"/>
+            <!-- Drawn caption buttons (window chrome): subtle neutral hover/pressed,
+                 matching native Win11 min/max button behavior. -->
+            <SolidColorBrush x:Key="CaptionButtonBackground"  Color="#0f000000"/>
+            <SolidColorBrush x:Key="CaptionButtonBorderBrush" Color="#0a000000"/>
+            <SolidColorBrush x:Key="CaptionButtonForeground"  Color="#ff1a1a1a"/>
+        </ResourceDictionary>
+
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush x:Key="BrushSurface"            Color="#ff242424"/>
+            <SolidColorBrush x:Key="BrushSurfaceAlt"         Color="#ff2d2d2d"/>
+            <SolidColorBrush x:Key="BrushSidebar"            Color="#ff202020"/>
+            <SolidColorBrush x:Key="BrushCardBackground"     Color="#ff2d2d2d"/>
+            <SolidColorBrush x:Key="BrushBorderSubtle"       Color="#ff3d3d3d"/>
+            <SolidColorBrush x:Key="BrushAccent"             Color="#ff14b8a6"/>
+
+            <SolidColorBrush x:Key="BrushStatusDraftBg"      Color="#ff42330a"/>
+            <SolidColorBrush x:Key="BrushStatusDraftFg"      Color="#fffcd34d"/>
+            <SolidColorBrush x:Key="BrushStatusGeneratedBg"  Color="#ff0d3b2e"/>
+            <SolidColorBrush x:Key="BrushStatusGeneratedFg"  Color="#ff6ee7b7"/>
+
+            <SolidColorBrush x:Key="BrushStatusGenerated"    Color="#ff66bb6a"/>
+            <SolidColorBrush x:Key="BrushStatusDraft"        Color="#fffbc02d"/>
+
+            <SolidColorBrush x:Key="BrushActionAdd"          Color="#ff66bb6a"/>
+            <SolidColorBrush x:Key="BrushActionDelete"       Color="#ffef5350"/>
+            <SolidColorBrush x:Key="BrushDefaultIndicator"   Color="Gold"/>
+            <SolidColorBrush x:Key="BrushDismantlingBackground" Color="#ff39342a"/>
+            <SolidColorBrush x:Key="BrushExpanderBorder"     Color="#ff6e6e6e"/>
+
+            <!-- Drawn caption buttons (window chrome): subtle neutral hover/pressed,
+                 matching native Win11 min/max button behavior. -->
+            <SolidColorBrush x:Key="CaptionButtonBackground"  Color="#17ffffff"/>
+            <SolidColorBrush x:Key="CaptionButtonBorderBrush" Color="#0fffffff"/>
+            <SolidColorBrush x:Key="CaptionButtonForeground"  Color="#ffffffff"/>
+        </ResourceDictionary>
+
+    </ResourceDictionary.ThemeDictionaries>
 
 </ResourceDictionary>

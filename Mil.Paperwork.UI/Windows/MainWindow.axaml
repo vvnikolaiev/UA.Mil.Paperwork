@@ -1,37 +1,38 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:vm="using:Mil.Paperwork.UI.ViewModels"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		mc:Ignorable="d"
-		d:DesignWidth="900" d:DesignHeight="450"
+		d:DesignWidth="1280" d:DesignHeight="800"
 		x:Class="Mil.Paperwork.UI.Windows.MainWindow"
 		x:DataType="vm:MainWindowViewModel"
 		xmlns:tabs="using:Mil.Paperwork.UI.ViewModels.Tabs"
 		xmlns:views="using:Mil.Paperwork.UI.Views"
+		xmlns:shellViews="using:Mil.Paperwork.UI.Views.Shell"
 		xmlns:configViews="using:Mil.Paperwork.UI.Views.Configuration"
 		xmlns:configViewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Tabs"
 		xmlns:reportViews="using:Mil.Paperwork.UI.Views.Reports"
-		xmlns:reports="using:Mil.Paperwork.Domain.Reports"
 		xmlns:reportViewModels="using:Mil.Paperwork.UI.ViewModels.Reports"
 		xmlns:dictionaryViews="using:Mil.Paperwork.UI.Views.Dictionaries"
 		xmlns:dictionaryViewModels="using:Mil.Paperwork.UI.ViewModels.Dictionaries"
-		Width="1050"
-		Height="500"
+		Width="1280"
+		Height="800"
+		MinWidth="1100"
+		MinHeight="650"
+		ExtendClientAreaToDecorationsHint="True"
+		ExtendClientAreaTitleBarHeightHint="40"
 		Icon="/Assets/avalonia-logo.ico"
 		Title="Mil.Paperwork.UI">
 
-	<Design.DataContext>
-		<!-- This only sets the DataContext for the previewer in an IDE,
-		to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-		<vm:MainWindowViewModel/>
-	</Design.DataContext>
-
-	<Window.Styles>
-		<Style Selector="TabItem">
-			<Setter Property="FontSize" Value="18" />
-		</Style>
-	</Window.Styles>
+	<Window.KeyBindings>
+		<KeyBinding Gesture="Ctrl+Tab"
+					Command="{Binding NextTabCommand}" />
+		<KeyBinding Gesture="Ctrl+Shift+Tab"
+					Command="{Binding PreviousTabCommand}" />
+		<KeyBinding Gesture="Ctrl+W"
+					Command="{Binding CloseActiveDocumentCommand}" />
+	</Window.KeyBindings>
 
 	<Window.DataTemplates>
 
@@ -132,8 +133,8 @@
 			<configViews:CommissionsConfigurationView />
 		</DataTemplate>
 
-		<DataTemplate DataType="{x:Type tabs:HomePageViewModel}">
-			<views:HomePageView />
+		<DataTemplate DataType="{x:Type tabs:ReportCatalogViewModel}">
+			<views:ReportCatalogView />
 		</DataTemplate>
 
 		<DataTemplate DataType="{x:Type tabs:HistoryViewModel}">
@@ -142,28 +143,20 @@
 
 	</Window.DataTemplates>
 
-	<Grid>
-		<TabControl ItemsSource="{Binding Tabs}"
-					SelectedItem="{Binding SelectedTab}"
-					SelectedIndex="{Binding SelectedTabIndex}">
-			<TabControl.KeyBindings>
-				<KeyBinding Gesture="Ctrl+Tab"
-							Command="{Binding NextTabCommand}" />
-				<KeyBinding Gesture="Ctrl+Shift+Tab"
-							Command="{Binding PreviousTabCommand}" />
-			</TabControl.KeyBindings>
+	<Grid RowDefinitions="Auto,*"
+		  Margin="{Binding $parent[Window].OffScreenMargin}">
 
-			<TabControl.ItemTemplate>
-				<DataTemplate>
-					<TextBlock Text="{Binding Header}" />
-				</DataTemplate>
-			</TabControl.ItemTemplate>
-			<TabControl.ContentTemplate>
-				<DataTemplate>
-					<ContentControl Content="{Binding}" />
-				</DataTemplate>
-			</TabControl.ContentTemplate>
-		</TabControl>
+		<shellViews:HeaderBarView Grid.Row="0" />
+
+		<Grid Grid.Row="1" ColumnDefinitions="Auto,*">
+
+			<shellViews:SidebarView Grid.Column="0" />
+
+			<DockPanel Grid.Column="1" Background="{DynamicResource BrushSurface}">
+				<shellViews:DocumentTabStrip DockPanel.Dock="Top" />
+				<ContentControl Content="{Binding ActiveContent}" />
+			</DockPanel>
+		</Grid>
 	</Grid>
 
 </Window>

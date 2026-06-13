@@ -6,7 +6,10 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Globalization;
 using System.Threading;
 using System;
+using Avalonia.Styling;
+using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.UI.Configuration;
+using Mil.Paperwork.UI.Services;
 using Mil.Paperwork.UI.ViewModels;
 using Mil.Paperwork.UI.Windows;
 
@@ -49,6 +52,8 @@ namespace Mil.Paperwork.UI
 
             var provider = serviceCollection.BuildServiceProvider();
 
+            ApplyStoredTheme(provider);
+
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 var mainWindow = new MainWindow();
@@ -59,6 +64,19 @@ namespace Mil.Paperwork.UI
             }
 
             base.OnFrameworkInitializationCompleted();
+        }
+
+        private void ApplyStoredTheme(IServiceProvider provider)
+        {
+            var userSettingsService = provider.GetRequiredService<IUserSettingsService>();
+            var settings = userSettingsService.GetSettings();
+
+            RequestedThemeVariant = settings.Theme switch
+            {
+                UserSettingsDTO.ThemeLight => ThemeVariant.Light,
+                UserSettingsDTO.ThemeDark => ThemeVariant.Dark,
+                _ => ThemeVariant.Default
+            };
         }
 
         private void SetCurrentCulture()

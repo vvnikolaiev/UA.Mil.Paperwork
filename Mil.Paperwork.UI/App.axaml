@@ -16,7 +16,13 @@
 				<ResourceInclude Source="Assets/Icons.axaml"/>
 			</ResourceDictionary.MergedDictionaries>
 			<x:Double x:Key="DataGridSortIconMinWidth">0</x:Double>
+
+			<!-- Drawn caption buttons: full title-bar height and Win11-like width,
+			     so they sit flush with the window edge without artificial margins. -->
+			<x:Double x:Key="CaptionButtonWidth">46</x:Double>
+			<x:Double x:Key="CaptionButtonHeight">40</x:Double>
 			<converters:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
+			<converters:ResourceKeyToGeometryConverter x:Key="ResourceKeyToGeometryConverter" />
 		</ResourceDictionary>
 	</Application.Resources>
 
@@ -78,8 +84,36 @@
 		<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
 
 		<StyleInclude Source="Styles/CommonStyles.axaml" />
-		
+
 		<StyleInclude Source="Styles/DataGridStyles.axaml" />
+
+		<!-- Drawn window decorations (extended client area): the HeaderBar provides
+		     its own branding, so hide the framework-drawn title text; the full-screen
+		     caption button is not native on Windows — hide it too. -->
+		<Style Selector=":is(Control)#PART_TitleTextPanel">
+			<Setter Property="IsVisible" Value="False" />
+			<Setter Property="Opacity" Value="0" />
+		</Style>
+		<Style Selector=":is(Control)#AvaloniaTitleBar">
+			<Setter Property="IsVisible" Value="False" />
+			<Setter Property="Opacity" Value="0" />
+			<Setter Property="IsHitTestVisible" Value="False" />
+		</Style>
+		<Style Selector=":is(Control)#PART_FullScreenButton">
+			<Setter Property="IsVisible" Value="False" />
+		</Style>
+		<!-- Make caption buttons contiguous like native Win11 ones: the caption-button
+		     theme sets its own Margin and the StackPanel adds Spacing="2", so zero out
+		     the minimize margin and pull the trailing buttons left by the spacing. -->
+		<Style Selector=":is(Button)#PART_MinimizeButton">
+			<Setter Property="Margin" Value="0" />
+		</Style>
+		<Style Selector=":is(Button)#PART_MaximizeButton, :is(Button)#PART_CloseButton">
+			<Setter Property="Margin" Value="-2 0 0 0" />
+		</Style>
+		<Style Selector=":is(Button)#PART_MinimizeButton /template/ ContentPresenter, :is(Button)#PART_MaximizeButton /template/ ContentPresenter, :is(Button)#PART_CloseButton /template/ ContentPresenter">
+			<Setter Property="CornerRadius" Value="0" />
+		</Style>
 
 	</Application.Styles>
 </Application>

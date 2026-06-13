@@ -426,7 +426,7 @@
             <Button Content="Згенерувати наказ" Command="{Binding GenerateReportCommand}" FontWeight="SemiBold"/>
             <Button Content="Зберегти чернетку" Command="{Binding SaveDraftCommand}"/>
             <Button Content="Налаштування" Command="{Binding OpenConfigurationCommand}"/>
-            <Button Classes="CloseTab" Content="Закрити" Command="{Binding CloseTabCommand}"/>
+            <Button Content="Закрити" Command="{Binding CloseTabCommand}"/>
         </StackPanel>
 
     </Grid>

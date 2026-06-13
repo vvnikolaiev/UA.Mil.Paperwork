@@ -1,0 +1,64 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="36"
+             xmlns:vm="using:Mil.Paperwork.UI.ViewModels"
+             xmlns:tabs="using:Mil.Paperwork.UI.ViewModels.Tabs"
+             x:Class="Mil.Paperwork.UI.Views.Shell.DocumentTabStrip"
+             x:DataType="vm:MainWindowViewModel">
+
+	<UserControl.Styles>
+		<Style Selector="ListBox.documentTabs">
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="Padding" Value="4 4 4 0" />
+		</Style>
+		<Style Selector="ListBox.documentTabs ListBoxItem">
+			<Setter Property="Padding" Value="10 4" />
+			<Setter Property="Margin" Value="0 0 2 0" />
+			<Setter Property="CornerRadius" Value="6 6 0 0" />
+		</Style>
+		<Style Selector="ListBox.documentTabs ListBoxItem:selected /template/ ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource BrushSurface}" />
+		</Style>
+		<Style Selector="Button.tabClose">
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="BorderThickness" Value="0" />
+			<Setter Property="Padding" Value="4" />
+			<Setter Property="CornerRadius" Value="4" />
+			<Setter Property="VerticalAlignment" Value="Center" />
+		</Style>
+	</UserControl.Styles>
+
+	<Border IsVisible="{Binding HasOpenDocuments}"
+			Background="{DynamicResource BrushSurfaceAlt}"
+			BorderBrush="{DynamicResource BrushBorderSubtle}"
+			BorderThickness="0 0 0 1">
+
+		<ListBox Classes="documentTabs"
+				 ItemsSource="{Binding OpenDocuments}"
+				 SelectedItem="{Binding SelectedDocument, Mode=TwoWay}"
+				 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+				 ScrollViewer.VerticalScrollBarVisibility="Disabled">
+
+			<ListBox.ItemsPanel>
+				<ItemsPanelTemplate>
+					<StackPanel Orientation="Horizontal" />
+				</ItemsPanelTemplate>
+			</ListBox.ItemsPanel>
+
+			<ListBox.ItemTemplate>
+				<DataTemplate x:DataType="tabs:ITabViewModel">
+					<StackPanel Orientation="Horizontal" Spacing="6">
+						<TextBlock Text="{Binding Header}" VerticalAlignment="Center" />
+						<Button Classes="tabClose"
+								Command="{Binding CloseTabCommand}"
+								ToolTip.Tip="Закрити вкладку">
+							<PathIcon Data="{StaticResource IconClose}" Width="9" Height="9" />
+						</Button>
+					</StackPanel>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</Border>
+</UserControl>

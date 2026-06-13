@@ -23,7 +23,7 @@
             <Button Content="Зберегти тимчасово" Command="{Binding SaveLocalCommand}" Margin="0,0,5,0"
                     ToolTip.Tip="Після перезавантаження або кнопки «Оновити» — дані повернуться"/>
             <Button Content="Оновити" Command="{Binding RefreshCommand}" Margin="0,0,5,0"/>
-            <Button Classes="CloseTab" Content="Закрити" Command="{Binding CloseTabCommand}" Margin="0,0,5,0"/>
+            <Button Content="Закрити" Command="{Binding CloseTabCommand}" Margin="0,0,5,0"/>
         </StackPanel>
 
         <!-- Вибір служби за замовчуванням -->

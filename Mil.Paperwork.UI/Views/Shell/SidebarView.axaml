@@ -1,0 +1,91 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="220" d:DesignHeight="650"
+             xmlns:vm="using:Mil.Paperwork.UI.ViewModels"
+             xmlns:shell="using:Mil.Paperwork.UI.ViewModels.Shell"
+             x:Class="Mil.Paperwork.UI.Views.Shell.SidebarView"
+             x:DataType="vm:MainWindowViewModel">
+
+	<UserControl.Resources>
+		<DataTemplate x:Key="NavItemTemplate" x:DataType="shell:NavigationItemViewModel">
+			<Button Classes="navItem"
+					Classes.selected="{Binding IsSelected}"
+					Command="{Binding $parent[UserControl].((vm:MainWindowViewModel)DataContext).NavigateCommand}"
+					CommandParameter="{Binding}"
+					ToolTip.Tip="{Binding Title}">
+				<StackPanel Orientation="Horizontal" Spacing="12">
+					<PathIcon Data="{Binding IconKey, Converter={StaticResource ResourceKeyToGeometryConverter}}"
+							  Width="18" Height="18" />
+					<TextBlock Classes="navLabel" Text="{Binding Title}" />
+				</StackPanel>
+			</Button>
+		</DataTemplate>
+	</UserControl.Resources>
+
+	<UserControl.Styles>
+		<Style Selector="Border#SidebarRoot">
+			<Setter Property="Width" Value="220" />
+		</Style>
+		<Style Selector="Border#SidebarRoot.collapsed">
+			<Setter Property="Width" Value="48" />
+		</Style>
+		<Style Selector="Border#SidebarRoot.collapsed TextBlock.navLabel">
+			<Setter Property="IsVisible" Value="False" />
+		</Style>
+		<Style Selector="Border#SidebarRoot.collapsed TextBlock.navGroupHeader">
+			<Setter Property="IsVisible" Value="False" />
+		</Style>
+
+		<Style Selector="Button.navItem">
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="BorderThickness" Value="0" />
+			<Setter Property="HorizontalAlignment" Value="Stretch" />
+			<Setter Property="HorizontalContentAlignment" Value="Left" />
+			<Setter Property="Padding" Value="10 8" />
+			<Setter Property="CornerRadius" Value="6" />
+			<Setter Property="Margin" Value="4 1" />
+		</Style>
+		<Style Selector="Button.navItem.selected">
+			<Setter Property="Background" Value="{DynamicResource BrushSurface}" />
+		</Style>
+		<Style Selector="Button.navItem.selected PathIcon">
+			<Setter Property="Foreground" Value="{DynamicResource BrushAccent}" />
+		</Style>
+
+		<Style Selector="TextBlock.navGroupHeader">
+			<Setter Property="FontSize" Value="11" />
+			<Setter Property="FontWeight" Value="SemiBold" />
+			<Setter Property="Opacity" Value="0.6" />
+			<Setter Property="Margin" Value="14 14 0 4" />
+		</Style>
+	</UserControl.Styles>
+
+	<Border Name="SidebarRoot"
+			Classes.collapsed="{Binding IsSidebarCollapsed}"
+			Background="{DynamicResource BrushSidebar}"
+			BorderBrush="{DynamicResource BrushBorderSubtle}"
+			BorderThickness="0 0 1 0">
+
+		<Grid RowDefinitions="*,Auto">
+
+			<ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Disabled">
+				<StackPanel Margin="0 8 0 0">
+					<ItemsControl ItemsSource="{Binding SidebarMainItems}"
+								  ItemTemplate="{StaticResource NavItemTemplate}" />
+
+					<TextBlock Classes="navGroupHeader" Text="ДОВІДНИКИ" />
+
+					<ItemsControl ItemsSource="{Binding SidebarDictionaryItems}"
+								  ItemTemplate="{StaticResource NavItemTemplate}" />
+				</StackPanel>
+			</ScrollViewer>
+
+			<ItemsControl Grid.Row="1"
+						  Margin="0 0 0 8"
+						  ItemsSource="{Binding SidebarFooterItems}"
+						  ItemTemplate="{StaticResource NavItemTemplate}" />
+		</Grid>
+	</Border>
+</UserControl>
