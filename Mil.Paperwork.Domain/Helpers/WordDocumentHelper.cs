@@ -579,6 +579,48 @@ namespace Mil.Paperwork.Domain.Helpers
     }
 
     // ---------------------------------------------------------------------------
+    // WordTableFiller — fills a table from a list of row objects: loop, add a row,
+    // address each column, drop the template row, optionally vertical-merge a set
+    // of columns once, optionally append a summary row.
+    // ---------------------------------------------------------------------------
+
+    internal static class WordTableFiller
+    {
+        public static void Fill<TRow>(
+            WordTable table,
+            IReadOnlyList<TRow> rows,
+            IReadOnlyList<(int Index, Action<WordCell, TRow> Write)> columns,
+            IReadOnlyList<(int Index, Action<WordCell> Write)>? verticalMergeColumns = null,
+            Action<WordTable>? addSummaryRow = null)
+        {
+            var firstRow = table.LastRow;
+            var firstRowIndex = firstRow.GetRowIndex();
+
+            foreach (var rowData in rows)
+            {
+                var row = table.AddRow();
+                foreach (var (index, write) in columns)
+                {
+                    write(row.GetCell(index), rowData);
+                }
+            }
+
+            table.RemoveRow(firstRow);
+
+            if (verticalMergeColumns != null)
+            {
+                foreach (var (index, write) in verticalMergeColumns)
+                {
+                    var cell = table.MergeCellsVertically(index, firstRowIndex, rows.Count);
+                    write(cell);
+                }
+            }
+
+            addSummaryRow?.Invoke(table);
+        }
+    }
+
+    // ---------------------------------------------------------------------------
     // WordDocumentHelper — constants used by both WordCell and report helpers
     // ---------------------------------------------------------------------------
 

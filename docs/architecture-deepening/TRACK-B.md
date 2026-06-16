@@ -8,7 +8,7 @@ Independent of A and C. Touches `Mil.Paperwork.Domain/Helpers/WordDocumentHelper
 
 ## Steps
 
-- [ ] **B1. Add `WordTableFiller` next to `WordTable`/`WordRow`/`WordCell` in `WordDocumentHelper.cs`.**
+- [x] **B1. Add `WordTableFiller` next to `WordTable`/`WordRow`/`WordCell` in `WordDocumentHelper.cs`.**
   ```csharp
   internal sealed class WordTableColumn<TRow>
   {
@@ -25,10 +25,10 @@ Independent of A and C. Touches `Mil.Paperwork.Domain/Helpers/WordDocumentHelper
   ```
   It owns: capture `LastRow`, loop `rows` calling `table.AddRow()` + each column's `Write`, remove the template row, apply `table.MergeCellsVertically` for any `verticalMergeColumns`, then invoke `addSummaryRow` if supplied.
 
-- [ ] **B2. Migrate `QualityStateReport.FillTheTable` first (`Reports/QualityStateReport.cs:72-114`).**
+- [x] **B2. Migrate `QualityStateReport.FillTheTable` first (`Reports/QualityStateReport.cs:72-114`).**
   Simplest case: 16 columns, no vertical merge, has a summary row. Replace the manual loop with a column-definition list (reusing the existing `QualityStateReportHelper.COLUMN_*` constants for indices) + a call to `WordTableFiller.Fill`.
 
-- [ ] **B3. Migrate `AssetDismantlingReport.FillTheTable` second.**
+- [x] **B3. Migrate `AssetDismantlingReport.FillTheTable` second.**
   Harder case: vertical merge across 7 asset-level columns + summary row with merged cells. Exercises `verticalMergeColumns` and `addSummaryRow`, proving `WordTableFiller` generalizes past the first call site.
 
 ## Out of scope

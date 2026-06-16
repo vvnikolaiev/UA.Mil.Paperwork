@@ -1,3 +1,4 @@
+using Mil.Paperwork.Domain.DataModels.Assets;
 using Mil.Paperwork.Domain.DataModels.Parameters;
 using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Helpers;
@@ -69,48 +70,58 @@ namespace Mil.Paperwork.Domain.Reports
             document.ReplaceField(QualityStateReportHelper.FIELD_ORDEN_DATE, reportData.OrdenDate.ToString(ReportHelper.DATE_FORMAT));
         }
 
+        private sealed record AssetRow(
+            int Index, string AssetName, string NomenclatureCode, string MeasurementUnit, string InitialCategory,
+            int Count, decimal Price, decimal TotalPrice, int MonthsOperated, int ExploitationNorm,
+            string ResidualCategory, decimal ResidualPrice, decimal ResidualTotalPrice);
+
+        private static AssetRow BuildAssetRow(IAssetInfo asset, int index, ICommonWriteOffReportData reportData)
+        {
+            var residualPrice = ResidualPriceHelper.CalculateResidualPriceForItem(asset, reportData.EventDate);
+            var initialCategory = ReportHelper.ConvertCategoryToText(asset.InitialCategory);
+            var residualCategory = ReportHelper.ConvertEventTypeToCategoryText(asset.InitialCategory, reportData.EventType);
+            var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
+            var nomenclatureCode = asset.NomenclatureCode?.ToUpper() ?? string.Empty;
+            var monthsOperated = (int)((reportData.EventDate - asset.StartDate).TotalDays / 30);
+            var exploitationNorm = asset.ResourceYears != 0 ? asset.ResourceYears * 12 : 60;
+
+            var result = new AssetRow(index + 1, assetName, nomenclatureCode, asset.MeasurementUnit, initialCategory,
+                asset.Count, asset.Price, asset.Count * asset.Price, monthsOperated, exploitationNorm,
+                residualCategory, residualPrice, residualPrice * asset.Count);
+            return result;
+        }
+
         private static void FillTheTable(ICommonWriteOffReportData reportData, WordTable table)
         {
-            var firstRow = table.LastRow;
-
             var nameCellParameters = new WordCellParameters(QualityStateReportHelper.TABLE_FONT_SIZE, WordHorizontalAlignment.Left);
             var cellParameters = new WordCellParameters(QualityStateReportHelper.TABLE_FONT_SIZE, WordHorizontalAlignment.Center);
 
-            for (int i = 0; i < reportData.Assets.Count; i++)
+            var rows = reportData.Assets
+                .Select((asset, i) => BuildAssetRow(asset, i, reportData))
+                .ToList();
+
+            var columns = new List<(int Index, Action<WordCell, AssetRow> Write)>
             {
-                var asset = reportData.Assets[i];
-                var row = table.AddRow();
+                (QualityStateReportHelper.COLUMN_INDEX, (cell, row) => cell.AddNumber(row.Index, cellParameters)),
+                (QualityStateReportHelper.COLUMN_NAME, (cell, row) => cell.AddText(row.AssetName, nameCellParameters)),
+                (QualityStateReportHelper.COLUMN_NOMENCLATURE_CODE, (cell, row) => cell.AddText(row.NomenclatureCode, cellParameters)),
+                (QualityStateReportHelper.COLUMN_MEASUREMENT_UNIT, (cell, row) => cell.AddText(row.MeasurementUnit, cellParameters)),
+                (QualityStateReportHelper.COLUMN_CATEGORY, (cell, row) => cell.AddText(row.InitialCategory, cellParameters)),
+                (QualityStateReportHelper.COLUMN_COUNT, (cell, row) => cell.AddNumber(row.Count, cellParameters)),
+                (QualityStateReportHelper.COLUMN_PRICE, (cell, row) => cell.AddPrice(row.Price, cellParameters)),
+                (QualityStateReportHelper.COLUMN_TOTAL_PRICE, (cell, row) => cell.AddPrice(row.TotalPrice, cellParameters)),
+                (QualityStateReportHelper.COLUMN_EXPLOITATION_FACT, (cell, row) => cell.AddNumber(row.MonthsOperated, cellParameters)),
+                (QualityStateReportHelper.COLUMN_EXPLOITATION_NORM, (cell, row) => cell.AddNumber(row.ExploitationNorm, cellParameters)),
+                (QualityStateReportHelper.COLUMN_EXPLOITATION_NAME, (cell, row) => cell.AddText(row.AssetName, nameCellParameters)),
+                (QualityStateReportHelper.COLUMN_EXPLOITATION_NOMENCLATURE_CODE, (cell, row) => cell.AddText(row.NomenclatureCode, cellParameters)),
+                (QualityStateReportHelper.COLUMN_EXPLOITATION_MEASUREMENT_UNIT, (cell, row) => cell.AddText(row.MeasurementUnit, cellParameters)),
+                (QualityStateReportHelper.COLUMN_EXPLOITATION_CATEGORY, (cell, row) => cell.AddText(row.ResidualCategory, cellParameters)),
+                (QualityStateReportHelper.COLUMN_EXPLOITATION_COUNT, (cell, row) => cell.AddNumber(row.Count, cellParameters)),
+                (QualityStateReportHelper.COLUMN_EXPLOITATION_PRICE, (cell, row) => cell.AddPrice(row.ResidualPrice, cellParameters)),
+                (QualityStateReportHelper.COLUMN_EXPLOITATION_TOTAL_PRICE, (cell, row) => cell.AddPrice(row.ResidualTotalPrice, cellParameters)),
+            };
 
-                var residualPrice = ResidualPriceHelper.CalculateResidualPriceForItem(asset, reportData.EventDate);
-                var initialCategory = ReportHelper.ConvertCategoryToText(asset.InitialCategory);
-                var residualCategory = ReportHelper.ConvertEventTypeToCategoryText(asset.InitialCategory, reportData.EventType);
-                var assetName = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber);
-                var nomenclatureCode = asset.NomenclatureCode?.ToUpper() ?? string.Empty;
-                var monthsOperated = (int)((reportData.EventDate - asset.StartDate).TotalDays / 30);
-                var exploitationNorm = asset.ResourceYears != 0 ? asset.ResourceYears * 12 : 60;
-
-                row.GetCell(QualityStateReportHelper.COLUMN_INDEX).AddNumber(i + 1, cellParameters);
-                row.GetCell(QualityStateReportHelper.COLUMN_NAME).AddText(assetName, nameCellParameters);
-                row.GetCell(QualityStateReportHelper.COLUMN_NOMENCLATURE_CODE).AddText(nomenclatureCode, cellParameters);
-                row.GetCell(QualityStateReportHelper.COLUMN_MEASUREMENT_UNIT).AddText(asset.MeasurementUnit, cellParameters);
-                row.GetCell(QualityStateReportHelper.COLUMN_CATEGORY).AddText(initialCategory, cellParameters);
-                row.GetCell(QualityStateReportHelper.COLUMN_COUNT).AddNumber(asset.Count, cellParameters);
-                row.GetCell(QualityStateReportHelper.COLUMN_PRICE).AddPrice(asset.Price, cellParameters);
-                row.GetCell(QualityStateReportHelper.COLUMN_TOTAL_PRICE).AddPrice(asset.Count * asset.Price, cellParameters);
-                row.GetCell(QualityStateReportHelper.COLUMN_EXPLOITATION_FACT).AddNumber(monthsOperated, cellParameters);
-                row.GetCell(QualityStateReportHelper.COLUMN_EXPLOITATION_NORM).AddNumber(exploitationNorm, cellParameters);
-                row.GetCell(QualityStateReportHelper.COLUMN_EXPLOITATION_NAME).AddText(assetName, nameCellParameters);
-                row.GetCell(QualityStateReportHelper.COLUMN_EXPLOITATION_NOMENCLATURE_CODE).AddText(nomenclatureCode, cellParameters);
-                row.GetCell(QualityStateReportHelper.COLUMN_EXPLOITATION_MEASUREMENT_UNIT).AddText(asset.MeasurementUnit, cellParameters);
-                row.GetCell(QualityStateReportHelper.COLUMN_EXPLOITATION_CATEGORY).AddText(residualCategory, cellParameters);
-                row.GetCell(QualityStateReportHelper.COLUMN_EXPLOITATION_COUNT).AddNumber(asset.Count, cellParameters);
-                row.GetCell(QualityStateReportHelper.COLUMN_EXPLOITATION_PRICE).AddPrice(residualPrice, cellParameters);
-                row.GetCell(QualityStateReportHelper.COLUMN_EXPLOITATION_TOTAL_PRICE).AddPrice(residualPrice * asset.Count, cellParameters);
-            }
-
-            table.RemoveRow(firstRow);
-
-            AddSummaryRow(reportData, table);
+            WordTableFiller.Fill(table, rows, columns, addSummaryRow: t => AddSummaryRow(reportData, t));
         }
 
         private static void AddSummaryRow(ICommonWriteOffReportData reportData, WordTable table)
