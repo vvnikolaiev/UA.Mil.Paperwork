@@ -7,6 +7,7 @@ using Mil.Paperwork.UI.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Mil.Paperwork.UI.Managers
 {
@@ -89,118 +90,42 @@ namespace Mil.Paperwork.UI.Managers
 
         public async void GenerateResidualValueReport(IResidualValueReportData reportData, Guid? historyEntryId = null)
         {
-            try
-            {
-                var residualValueReportResult = _residualValueReportService.TryGenerateReport(reportData);
-
-                TrySaveGeneratedToHistory(ReportType.ResidualValueReport, reportData, residualValueReportResult, historyEntryId);
-
-                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.ResidualValueReportName, residualValueReportResult);
-                await _dialogService.ShowMessageAsync(status);
-            }
-            catch (Exception ex)
-            {
-                await _dialogService.ShowMessageAsync($"Помилка генерації звіту: {ex.Message}");
-            }
+            await RunReportAsync(_residualValueReportService, reportData, TextFormatHelper.ResidualValueReportName,
+                "Помилка генерації звіту", ReportType.ResidualValueReport, historyEntryId);
         }
 
         public async void GenerateInitialTechnicalStateReport(IInitialTechnicalStateReportData reportData, Guid? historyEntryId = null)
         {
-            try
-            {
-                var technicalStateReportResult = _initialTechnicalStateReportService.TryGenerateReport(reportData);
-
-                TrySaveGeneratedToHistory(ReportType.TechnicalStateReport, reportData, technicalStateReportResult, historyEntryId);
-
-                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.InitialTechnicalStateReportName, technicalStateReportResult);
-                await _dialogService.ShowMessageAsync(status);
-            }
-            catch (Exception ex)
-            {
-                await _dialogService.ShowMessageAsync($"Помилка генерації звіту: {ex.Message}");
-            }
+            await RunReportAsync(_initialTechnicalStateReportService, reportData, TextFormatHelper.InitialTechnicalStateReportName,
+                "Помилка генерації звіту", ReportType.TechnicalStateReport, historyEntryId);
         }
 
         public async void GenerateTechnicalStateReport(ITechnicalStateReportData reportData, Guid? historyEntryId = null)
         {
-            try
-            {
-                var technicalStateReportResult = _technicalStateReportService.TryGenerateReport(reportData);
-
-                TrySaveGeneratedToHistory(ReportType.TechnicalStateReport, reportData, technicalStateReportResult, historyEntryId);
-
-                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.TechnicalStateReportName, technicalStateReportResult);
-                await _dialogService.ShowMessageAsync(status);
-            }
-            catch (Exception ex)
-            {
-                await _dialogService.ShowMessageAsync($"Помилка генерації звіту: {ex.Message}");
-            }
+            await RunReportAsync(_technicalStateReportService, reportData, TextFormatHelper.TechnicalStateReportName,
+                "Помилка генерації звіту", ReportType.TechnicalStateReport, historyEntryId);
         }
 
         public async void GenerateQualityStateReport(ICommonWriteOffReportData reportData)
         {
-            try
-            {
-                var qualityStateReportResult = _qualityStateReportService.TryGenerateReport(reportData);
-
-                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.QualityStateReportName, qualityStateReportResult);
-                await _dialogService.ShowMessageAsync(status);
-            }
-            catch (Exception ex)
-            {
-                await _dialogService.ShowMessageAsync($"Помилка генерації звіту: {ex.Message}");
-            }
+            await RunReportAsync(_qualityStateReportService, reportData, TextFormatHelper.QualityStateReportName, "Помилка генерації звіту");
         }
 
         public async void GenerateWriteOffActReport(ICommonWriteOffReportData reportData)
         {
-            try
-            {
-                var writeOffActResult = _writeOffActReportService.TryGenerateReport(reportData);
-
-                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.WriteOffActReportName, writeOffActResult);
-                await _dialogService.ShowMessageAsync(status);
-            }
-            catch (Exception ex)
-            {
-                await _dialogService.ShowMessageAsync($"Помилка генерації звіту: {ex.Message}");
-            }
+            await RunReportAsync(_writeOffActReportService, reportData, TextFormatHelper.WriteOffActReportName, "Помилка генерації звіту");
         }
 
         public async void GenerateWriteOffPackage(IWriteOffPackageReportData reportData, Guid? historyEntryId = null)
         {
-            try
-            {
-                var result = _writeOffReportsPackageService.TryGenerateReport(reportData);
-
-                TrySaveGeneratedToHistory(ReportType.WriteOffPackage, reportData, result, historyEntryId);
-
-                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.WriteOffPackageName, result);
-                await _dialogService.ShowMessageAsync(status);
-            }
-            catch (Exception ex)
-            {
-                await _dialogService.ShowMessageAsync($"Помилка генерації пакету: {ex.Message}");
-            }
+            await RunReportAsync(_writeOffReportsPackageService, reportData, TextFormatHelper.WriteOffPackageName,
+                "Помилка генерації пакету", ReportType.WriteOffPackage, historyEntryId);
         }
-
 
         public async void GenerateValuationReport(IAssetValuationReportData reportData, Guid? historyEntryId = null)
         {
-            try
-            {
-                var assetValuationReportResult = _valuationReportService.TryGenerateReport(reportData);
-
-                TrySaveGeneratedToHistory(ReportType.AssetValuationReport, reportData, assetValuationReportResult, historyEntryId);
-
-                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.ValuationReportName, assetValuationReportResult);
-                await _dialogService.ShowMessageAsync(status);
-            }
-            catch (Exception ex)
-            {
-                await _dialogService.ShowMessageAsync($"Помилка генерації звіту: {ex.Message}");
-            }
+            await RunReportAsync(_valuationReportService, reportData, TextFormatHelper.ValuationReportName,
+                "Помилка генерації звіту", ReportType.AssetValuationReport, historyEntryId);
         }
 
         public async void GenerateDismantlingReport(IDismantlingReportData reportData, Guid? historyEntryId = null)
@@ -225,84 +150,73 @@ namespace Mil.Paperwork.UI.Managers
 
         public async void GenerateCommissioningAct(ICommissioningActReportData reportData, Guid? historyEntryId = null)
         {
-            try
-            {
-                var commissioningActResult = _commissioningActService.TryGenerateReport(reportData);
-
-                TrySaveGeneratedToHistory(ReportType.CommissioningAct, reportData, commissioningActResult, historyEntryId);
-
-                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.CommisioninaActName, commissioningActResult);
-                await _dialogService.ShowMessageAsync(status);
-            }
-            catch (Exception ex)
-            {
-                await _dialogService.ShowMessageAsync($"Помилка генерації акту: {ex.Message}");
-            }
+            await RunReportAsync(_commissioningActService, reportData, TextFormatHelper.CommisioninaActName,
+                "Помилка генерації акту", ReportType.CommissioningAct, historyEntryId);
         }
 
         public async void GenerateCommissioningAct(IList<ICommissioningActReportData> reportData)
         {
-            try
-            {
-                var commissioningActResult = _commissioningActService.TryGenerateReport(reportData);
-
-                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.CommisioninaActName, commissioningActResult);
-                await _dialogService.ShowMessageAsync(status);
-            }
-            catch (Exception ex)
-            {
-                await _dialogService.ShowMessageAsync($"Помилка генерації акту: {ex.Message}");
-            }
+            await RunReportAsync(_commissioningActService, reportData, TextFormatHelper.CommisioninaActName, "Помилка генерації акту");
         }
 
         public async void GenerateInvoice(IInvoceReportData reportData, Guid? historyEntryId = null)
         {
-            try
-            {
-                var invocieResult = _invoiceReportService.TryGenerateReport(reportData);
-
-                TrySaveGeneratedToHistory(ReportType.Invoice, reportData, invocieResult, historyEntryId);
-
-                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.InvoiceName, invocieResult);
-                await _dialogService.ShowMessageAsync(status);
-            }
-            catch (Exception ex)
-            {
-                await _dialogService.ShowMessageAsync($"Помилка генерації накладної: {ex.Message}");
-            }
+            await RunReportAsync(_invoiceReportService, reportData, TextFormatHelper.InvoiceName,
+                "Помилка генерації накладної", ReportType.Invoice, historyEntryId);
         }
 
         public async void GenerateHandover23Act(IHandoverReportData reportData, Guid? historyEntryId = null)
         {
-            try
-            {
-                var handoverResult = _handover23ReportService.TryGenerateReport(reportData);
-
-                TrySaveGeneratedToHistory(ReportType.Handover23Act, reportData, handoverResult, historyEntryId);
-
-                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.Handover23Name, handoverResult);
-                await _dialogService.ShowMessageAsync(status);
-            }
-            catch (Exception ex)
-            {
-                await _dialogService.ShowMessageAsync($"Помилка генерації акту: {ex.Message}");
-            }
+            await RunReportAsync(_handover23ReportService, reportData, TextFormatHelper.Handover23Name,
+                "Помилка генерації акту", ReportType.Handover23Act, historyEntryId);
         }
 
         public async void GenerateWriteOffOrder(IWriteOffOrderReportData reportData, Guid? historyEntryId = null)
         {
+            await RunReportAsync(_writeOffOrderReportService, reportData, "Наказ про списання",
+                "Помилка генерації наказу", ReportType.WriteOffOrder, historyEntryId);
+        }
+
+        private async Task RunReportAsync<TData>(
+            IReportService<TData> service,
+            TData reportData,
+            string displayName,
+            string errorPrefix,
+            ReportType reportType,
+            Guid? historyEntryId)
+            where TData : IReportData
+        {
             try
             {
-                var result = _writeOffOrderReportService.TryGenerateReport(reportData);
+                var result = service.TryGenerateReport(reportData);
 
-                TrySaveGeneratedToHistory(ReportType.WriteOffOrder, reportData, result, historyEntryId);
+                TrySaveGeneratedToHistory(reportType, reportData, result, historyEntryId);
 
-                var status = TextFormatHelper.GetReportStatusMessage("Наказ про списання", result);
+                var status = TextFormatHelper.GetReportStatusMessage(displayName, result);
                 await _dialogService.ShowMessageAsync(status);
             }
             catch (Exception ex)
             {
-                await _dialogService.ShowMessageAsync($"Помилка генерації наказу: {ex.Message}");
+                await _dialogService.ShowMessageAsync($"{errorPrefix}: {ex.Message}");
+            }
+        }
+
+        private async Task RunReportAsync<TData>(
+            IReportService<TData> service,
+            TData reportData,
+            string displayName,
+            string errorPrefix)
+        {
+            try
+            {
+                var result = service.TryGenerateReport(reportData);
+
+                var status = TextFormatHelper.GetReportStatusMessage(displayName, result);
+                await _dialogService.ShowMessageAsync(status);
+            }
+            catch (Exception ex)
+            {
+                await _dialogService.ShowMessageAsync($"{errorPrefix}: {ex.Message}");
             }
         }
 
