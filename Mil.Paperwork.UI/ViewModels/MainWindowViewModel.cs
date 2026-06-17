@@ -10,6 +10,7 @@ using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Enums;
 using Mil.Paperwork.UI.Factories;
+using Mil.Paperwork.UI.Helpers;
 using Mil.Paperwork.UI.Services;
 using Mil.Paperwork.UI.ViewModels.Dictionaries;
 using Mil.Paperwork.UI.ViewModels.History;
@@ -32,18 +33,6 @@ namespace Mil.Paperwork.UI.ViewModels
         private const string NavTitleServices = "Служби";
         private const string NavTitleMeasurementUnits = "Од. виміру";
         private const string NavTitleSettings = "Налаштування";
-
-        private const string IconKeyDashboard = "IconDashboard";
-        private const string IconKeyHistory = "IconHistory";
-        private const string IconKeyProducts = "IconProducts";
-        private const string IconKeyPeople = "IconPeople";
-        private const string IconKeyServices = "IconServices";
-        private const string IconKeyMeasurementUnits = "IconMeasurementUnits";
-        private const string IconKeySettings = "IconSettings";
-
-        private const string IconKeyThemeAuto = "IconThemeAuto";
-        private const string IconKeyThemeLight = "IconThemeLight";
-        private const string IconKeyThemeDark = "IconThemeDark";
 
         private const string ThemeTooltipAuto = "Тема: автоматична (за системою)";
         private const string ThemeTooltipLight = "Тема: світла";
@@ -118,9 +107,9 @@ namespace Mil.Paperwork.UI.ViewModels
             {
                 var iconKey = _themeMode switch
                 {
-                    ThemeMode.Light => IconKeyThemeLight,
-                    ThemeMode.Dark => IconKeyThemeDark,
-                    _ => IconKeyThemeAuto
+                    ThemeMode.Light => IconKeys.ThemeLight,
+                    ThemeMode.Dark => IconKeys.ThemeDark,
+                    _ => IconKeys.ThemeAuto
                 };
 
                 return iconKey;
@@ -192,15 +181,15 @@ namespace Mil.Paperwork.UI.ViewModels
 
         private void FillSidebarItems()
         {
-            SidebarMainItems.Add(new NavigationItemViewModel(NavTitleDashboard, IconKeyDashboard, NavigationPageType.Dashboard));
-            SidebarMainItems.Add(new NavigationItemViewModel(NavTitleHistory, IconKeyHistory, NavigationPageType.History));
+            SidebarMainItems.Add(new NavigationItemViewModel(NavTitleDashboard, IconKeys.Dashboard, NavigationPageType.Dashboard));
+            SidebarMainItems.Add(new NavigationItemViewModel(NavTitleHistory, IconKeys.History, NavigationPageType.History));
 
-            SidebarDictionaryItems.Add(new NavigationItemViewModel(NavTitleProducts, IconKeyProducts, NavigationPageType.ProductsDictionary));
-            SidebarDictionaryItems.Add(new NavigationItemViewModel(NavTitlePeople, IconKeyPeople, NavigationPageType.PeopleDictionary));
-            SidebarDictionaryItems.Add(new NavigationItemViewModel(NavTitleServices, IconKeyServices, NavigationPageType.ServicesDictionary));
-            SidebarDictionaryItems.Add(new NavigationItemViewModel(NavTitleMeasurementUnits, IconKeyMeasurementUnits, NavigationPageType.MeasurementUnitsDictionary));
+            SidebarDictionaryItems.Add(new NavigationItemViewModel(NavTitleProducts, IconKeys.Products, NavigationPageType.ProductsDictionary));
+            SidebarDictionaryItems.Add(new NavigationItemViewModel(NavTitlePeople, IconKeys.People, NavigationPageType.PeopleDictionary));
+            SidebarDictionaryItems.Add(new NavigationItemViewModel(NavTitleServices, IconKeys.Services, NavigationPageType.ServicesDictionary));
+            SidebarDictionaryItems.Add(new NavigationItemViewModel(NavTitleMeasurementUnits, IconKeys.MeasurementUnits, NavigationPageType.MeasurementUnitsDictionary));
 
-            SidebarFooterItems.Add(new NavigationItemViewModel(NavTitleSettings, IconKeySettings, NavigationPageType.Settings));
+            SidebarFooterItems.Add(new NavigationItemViewModel(NavTitleSettings, IconKeys.Settings, NavigationPageType.Settings));
         }
 
         private ThemeMode GetStoredThemeMode()

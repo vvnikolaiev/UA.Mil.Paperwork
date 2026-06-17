@@ -133,8 +133,8 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         {
             var actions = new List<RibbonActionViewModel>
             {
-                new RibbonActionViewModel(CaptionGenerate, RibbonIconKeys.Generate, generateCommand, BuildAutomationId(AutomationIdGenerateSuffix)),
-                new RibbonActionViewModel(CaptionSaveDraft, RibbonIconKeys.Save, SaveDraftCommand, BuildAutomationId(AutomationIdSaveDraftSuffix))
+                new RibbonActionViewModel(CaptionGenerate, IconKeys.Generate, generateCommand, BuildAutomationId(AutomationIdGenerateSuffix)),
+                new RibbonActionViewModel(CaptionSaveDraft, IconKeys.Save, SaveDraftCommand, BuildAutomationId(AutomationIdSaveDraftSuffix))
             };
             var group = new RibbonGroupViewModel(GroupTitleDocument, actions);
             return group;
@@ -145,11 +145,11 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             var actions = new List<RibbonActionViewModel>();
             if (configCommand != null)
             {
-                actions.Add(new RibbonActionViewModel(CaptionParameters, RibbonIconKeys.Parameters, configCommand, BuildAutomationId(AutomationIdParametersSuffix)));
+                actions.Add(new RibbonActionViewModel(CaptionParameters, IconKeys.Parameters, configCommand, BuildAutomationId(AutomationIdParametersSuffix)));
             }
             if (folderCommand != null)
             {
-                actions.Add(new RibbonActionViewModel(CaptionFolder, RibbonIconKeys.Folder, folderCommand, BuildAutomationId(AutomationIdFolderSuffix)));
+                actions.Add(new RibbonActionViewModel(CaptionFolder, IconKeys.Folder, folderCommand, BuildAutomationId(AutomationIdFolderSuffix)));
             }
             var group = new RibbonGroupViewModel(GroupTitleReport, actions);
             return group;
@@ -164,19 +164,19 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             var actions = new List<RibbonActionViewModel>();
             if (addRowCommand != null)
             {
-                actions.Add(new RibbonActionViewModel(CaptionAddRow, RibbonIconKeys.AddRow, addRowCommand, BuildAutomationId(AutomationIdAddRowSuffix)));
+                actions.Add(new RibbonActionViewModel(CaptionAddRow, IconKeys.AddRow, addRowCommand, BuildAutomationId(AutomationIdAddRowSuffix)));
             }
             if (removeRowCommand != null)
             {
-                actions.Add(new RibbonActionViewModel(CaptionRemoveRow, RibbonIconKeys.RemoveRow, removeRowCommand, BuildAutomationId(AutomationIdRemoveRowSuffix), isDestructive: true));
+                actions.Add(new RibbonActionViewModel(CaptionRemoveRow, IconKeys.RemoveRow, removeRowCommand, BuildAutomationId(AutomationIdRemoveRowSuffix), isDestructive: true));
             }
             if (importCommand != null)
             {
-                actions.Add(new RibbonActionViewModel(CaptionImport, RibbonIconKeys.Import, importCommand, BuildAutomationId(AutomationIdImportSuffix)));
+                actions.Add(new RibbonActionViewModel(CaptionImport, IconKeys.Import, importCommand, BuildAutomationId(AutomationIdImportSuffix)));
             }
             if (clearCommand != null)
             {
-                actions.Add(new RibbonActionViewModel(CaptionClear, RibbonIconKeys.Clear, clearCommand, BuildAutomationId(AutomationIdClearSuffix), isDestructive: true));
+                actions.Add(new RibbonActionViewModel(CaptionClear, IconKeys.Clear, clearCommand, BuildAutomationId(AutomationIdClearSuffix), isDestructive: true));
             }
             var group = new RibbonGroupViewModel(GroupTitleTable, actions);
             return group;

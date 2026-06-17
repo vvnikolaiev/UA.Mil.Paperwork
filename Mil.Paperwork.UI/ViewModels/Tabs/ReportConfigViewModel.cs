@@ -75,15 +75,15 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             {
                 new RibbonGroupViewModel(GroupData, new[]
                 {
-                    new RibbonActionViewModel(CaptionSave, RibbonIconKeys.Save, SaveCommand, AutomationIdSave),
-                    new RibbonActionViewModel(CaptionSaveLocal, RibbonIconKeys.SaveLocal, SaveLocalCommand, AutomationIdSaveLocal),
-                    new RibbonActionViewModel(CaptionRefresh, RibbonIconKeys.Refresh, RefreshCommand, AutomationIdRefresh)
+                    new RibbonActionViewModel(CaptionSave, IconKeys.Save, SaveCommand, AutomationIdSave),
+                    new RibbonActionViewModel(CaptionSaveLocal, IconKeys.SaveLocal, SaveLocalCommand, AutomationIdSaveLocal),
+                    new RibbonActionViewModel(CaptionRefresh, IconKeys.Refresh, RefreshCommand, AutomationIdRefresh)
                 }),
                 new RibbonGroupViewModel(GroupExchange, new[]
                 {
-                    new RibbonActionViewModel(CaptionExportJson, RibbonIconKeys.Export, ExportJsonCommand, AutomationIdExportJson),
-                    new RibbonActionViewModel(CaptionExportExcel, RibbonIconKeys.Export, ExportExcelCommand, AutomationIdExportExcel),
-                    new RibbonActionViewModel(CaptionImport, RibbonIconKeys.Import, ImportCommand, AutomationIdImport)
+                    new RibbonActionViewModel(CaptionExportJson, IconKeys.Export, ExportJsonCommand, AutomationIdExportJson),
+                    new RibbonActionViewModel(CaptionExportExcel, IconKeys.Export, ExportExcelCommand, AutomationIdExportExcel),
+                    new RibbonActionViewModel(CaptionImport, IconKeys.Import, ImportCommand, AutomationIdImport)
                 })
             };
             return groups;

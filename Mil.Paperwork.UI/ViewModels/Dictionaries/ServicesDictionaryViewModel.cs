@@ -135,18 +135,18 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
             {
                 new RibbonGroupViewModel(GroupRecords, new[]
                 {
-                    new RibbonActionViewModel(CaptionAdd, RibbonIconKeys.Add, AddItemCommand, AutomationIdAdd),
-                    new RibbonActionViewModel(CaptionRemove, RibbonIconKeys.Remove, RemoveItemCommand, AutomationIdRemove, isDestructive: true)
+                    new RibbonActionViewModel(CaptionAdd, IconKeys.Add, AddItemCommand, AutomationIdAdd),
+                    new RibbonActionViewModel(CaptionRemove, IconKeys.Remove, RemoveItemCommand, AutomationIdRemove, isDestructive: true)
                 }),
                 new RibbonGroupViewModel(GroupData, new[]
                 {
-                    new RibbonActionViewModel(CaptionSave, RibbonIconKeys.Save, SaveCommand, AutomationIdSave),
-                    new RibbonActionViewModel(CaptionSaveLocal, RibbonIconKeys.SaveLocal, SaveLocalCommand, AutomationIdSaveLocal),
-                    new RibbonActionViewModel(CaptionRefresh, RibbonIconKeys.Refresh, RefreshCommand, AutomationIdRefresh)
+                    new RibbonActionViewModel(CaptionSave, IconKeys.Save, SaveCommand, AutomationIdSave),
+                    new RibbonActionViewModel(CaptionSaveLocal, IconKeys.SaveLocal, SaveLocalCommand, AutomationIdSaveLocal),
+                    new RibbonActionViewModel(CaptionRefresh, IconKeys.Refresh, RefreshCommand, AutomationIdRefresh)
                 }),
                 new RibbonGroupViewModel(GroupService, new[]
                 {
-                    new RibbonActionViewModel(CaptionSetDefault, RibbonIconKeys.SetDefault, SetDefaultCommand, AutomationIdSetDefault)
+                    new RibbonActionViewModel(CaptionSetDefault, IconKeys.SetDefault, SetDefaultCommand, AutomationIdSetDefault)
                 })
             };
             return groups;

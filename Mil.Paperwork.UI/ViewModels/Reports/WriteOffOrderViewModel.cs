@@ -193,9 +193,9 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             var documentGroup = CreateDocumentGroup(GenerateReportCommand);
             var personnelActions = new List<RibbonActionViewModel>
             {
-                new RibbonActionViewModel(CaptionAddService, RibbonIconKeys.AddRow, AddServiceCommand, AutomationIdAddService),
-                new RibbonActionViewModel(CaptionAddWitness, RibbonIconKeys.AddRow, AddWitnessCommand, AutomationIdAddWitness),
-                new RibbonActionViewModel(CaptionRemoveWitness, RibbonIconKeys.Remove, RemoveWitnessCommand, AutomationIdRemoveWitness, isDestructive: true)
+                new RibbonActionViewModel(CaptionAddService, IconKeys.AddRow, AddServiceCommand, AutomationIdAddService),
+                new RibbonActionViewModel(CaptionAddWitness, IconKeys.AddRow, AddWitnessCommand, AutomationIdAddWitness),
+                new RibbonActionViewModel(CaptionRemoveWitness, IconKeys.Remove, RemoveWitnessCommand, AutomationIdRemoveWitness, isDestructive: true)
             };
             var personnelGroup = new RibbonGroupViewModel(GroupTitlePersonnel, personnelActions);
             var reportGroup = CreateReportGroup(OpenConfigurationCommand, null);

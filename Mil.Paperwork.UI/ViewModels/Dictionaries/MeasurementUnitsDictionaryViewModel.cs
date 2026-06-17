@@ -68,13 +68,13 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
             {
                 new RibbonGroupViewModel(GroupRecords, new[]
                 {
-                    new RibbonActionViewModel(CaptionAdd, RibbonIconKeys.Add, AddItemCommand, AutomationIdAdd),
-                    new RibbonActionViewModel(CaptionRemove, RibbonIconKeys.Remove, RemoveItemCommand, AutomationIdRemove, isDestructive: true)
+                    new RibbonActionViewModel(CaptionAdd, IconKeys.Add, AddItemCommand, AutomationIdAdd),
+                    new RibbonActionViewModel(CaptionRemove, IconKeys.Remove, RemoveItemCommand, AutomationIdRemove, isDestructive: true)
                 }),
                 new RibbonGroupViewModel(GroupData, new[]
                 {
-                    new RibbonActionViewModel(CaptionSave, RibbonIconKeys.Save, SaveCommand, AutomationIdSave),
-                    new RibbonActionViewModel(CaptionRefresh, RibbonIconKeys.Refresh, RefreshCommand, AutomationIdRefresh)
+                    new RibbonActionViewModel(CaptionSave, IconKeys.Save, SaveCommand, AutomationIdSave),
+                    new RibbonActionViewModel(CaptionRefresh, IconKeys.Refresh, RefreshCommand, AutomationIdRefresh)
                 })
             };
             return groups;
