@@ -29,13 +29,6 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
         private const string CaptionExportJson = "Екс. JSON";
         private const string CaptionExportExcel = "Екс. Excel";
 
-        private const string IconKeyAdd = "IconAdd";
-        private const string IconKeyRemove = "IconDelete";
-        private const string IconKeySave = "IconSaveDraft";
-        private const string IconKeyRefresh = "IconRefresh";
-        private const string IconKeyImport = "IconImport";
-        private const string IconKeyExport = "IconExport";
-
         private const string AutomationIdAdd = "ProductsDictionary_AddAction";
         private const string AutomationIdRemove = "ProductsDictionary_RemoveAction";
         private const string AutomationIdSave = "ProductsDictionary_SaveAction";
@@ -107,19 +100,19 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
             {
                 new RibbonGroupViewModel(GroupRecords, new[]
                 {
-                    new RibbonActionViewModel(CaptionAdd, IconKeyAdd, AddItemCommand, AutomationIdAdd),
-                    new RibbonActionViewModel(CaptionRemove, IconKeyRemove, RemoveItemCommand, AutomationIdRemove, isDestructive: true)
+                    new RibbonActionViewModel(CaptionAdd, RibbonIconKeys.Add, AddItemCommand, AutomationIdAdd),
+                    new RibbonActionViewModel(CaptionRemove, RibbonIconKeys.Remove, RemoveItemCommand, AutomationIdRemove, isDestructive: true)
                 }),
                 new RibbonGroupViewModel(GroupData, new[]
                 {
-                    new RibbonActionViewModel(CaptionSave, IconKeySave, SaveCommand, AutomationIdSave),
-                    new RibbonActionViewModel(CaptionRefresh, IconKeyRefresh, RefreshCommand, AutomationIdRefresh)
+                    new RibbonActionViewModel(CaptionSave, RibbonIconKeys.Save, SaveCommand, AutomationIdSave),
+                    new RibbonActionViewModel(CaptionRefresh, RibbonIconKeys.Refresh, RefreshCommand, AutomationIdRefresh)
                 }),
                 new RibbonGroupViewModel(GroupExchange, new[]
                 {
-                    new RibbonActionViewModel(CaptionImport, IconKeyImport, ImportCommand, AutomationIdImport),
-                    new RibbonActionViewModel(CaptionExportJson, IconKeyExport, ExportJsonCommand, AutomationIdExportJson),
-                    new RibbonActionViewModel(CaptionExportExcel, IconKeyExport, ExportExcelCommand, AutomationIdExportExcel)
+                    new RibbonActionViewModel(CaptionImport, RibbonIconKeys.Import, ImportCommand, AutomationIdImport),
+                    new RibbonActionViewModel(CaptionExportJson, RibbonIconKeys.Export, ExportJsonCommand, AutomationIdExportJson),
+                    new RibbonActionViewModel(CaptionExportExcel, RibbonIconKeys.Export, ExportExcelCommand, AutomationIdExportExcel)
                 })
             };
             return groups;

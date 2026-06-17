@@ -21,11 +21,6 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
         private const string CaptionSave = "Зберегти";
         private const string CaptionRefresh = "Оновити";
 
-        private const string IconKeyAdd = "IconAdd";
-        private const string IconKeyRemove = "IconDelete";
-        private const string IconKeySave = "IconSaveDraft";
-        private const string IconKeyRefresh = "IconRefresh";
-
         private const string AutomationIdAdd = "MeasurementUnitsDictionary_AddAction";
         private const string AutomationIdRemove = "MeasurementUnitsDictionary_RemoveAction";
         private const string AutomationIdSave = "MeasurementUnitsDictionary_SaveAction";
@@ -72,13 +67,13 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
             {
                 new RibbonGroupViewModel(GroupRecords, new[]
                 {
-                    new RibbonActionViewModel(CaptionAdd, IconKeyAdd, AddItemCommand, AutomationIdAdd),
-                    new RibbonActionViewModel(CaptionRemove, IconKeyRemove, RemoveItemCommand, AutomationIdRemove, isDestructive: true)
+                    new RibbonActionViewModel(CaptionAdd, RibbonIconKeys.Add, AddItemCommand, AutomationIdAdd),
+                    new RibbonActionViewModel(CaptionRemove, RibbonIconKeys.Remove, RemoveItemCommand, AutomationIdRemove, isDestructive: true)
                 }),
                 new RibbonGroupViewModel(GroupData, new[]
                 {
-                    new RibbonActionViewModel(CaptionSave, IconKeySave, SaveCommand, AutomationIdSave),
-                    new RibbonActionViewModel(CaptionRefresh, IconKeyRefresh, RefreshCommand, AutomationIdRefresh)
+                    new RibbonActionViewModel(CaptionSave, RibbonIconKeys.Save, SaveCommand, AutomationIdSave),
+                    new RibbonActionViewModel(CaptionRefresh, RibbonIconKeys.Refresh, RefreshCommand, AutomationIdRefresh)
                 })
             };
             return groups;
