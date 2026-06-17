@@ -1,3 +1,5 @@
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.DataModels;
@@ -194,6 +196,30 @@ namespace Mil.Paperwork.Tests
             var xml = GetDocumentXml(capture.SavedBytes.Single());
 
             Assert.Contains("на суму", xml);
+        }
+
+        [Fact]
+        public void TryGenerateReport_VerticalMergeDoesNotLeakIntoSummaryRow()
+        {
+            // AddSummaryRow calls table.AddRow(), which clones the table's then-last row — the last
+            // component row, whose asset-level columns carry a vertical-merge "continue" marker. AddRow
+            // must strip that marker, otherwise the merge never terminates and Word drops its bottom border.
+            const string tableAssetConfigurationName = "TABLE_ASSET_CONFIGURATION";
+            const int columnAssetName = 1; // DismantlingReportHelper.COLUMN_ASSET_NAME
+
+            var capture = new CapturingFileStorageService();
+            new AssetDismantlingReportService(new StubReportDataService(), capture).TryGenerateReport(BuildTestData());
+
+            using var wordDoc = WordprocessingDocument.Open(new MemoryStream(capture.SavedBytes.Single()), isEditable: false);
+            var body = wordDoc.MainDocumentPart!.Document.Body!;
+            var table = body.Descendants<Table>()
+                .First(t => t.GetFirstChild<TableProperties>()?.GetFirstChild<TableCaption>()?.Val?.Value == tableAssetConfigurationName);
+
+            var lastRowCells = table.Elements<TableRow>().Last().Elements<TableCell>().ToList();
+            var lastRowAssetCell = lastRowCells[columnAssetName];
+            var hasVerticalMerge = lastRowAssetCell.TableCellProperties?.GetFirstChild<VerticalMerge>() != null;
+
+            Assert.False(hasVerticalMerge, "the summary row's asset-name cell must not carry a leftover vertical-merge marker");
         }
     }
 }

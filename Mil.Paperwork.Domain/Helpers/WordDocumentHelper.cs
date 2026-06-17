@@ -335,6 +335,15 @@ namespace Mil.Paperwork.Domain.Helpers
                     foreach (var run in para.Elements<Run>().ToList())
                         run.Remove();
 
+            // A freshly added row must never inherit a vertical-merge "continue" marker from whatever
+            // row happened to be last (e.g. when AddRow is called after MergeCellsVertically already
+            // marked the previous last row as a merge continuation) — Word won't render a bottom border
+            // for a merge region that never properly terminates.
+            foreach (var cell in newRow.Elements<TableCell>())
+            {
+                cell.GetFirstChild<TableCellProperties>()?.RemoveAllChildren<VerticalMerge>();
+            }
+
             // Remove duplicate paraId / textId attributes (w14 namespace)
             const string w14ns = "http://schemas.microsoft.com/office/word/2010/wordml";
             foreach (var el in newRow.Descendants<OpenXmlElement>())
@@ -378,7 +387,6 @@ namespace Mil.Paperwork.Domain.Helpers
                 tcPr.Append(i == startRowIndex
                     ? new VerticalMerge { Val = MergedCellValues.Restart }
                     : new VerticalMerge());
-
                 if (i == startRowIndex)
                 {
                     startCell = cell;
