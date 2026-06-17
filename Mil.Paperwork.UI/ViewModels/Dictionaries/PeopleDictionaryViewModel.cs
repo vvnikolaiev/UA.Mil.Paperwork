@@ -4,6 +4,7 @@ using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Infrastructure.Services;
+using Mil.Paperwork.UI.Helpers;
 using Mil.Paperwork.UI.ViewModels.Controls;
 using Mil.Paperwork.UI.ViewModels.Ribbon;
 using Mil.Paperwork.UI.ViewModels.Tabs;

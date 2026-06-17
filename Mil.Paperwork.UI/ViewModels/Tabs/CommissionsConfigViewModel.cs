@@ -5,6 +5,7 @@ using Mil.Paperwork.Infrastructure.DataModels.Configuration;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
 using Mil.Paperwork.Infrastructure.Services;
+using Mil.Paperwork.UI.Helpers;
 using Mil.Paperwork.UI.ViewModels.Ribbon;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

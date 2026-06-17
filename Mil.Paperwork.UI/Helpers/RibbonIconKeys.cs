@@ -1,4 +1,4 @@
-namespace Mil.Paperwork.UI.ViewModels.Ribbon
+namespace Mil.Paperwork.UI.Helpers
 {
     internal static class RibbonIconKeys
     {
