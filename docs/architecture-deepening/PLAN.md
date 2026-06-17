@@ -1,6 +1,8 @@
 # Architecture deepening plan
 
-Source: architecture review run via the `improve-codebase-architecture` skill on 2026-06-16 (`CONTEXT.md` was written as part of the same session — see repo root). This plan covers the first three review candidates as independent tracks, plus a research-only track for the fourth.
+Source: architecture review run via the `improve-codebase-architecture` skill on 2026-06-16 (`CONTEXT.md` was written as part of the same session — see repo root). This plan covered the first three review candidates as independent tracks, plus a research-only track for the fourth.
+
+**Track C was attempted and abandoned (2026-06-17).** A reflection-based `StructuralMapper.Copy<TSource, TDest>` utility was built and rolled out to all 10 Snapshot Mappers, with a converter extension point for fields needing real conversion logic (enum casts, polymorphic asset/person/product dispatch, dictionary key conversion). Two real bugs were found and fixed during rollout (interface property inheritance not flattened by `Type.GetProperties()`; boxing a fresh struct copy on every `SetValue` call) — both fixed, all tests passing. Despite that, reflection-based mapping over this data-persistence code was judged too risky to apply, and the work was discarded permanently. All changes were reverted; the hand-written Mappers are unchanged. **Do not re-propose reflection-based Snapshot Mapper unification.**
 
 ## Context
 
@@ -15,12 +17,11 @@ Tracks are independent of each other — any order, no shared files.
 
 - [TRACK-A.md](TRACK-A.md) — Collapse the ReportManager dispatch table
 - [TRACK-B.md](TRACK-B.md) — WordTableFiller for the shared list-row pattern
-- [TRACK-C.md](TRACK-C.md) — Generic structural-copy utility for Snapshot Mappers
+- Track C — Generic structural-copy utility for Snapshot Mappers — **abandoned, see note above**
 - [TRACK-R.md](TRACK-R.md) — Research only: name the wear-coefficient calculator patterns (no code changes)
 
 ## Verification (per track)
 
 - **Track A:** `dotnet build Mil.Paperwork.WriteOff.sln`; run the app and generate one report of each migrated type, confirm dialog message + history entry; no existing automated coverage of `ReportManager`, so this is a manual check.
 - **Track B:** `dotnet test Mil.Paperwork.Tests/Mil.Paperwork.Tests.csproj`; add a byte-level output test for `QualityStateReport`/`AssetDismantlingReport` similar to `WriteOffOrderReportTests`; manually diff generated `.docx` against a pre-refactor copy.
-- **Track C:** round-trip tests (`ToSnapshot` then `ToReportData` reproduces the original data) plus a raw-JSON diff against pre-refactor output for a fixed sample input, to guarantee old history files still load.
 - **Track R:** no automated verification — deliverable is a decision table for the user to review before any consolidation is planned.
