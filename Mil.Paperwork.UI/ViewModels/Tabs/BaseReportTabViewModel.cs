@@ -3,6 +3,7 @@ using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;
+using Mil.Paperwork.UI.Helpers;
 using Mil.Paperwork.UI.ViewModels.Ribbon;
 using System;
 using System.Collections.Generic;
@@ -29,14 +30,14 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         private const string CaptionParameters = "Параметри";
         private const string CaptionFolder = "Тека";
 
-        private const string IconKeyGenerate = "IconGenerateDocument";
-        private const string IconKeySaveDraft = "IconSaveDraft";
-        private const string IconKeyAddRow = "IconAddTableRow";
-        private const string IconKeyRemoveRow = "IconRemoveTableRow";
-        private const string IconKeyImport = "IconImport";
-        private const string IconKeyClear = "IconClearTable";
-        private const string IconKeyParameters = "IconParameters";
-        private const string IconKeyFolder = "IconFolderOpen";
+        private const string AutomationIdGenerateSuffix = "GenerateAction";
+        private const string AutomationIdSaveDraftSuffix = "SaveDraftAction";
+        private const string AutomationIdParametersSuffix = "ParametersAction";
+        private const string AutomationIdFolderSuffix = "FolderAction";
+        private const string AutomationIdAddRowSuffix = "AddRowAction";
+        private const string AutomationIdRemoveRowSuffix = "RemoveRowAction";
+        private const string AutomationIdImportSuffix = "ImportAction";
+        private const string AutomationIdClearSuffix = "ClearAction";
 
         private readonly IReportHistoryService _reportHistoryService;
         private readonly IDialogService _dialogService;
@@ -69,6 +70,8 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         public IDelegateCommand SaveDraftCommand { get; }
 
         protected abstract ReportType HistoryReportType { get; }
+
+        protected abstract string AutomationIdPrefix { get; }
 
         public BaseReportTabViewModel(IReportHistoryService reportHistoryService, IDialogService dialogService) : base(dialogService)
         {
@@ -130,8 +133,8 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         {
             var actions = new List<RibbonActionViewModel>
             {
-                new RibbonActionViewModel(CaptionGenerate, IconKeyGenerate, generateCommand),
-                new RibbonActionViewModel(CaptionSaveDraft, IconKeySaveDraft, SaveDraftCommand)
+                new RibbonActionViewModel(CaptionGenerate, IconKeys.Generate, generateCommand, BuildAutomationId(AutomationIdGenerateSuffix)),
+                new RibbonActionViewModel(CaptionSaveDraft, IconKeys.Save, SaveDraftCommand, BuildAutomationId(AutomationIdSaveDraftSuffix))
             };
             var group = new RibbonGroupViewModel(GroupTitleDocument, actions);
             return group;
@@ -142,11 +145,11 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             var actions = new List<RibbonActionViewModel>();
             if (configCommand != null)
             {
-                actions.Add(new RibbonActionViewModel(CaptionParameters, IconKeyParameters, configCommand));
+                actions.Add(new RibbonActionViewModel(CaptionParameters, IconKeys.Parameters, configCommand, BuildAutomationId(AutomationIdParametersSuffix)));
             }
             if (folderCommand != null)
             {
-                actions.Add(new RibbonActionViewModel(CaptionFolder, IconKeyFolder, folderCommand));
+                actions.Add(new RibbonActionViewModel(CaptionFolder, IconKeys.Folder, folderCommand, BuildAutomationId(AutomationIdFolderSuffix)));
             }
             var group = new RibbonGroupViewModel(GroupTitleReport, actions);
             return group;
@@ -161,22 +164,28 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             var actions = new List<RibbonActionViewModel>();
             if (addRowCommand != null)
             {
-                actions.Add(new RibbonActionViewModel(CaptionAddRow, IconKeyAddRow, addRowCommand));
+                actions.Add(new RibbonActionViewModel(CaptionAddRow, IconKeys.AddRow, addRowCommand, BuildAutomationId(AutomationIdAddRowSuffix)));
             }
             if (removeRowCommand != null)
             {
-                actions.Add(new RibbonActionViewModel(CaptionRemoveRow, IconKeyRemoveRow, removeRowCommand, isDestructive: true));
+                actions.Add(new RibbonActionViewModel(CaptionRemoveRow, IconKeys.RemoveRow, removeRowCommand, BuildAutomationId(AutomationIdRemoveRowSuffix), isDestructive: true));
             }
             if (importCommand != null)
             {
-                actions.Add(new RibbonActionViewModel(CaptionImport, IconKeyImport, importCommand));
+                actions.Add(new RibbonActionViewModel(CaptionImport, IconKeys.Import, importCommand, BuildAutomationId(AutomationIdImportSuffix)));
             }
             if (clearCommand != null)
             {
-                actions.Add(new RibbonActionViewModel(CaptionClear, IconKeyClear, clearCommand, isDestructive: true));
+                actions.Add(new RibbonActionViewModel(CaptionClear, IconKeys.Clear, clearCommand, BuildAutomationId(AutomationIdClearSuffix), isDestructive: true));
             }
             var group = new RibbonGroupViewModel(GroupTitleTable, actions);
             return group;
+        }
+
+        protected string BuildAutomationId(string suffix)
+        {
+            var result = $"{AutomationIdPrefix}_{suffix}";
+            return result;
         }
 
         private static bool ShouldTrackDirtyForProperty(string propertyName)

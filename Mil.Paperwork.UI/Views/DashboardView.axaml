@@ -99,7 +99,8 @@
                                     <Button Classes="reportCard"
                                             Width="170" Height="110"
                                             Margin="0"
-                                            Command="{Binding CreateCommand}">
+                                            Command="{Binding CreateCommand}"
+                                            AutomationProperties.AutomationId="{Binding AutomationId}">
                                         <TextBlock Text="{Binding Title}"
                                                    TextWrapping="Wrap"
                                                    TextAlignment="Center"
@@ -110,7 +111,8 @@
                                                   IsChecked="{Binding IsFavorite, Mode=TwoWay}"
                                                   Margin="4"
                                                   ToolTip.Tip="Обране"
-                                                  ZIndex="1">
+                                                  ZIndex="1"
+                                                  AutomationProperties.AutomationId="{Binding FavoriteToggleAutomationId}">
                                         <PathIcon Data="{StaticResource IconFavorite}"
                                                   Width="12" Height="12"
                                                   Foreground="{DynamicResource BrushAccent}"/>
@@ -130,7 +132,8 @@
                                TextWrapping="Wrap"/>
 
                     <Button Classes="otherReportCard"
-                            Command="{Binding NavigateToReportCatalogCommand}">
+                            Command="{Binding NavigateToReportCatalogCommand}"
+                            AutomationProperties.AutomationId="Dashboard_OtherReportButton">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="6">
                             <TextBlock Text="…"
                                        FontSize="20"
@@ -190,7 +193,8 @@
                             Classes="linkButton"
                             Content="Уся Iсторія →"
                             IsVisible="{Binding HasRecentEntries}"
-                            Command="{Binding NavigateToHistoryCommand}"/>
+                            Command="{Binding NavigateToHistoryCommand}"
+                            AutomationProperties.AutomationId="Dashboard_ViewAllHistoryButton"/>
                 </Grid>
 
                 <TextBlock IsVisible="{Binding !HasRecentEntries}"
@@ -207,7 +211,8 @@
                           IsReadOnly="True"
                           CanUserSortColumns="False"
                           DoubleTapped="OnGridDoubleTapped"
-                          KeyDown="OnGridKeyDown">
+                          KeyDown="OnGridKeyDown"
+                          AutomationProperties.AutomationId="Dashboard_RecentDocumentsDataGrid">
 
                     <DataGrid.Styles>
                         <Style Selector="Ellipse.draft">

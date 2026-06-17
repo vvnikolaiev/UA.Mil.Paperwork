@@ -50,7 +50,8 @@
 						   Text="Відомість залишкової вартості станом на" FontWeight="Bold" Margin="5" />
 
 				<DatePicker SelectedDate="{Binding WriteOffDate}"
-							HorizontalAlignment="Left" Margin="5 0"/>
+							HorizontalAlignment="Left" Margin="5 0"
+							AutomationProperties.AutomationId="ResidualValue_WriteOffDatePicker"/>
 
 				<TextBlock Text="Рапорт №" />
 
@@ -59,15 +60,18 @@
 							   ShowButtonSpinner="False"
 							   HorizontalContentAlignment="Center"
 							   Height="24"
-							   Width="50"/>
+							   Width="50"
+							   AutomationProperties.AutomationId="ResidualValue_EventReportNumberNumericUpDown"/>
 			</StackPanel>
 
 			<StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" Orientation="Horizontal" Classes="parameters">
 				<TextBlock Text="Шлях" />
-				<TextBox Text="{Binding DestinationFolderPath}" Width="300" VerticalAlignment="Center" IsReadOnly="True" />
+				<TextBox Text="{Binding DestinationFolderPath}" Width="300" VerticalAlignment="Center" IsReadOnly="True"
+						 AutomationProperties.AutomationId="ResidualValue_DestinationFolderPathTextBox" />
 				<Button Content="..." Command="{Binding SelectFolderCommand}"
 						VerticalAlignment="Center"
-						Margin="5 0"/>
+						Margin="5 0"
+						AutomationProperties.AutomationId="ResidualValue_SelectFolderButton"/>
 			</StackPanel>
 
 		</Grid>
@@ -104,7 +108,8 @@
 
 								<NumericUpDown Value="{Binding Cost, UpdateSourceTrigger=PropertyChanged}"
 											   ShowButtonSpinner="False"
-											   TextAlignment="Center" Margin="0,6,0,0"/>
+											   TextAlignment="Center" Margin="0,6,0,0"
+											   AutomationProperties.AutomationId="{Binding Title, StringFormat='ResidualValue_MetalCost_{0}_NumericUpDown'}"/>
 							</StackPanel>
 						</Border>
 					</DataTemplate>
@@ -115,7 +120,8 @@
 		<DataGrid
 				  DataContext="{Binding AssetsTable}"
 				  ItemsSource="{Binding AssetsCollection}"
-				  SelectedItem="{Binding SelectedAsset}">
+				  SelectedItem="{Binding SelectedAsset}"
+				  AutomationProperties.AutomationId="ResidualValue_AssetsDataGrid">
 			<DataGrid.Columns>
 				<DataGridTemplateColumn Header="Назва" Width="*">
 					<DataGridTemplateColumn.CellTemplate>

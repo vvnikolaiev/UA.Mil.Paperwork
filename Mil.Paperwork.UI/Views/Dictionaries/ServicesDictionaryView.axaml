@@ -32,24 +32,28 @@
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Назва (називний відмінок):" VerticalAlignment="Center"/>
                 <TextBox   Grid.Row="0" Grid.Column="2"
                            Text="{Binding SelectedService.NominativeName}"
-                           PlaceholderText="Наприклад: Служба зв'язку"/>
+                           PlaceholderText="Наприклад: Служба зв'язку"
+                           AutomationProperties.AutomationId="ServicesDictionary_NominativeNameTextBox"/>
 
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Назва (родовий відмінок):" VerticalAlignment="Center"/>
                 <TextBox   Grid.Row="2" Grid.Column="2"
                            Text="{Binding SelectedService.GenitiveName}"
-                           PlaceholderText="Наприклад: служби зв'язку"/>
+                           PlaceholderText="Наприклад: служби зв'язку"
+                           AutomationProperties.AutomationId="ServicesDictionary_GenitiveNameTextBox"/>
 
                 <TextBlock Grid.Row="4" Grid.Column="0" Text="Коротка назва:" VerticalAlignment="Center"/>
                 <TextBox   Grid.Row="4" Grid.Column="2"
                            Text="{Binding SelectedService.ShortName}"
-                           PlaceholderText="Наприклад: зв'язок"/>
+                           PlaceholderText="Наприклад: зв'язок"
+                           AutomationProperties.AutomationId="ServicesDictionary_ShortNameTextBox"/>
 
                 <TextBlock Grid.Row="6" Grid.Column="0" Text="Тип майна*:" VerticalAlignment="Center"/>
                 <ComboBox  Grid.Row="6" Grid.Column="2"
                            Classes="enum"
                            ItemsSource="{Binding AssetTypes}"
                            SelectedItem="{Binding SelectedService.AssetType}"
-                           HorizontalAlignment="Stretch"/>
+                           HorizontalAlignment="Stretch"
+                           AutomationProperties.AutomationId="ServicesDictionary_AssetTypeComboBox"/>
 
                 <!-- Права колонка -->
                 <TextBlock Grid.Row="0" Grid.Column="4" Text="Начальник служби:" VerticalAlignment="Center"/>
@@ -59,17 +63,20 @@
                            DisplayMemberBinding="{Binding FullName, DataType={x:Type viewModels:PersonViewModel}}"
                            SelectedItem="{Binding SelectedHeadPerson, UpdateSourceTrigger=PropertyChanged}"
                            IsEditable="True"
-                           HorizontalAlignment="Stretch"/>
+                           HorizontalAlignment="Stretch"
+                           AutomationProperties.AutomationId="ServicesDictionary_HeadNameComboBox"/>
 
                 <TextBlock Grid.Row="2" Grid.Column="4" Text="Посада:" VerticalAlignment="Center"/>
                 <TextBox   Grid.Row="2" Grid.Column="6"
                            Text="{Binding SelectedService.HeadPosition}"
-                           PlaceholderText="Наприклад: Начальник служби зв'язку"/>
+                           PlaceholderText="Наприклад: Начальник служби зв'язку"
+                           AutomationProperties.AutomationId="ServicesDictionary_HeadPositionTextBox"/>
 
                 <TextBlock Grid.Row="4" Grid.Column="4" Text="Звання:" VerticalAlignment="Center"/>
                 <TextBox   Grid.Row="4" Grid.Column="6"
                            Text="{Binding SelectedService.HeadRank}"
-                           PlaceholderText="Наприклад: підполковник"/>
+                           PlaceholderText="Наприклад: підполковник"
+                           AutomationProperties.AutomationId="ServicesDictionary_HeadRankTextBox"/>
 
             </Grid>
         </Border>
@@ -77,7 +84,8 @@
         <!-- Список служб -->
         <DataGrid ItemsSource="{Binding Services}"
                   SelectedItem="{Binding SelectedService, Mode=TwoWay}"
-                  IsReadOnly="True">
+                  IsReadOnly="True"
+                  AutomationProperties.AutomationId="ServicesDictionary_ServicesDataGrid">
             <DataGrid.Styles>
                 <Style Selector="DataGridRow" x:DataType="tabViewModels:MilitaryServiceViewModel">
                     <Setter Property="Background"

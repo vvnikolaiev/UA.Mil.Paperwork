@@ -110,6 +110,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         protected override ReportType HistoryReportType => ReportType.Invoice;
 
+        protected override string AutomationIdPrefix => "Invoice";
+
         public InvoiceReportViewModel(
             ReportManager reportManager,
             IDataService dataService,

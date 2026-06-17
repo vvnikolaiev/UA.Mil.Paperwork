@@ -17,7 +17,8 @@
 		<StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Classes="parameters">
 			<TextBlock Text="Накладна (вимога). Номер документу*:" FontWeight="Bold" FontSize="16"/>
 
-			<TextBox Text="{Binding DocumentNumber}" Width="60"/>
+			<TextBox Text="{Binding DocumentNumber}" Width="60"
+					 AutomationProperties.AutomationId="Invoice_DocumentNumberTextBox"/>
 		</StackPanel>
 
 		<Grid VerticalAlignment="Stretch" Classes="parameters">
@@ -45,12 +46,14 @@
 			<CalendarDatePicker Grid.Row="0" Grid.Column="1"
 								x:Name="datePickerStart"
 								SelectedDate="{Binding DateCreated}"
-								HorizontalAlignment="Stretch" Margin="5"/>
+								HorizontalAlignment="Stretch" Margin="5"
+								AutomationProperties.AutomationId="Invoice_DateCreatedPicker"/>
 
 			<TextBlock Grid.Row="0" Grid.Column="2" Text="Дійсна, днів*:"/>
 			<StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal">
 				<NumericUpDown Value="{Binding ValidDays, UpdateSourceTrigger=PropertyChanged}"
-							   HorizontalAlignment="Stretch" />
+							   HorizontalAlignment="Stretch"
+							   AutomationProperties.AutomationId="Invoice_ValidDaysNumericUpDown" />
 
 				<TextBlock Text="{Binding DueDate, StringFormat='до dd.MM.yyyy'}"
 						   Margin="5 0" VerticalAlignment="Center"
@@ -59,23 +62,27 @@
 
 			<TextBlock Grid.Row="1" Grid.Column="0" Text="Вид операції:"/>
 			<TextBox Grid.Row="1" Grid.Column="1"
-					 Text="{Binding OperationType, UpdateSourceTrigger=PropertyChanged}"/>
+					 Text="{Binding OperationType, UpdateSourceTrigger=PropertyChanged}"
+					 AutomationProperties.AutomationId="Invoice_OperationTypeTextBox"/>
 
 			<TextBlock Grid.Row="1" Grid.Column="2" Text="Підстава (мета):"/>
 			<TextBox Grid.Row="1" Grid.Column="3"
-					 Text="{Binding Reason, UpdateSourceTrigger=PropertyChanged}"/>
+					 Text="{Binding Reason, UpdateSourceTrigger=PropertyChanged}"
+					 AutomationProperties.AutomationId="Invoice_ReasonTextBox"/>
 
 
 			<controls:AssetAcceptanceView Grid.Row="3" Grid.ColumnSpan="99"
 										  AcceptedLabel="Приймає*:"
 										  HandedLabel="Передає*:"
-										  DataContext="{Binding AssetAcceptance}"/>
+										  DataContext="{Binding AssetAcceptance}"
+										  AutomationIdPrefix="Invoice_AssetAcceptance"/>
 
 			<DataGrid Grid.Row="7" Grid.ColumnSpan="99"
 					  x:Name="AssetsDataGrid"
 					  ItemsSource="{Binding AssetsCollection}"
 					  SelectedItem="{Binding SelectedAsset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-					  VerticalAlignment="Stretch">
+					  VerticalAlignment="Stretch"
+					  AutomationProperties.AutomationId="Invoice_AssetsDataGrid">
 				<DataGrid.Columns>
 					<DataGridTemplateColumn Header="Назва" Width="*">
 						<DataGridTemplateColumn.CellTemplate>

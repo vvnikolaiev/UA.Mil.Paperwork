@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -16,10 +16,12 @@
 
 		<StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Classes="parameters">
 			<TextBlock Text="Акт введення в експлуатацію. Номер документу*:" FontWeight="Bold" FontSize="16"/>
-			<TextBox Text="{Binding DocumentNumber}" Width="60"/>
+			<TextBox Text="{Binding DocumentNumber}" Width="60"
+					 AutomationProperties.AutomationId="CommissioningAct_DocumentNumberTextBox"/>
 
 			<TextBlock Text="Дата документу:" />
-			<DatePicker SelectedDate="{Binding DocumentDate}"/>
+			<DatePicker SelectedDate="{Binding DocumentDate}"
+						AutomationProperties.AutomationId="CommissioningAct_DocumentDateDatePicker"/>
 
 		</StackPanel>
 
@@ -60,17 +62,20 @@
 						  SelectedItem="{Binding SelectedProduct, UpdateSourceTrigger=PropertyChanged}"
 						  IsEditable="True"
 						  HorizontalAlignment="Stretch"
-						  VerticalAlignment="Center"/>
+						  VerticalAlignment="Center"
+						  AutomationProperties.AutomationId="CommissioningAct_ProductNameComboBox"/>
 
 				<StackPanel Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="4"
 							Orientation="Horizontal">
 					<TextBlock Text="Ціна*:" Classes="parameter" />
-					<NumericUpDown Value="{Binding Price}" Width="60" />
+					<NumericUpDown Value="{Binding Price}" Width="60"
+								   AutomationProperties.AutomationId="CommissioningAct_PriceNumericUpDown"/>
 				</StackPanel>
 
 				<TextBlock Grid.Row="1" Grid.Column="4" Text="Коротка назва:"/>
 				<TextBox Grid.Row="1" Grid.Column="5" Text="{Binding ShortName, UpdateSourceTrigger=PropertyChanged}"
-						 Classes="parameter"/>
+						 Classes="parameter"
+						 AutomationProperties.AutomationId="CommissioningAct_ShortNameTextBox"/>
 
 				<WrapPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4"
 						   Orientation="Horizontal"
@@ -80,7 +85,8 @@
 					<TextBlock Text="Кількість:"/>
 					<TextBox Text="{Binding Count, UpdateSourceTrigger=PropertyChanged}"
 							 Width="20"
-							 Classes="parameter" />
+							 Classes="parameter"
+							 AutomationProperties.AutomationId="CommissioningAct_CountTextBox" />
 
 					<TextBlock Text="Од. виміру*:"/>
 					<ComboBox Text="{Binding MeasurementUnitName}"
@@ -90,22 +96,26 @@
 							  IsEditable="True"
 							  HorizontalAlignment="Stretch"
 							  VerticalAlignment="Center"
-							  MinWidth="50" />
+							  MinWidth="50"
+							  AutomationProperties.AutomationId="CommissioningAct_MeasurementUnitComboBox" />
 
 					<TextBlock Text="Рік випуску:"/>
 					<TextBox Text="{Binding YearManufactured, UpdateSourceTrigger=PropertyChanged}"
 							 Width="30"
-							 Classes="parameter" />
+							 Classes="parameter"
+							 AutomationProperties.AutomationId="CommissioningAct_YearManufacturedTextBox" />
 
 					<TextBlock Text="Ресурс, р.*:"
 							   ToolTip.Tip="Строк корисного використання, років"/>
 					<NumericUpDown Value="{Binding ResourceYears, UpdateSourceTrigger=PropertyChanged}"
-								   Width="20"/>
+								   Width="20"
+								   AutomationProperties.AutomationId="CommissioningAct_ResourceYearsNumericUpDown"/>
 
 					<StackPanel Orientation="Horizontal" ToolTip.Tip="Строк гарантійного використання, місяців">
 						<TextBlock Text="Гарантія, міс.*:" />
 						<NumericUpDown Value="{Binding WarrantyPeriodMonths, UpdateSourceTrigger=PropertyChanged}"
-									   Width="20"/>
+									   Width="20"
+									   AutomationProperties.AutomationId="CommissioningAct_WarrantyPeriodMonthsNumericUpDown"/>
 					</StackPanel>
 				</WrapPanel>
 
@@ -121,11 +131,13 @@
 							<Button Grid.Column="1"
 									Content="+"
 									Command="{Binding AddNumbersRowCommand}"
-									ToolTip.Tip="Додати рядок" />
+									ToolTip.Tip="Додати рядок"
+									AutomationProperties.AutomationId="CommissioningAct_AddNumbersRowButton" />
 							<Button Grid.Column="3"
 									Content="-"
 									Command="{Binding RemoveNumbersRowCommand}"
-									ToolTip.Tip="Видалити вибраний рядок" />
+									ToolTip.Tip="Видалити вибраний рядок"
+									AutomationProperties.AutomationId="CommissioningAct_RemoveNumbersRowButton" />
 						</Grid>
 					</Expander.Header>
 
@@ -133,7 +145,8 @@
 							  SelectedItem="{Binding SelectedIdentifier}"
 							  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
 							  MaxHeight="240"
-							  GridLinesVisibility="All" >
+							  GridLinesVisibility="All"
+							  AutomationProperties.AutomationId="CommissioningAct_ProductIdentifiersDataGrid" >
 						<DataGrid.Columns>
 							<DataGridTextColumn Header="Серійний номер" Binding="{Binding SerialNumber}"
 												MinWidth="100" />
@@ -144,38 +157,48 @@
 				</Expander>
 
 				<TextBlock Grid.Row="3" Grid.Column="0" Text="К-сть прописом*:"/>
-				<TextBox Grid.Row="3" Grid.Column="1" Text="{Binding CountText, UpdateSourceTrigger=PropertyChanged}" Classes="parameter" />
+				<TextBox Grid.Row="3" Grid.Column="1" Text="{Binding CountText, UpdateSourceTrigger=PropertyChanged}" Classes="parameter"
+						 AutomationProperties.AutomationId="CommissioningAct_CountTextTextBox" />
 
 				<TextBlock Grid.Row="3" Grid.Column="2" Text="Знаходиться у*:"/>
-				<TextBox Grid.Row="3" Grid.Column="3" Text="{Binding CommissioningLocation, UpdateSourceTrigger=PropertyChanged}" Classes="parameter" />
+				<TextBox Grid.Row="3" Grid.Column="3" Text="{Binding CommissioningLocation, UpdateSourceTrigger=PropertyChanged}" Classes="parameter"
+						 AutomationProperties.AutomationId="CommissioningAct_CommissioningLocationTextBox" />
 
 				<TextBlock Grid.Row="4" Grid.Column="0" Text="Відпов. тех. умовам*:"/>
-				<TextBox Grid.Row="4" Grid.Column="1" Text="{Binding AssetCompliance, UpdateSourceTrigger=PropertyChanged}" Classes="parameter" />
+				<TextBox Grid.Row="4" Grid.Column="1" Text="{Binding AssetCompliance, UpdateSourceTrigger=PropertyChanged}" Classes="parameter"
+						 AutomationProperties.AutomationId="CommissioningAct_AssetComplianceTextBox" />
 
 				<TextBlock Grid.Row="4" Grid.Column="2" Text="Необх. доробки*:"/>
-				<TextBox Grid.Row="4" Grid.Column="3" Text="{Binding CompletionState, UpdateSourceTrigger=PropertyChanged}" Classes="parameter" />
+				<TextBox Grid.Row="4" Grid.Column="3" Text="{Binding CompletionState, UpdateSourceTrigger=PropertyChanged}" Classes="parameter"
+						 AutomationProperties.AutomationId="CommissioningAct_CompletionStateTextBox" />
 
 				<TextBlock Grid.Row="5" Grid.Column="0" Text="Коротка хар-ка:"/>
-				<TextBox Grid.Row="5" Grid.Column="1" Text="{Binding ShortCharacteristic, UpdateSourceTrigger=PropertyChanged}" Classes="parameter" />
+				<TextBox Grid.Row="5" Grid.Column="1" Text="{Binding ShortCharacteristic, UpdateSourceTrigger=PropertyChanged}" Classes="parameter"
+						 AutomationProperties.AutomationId="CommissioningAct_ShortCharacteristicTextBox" />
 
 				<TextBlock Grid.Row="5" Grid.Column="2" Text="Рез-ти випроб.:"/>
-				<TextBox Grid.Row="5" Grid.Column="3" Text="{Binding TestResults, UpdateSourceTrigger=PropertyChanged}" Classes="parameter" />
+				<TextBox Grid.Row="5" Grid.Column="3" Text="{Binding TestResults, UpdateSourceTrigger=PropertyChanged}" Classes="parameter"
+						 AutomationProperties.AutomationId="CommissioningAct_TestResultsTextBox" />
 
 				<TextBlock Grid.Row="6" Grid.Column="0" Text="Інші відомості:"/>
-				<TextBox Grid.Row="6" Grid.Column="1" Text="{Binding OtherInfo, UpdateSourceTrigger=PropertyChanged}" Classes="parameter" />
+				<TextBox Grid.Row="6" Grid.Column="1" Text="{Binding OtherInfo, UpdateSourceTrigger=PropertyChanged}" Classes="parameter"
+						 AutomationProperties.AutomationId="CommissioningAct_OtherInfoTextBox" />
 
 				<TextBlock Grid.Row="6" Grid.Column="2" Text="Дод. док-ція:"/>
-				<TextBox Grid.Row="6" Grid.Column="3" Text="{Binding AttachedDocumentation, UpdateSourceTrigger=PropertyChanged}" Classes="parameter" />
+				<TextBox Grid.Row="6" Grid.Column="3" Text="{Binding AttachedDocumentation, UpdateSourceTrigger=PropertyChanged}" Classes="parameter"
+						 AutomationProperties.AutomationId="CommissioningAct_AttachedDocumentationTextBox" />
 
 				<TextBlock Grid.Row="7" Grid.Column="0" Text="Висновок комісії*:"/>
 				<TextBox Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="3"
-						 Text="{Binding Conclusion, UpdateSourceTrigger=PropertyChanged}" Classes="parameter" />
+						 Text="{Binding Conclusion, UpdateSourceTrigger=PropertyChanged}" Classes="parameter"
+						 AutomationProperties.AutomationId="CommissioningAct_ConclusionTextBox" />
 
 				<CheckBox Grid.Row="8" Grid.Column="0"
 						  IsChecked="{Binding IsTechnicalStateActCreationChecked}"
 						  Content="Додати АТС (№7)"
 						  VerticalAlignment="Center"
-						  Margin="5 0"/>
+						  Margin="5 0"
+						  AutomationProperties.AutomationId="CommissioningAct_IsTechnicalStateActCreationCheckBox"/>
 
 				<StackPanel Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="5"
 							Orientation="Horizontal"
@@ -184,14 +207,17 @@
 							Classes="parameters">
 
 					<TextBlock Text="Реєстраційний номер:"/>
-					<TextBox Text="{Binding TSRegNumber}" Classes="parameter" />
+					<TextBox Text="{Binding TSRegNumber}" Classes="parameter"
+							 AutomationProperties.AutomationId="CommissioningAct_TSRegNumberTextBox" />
 
 					<TextBlock Text="Номер документу:"/>
-					<TextBox Text="{Binding TSDocNumber}" Classes="parameter" />
+					<TextBox Text="{Binding TSDocNumber}" Classes="parameter"
+							 AutomationProperties.AutomationId="CommissioningAct_TSDocNumberTextBox" />
 
 				</StackPanel>
 
-				<controls:AssetAcceptanceView Grid.Row="9" Grid.ColumnSpan="99" DataContext="{Binding AssetAcceptance}"/>
+				<controls:AssetAcceptanceView Grid.Row="9" Grid.ColumnSpan="99" DataContext="{Binding AssetAcceptance}"
+											  AutomationIdPrefix="CommissioningAct_AssetAcceptance"/>
 
 			</Grid>
 		</ScrollViewer>

@@ -14,7 +14,8 @@
 					Classes.selected="{Binding IsSelected}"
 					Command="{Binding $parent[UserControl].((vm:MainWindowViewModel)DataContext).NavigateCommand}"
 					CommandParameter="{Binding}"
-					ToolTip.Tip="{Binding Title}">
+					ToolTip.Tip="{Binding Title}"
+					AutomationProperties.AutomationId="{Binding PageType, StringFormat='Sidebar_{0}'}">
 				<StackPanel Orientation="Horizontal" Spacing="12">
 					<PathIcon Data="{Binding IconKey, Converter={StaticResource ResourceKeyToGeometryConverter}}"
 							  Width="18" Height="18" />

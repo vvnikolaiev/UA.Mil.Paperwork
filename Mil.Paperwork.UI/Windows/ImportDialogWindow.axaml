@@ -34,9 +34,11 @@
 
 			<StackPanel Grid.Row="0" Grid.ColumnSpan="6" Orientation="Horizontal" Margin="10 5">
 				<TextBlock Text="Імпортувати з файлу: " VerticalAlignment="Center"/>
-				<TextBox Text="{Binding ImportFilePath}" Width="300" VerticalAlignment="Center" IsReadOnly="True" />
+				<TextBox Text="{Binding ImportFilePath}" Width="300" VerticalAlignment="Center" IsReadOnly="True"
+						 AutomationProperties.AutomationId="ImportDialog_FilePathTextBox" />
 				<Button HorizontalContentAlignment="Center"
-						Content="..." Command="{Binding SelectFileCommand}" Width="30" VerticalAlignment="Center" />
+						Content="..." Command="{Binding SelectFileCommand}" Width="30" VerticalAlignment="Center"
+						AutomationProperties.AutomationId="ImportDialog_SelectFileButton" />
 			</StackPanel>
 
 			<!-- Left: Mapping -->
@@ -50,7 +52,8 @@
 				<CheckBox Content="Перший рядок містить заголовки"
 						  IsChecked="{Binding IsFirstRowContainsHeaders}"
 						  Margin="5" VerticalAlignment="Center"
-						  HorizontalAlignment="Stretch"/>
+						  HorizontalAlignment="Stretch"
+						  AutomationProperties.AutomationId="ImportDialog_FirstRowHeadersCheckBox"/>
 
 				<ItemsControl Grid.Row="1"
 							  ItemsSource="{Binding ColumnsToMap}"
@@ -64,12 +67,14 @@
 								<ComboBox ItemsSource="{Binding $parent[ItemsControl].DataContext.SourceHeaders}"
 										  SelectedItem="{Binding SelectedSourceColumn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 										  Width="150" Margin="8,0,0,0"
-										  IsEnabled="{Binding ImportColumn}" />
+										  IsEnabled="{Binding ImportColumn}"
+										  AutomationProperties.AutomationId="{Binding Title, StringFormat='ImportDialog_Mapping_{0}_ComboBox'}" />
 
 								<CheckBox IsChecked="{Binding ImportColumn}"
 										  VerticalAlignment="Center"
 										  Margin="5 0"
-										  IsEnabled="{Binding IsRequired, Converter={StaticResource InversedBoolConverter}}" />
+										  IsEnabled="{Binding IsRequired, Converter={StaticResource InversedBoolConverter}}"
+										  AutomationProperties.AutomationId="{Binding Title, StringFormat='ImportDialog_Mapping_{0}_CheckBox'}" />
 							</DockPanel>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
@@ -82,13 +87,16 @@
 				<DataGrid Name="PreviewDataGrid" x:Name="PreviewDataGrid" ItemsSource="{Binding PreviewTable}"
 						  AutoGenerateColumns="False"
 						  IsReadOnly="True"
-						  Margin="8,0,8,8"/>
+						  Margin="8,0,8,8"
+						  AutomationProperties.AutomationId="ImportDialog_PreviewDataGrid"/>
 			</Border>
 		</Grid>
 
 		<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
-			<Button Content="ОК" Command="{Binding OKCommand}" IsDefault="True" Width="100" />
-			<Button Content="Відміна" Command="{Binding CancelCommand}" IsCancel="True" Width="100" />
+			<Button Content="ОК" Command="{Binding OKCommand}" IsDefault="True" Width="100"
+					AutomationProperties.AutomationId="ImportDialog_OkButton" />
+			<Button Content="Відміна" Command="{Binding CancelCommand}" IsCancel="True" Width="100"
+					AutomationProperties.AutomationId="ImportDialog_CancelButton" />
 		</StackPanel>
 	</Grid>
 </Window>

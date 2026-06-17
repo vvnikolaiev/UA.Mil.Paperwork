@@ -39,7 +39,8 @@
 				 ItemsSource="{Binding OpenDocuments}"
 				 SelectedItem="{Binding SelectedDocument, Mode=TwoWay}"
 				 ScrollViewer.HorizontalScrollBarVisibility="Auto"
-				 ScrollViewer.VerticalScrollBarVisibility="Disabled">
+				 ScrollViewer.VerticalScrollBarVisibility="Disabled"
+				 AutomationProperties.AutomationId="DocumentTabStrip_TabsListBox">
 
 			<ListBox.ItemsPanel>
 				<ItemsPanelTemplate>

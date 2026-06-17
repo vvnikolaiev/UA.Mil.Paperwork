@@ -7,6 +7,7 @@ using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
 using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Infrastructure.Services;
+using Mil.Paperwork.UI.Helpers;
 using Mil.Paperwork.UI.Managers;
 using Mil.Paperwork.UI.ViewModels.Dictionaries;
 using Mil.Paperwork.UI.ViewModels.Ribbon;
@@ -26,9 +27,9 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         private const string CaptionAddService = "Додати службу";
         private const string CaptionAddWitness = "Додати свідка";
         private const string CaptionRemoveWitness = "Видалити свідка";
-        private const string IconKeyAddService = "IconAddTableRow";
-        private const string IconKeyAddWitness = "IconAddTableRow";
-        private const string IconKeyRemoveWitness = "IconDelete";
+        private const string AutomationIdAddService = "WriteOffOrder_AddServiceAction";
+        private const string AutomationIdAddWitness = "WriteOffOrder_AddWitnessAction";
+        private const string AutomationIdRemoveWitness = "WriteOffOrder_RemoveWitnessAction";
 
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
@@ -151,6 +152,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         protected override ReportType HistoryReportType => ReportType.WriteOffOrder;
 
+        protected override string AutomationIdPrefix => "WriteOffOrder";
+
         public WriteOffOrderViewModel(
             ReportManager reportManager,
             IDataService dataService,
@@ -190,9 +193,9 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             var documentGroup = CreateDocumentGroup(GenerateReportCommand);
             var personnelActions = new List<RibbonActionViewModel>
             {
-                new RibbonActionViewModel(CaptionAddService, IconKeyAddService, AddServiceCommand),
-                new RibbonActionViewModel(CaptionAddWitness, IconKeyAddWitness, AddWitnessCommand),
-                new RibbonActionViewModel(CaptionRemoveWitness, IconKeyRemoveWitness, RemoveWitnessCommand, isDestructive: true)
+                new RibbonActionViewModel(CaptionAddService, IconKeys.AddRow, AddServiceCommand, AutomationIdAddService),
+                new RibbonActionViewModel(CaptionAddWitness, IconKeys.AddRow, AddWitnessCommand, AutomationIdAddWitness),
+                new RibbonActionViewModel(CaptionRemoveWitness, IconKeys.Remove, RemoveWitnessCommand, AutomationIdRemoveWitness, isDestructive: true)
             };
             var personnelGroup = new RibbonGroupViewModel(GroupTitlePersonnel, personnelActions);
             var reportGroup = CreateReportGroup(OpenConfigurationCommand, null);

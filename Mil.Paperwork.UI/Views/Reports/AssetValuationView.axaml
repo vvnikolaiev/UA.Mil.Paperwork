@@ -46,10 +46,12 @@
 				  SelectedItem="{Binding SelectedProduct, UpdateSourceTrigger=PropertyChanged}"
 				  IsEditable="True"
 				  HorizontalAlignment="Stretch"
-				  VerticalAlignment="Center" />
+				  VerticalAlignment="Center"
+				  AutomationProperties.AutomationId="AssetValuation_NameComboBox" />
 
 		<TextBlock Grid.Row="1" Grid.Column="0" Text="Загальна ціна" />
-		<NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding Price}" />
+		<NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding Price}"
+					   AutomationProperties.AutomationId="AssetValuation_PriceNumericUpDown" />
 
 		<TextBlock Grid.Row="1" Grid.Column="2" Text="Одиниця вимірювання" />
 		<ComboBox Grid.Row="1" Grid.Column="3"
@@ -58,18 +60,21 @@
 				  DisplayMemberBinding="{Binding ShortName, DataType={x:Type dictionaries:MeasurementUnitViewModel}}"
 				  IsEditable="True"
 				  HorizontalAlignment="Stretch"
-				  VerticalAlignment="Center" />
+				  VerticalAlignment="Center"
+				  AutomationProperties.AutomationId="AssetValuation_MeasurementUnitComboBox" />
 
 		<TextBlock Grid.Row="2" Grid.Column="0" Text="Дата оцінки" />
 		<CalendarDatePicker Grid.Row="2" Grid.Column="1" SelectedDate="{Binding ValuationDate}"
-							HorizontalAlignment="Left" Margin="5"/>
+							HorizontalAlignment="Left" Margin="5"
+							AutomationProperties.AutomationId="AssetValuation_ValuationDatePicker"/>
 
 		<TextBlock Grid.Row="3" Grid.Column="0" Text="Метод" />
 		<TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4"
 				 Text="{Binding Description}"
 				 HorizontalAlignment="Stretch"
 				 TextWrapping="Wrap"
-				 Classes="parameter" />
+				 Classes="parameter"
+				 AutomationProperties.AutomationId="AssetValuation_DescriptionTextBox" />
 
 		<TextBlock Grid.Row="4" Grid.Column="0" Text="Шаблон" />
 
@@ -85,16 +90,19 @@
 					  SelectedItem="{Binding SelectedValuationTemplate, UpdateSourceTrigger=PropertyChanged}"
 					  IsEditable="False"
 					  HorizontalAlignment="Stretch"
-					  VerticalAlignment="Center">
+					  VerticalAlignment="Center"
+					  AutomationProperties.AutomationId="AssetValuation_ValuationTemplateComboBox">
 			</ComboBox>
 
 			<Button Grid.Column="1"
 					Content="Apply template"
-					Command="{Binding ApplyValuationTemplateCommand}"/>
+					Command="{Binding ApplyValuationTemplateCommand}"
+					AutomationProperties.AutomationId="AssetValuation_ApplyValuationTemplateButton"/>
 		</Grid>
 
 		<DataGrid Grid.Row="5" Grid.ColumnSpan="6"
-				  ItemsSource="{Binding Components}">
+				  ItemsSource="{Binding Components}"
+				  AutomationProperties.AutomationId="AssetValuation_ComponentsDataGrid">
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Назва" Binding="{Binding Name}" Width="*"
 									CellStyleClasses="name" />

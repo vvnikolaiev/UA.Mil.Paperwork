@@ -81,26 +81,30 @@
 					IsVisible="{Binding IsOkVisible}"
 					Command="{Binding OkCommand}"
 					MinWidth="90"
-					IsDefault="True" />
+					IsDefault="True"
+					AutomationProperties.AutomationId="MessageBox_OkButton" />
 
 			<Button Content="{Binding YesText}"
 					Classes="accent"
 					IsVisible="{Binding IsYesVisible}"
 					Command="{Binding YesCommand}"
 					MinWidth="90"
-					IsDefault="{Binding IsOkVisible, Converter={StaticResource InversedBoolConverter}}"/>
+					IsDefault="{Binding IsOkVisible, Converter={StaticResource InversedBoolConverter}}"
+					AutomationProperties.AutomationId="MessageBox_YesButton"/>
 
 			<Button Content="{Binding NoText}"
 					IsVisible="{Binding IsNoVisible}"
 					Command="{Binding NoCommand}"
 					MinWidth="90"
-					IsCancel="{Binding IsCancelVisible, Converter={StaticResource InversedBoolConverter}}" />
+					IsCancel="{Binding IsCancelVisible, Converter={StaticResource InversedBoolConverter}}"
+					AutomationProperties.AutomationId="MessageBox_NoButton" />
 
 			<Button Content="{Binding CancelText}"
 					IsVisible="{Binding IsCancelVisible}"
 					Command="{Binding CancelCommand}"
 					MinWidth="90"
-					IsCancel="True" />
+					IsCancel="True"
+					AutomationProperties.AutomationId="MessageBox_CancelButton" />
 
 		</StackPanel>
 	</Grid>

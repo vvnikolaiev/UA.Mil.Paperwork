@@ -1,5 +1,6 @@
 ﻿using Mil.MVVM.Common;
 using Mil.Paperwork.Infrastructure.Enums;
+using Mil.Paperwork.UI.Helpers;
 using System;
 
 namespace Mil.Paperwork.UI.ViewModels.Controls
@@ -58,10 +59,10 @@ namespace Mil.Paperwork.UI.ViewModels.Controls
         {
             var result = icon switch
             {
-                DialogIcon.Information => "IconDialogInfo",
-                DialogIcon.Warning => "IconDialogWarning",
-                DialogIcon.Error => "IconDialogError",
-                DialogIcon.Question => "IconDialogInfo",
+                DialogIcon.Information => IconKeys.DialogInfo,
+                DialogIcon.Warning => IconKeys.DialogWarning,
+                DialogIcon.Error => IconKeys.DialogError,
+                DialogIcon.Question => IconKeys.DialogInfo,
                 _ => string.Empty
             };
             return result;

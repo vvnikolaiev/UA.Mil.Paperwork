@@ -29,12 +29,15 @@
 				  SelectedItem="{Binding SelectedPersonAccepted, UpdateSourceTrigger=PropertyChanged}"
 				  IsEditable="True"
 				  HorizontalAlignment="Stretch"
-				  VerticalAlignment="Center"/>
+				  VerticalAlignment="Center"
+				  AutomationProperties.AutomationId="{Binding AutomationIdPrefix, ElementName=root, StringFormat='{}{0}_PersonAcceptedNameComboBox'}"/>
 
 		<TextBox Grid.Row="3" Grid.Column="1" Text="{Binding PersonAcceptedPosition, UpdateSourceTrigger=PropertyChanged}"
-				 Classes="parameter"/>
+				 Classes="parameter"
+				 AutomationProperties.AutomationId="{Binding AutomationIdPrefix, ElementName=root, StringFormat='{}{0}_PersonAcceptedPositionTextBox'}"/>
 		<TextBox Grid.Row="5" Grid.Column="1" Text="{Binding PersonAcceptedRank, UpdateSourceTrigger=PropertyChanged}"
-				 Classes="parameter"/>
+				 Classes="parameter"
+				 AutomationProperties.AutomationId="{Binding AutomationIdPrefix, ElementName=root, StringFormat='{}{0}_PersonAcceptedRankTextBox'}"/>
 
 		<TextBlock Grid.Row="0" Grid.Column="3" Text="{Binding HandedLabel, ElementName=root}" FontWeight="Bold" />
 
@@ -45,12 +48,15 @@
 				  SelectedItem="{Binding SelectedPersonHanded, UpdateSourceTrigger=PropertyChanged}"
 				  IsEditable="True"
 				  HorizontalAlignment="Stretch"
-				  VerticalAlignment="Center"/>
+				  VerticalAlignment="Center"
+				  AutomationProperties.AutomationId="{Binding AutomationIdPrefix, ElementName=root, StringFormat='{}{0}_PersonHandedNameComboBox'}"/>
 
 		<TextBox Grid.Row="3" Grid.Column="3" Text="{Binding PersonHandedPosition, UpdateSourceTrigger=PropertyChanged}"
-				 Classes="parameter"/>
+				 Classes="parameter"
+				 AutomationProperties.AutomationId="{Binding AutomationIdPrefix, ElementName=root, StringFormat='{}{0}_PersonHandedPositionTextBox'}"/>
 		<TextBox Grid.Row="5" Grid.Column="3" Text="{Binding PersonHandedRank, UpdateSourceTrigger=PropertyChanged}"
-				 Classes="parameter"/>
+				 Classes="parameter"
+				 AutomationProperties.AutomationId="{Binding AutomationIdPrefix, ElementName=root, StringFormat='{}{0}_PersonHandedRankTextBox'}"/>
 
 	</Grid>
 </UserControl>

@@ -110,6 +110,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         protected override ReportType HistoryReportType => ReportType.TechnicalStateReport;
 
+        protected override string AutomationIdPrefix => "TechnicalState";
+
         public AssetInitialTechnicalStateViewModel(
             ReportManager reportManager,
             IAssetFactory assetFactory,

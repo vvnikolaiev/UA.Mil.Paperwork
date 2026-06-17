@@ -64,26 +64,32 @@
 				  SelectedItem="{Binding SelectedProduct, UpdateSourceTrigger=PropertyChanged}"
 				  IsEditable="True"
 				  HorizontalAlignment="Stretch"
-				  VerticalAlignment="Center" />
+				  VerticalAlignment="Center"
+				  AutomationProperties.AutomationId="AssetDismantling_NameComboBox" />
 
 		<TextBlock Grid.Row="1" Grid.Column="0" Text="C/Н:"/>
 		<TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SerialNumber, UpdateSourceTrigger=PropertyChanged}"
-				 Classes="parameter" />
+				 Classes="parameter"
+				 AutomationProperties.AutomationId="AssetDismantling_SerialNumberTextBox" />
 
 		<TextBlock Grid.Row="1" Grid.Column="2" Text="Код номенкл.:" />
 		<TextBox Grid.Row="1" Grid.Column="3" Text="{Binding NomenclatureCode}"
-				 Classes="parameter" />
+				 Classes="parameter"
+				 AutomationProperties.AutomationId="AssetDismantling_NomenclatureCodeTextBox" />
 
 		<TextBlock Grid.Row="2" Grid.Column="0" Text="Реєстр. №:"/>
 		<TextBox Grid.Row="2" Grid.Column="1" Text="{Binding RegistrationNumber}"
-				 Classes="parameter" />
+				 Classes="parameter"
+				 AutomationProperties.AutomationId="AssetDismantling_RegistrationNumberTextBox" />
 
 		<TextBlock Grid.Row="2" Grid.Column="2" Text="Код документу:"/>
 		<TextBox Grid.Row="2" Grid.Column="3" Text="{Binding DocumentNumber}"
-				 Classes="parameter" />
+				 Classes="parameter"
+				 AutomationProperties.AutomationId="AssetDismantling_DocumentNumberTextBox" />
 
 		<TextBlock Grid.Row="3" Grid.Column="0" Text="Загальна ціна" />
-		<NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding Price}" />
+		<NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding Price}"
+					   AutomationProperties.AutomationId="AssetDismantling_PriceNumericUpDown" />
 
 		<TextBlock Grid.Row="3" Grid.Column="2" Text="Одиниця виміру" />
 		<ComboBox Grid.Row="3" Grid.Column="3"
@@ -92,7 +98,8 @@
 				  DisplayMemberBinding="{Binding ShortName, DataType={x:Type dictionaries:MeasurementUnitViewModel}}"
 				  IsEditable="True"
 				  HorizontalAlignment="Stretch"
-				  VerticalAlignment="Center" />
+				  VerticalAlignment="Center"
+				  AutomationProperties.AutomationId="AssetDismantling_MeasurementUnitComboBox" />
 
 		<TextBlock Grid.Row="4" Grid.Column="0" Text="Причина:"/>
 		<TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3"
@@ -100,7 +107,8 @@
 				 HorizontalAlignment="Stretch"
 				 MaxHeight="50" TextWrapping="Wrap"
 				 ToolTip.Tip="внаслідок авіаційно-бомбового удару противником в районі ..."
-				 Classes="parameter" />
+				 Classes="parameter"
+				 AutomationProperties.AutomationId="AssetDismantling_DismantlingReasonTextBox" />
 
 		<TextBlock Grid.Row="5" Grid.Column="0"
 				   Text="Final reason text:"/>
@@ -108,18 +116,21 @@
 				 Text="{Binding FinalReportReasonText}"
 				 HorizontalAlignment="Stretch"
 				 Height="40" TextWrapping="Wrap"
-				 Classes="parameter" />
+				 Classes="parameter"
+				 AutomationProperties.AutomationId="AssetDismantling_FinalReportReasonTextTextBox" />
 
 
 		<TextBlock Grid.Row="6" Grid.Column="0" Text="Дата оцінки" />
 		<CalendarDatePicker Grid.Row="6" Grid.Column="1" SelectedDate="{Binding ValuationDate}" Width="100"
-							HorizontalAlignment="Left" Margin="5"/>
+							HorizontalAlignment="Left" Margin="5"
+							AutomationProperties.AutomationId="AssetDismantling_ValuationDatePicker"/>
 
 		<TextBlock Grid.Row="6" Grid.Column="2" Text="Метод оцінки" />
 		<TextBox Grid.Row="6" Grid.Column="3" Grid.ColumnSpan="4" Text="{Binding Description}"
 				 HorizontalAlignment="Stretch"
 				 TextWrapping="Wrap"
-				 Classes="parameter" />
+				 Classes="parameter"
+				 AutomationProperties.AutomationId="AssetDismantling_DescriptionTextBox" />
 
 		<TextBlock Grid.Row="7" Grid.Column="0" Text="Шаблон" />
 
@@ -135,17 +146,20 @@
 					  SelectedItem="{Binding SelectedValuationTemplate, UpdateSourceTrigger=PropertyChanged}"
 					  IsEditable="False"
 					  HorizontalAlignment="Stretch"
-					  VerticalAlignment="Center"/>
+					  VerticalAlignment="Center"
+					  AutomationProperties.AutomationId="AssetDismantling_ValuationTemplateComboBox"/>
 
 			<Button Grid.Column="1"
 					Content="Apply template"
-					Command="{Binding ApplyValuationTemplateCommand}"/>
+					Command="{Binding ApplyValuationTemplateCommand}"
+					AutomationProperties.AutomationId="AssetDismantling_ApplyValuationTemplateButton"/>
 		</Grid>
 
 
 		<DataGrid Grid.Row="8" Grid.ColumnSpan="6"
 				  ItemsSource="{Binding Components}"
-				  AutoGenerateColumns="False">
+				  AutoGenerateColumns="False"
+				  AutomationProperties.AutomationId="AssetDismantling_ComponentsDataGrid">
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Назва" Binding="{Binding Name}" Width="*"
 									CellStyleClasses="name" />

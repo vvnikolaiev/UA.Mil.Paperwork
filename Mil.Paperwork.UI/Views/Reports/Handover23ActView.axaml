@@ -17,10 +17,12 @@
 
 		<StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Classes="parameters">
 			<TextBlock Text="Акт п-п основних засобів. Номер документу*:" FontWeight="Bold" FontSize="16"/>
-			<TextBox Text="{Binding DocumentNumber}" Width="60"/>
+			<TextBox Text="{Binding DocumentNumber}" Width="60"
+					 AutomationProperties.AutomationId="Handover23Act_DocumentNumberTextBox"/>
 
 			<TextBlock Text="Дата документу:" />
-			<DatePicker SelectedDate="{Binding DocumentDate}"/>
+			<DatePicker SelectedDate="{Binding DocumentDate}"
+						AutomationProperties.AutomationId="Handover23Act_DocumentDateDatePicker"/>
 
 		</StackPanel>
 
@@ -31,16 +33,19 @@
 			<TextBlock Grid.Row="0" Grid.Column="0" Text="Початок:"/>
 			<CalendarDatePicker Grid.Row="0" Grid.Column="1"
 								ToolTip.Tip="Дата початку прийому-передачі майна"
-								SelectedDate="{Binding DateStart}"/>
+								SelectedDate="{Binding DateStart}"
+								AutomationProperties.AutomationId="Handover23Act_DateStartPicker"/>
 
 			<TextBlock Grid.Row="0" Grid.Column="2" Text="Закінчення:"/>
 			<CalendarDatePicker Grid.Row="0" Grid.Column="3"
 								ToolTip.Tip="Дата закінчення прийому-передачі майна"
-								SelectedDate="{Binding DateEnd}" />
+								SelectedDate="{Binding DateEnd}"
+								AutomationProperties.AutomationId="Handover23Act_DateEndPicker" />
 
 			<TextBlock Grid.Row="1" Grid.Column="0" Text="Хто передає*:"/>
 			<TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3"
-					 Text="{Binding SupplierName, UpdateSourceTrigger=PropertyChanged}" />
+					 Text="{Binding SupplierName, UpdateSourceTrigger=PropertyChanged}"
+					 AutomationProperties.AutomationId="Handover23Act_SupplierNameTextBox" />
 
 			<TextBlock Grid.Row="2" Grid.Column="0" Text="На підставі:"/>
 			<ComboBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3"
@@ -48,7 +53,8 @@
 					  IsEditable="True"
 					  HorizontalAlignment="Stretch"
 					  VerticalAlignment="Center"
-					  Margin="5">
+					  Margin="5"
+					  AutomationProperties.AutomationId="Handover23Act_ReasonDocumentNameComboBox">
 				<ComboBox.Items>
 					<ComboBoxItem Content="Акт приймання-передачі гуманітарної (благодійної) допомоги"/>
 					<ComboBoxItem Content="Наряд"/>
@@ -57,27 +63,32 @@
 
 			<TextBlock Grid.Row="3" Grid.Column="0" Text="Номер док-ту:"/>
 			<TextBox Grid.Row="3" Grid.Column="1"
-					 Text="{Binding ReasonDocumentNumber, UpdateSourceTrigger=PropertyChanged}" />
+					 Text="{Binding ReasonDocumentNumber, UpdateSourceTrigger=PropertyChanged}"
+					 AutomationProperties.AutomationId="Handover23Act_ReasonDocumentNumberTextBox" />
 
 			<TextBlock Grid.Row="3" Grid.Column="2" Text="Дата док-ту:"/>
 			<CalendarDatePicker Grid.Row="3" Grid.Column="3"
 								ToolTip.Tip="Дата документу про прийом-передачу майна"
-								SelectedDate="{Binding ReasonDocumentDate}"/>
+								SelectedDate="{Binding ReasonDocumentDate}"
+								AutomationProperties.AutomationId="Handover23Act_ReasonDocumentDatePicker"/>
 
 			<TextBlock Grid.Row="4" Grid.Column="0" Text="Хто приймає:"/>
 			<TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3"
-					 Text="{Binding ReceiverName, UpdateSourceTrigger=PropertyChanged}" />
+					 Text="{Binding ReceiverName, UpdateSourceTrigger=PropertyChanged}"
+					 AutomationProperties.AutomationId="Handover23Act_ReceiverNameTextBox" />
 
 			<controls:AssetAcceptanceView Grid.Row="5" Grid.ColumnSpan="99"
 										  HandedLabel="Мат. відповідальна особа*:"
 										  AcceptedLabel="Прийняв/Здав*:"
-										  DataContext="{Binding AssetAcceptance}"/>
+										  DataContext="{Binding AssetAcceptance}"
+										  AutomationIdPrefix="Handover23Act_AssetAcceptance"/>
 
 			<DataGrid Grid.Row="7" Grid.ColumnSpan="99"
 					  DataContext="{Binding AssetsTable}"
 					  ItemsSource="{Binding AssetsCollection}"
 					  SelectedItem="{Binding SelectedAsset}"
-					  VerticalAlignment="Stretch">
+					  VerticalAlignment="Stretch"
+					  AutomationProperties.AutomationId="Handover23Act_AssetsDataGrid">
 				<DataGrid.Columns>
 					<DataGridTemplateColumn Header="Назва" Width="*">
 						<DataGridTemplateColumn.CellTemplate>

@@ -13,9 +13,11 @@
 				  DockPanel.Dock="Top"
 				  SelectedItem="{Binding SelectedReportType}"
 				  Classes="enum"
-				  Width="300"/>
+				  Width="300"
+				  AutomationProperties.AutomationId="ReportConfiguration_ReportTypeComboBox"/>
 
-		<DataGrid ItemsSource="{Binding CurrentConfig}" AutoGenerateColumns="False" Margin="0,5,0,0">
+		<DataGrid ItemsSource="{Binding CurrentConfig}" AutoGenerateColumns="False" Margin="0,5,0,0"
+				  AutomationProperties.AutomationId="ReportConfiguration_ParametersDataGrid">
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Ідентифікатор" Binding="{Binding Name}" Width=".7*" />
 				<DataGridTextColumn Header="Значення" Binding="{Binding Value}" Width="*" />
