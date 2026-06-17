@@ -81,6 +81,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         protected override ReportType HistoryReportType => ReportType.ResidualValueReport;
 
+        protected override string AutomationIdPrefix => "ResidualValue";
+
         public ResidualValueReportViewModel(
             ReportManager reportManager,
             IAssetFactory assetFactory,

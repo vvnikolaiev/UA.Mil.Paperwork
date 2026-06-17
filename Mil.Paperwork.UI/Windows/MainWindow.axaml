@@ -133,7 +133,8 @@
 
 			<DockPanel Grid.Column="1" Background="{DynamicResource BrushSurface}">
 				<shellViews:DocumentTabStrip DockPanel.Dock="Top" />
-				<ContentControl Content="{Binding ActiveContent}" />
+				<ContentControl Content="{Binding ActiveContent}"
+								AutomationProperties.AutomationId="MainWindow_ActiveContent" />
 			</DockPanel>
 		</Grid>
 	</Grid>

@@ -13,7 +13,8 @@
 		<DataGrid x:Name="PeopleDataGrid"
 				  ItemsSource="{Binding People}"
 				  SelectedItem="{Binding SelectedPerson, Mode=TwoWay}"
-				  AutoGenerateColumns="False" Margin="5">
+				  AutoGenerateColumns="False" Margin="5"
+				  AutomationProperties.AutomationId="PeopleDictionary_PeopleDataGrid">
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Ім'я" Binding="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}" Width=".5*"
 									CellStyleClasses="name" />

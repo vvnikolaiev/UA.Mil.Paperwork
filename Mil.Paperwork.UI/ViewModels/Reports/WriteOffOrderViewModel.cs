@@ -29,6 +29,9 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         private const string IconKeyAddService = "IconAddTableRow";
         private const string IconKeyAddWitness = "IconAddTableRow";
         private const string IconKeyRemoveWitness = "IconDelete";
+        private const string AutomationIdAddService = "WriteOffOrder_AddServiceAction";
+        private const string AutomationIdAddWitness = "WriteOffOrder_AddWitnessAction";
+        private const string AutomationIdRemoveWitness = "WriteOffOrder_RemoveWitnessAction";
 
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
@@ -151,6 +154,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         protected override ReportType HistoryReportType => ReportType.WriteOffOrder;
 
+        protected override string AutomationIdPrefix => "WriteOffOrder";
+
         public WriteOffOrderViewModel(
             ReportManager reportManager,
             IDataService dataService,
@@ -190,9 +195,9 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             var documentGroup = CreateDocumentGroup(GenerateReportCommand);
             var personnelActions = new List<RibbonActionViewModel>
             {
-                new RibbonActionViewModel(CaptionAddService, IconKeyAddService, AddServiceCommand),
-                new RibbonActionViewModel(CaptionAddWitness, IconKeyAddWitness, AddWitnessCommand),
-                new RibbonActionViewModel(CaptionRemoveWitness, IconKeyRemoveWitness, RemoveWitnessCommand, isDestructive: true)
+                new RibbonActionViewModel(CaptionAddService, IconKeyAddService, AddServiceCommand, AutomationIdAddService),
+                new RibbonActionViewModel(CaptionAddWitness, IconKeyAddWitness, AddWitnessCommand, AutomationIdAddWitness),
+                new RibbonActionViewModel(CaptionRemoveWitness, IconKeyRemoveWitness, RemoveWitnessCommand, AutomationIdRemoveWitness, isDestructive: true)
             };
             var personnelGroup = new RibbonGroupViewModel(GroupTitlePersonnel, personnelActions);
             var reportGroup = CreateReportGroup(OpenConfigurationCommand, null);

@@ -14,7 +14,8 @@
 		<DataGrid x:Name="ProductsTable"
 				  ItemsSource="{Binding Products}"
 				  SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
-				  AutoGenerateColumns="False" Margin="5">
+				  AutoGenerateColumns="False" Margin="5"
+				  AutomationProperties.AutomationId="ProductsDictionary_ProductsDataGrid">
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Назва" Binding="{Binding Name}"
 									CellStyleClasses="name"

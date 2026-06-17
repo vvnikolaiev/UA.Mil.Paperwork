@@ -12,7 +12,8 @@
 				  Classes="enum"
 				  DockPanel.Dock="Top"
 				  SelectedItem="{Binding SelectedCommissionType}"
-				  Width="300"/>
+				  Width="300"
+				  AutomationProperties.AutomationId="CommissionsConfiguration_CommissionTypeComboBox"/>
 
 		<Grid DockPanel.Dock="Top">
 			<Grid.RowDefinitions>
@@ -32,16 +33,19 @@
 			<TextBlock Text="Назва комісії" Grid.Row="1" Grid.Column="1"
 					   VerticalAlignment="Center" />
 			<TextBox Grid.Row="1" Grid.Column="2"
-					 Text="{Binding CommissionName}"/>
+					 Text="{Binding CommissionName}"
+					 AutomationProperties.AutomationId="CommissionsConfiguration_CommissionNameTextBox"/>
 
 			<TextBlock Text="Опис" Grid.Row="1" Grid.Column="3"
 					   VerticalAlignment="Center" />
 			<TextBox Grid.Row="1" Grid.Column="4"
-					 Text="{Binding CommissionDescription}"/>
+					 Text="{Binding CommissionDescription}"
+					 AutomationProperties.AutomationId="CommissionsConfiguration_CommissionDescriptionTextBox"/>
 
 		</Grid>
 
-		<DataGrid ItemsSource="{Binding CurrentCommission}" AutoGenerateColumns="False" Margin="0,5,0,0">
+		<DataGrid ItemsSource="{Binding CurrentCommission}" AutoGenerateColumns="False" Margin="0,5,0,0"
+				  AutomationProperties.AutomationId="CommissionsConfiguration_MembersDataGrid">
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Ім'я та прізвище" Binding="{Binding Name}" Width=".7*" />
 				<DataGridTextColumn Header="Посада" Binding="{Binding Position}" Width="*" />

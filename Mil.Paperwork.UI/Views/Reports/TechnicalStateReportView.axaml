@@ -33,7 +33,8 @@
 						  SelectedItem="{Binding SelectedAsset}"
 						  AutoGenerateColumns="False"
 						  Margin="5"
-						  MinHeight="100">
+						  MinHeight="100"
+						  AutomationProperties.AutomationId="TechnicalState_AssetsDataGrid">
 					<DataGrid.Columns>
 						<DataGridTemplateColumn Header="Назва" Width="*">
 							<DataGridTemplateColumn.CellTemplate>
@@ -147,21 +148,26 @@
 						   Text="Наказ списання №"
 						   Classes="title"
 						   FontWeight="Bold"/>
-				<NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding OrdenNumber, UpdateSourceTrigger=PropertyChanged}" />
+				<NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding OrdenNumber, UpdateSourceTrigger=PropertyChanged}"
+							   AutomationProperties.AutomationId="TechnicalState_OrdenNumberNumericUpDown" />
 
 				<TextBlock Grid.Row="0" Grid.Column="2" Classes="title" Text="від"/>
-				<CalendarDatePicker Grid.Row="0" Grid.Column="3" SelectedDate="{Binding OrdenDate}" />
+				<CalendarDatePicker Grid.Row="0" Grid.Column="3" SelectedDate="{Binding OrdenDate}"
+									AutomationProperties.AutomationId="TechnicalState_OrdenDatePicker" />
 
 				<TextBlock Grid.Row="0" Grid.Column="4" Classes="title" Text="Дата документу" />
-				<CalendarDatePicker Grid.Row="0" Grid.Column="5" SelectedDate="{Binding DocumentDate}" />
+				<CalendarDatePicker Grid.Row="0" Grid.Column="5" SelectedDate="{Binding DocumentDate}"
+									AutomationProperties.AutomationId="TechnicalState_DocumentDatePicker" />
 
 				<TextBlock Grid.Row="0" Grid.Column="6" Classes="title" Text="Дата події"/>
-				<CalendarDatePicker Grid.Row="0" Grid.Column="7" SelectedDate="{Binding EventDate}" />
+				<CalendarDatePicker Grid.Row="0" Grid.Column="7" SelectedDate="{Binding EventDate}"
+									AutomationProperties.AutomationId="TechnicalState_EventDatePicker" />
 
 				<TextBlock Grid.Row="3" Grid.Column="0" Classes="title" Text="Причина"/>
 				<TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="5"
 						 Text="{Binding Reason}" TextWrapping="Wrap"
-						 Height="50"/>
+						 Height="50"
+						 AutomationProperties.AutomationId="TechnicalState_ReasonTextBox"/>
 
 				<TextBlock Grid.Row="3" Grid.Column="6" Classes="title" Text="Зміна категорії"
 						   VerticalAlignment="Top"/>
@@ -170,7 +176,8 @@
 						  SelectedItem="{Binding EventType}"
 						  Classes="enum"
 						  HorizontalAlignment="Stretch"
-						  VerticalAlignment="Top"/>
+						  VerticalAlignment="Top"
+						  AutomationProperties.AutomationId="TechnicalState_ChangeCategoryComboBox"/>
 
 				<StackPanel Grid.Row="4" Grid.ColumnSpan="5"
 							Orientation="Horizontal" Margin="5 0"
@@ -179,17 +186,20 @@
 
 					<CheckBox Content="Формувати Акти Списання, якщо відсутній Серійний Номер"
 							  VerticalAlignment="Center"
-							  IsChecked="{Binding GenerateWriteOffActs}"/>
+							  IsChecked="{Binding GenerateWriteOffActs}"
+							  AutomationProperties.AutomationId="TechnicalState_GenerateWriteOffActsCheckBox"/>
 
 					<TextBlock Text="Номер документу:" />
 					<TextBox Text="{Binding WriteOffRegNumber}"
 							 Width="70"
-							 IsEnabled="{Binding GenerateWriteOffActs}" />
+							 IsEnabled="{Binding GenerateWriteOffActs}"
+							 AutomationProperties.AutomationId="TechnicalState_WriteOffRegNumberTextBox" />
 
 					<TextBlock Text="Код документу:"/>
 					<TextBox Text="{Binding WriteOffDocNumber}"
 							 Width="70"
-							 IsEnabled="{Binding GenerateWriteOffActs}" />
+							 IsEnabled="{Binding GenerateWriteOffActs}"
+							 AutomationProperties.AutomationId="TechnicalState_WriteOffDocNumberTextBox" />
 
 				</StackPanel>
 
@@ -197,7 +207,8 @@
 				<CheckBox Grid.Row="5" Grid.ColumnSpan="5"
 						  Margin="5 5 5 0"
 						  Content="Сформувати пакет документів на списання (витяг з книги втрат, титул, опис, погодження)"
-						  IsChecked="{Binding GenerateWriteOffPackage}" />
+						  IsChecked="{Binding GenerateWriteOffPackage}"
+						  AutomationProperties.AutomationId="TechnicalState_GenerateWriteOffPackageCheckBox" />
 
 				<!-- TEMPORARY SOLUTION -->
 				<StackPanel Grid.Row="6" Grid.ColumnSpan="5"
@@ -207,17 +218,20 @@
 							Spacing="5">
 					<CheckBox Content="Формувати АЗЯС замість АТС (№11)?" FontWeight="Bold"
 							  ToolTip.Tip="Формувати Акт зміни якісного (технічного) стану замість Акту Технічного Стану (№11)?"
-							  IsChecked="{Binding GenerateQualityStateReportInstead}" />
+							  IsChecked="{Binding GenerateQualityStateReportInstead}"
+							  AutomationProperties.AutomationId="TechnicalState_GenerateQualityStateReportInsteadCheckBox" />
 
 					<TextBlock Text="Номер документу:" />
 					<TextBox Text="{Binding QSRRegNumber}"
 							 Width="70"
-							 IsEnabled="{Binding GenerateQualityStateReportInstead}" />
+							 IsEnabled="{Binding GenerateQualityStateReportInstead}"
+							 AutomationProperties.AutomationId="TechnicalState_QSRRegNumberTextBox" />
 
 					<TextBlock Text="Код документу:"/>
 					<TextBox Text="{Binding QSRDocNumber}"
 							 Width="70"
-							 IsEnabled="{Binding GenerateQualityStateReportInstead}" />
+							 IsEnabled="{Binding GenerateQualityStateReportInstead}"
+							 AutomationProperties.AutomationId="TechnicalState_QSRDocNumberTextBox" />
 
 				</StackPanel>
 
@@ -230,18 +244,22 @@
 					<TextBlock Text="Номер книги обліку втрат:" FontWeight="Bold"/>
 					<NumericUpDown Value="{Binding BookOfLossesNumber}" Minimum="0"
 								   VerticalAlignment="Center"
-								   Width="70"/>
+								   Width="70"
+								   AutomationProperties.AutomationId="TechnicalState_BookOfLossesNumberNumericUpDown"/>
 
 					<TextBlock Text="рік:"/>
 					<NumericUpDown Value="{Binding BookOfLossesYear}" Minimum="2000"
-								   Width="70"/>
+								   Width="70"
+								   AutomationProperties.AutomationId="TechnicalState_BookOfLossesYearNumericUpDown"/>
 
 					<TextBlock Text="сторінка:" />
 					<NumericUpDown Value="{Binding BookOfLossesPage}" Minimum="0"
-								   Width="70"/>
+								   Width="70"
+								   AutomationProperties.AutomationId="TechnicalState_BookOfLossesPageNumericUpDown"/>
 
 					<TextBlock Text="дата запису:"/>
-					<DatePicker SelectedDate="{Binding BookOfLossesExtractDate}" />
+					<DatePicker SelectedDate="{Binding BookOfLossesExtractDate}"
+								AutomationProperties.AutomationId="TechnicalState_BookOfLossesExtractDatePicker" />
 
 				</StackPanel>
 
@@ -279,7 +297,8 @@
 						   Text="Дата документу:"
 						   VerticalAlignment="Center"/>
 				<DatePicker Grid.Row="0" Grid.Column="1"
-							SelectedDate="{Binding OperationDate}" />
+							SelectedDate="{Binding OperationDate}"
+							AutomationProperties.AutomationId="TechnicalState_OperationDatePicker" />
 
 				<TextBlock Grid.Row="0" Grid.Column="2" Text="Зміна категорії"
 						   VerticalAlignment="Center"/>
@@ -289,7 +308,8 @@
 						  SelectedItem="{Binding EventType}"
 						  Classes="enum"
 						  HorizontalAlignment="Left"
-						  VerticalAlignment="Center"/>
+						  VerticalAlignment="Center"
+						  AutomationProperties.AutomationId="TechnicalState_EventTypeComboBox"/>
 
 				<ContentControl Grid.Row="1" Grid.ColumnSpan="99"
 								Content="{DynamicResource CommonTechnicalStateViewLayout}"/>
@@ -298,7 +318,8 @@
 						  IsChecked="{Binding IsCommissioningActNeeded}"
 						  Content="Акти вв. в експл."
 						  Margin="5"
-						  VerticalAlignment="Center" />
+						  VerticalAlignment="Center"
+						  AutomationProperties.AutomationId="TechnicalState_IsCommissioningActNeededCheckBox" />
 
 				<StackPanel Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3"
 							Orientation="Horizontal"
@@ -308,17 +329,20 @@
 
 					<TextBlock Text="Майно знаходиться у*:" VerticalAlignment="Center"/>
 					<TextBox Text="{Binding CommissioningLocation}"
-							 Width="150"/>
+							 Width="150"
+							 AutomationProperties.AutomationId="TechnicalState_CommissioningLocationTextBox"/>
 
 					<TextBlock Text="№№ Актів (через кому):" VerticalAlignment="Center" />
 					<TextBox Text="{Binding CommissioningActNumbers}"
-							 Width="150"/>
+							 Width="150"
+							 AutomationProperties.AutomationId="TechnicalState_CommissioningActNumbersTextBox"/>
 				</StackPanel>
 
 				<CheckBox Grid.Row="4" Grid.Column="0"
 						  IsChecked="{Binding IsInvoiceNeeded}"
 						  Content="Накладна"
-						  Margin="5" VerticalAlignment="Center"/>
+						  Margin="5" VerticalAlignment="Center"
+						  AutomationProperties.AutomationId="TechnicalState_IsInvoiceNeededCheckBox"/>
 
 				<StackPanel Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3"
 							Orientation="Horizontal"
@@ -326,16 +350,19 @@
 							Margin="5 0"
 							Classes="parameters">
 					<TextBlock Text="Номер*:" VerticalAlignment="Center" FontWeight="Bold"/>
-					<TextBox Text="{Binding InvoiceNumber}" Width="60" />
+					<TextBox Text="{Binding InvoiceNumber}" Width="60"
+							 AutomationProperties.AutomationId="TechnicalState_InvoiceNumberTextBox" />
 
 					<CheckBox IsChecked="{Binding IsInvoceInvertedExchange}"
 							  Content="Зворотня передача введеного майна накладною (наприклад, назад на склад)"
 							  VerticalAlignment="Center"
-							  Margin="5 0"/>
+							  Margin="5 0"
+							  AutomationProperties.AutomationId="TechnicalState_IsInvoiceInvertedExchangeCheckBox"/>
 				</StackPanel>
 
 				<controls:AssetAcceptanceView Grid.Row="5" Grid.ColumnSpan="7"
-											  DataContext="{Binding AssetAcceptance}"/>
+											  DataContext="{Binding AssetAcceptance}"
+											  AutomationIdPrefix="TechnicalState_AssetAcceptance"/>
 			</Grid>
 		</DataTemplate>
 	</UserControl.DataTemplates>

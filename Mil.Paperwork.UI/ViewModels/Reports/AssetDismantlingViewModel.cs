@@ -76,6 +76,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         protected override ReportType HistoryReportType => ReportType.AssetDismantlingReport;
 
+        protected override string AutomationIdPrefix => "AssetDismantling";
+
         public AssetDismantlingViewModel(
             ReportManager reportManager,
             IDataService dataService,

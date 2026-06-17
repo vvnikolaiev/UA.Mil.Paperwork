@@ -26,6 +26,11 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
         private const string IconKeySave = "IconSaveDraft";
         private const string IconKeyRefresh = "IconRefresh";
 
+        private const string AutomationIdAdd = "MeasurementUnitsDictionary_AddAction";
+        private const string AutomationIdRemove = "MeasurementUnitsDictionary_RemoveAction";
+        private const string AutomationIdSave = "MeasurementUnitsDictionary_SaveAction";
+        private const string AutomationIdRefresh = "MeasurementUnitsDictionary_RefreshAction";
+
         private readonly IDataService _dataService;
 
         private MeasurementUnitViewModel _selectedUnit;
@@ -67,13 +72,13 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
             {
                 new RibbonGroupViewModel(GroupRecords, new[]
                 {
-                    new RibbonActionViewModel(CaptionAdd, IconKeyAdd, AddItemCommand),
-                    new RibbonActionViewModel(CaptionRemove, IconKeyRemove, RemoveItemCommand, isDestructive: true)
+                    new RibbonActionViewModel(CaptionAdd, IconKeyAdd, AddItemCommand, AutomationIdAdd),
+                    new RibbonActionViewModel(CaptionRemove, IconKeyRemove, RemoveItemCommand, AutomationIdRemove, isDestructive: true)
                 }),
                 new RibbonGroupViewModel(GroupData, new[]
                 {
-                    new RibbonActionViewModel(CaptionSave, IconKeySave, SaveCommand),
-                    new RibbonActionViewModel(CaptionRefresh, IconKeyRefresh, RefreshCommand)
+                    new RibbonActionViewModel(CaptionSave, IconKeySave, SaveCommand, AutomationIdSave),
+                    new RibbonActionViewModel(CaptionRefresh, IconKeyRefresh, RefreshCommand, AutomationIdRefresh)
                 })
             };
             return groups;

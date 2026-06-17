@@ -13,7 +13,8 @@
 		<DataGrid x:Name="MeasurementUnitsDataGrid"
 				  ItemsSource="{Binding Units}"
 				  SelectedItem="{Binding SelectedUnit, Mode=TwoWay}"
-				  AutoGenerateColumns="False" Margin="5">
+				  AutoGenerateColumns="False" Margin="5"
+				  AutomationProperties.AutomationId="MeasurementUnitsDictionary_UnitsDataGrid">
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Назва" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="*" 
 									CellStyleClasses="name"/>

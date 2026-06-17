@@ -30,6 +30,13 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         private const string IconKeyExport = "IconExport";
         private const string IconKeyImport = "IconImport";
 
+        private const string AutomationIdSave = "CommissionsConfig_SaveAction";
+        private const string AutomationIdSaveLocal = "CommissionsConfig_SaveLocalAction";
+        private const string AutomationIdRefresh = "CommissionsConfig_RefreshAction";
+        private const string AutomationIdExportJson = "CommissionsConfig_ExportJsonAction";
+        private const string AutomationIdExportExcel = "CommissionsConfig_ExportExcelAction";
+        private const string AutomationIdImport = "CommissionsConfig_ImportAction";
+
         private readonly IReportDataService _reportDataService;
         private readonly IDialogService _dialogService;
         private CommissionType _selectedCommissionType;
@@ -86,15 +93,15 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             {
                 new RibbonGroupViewModel(GroupData, new[]
                 {
-                    new RibbonActionViewModel(CaptionSave, IconKeySave, SaveCommand),
-                    new RibbonActionViewModel(CaptionSaveLocal, IconKeySaveLocal, SaveLocalCommand),
-                    new RibbonActionViewModel(CaptionRefresh, IconKeyRefresh, RefreshCommand)
+                    new RibbonActionViewModel(CaptionSave, IconKeySave, SaveCommand, AutomationIdSave),
+                    new RibbonActionViewModel(CaptionSaveLocal, IconKeySaveLocal, SaveLocalCommand, AutomationIdSaveLocal),
+                    new RibbonActionViewModel(CaptionRefresh, IconKeyRefresh, RefreshCommand, AutomationIdRefresh)
                 }),
                 new RibbonGroupViewModel(GroupExchange, new[]
                 {
-                    new RibbonActionViewModel(CaptionExportJson, IconKeyExport, ExportJsonCommand),
-                    new RibbonActionViewModel(CaptionExportExcel, IconKeyExport, ExportExcelCommand),
-                    new RibbonActionViewModel(CaptionImport, IconKeyImport, ImportCommand)
+                    new RibbonActionViewModel(CaptionExportJson, IconKeyExport, ExportJsonCommand, AutomationIdExportJson),
+                    new RibbonActionViewModel(CaptionExportExcel, IconKeyExport, ExportExcelCommand, AutomationIdExportExcel),
+                    new RibbonActionViewModel(CaptionImport, IconKeyImport, ImportCommand, AutomationIdImport)
                 })
             };
             return groups;

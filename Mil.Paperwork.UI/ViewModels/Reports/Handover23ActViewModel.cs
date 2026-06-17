@@ -115,6 +115,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         protected override ReportType HistoryReportType => ReportType.Handover23Act;
 
+        protected override string AutomationIdPrefix => "Handover23Act";
+
         public Handover23ActViewModel(
             ReportManager reportManager,
             IDataService dataService,

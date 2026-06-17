@@ -147,6 +147,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         protected override ReportType HistoryReportType => ReportType.AssetValuationReport;
 
+        protected override string AutomationIdPrefix => "AssetValuation";
+
         public AssetValuationViewModel(
             ReportManager reportManager,
             IDataService dataService,

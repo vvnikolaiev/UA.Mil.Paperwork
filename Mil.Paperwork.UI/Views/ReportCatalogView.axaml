@@ -43,7 +43,8 @@
 					<DataTemplate>
 						<Button Classes="reportCard"
 								Command="{Binding $parent[ItemsControl].((tabs:ReportCatalogViewModel)DataContext).CreateReportCommand}"
-								CommandParameter="{Binding DocumentType}">
+								CommandParameter="{Binding DocumentType}"
+								AutomationProperties.AutomationId="{Binding DocumentType, StringFormat='ReportCatalog_{0}'}">
 							<TextBlock Text="{Binding Text}"
 									   TextWrapping="Wrap"
 									   TextAlignment="Center"

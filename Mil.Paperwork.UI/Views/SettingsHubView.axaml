@@ -18,7 +18,8 @@
             <ListBox Grid.Column="0"
                      ItemsSource="{Binding SectionItems}"
                      SelectedItem="{Binding SelectedSectionItem}"
-                     Background="{DynamicResource BrushSidebarBackground}">
+                     Background="{DynamicResource BrushSidebarBackground}"
+                     AutomationProperties.AutomationId="SettingsHub_SectionsListBox">
                 <ListBox.ItemTemplate>
                     <DataTemplate x:DataType="viewModels:SettingsSectionItem">
                         <TextBlock Text="{Binding Title}"

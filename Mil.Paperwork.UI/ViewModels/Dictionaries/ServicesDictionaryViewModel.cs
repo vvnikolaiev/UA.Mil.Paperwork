@@ -39,6 +39,13 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
         private const string IconKeyRefresh = "IconRefresh";
         private const string IconKeySetDefault = "IconSetDefault";
 
+        private const string AutomationIdAdd = "ServicesDictionary_AddAction";
+        private const string AutomationIdRemove = "ServicesDictionary_RemoveAction";
+        private const string AutomationIdSave = "ServicesDictionary_SaveAction";
+        private const string AutomationIdSaveLocal = "ServicesDictionary_SaveLocalAction";
+        private const string AutomationIdRefresh = "ServicesDictionary_RefreshAction";
+        private const string AutomationIdSetDefault = "ServicesDictionary_SetDefaultAction";
+
         private readonly IReportDataService _reportDataService;
         private readonly IDataService _dataService;
         private readonly IDialogService _dialogService;
@@ -134,18 +141,18 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
             {
                 new RibbonGroupViewModel(GroupRecords, new[]
                 {
-                    new RibbonActionViewModel(CaptionAdd, IconKeyAdd, AddItemCommand),
-                    new RibbonActionViewModel(CaptionRemove, IconKeyRemove, RemoveItemCommand, isDestructive: true)
+                    new RibbonActionViewModel(CaptionAdd, IconKeyAdd, AddItemCommand, AutomationIdAdd),
+                    new RibbonActionViewModel(CaptionRemove, IconKeyRemove, RemoveItemCommand, AutomationIdRemove, isDestructive: true)
                 }),
                 new RibbonGroupViewModel(GroupData, new[]
                 {
-                    new RibbonActionViewModel(CaptionSave, IconKeySave, SaveCommand),
-                    new RibbonActionViewModel(CaptionSaveLocal, IconKeySaveLocal, SaveLocalCommand),
-                    new RibbonActionViewModel(CaptionRefresh, IconKeyRefresh, RefreshCommand)
+                    new RibbonActionViewModel(CaptionSave, IconKeySave, SaveCommand, AutomationIdSave),
+                    new RibbonActionViewModel(CaptionSaveLocal, IconKeySaveLocal, SaveLocalCommand, AutomationIdSaveLocal),
+                    new RibbonActionViewModel(CaptionRefresh, IconKeyRefresh, RefreshCommand, AutomationIdRefresh)
                 }),
                 new RibbonGroupViewModel(GroupService, new[]
                 {
-                    new RibbonActionViewModel(CaptionSetDefault, IconKeySetDefault, SetDefaultCommand)
+                    new RibbonActionViewModel(CaptionSetDefault, IconKeySetDefault, SetDefaultCommand, AutomationIdSetDefault)
                 })
             };
             return groups;

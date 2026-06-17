@@ -44,13 +44,23 @@ $cond = New-Object System.Windows.Automation.PropertyCondition(
 $window = $desktop.FindFirst([System.Windows.Automation.TreeScope]::Children, $cond)
 ```
 
+**Prefer AutomationId over Name/coordinates.** Most interactive controls in the app now carry a stable `AutomationProperties.AutomationId` (convention: `{ViewName}_{Purpose}`, e.g. `ProductsDictionary_AddButton`, `MessageBox_OkButton`). Find them with:
+
+```powershell
+$idCond = New-Object System.Windows.Automation.PropertyCondition(
+    [System.Windows.Automation.AutomationElement]::AutomationIdProperty, 'ProductsDictionary_AddButton')
+$button = $window.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $idCond)
+```
+
+This avoids the garbled-Name and Cyrillic-text-matching issues below. If a control has no `AutomationId` yet (e.g. DataGrid cells inside template columns, dynamically-generated import-preview columns), fall back to ControlType/Name search or coordinates as described next — and when you add or edit a View, add `AutomationId` to its interactive controls too (see project CLAUDE.md / memory on this convention) rather than relying on the fallback.
+
 Find descendants by ControlType (Button, MenuItem, ListItem, ComboBox...) or Name. Button names may come back garbled in PowerShell output, but element order is stable — cross-check counts against a screenshot.
 
 ## 5. Interact — known quirks (hard-won)
 
 - **Buttons**: `InvokePattern` works → `$el.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke()`.
 - **Avalonia MenuItem does NOT support InvokePattern** ("Unsupported Pattern"). Read `$el.Current.BoundingRectangle` and mouse-click its center instead.
-- **Dialogs are children of MainWindow**, not top-level windows. Search MainWindow descendants. Dialog buttons have Cyrillic names: «ОК», «Так», «Ні» — not Latin "OK".
+- **Dialogs are children of MainWindow**, not top-level windows. Search MainWindow descendants. The custom MessageBoxWindow's buttons have stable AutomationIds (`MessageBox_OkButton`, `MessageBox_YesButton`, `MessageBox_NoButton`, `MessageBox_CancelButton`) — prefer those over text matching. Their visible Content is still Cyrillic («ОК», «Так», «Ні») if you ever need a Name-based fallback.
 - **ComboBox**: raw coordinate clicks are unreliable. Use `ExpandCollapsePattern.Expand()` on the ComboBox, then `SelectionItemPattern.Select()` on the target ListItem.
 - **Flyouts/menus close between separate PowerShell invocations** — do every multi-step interaction (open flyout → click item → handle dialog) inside ONE script with `Start-Sleep -Milliseconds 400-600` between steps.
 

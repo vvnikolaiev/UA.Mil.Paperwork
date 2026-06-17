@@ -240,6 +240,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         protected override ReportType HistoryReportType => ReportType.CommissioningAct;
 
+        protected override string AutomationIdPrefix => "CommissioningAct";
+
         public CommissioningActReportViewModel(
             ReportManager reportManager,
             IDataService dataService,
