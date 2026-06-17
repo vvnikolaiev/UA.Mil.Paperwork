@@ -335,6 +335,15 @@ namespace Mil.Paperwork.Domain.Helpers
                     foreach (var run in para.Elements<Run>().ToList())
                         run.Remove();
 
+            // A freshly added row must never inherit a vertical-merge "continue" marker from whatever
+            // row happened to be last (e.g. when AddRow is called after MergeCellsVertically already
+            // marked the previous last row as a merge continuation) — Word won't render a bottom border
+            // for a merge region that never properly terminates.
+            foreach (var cell in newRow.Elements<TableCell>())
+            {
+                cell.GetFirstChild<TableCellProperties>()?.RemoveAllChildren<VerticalMerge>();
+            }
+
             // Remove duplicate paraId / textId attributes (w14 namespace)
             const string w14ns = "http://schemas.microsoft.com/office/word/2010/wordml";
             foreach (var el in newRow.Descendants<OpenXmlElement>())
@@ -378,7 +387,6 @@ namespace Mil.Paperwork.Domain.Helpers
                 tcPr.Append(i == startRowIndex
                     ? new VerticalMerge { Val = MergedCellValues.Restart }
                     : new VerticalMerge());
-
                 if (i == startRowIndex)
                 {
                     startCell = cell;
@@ -575,6 +583,48 @@ namespace Mil.Paperwork.Domain.Helpers
                 _ => TableVerticalAlignmentValues.Center
             };
             return result;
+        }
+    }
+
+    // ---------------------------------------------------------------------------
+    // WordTableFiller — fills a table from a list of row objects: loop, add a row,
+    // address each column, drop the template row, optionally vertical-merge a set
+    // of columns once, optionally append a summary row.
+    // ---------------------------------------------------------------------------
+
+    internal static class WordTableFiller
+    {
+        public static void Fill<TRow>(
+            WordTable table,
+            IReadOnlyList<TRow> rows,
+            IReadOnlyList<(int Index, Action<WordCell, TRow> Write)> columns,
+            IReadOnlyList<(int Index, Action<WordCell> Write)>? verticalMergeColumns = null,
+            Action<WordTable>? addSummaryRow = null)
+        {
+            var firstRow = table.LastRow;
+            var firstRowIndex = firstRow.GetRowIndex();
+
+            foreach (var rowData in rows)
+            {
+                var row = table.AddRow();
+                foreach (var (index, write) in columns)
+                {
+                    write(row.GetCell(index), rowData);
+                }
+            }
+
+            table.RemoveRow(firstRow);
+
+            if (verticalMergeColumns != null)
+            {
+                foreach (var (index, write) in verticalMergeColumns)
+                {
+                    var cell = table.MergeCellsVertically(index, firstRowIndex, rows.Count);
+                    write(cell);
+                }
+            }
+
+            addSummaryRow?.Invoke(table);
         }
     }
 

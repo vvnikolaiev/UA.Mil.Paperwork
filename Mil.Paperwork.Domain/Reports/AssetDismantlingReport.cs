@@ -72,60 +72,62 @@ namespace Mil.Paperwork.Domain.Reports
             document.ReplaceFields(reportConfig);
         }
 
+        private sealed record ComponentRow(
+            string Index, string Name, string NomenclatureCode, string Unit, string Category, int TotalQuantity, decimal ResidualPrice, decimal TotalPrice);
+
+        private static ComponentRow BuildComponentRow(AssetComponent assetComponent, int rowNumber, AssetDismantlingData assetDismantlingData)
+        {
+            var nomenclatureCode = assetComponent.NomenclatureCode?.ToUpper() ?? string.Empty;
+            var componentCategory = ReportHelper.ConvertCategoryToText(assetComponent.Category);
+            var totalQuantity = assetComponent.Quantity * assetDismantlingData.Count;
+            var totalComponentPrice = Math.Round(assetComponent.Price * totalQuantity, 2);
+
+            var result = new ComponentRow($"1.{rowNumber}", assetComponent.Name, nomenclatureCode, assetComponent.Unit,
+                componentCategory, totalQuantity, assetComponent.Price, totalComponentPrice);
+            return result;
+        }
+
         private static void FillAssetComponentsTable(AssetDismantlingData assetDismantlingData, WordTable table)
         {
             var fontSize = DismantlingReportHelper.TABLE_FONT_SIZE;
             var nameCellParameters = new WordCellParameters(fontSize, WordHorizontalAlignment.Left, isBold: true);
             var cellParameters = new WordCellParameters(fontSize, WordHorizontalAlignment.Center, isBold: true);
 
-            var firstRow = table.LastRow;
-            var firstRowIndex = firstRow.GetRowIndex();
-
             // excluded last to easily form the remaining components range
-            var components = assetDismantlingData.AssetComponents.OrderBy(x => x.Exclude).ToArray();
+            var rows = assetDismantlingData.AssetComponents
+                .OrderBy(x => x.Exclude)
+                .Select((component, i) => BuildComponentRow(component, i + 1, assetDismantlingData))
+                .ToList();
 
-            for (int i = 0; i < components.Length; i++)
+            var columns = new List<(int Index, Action<WordCell, ComponentRow> Write)>
             {
-                var assetComponent = components[i];
-                var row = table.AddRow();
-
-                var rowNumber = i + 1;
-                var index = $"1.{rowNumber}";
-                var nomenclatureCode = assetComponent.NomenclatureCode?.ToUpper() ?? string.Empty;
-                var componentCategory = ReportHelper.ConvertCategoryToText(assetComponent.Category);
-                var totalQuantity = assetComponent.Quantity * assetDismantlingData.Count;
-                var totalComponentPrice = Math.Round(assetComponent.Price * totalQuantity, 2);
-
-                row.GetCell(DismantlingReportHelper.COLUMN_INDEX).AddText(index, cellParameters);
-                row.GetCell(DismantlingReportHelper.COLUMN_COMPONENT_NAME).AddText(assetComponent.Name, nameCellParameters);
-                row.GetCell(DismantlingReportHelper.COLUMN_COMPONENT_NOMENCLATURE_CODE).AddText(nomenclatureCode, cellParameters);
-                row.GetCell(DismantlingReportHelper.COLUMN_COMPONENT_MEAS_UNIT).AddText(assetComponent.Unit, cellParameters);
-                row.GetCell(DismantlingReportHelper.COLUMN_COMPONENT_CATEGORY).AddText(componentCategory, cellParameters);
-                row.GetCell(DismantlingReportHelper.COLUMN_COMPONENT_COUNT).AddNumber(totalQuantity, cellParameters);
-                row.GetCell(DismantlingReportHelper.COLUMN_COMPONENT_RESIDUAL_PRICE).AddPrice(assetComponent.Price, cellParameters);
-                row.GetCell(DismantlingReportHelper.COLUMN_COMPONENT_PRICE_TOTAL).AddPrice(totalComponentPrice, cellParameters);
-            }
-
-            table.RemoveRow(firstRow);
-
-            var mergedCells = new Dictionary<int, WordCell>();
-            for (int i = DismantlingReportHelper.COLUMN_ASSET_FIRST; i <= DismantlingReportHelper.COLUMN_ASSET_LAST; i++)
-            {
-                var cell = table.MergeCellsVertically(i, firstRowIndex, assetDismantlingData.AssetComponentsCount);
-                mergedCells.Add(i, cell);
-            }
+                (DismantlingReportHelper.COLUMN_INDEX, (cell, row) => cell.AddText(row.Index, cellParameters)),
+                (DismantlingReportHelper.COLUMN_COMPONENT_NAME, (cell, row) => cell.AddText(row.Name, nameCellParameters)),
+                (DismantlingReportHelper.COLUMN_COMPONENT_NOMENCLATURE_CODE, (cell, row) => cell.AddText(row.NomenclatureCode, cellParameters)),
+                (DismantlingReportHelper.COLUMN_COMPONENT_MEAS_UNIT, (cell, row) => cell.AddText(row.Unit, cellParameters)),
+                (DismantlingReportHelper.COLUMN_COMPONENT_CATEGORY, (cell, row) => cell.AddText(row.Category, cellParameters)),
+                (DismantlingReportHelper.COLUMN_COMPONENT_COUNT, (cell, row) => cell.AddNumber(row.TotalQuantity, cellParameters)),
+                (DismantlingReportHelper.COLUMN_COMPONENT_RESIDUAL_PRICE, (cell, row) => cell.AddPrice(row.ResidualPrice, cellParameters)),
+                (DismantlingReportHelper.COLUMN_COMPONENT_PRICE_TOTAL, (cell, row) => cell.AddPrice(row.TotalPrice, cellParameters)),
+            };
 
             var category = ReportHelper.ConvertCategoryToText(assetDismantlingData.Category);
 
-            mergedCells[DismantlingReportHelper.COLUMN_ASSET_NAME].AddText(assetDismantlingData.Name, nameCellParameters);
-            mergedCells[DismantlingReportHelper.COLUMN_ASSET_NOMENCLATURE_CODE].AddText(assetDismantlingData.NomenclatureCode, cellParameters);
-            mergedCells[DismantlingReportHelper.COLUMN_ASSET_MEAS_UNIT].AddText(assetDismantlingData.MeasurementUnit, cellParameters);
-            mergedCells[DismantlingReportHelper.COLUMN_ASSET_CATEGORY].AddText(category, cellParameters);
-            mergedCells[DismantlingReportHelper.COLUMN_ASSET_COUNT].AddNumber(assetDismantlingData.Count, cellParameters);
-            mergedCells[DismantlingReportHelper.COLUMN_ASSET_PRICE].AddPrice(assetDismantlingData.Price, cellParameters);
-            mergedCells[DismantlingReportHelper.COLUMN_ASSET_PRICE_TOTAL].AddPrice(assetDismantlingData.TotalPrice, cellParameters);
+            // columns OPERATING_YEARS_NORM/OPERATING_YEARS are merged but intentionally left blank (matches prior behavior)
+            var verticalMergeColumns = new List<(int Index, Action<WordCell> Write)>
+            {
+                (DismantlingReportHelper.COLUMN_ASSET_NAME, cell => cell.AddText(assetDismantlingData.Name, nameCellParameters)),
+                (DismantlingReportHelper.COLUMN_ASSET_NOMENCLATURE_CODE, cell => cell.AddText(assetDismantlingData.NomenclatureCode, cellParameters)),
+                (DismantlingReportHelper.COLUMN_ASSET_MEAS_UNIT, cell => cell.AddText(assetDismantlingData.MeasurementUnit, cellParameters)),
+                (DismantlingReportHelper.COLUMN_ASSET_CATEGORY, cell => cell.AddText(category, cellParameters)),
+                (DismantlingReportHelper.COLUMN_ASSET_COUNT, cell => cell.AddNumber(assetDismantlingData.Count, cellParameters)),
+                (DismantlingReportHelper.COLUMN_ASSET_PRICE, cell => cell.AddPrice(assetDismantlingData.Price, cellParameters)),
+                (DismantlingReportHelper.COLUMN_ASSET_PRICE_TOTAL, cell => cell.AddPrice(assetDismantlingData.TotalPrice, cellParameters)),
+                (DismantlingReportHelper.COLUMN_ASSET_OPERATING_YEARS_NORM, _ => { }),
+                (DismantlingReportHelper.COLUMN_ASSET_OPERATING_YEARS, _ => { }),
+            };
 
-            AddSummaryRow(assetDismantlingData, table);
+            WordTableFiller.Fill(table, rows, columns, verticalMergeColumns, t => AddSummaryRow(assetDismantlingData, t));
         }
 
         private static void AddSummaryRow(AssetDismantlingData assetDismantlingData, WordTable table)
