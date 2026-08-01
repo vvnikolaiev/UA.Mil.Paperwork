@@ -64,8 +64,7 @@ namespace Mil.Paperwork.DataAccess.Conversions
         {
             var result = new EASAssetData
             {
-                Name = asset.Name,
-                SerialNumber = asset.SerialNumber,
+                Name = ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber),
                 Code = asset.NomenclatureCode,
                 MeasurementUnit = asset.MeasurementUnit,
                 Category = asset.InitialCategory,

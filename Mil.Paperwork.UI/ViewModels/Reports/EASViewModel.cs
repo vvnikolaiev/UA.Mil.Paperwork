@@ -1,5 +1,6 @@
 using Mil.MVVM.Common;
 using Mil.Paperwork.Domain.DataModels.ReportData;
+using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.DataModels.Configuration;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Helpers;
@@ -33,6 +34,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         private readonly IDataService _dataService;
         private readonly IReportDataService _reportDataService;
         private readonly IDialogService _dialogService;
+        private readonly IImportService _importService;
 
         private string _reportNum = string.Empty;
         private DateTime _reportDate = DateTime.Today;
@@ -130,13 +132,15 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             IDataService dataService,
             IReportDataService reportDataService,
             IReportHistoryService reportHistoryService,
-            IDialogService dialogService)
+            IDialogService dialogService,
+            IImportService importService)
             : base(reportHistoryService, dialogService)
         {
             _reportManager = reportManager;
             _dataService = dataService;
             _reportDataService = reportDataService;
             _dialogService = dialogService;
+            _importService = importService;
 
             AvailableServices = [];
             AssetTypes = [.. EnumHelper.GetValues<AssetType>()];
@@ -218,7 +222,10 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                 AvailableMeasurementUnits,
                 RemoveService,
                 AddServiceToDictionary,
-                SaveServiceHead);
+                SaveServiceHead,
+                _importService,
+                _dataService,
+                _dialogService);
             Services.Add(service);
         }
 
@@ -321,7 +328,10 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                         AvailableMeasurementUnits,
                         RemoveService,
                         AddServiceToDictionary,
-                        SaveServiceHead);
+                        SaveServiceHead,
+                        _importService,
+                        _dataService,
+                        _dialogService);
 
                     serviceViewModel.LoadFrom(serviceData);
                     Services.Add(serviceViewModel);

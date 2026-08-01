@@ -574,7 +574,7 @@ namespace Mil.Paperwork.Tests.History
                         HeadPosition = "Начальник групи зв'язку",
                         Assets = new List<EASAssetData>
                         {
-                            new() { Name = "Радіостанція", SerialNumber = "SN-9", Code = "NC-1", MeasurementUnit = "шт.", Category = 2, Count = 2, OriginalPrice = 4000m, ResidualPrice = 3001m }
+                            new() { Name = "Радіостанція", Code = "NC-1", MeasurementUnit = "шт.", Category = 2, Count = 2, OriginalPrice = 4000m, ResidualPrice = 3001m }
                         }
                     }
                 },
@@ -610,7 +610,6 @@ namespace Mil.Paperwork.Tests.History
 
             var serviceAsset = Assert.Single(service.Assets);
             Assert.Equal("Радіостанція", serviceAsset.Name);
-            Assert.Equal("SN-9", serviceAsset.SerialNumber);
             Assert.Equal("NC-1", serviceAsset.Code);
             Assert.Equal("шт.", serviceAsset.MeasurementUnit);
             Assert.Equal(2, serviceAsset.Category);

@@ -5,10 +5,10 @@ namespace Mil.Paperwork.Infrastructure.DataModels
 {
     public class PersonDTO : IPerson
     {
-        [ImportColumn("Ім'я", isReqired: true)]
+        [ImportColumn("Ім'я", isRequired: true)]
         public string FirstName { get; set; }
 
-        [ImportColumn("Прізвище", isReqired: true)]
+        [ImportColumn("Прізвище", isRequired: true)]
         public string LastName { get; set; }
 
         [ImportColumn("По-батькові")]
@@ -16,10 +16,10 @@ namespace Mil.Paperwork.Infrastructure.DataModels
 
         public string FullName => $"{FirstName} {LastName?.ToUpper()}";
 
-        [ImportColumn("Посада", isReqired: false)]
+        [ImportColumn("Посада", isRequired: false)]
         public string Position { get; set; }
 
-        [ImportColumn("Звання", isReqired: false)]
+        [ImportColumn("Звання", isRequired: false)]
         public string Rank { get; set; }
 
         public PersonDTO(string fullName, string position, string rank) : this()

@@ -97,7 +97,6 @@ namespace Mil.Paperwork.DataAccess.Mappers
                 .Select(asset => new EASAssetSnapshot
                 {
                     Name = asset.Name,
-                    SerialNumber = asset.SerialNumber,
                     Code = asset.Code,
                     MeasurementUnit = asset.MeasurementUnit,
                     Category = asset.Category,
@@ -116,7 +115,6 @@ namespace Mil.Paperwork.DataAccess.Mappers
                 .Select(snapshot => new EASAssetData
                 {
                     Name = snapshot.Name,
-                    SerialNumber = snapshot.SerialNumber,
                     Code = snapshot.Code,
                     MeasurementUnit = snapshot.MeasurementUnit,
                     Category = snapshot.Category,

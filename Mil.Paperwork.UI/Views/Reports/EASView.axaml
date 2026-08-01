@@ -258,7 +258,7 @@
                                         <StackPanel Margin="4" Spacing="4">
 
                                             <!-- Service selector row with asset row controls -->
-                                            <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto">
+                                            <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto">
                                                 <TextBlock Grid.Column="0" Text="Служба:" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                                 <ComboBox Grid.Column="1"
                                                           ItemsSource="{Binding AvailableServices}"
@@ -289,6 +289,15 @@
                                                     <PathIcon Width="16" Height="16"
                                                               Foreground="{DynamicResource BrushActionDelete}"
                                                               Data="{StaticResource IconRemoveTableRow}"/>
+                                                </Button>
+                                                <Button Grid.Column="5"
+                                                        AutomationProperties.AutomationId="EAS_ImportAssetsButton"
+                                                        Command="{Binding ImportAssetsCommand}"
+                                                        Padding="6"
+                                                        Margin="8,0,0,0"
+                                                        ToolTip.Tip="Імпортувати таблицю майна з Excel">
+                                                    <PathIcon Width="16" Height="16"
+                                                              Data="{StaticResource IconImport}"/>
                                                 </Button>
                                             </Grid>
 
@@ -377,7 +386,7 @@
                                                       AutoGenerateColumns="False"
                                                       GridLinesVisibility="All">
                                                 <DataGrid.Columns>
-                                                    <DataGridTemplateColumn Header="Найменування" Width="*" MinWidth="140">
+                                                    <DataGridTemplateColumn Header="Найменування" Width="*" MinWidth="110">
                                                         <DataGridTemplateColumn.CellTemplate>
                                                             <DataTemplate>
                                                                 <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
@@ -387,17 +396,7 @@
                                                         </DataGridTemplateColumn.CellTemplate>
                                                     </DataGridTemplateColumn>
 
-                                                    <DataGridTemplateColumn Header="Серійний номер" Width="120">
-                                                        <DataGridTemplateColumn.CellTemplate>
-                                                            <DataTemplate>
-                                                                <TextBox Text="{Binding SerialNumber, UpdateSourceTrigger=PropertyChanged}"
-                                                                         BorderThickness="0"
-                                                                         VerticalAlignment="Center"/>
-                                                            </DataTemplate>
-                                                        </DataGridTemplateColumn.CellTemplate>
-                                                    </DataGridTemplateColumn>
-
-                                                    <DataGridTemplateColumn Header="Код номенклатури" Width="110">
+                                                    <DataGridTemplateColumn Header="Код номенкл.>" Width="100">
                                                         <DataGridTemplateColumn.CellTemplate>
                                                             <DataTemplate>
                                                                 <TextBox Text="{Binding Code, UpdateSourceTrigger=PropertyChanged}"
@@ -407,7 +406,7 @@
                                                         </DataGridTemplateColumn.CellTemplate>
                                                     </DataGridTemplateColumn>
 
-                                                    <DataGridTemplateColumn Header="Од. вим." Width="90">
+                                                    <DataGridTemplateColumn Header="Од. вим." Width="70">
                                                         <DataGridTemplateColumn.CellTemplate>
                                                             <DataTemplate>
                                                                 <ComboBox ItemsSource="{Binding $parent[DataGrid].DataContext.MeasurementUnits}"
@@ -420,7 +419,7 @@
                                                         </DataGridTemplateColumn.CellTemplate>
                                                     </DataGridTemplateColumn>
 
-                                                    <DataGridTemplateColumn Header="Категорія" Width="80">
+                                                    <DataGridTemplateColumn Header="Кат." Width="50">
                                                         <DataGridTemplateColumn.CellTemplate>
                                                             <DataTemplate>
                                                                 <NumericUpDown Value="{Binding Category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -432,7 +431,7 @@
                                                         </DataGridTemplateColumn.CellTemplate>
                                                     </DataGridTemplateColumn>
 
-                                                    <DataGridTemplateColumn Header="К-сть" Width="70">
+                                                    <DataGridTemplateColumn Header="К-ть" Width="50">
                                                         <DataGridTemplateColumn.CellTemplate>
                                                             <DataTemplate>
                                                                 <NumericUpDown Value="{Binding Count, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -444,7 +443,7 @@
                                                         </DataGridTemplateColumn.CellTemplate>
                                                     </DataGridTemplateColumn>
 
-                                                    <DataGridTemplateColumn Header="Первісна, грн." Width="110">
+                                                    <DataGridTemplateColumn Header="Перв., грн." Width="110">
                                                         <DataGridTemplateColumn.CellTemplate>
                                                             <DataTemplate>
                                                                 <NumericUpDown Value="{Binding OriginalPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -455,7 +454,7 @@
                                                         </DataGridTemplateColumn.CellTemplate>
                                                     </DataGridTemplateColumn>
 
-                                                    <DataGridTemplateColumn Header="Залишкова, грн." Width="110">
+                                                    <DataGridTemplateColumn Header="Зал., грн." Width="110">
                                                         <DataGridTemplateColumn.CellTemplate>
                                                             <DataTemplate>
                                                                 <NumericUpDown Value="{Binding ResidualPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

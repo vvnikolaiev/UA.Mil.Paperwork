@@ -139,8 +139,8 @@ namespace Mil.Paperwork.Tests
                         HeadPosition = "Начальник групи зв'язку та кібербезпеки",
                         Assets =
                         [
-                            new() { Name = "Планшет Samsung Galaxy Tab Active 3", SerialNumber = "R52W302868X", Code = "-", MeasurementUnit = "шт.", Category = 2, Count = 1, OriginalPrice = 15519.99m, ResidualPrice = 10131.45m },
-                            new() { Name = "Карта пам'яті 128 GB", SerialNumber = string.Empty, Code = "-", MeasurementUnit = "шт.", Category = 2, Count = 1, OriginalPrice = 303.42m, ResidualPrice = 173.31m }
+                            new() { Name = "Планшет Samsung Galaxy Tab Active 3", Code = "-", MeasurementUnit = "шт.", Category = 2, Count = 1, OriginalPrice = 15519.99m, ResidualPrice = 10131.45m },
+                            new() { Name = "Карта пам'яті 128 GB", Code = "-", MeasurementUnit = "шт.", Category = 2, Count = 1, OriginalPrice = 303.42m, ResidualPrice = 173.31m }
                         ]
                     },
                     new EASServiceData
@@ -152,7 +152,7 @@ namespace Mil.Paperwork.Tests
                         HeadPosition = "Начальник речової служби",
                         Assets =
                         [
-                            new() { Name = "Телевізор LG 32LQ630B6LA", SerialNumber = "407MASXAPC46", Code = "Д3000000Y", MeasurementUnit = "шт.", Category = 2, Count = 1, OriginalPrice = 9500.00m, ResidualPrice = 8527.20m }
+                            new() { Name = "Телевізор LG 32LQ630B6LA", Code = "Д3000000Y", MeasurementUnit = "шт.", Category = 2, Count = 1, OriginalPrice = 9500.00m, ResidualPrice = 8527.20m }
                         ]
                     }
                 ],

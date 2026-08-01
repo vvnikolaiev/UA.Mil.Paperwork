@@ -1,6 +1,10 @@
 using Mil.MVVM.Common;
+using Mil.Paperwork.Common.Enums;
+using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Domain.DataModels;
+using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.Enums;
+using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.ViewModels.Dictionaries;
 using Mil.Paperwork.UI.ViewModels.Tabs;
 using System;
@@ -27,6 +31,9 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         private readonly Action<EASServiceViewModel> _removeCallback;
         private readonly Func<string, string, AssetType, string, string, string, MilitaryServiceViewModel?> _addServiceCallback;
         private readonly Action<MilitaryServiceViewModel> _saveHeadCallback;
+        private readonly IImportService _importService;
+        private readonly IDataService _dataService;
+        private readonly IDialogService _dialogService;
 
         public IList<MilitaryServiceViewModel> AvailableServices { get; }
         public ObservableCollection<AssetType> AssetTypes { get; }
@@ -116,6 +123,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         public IDelegateCommand AddAssetCommand { get; }
         public IDelegateCommand RemoveAssetCommand { get; }
+        public IDelegateCommand ImportAssetsCommand { get; }
         public IDelegateCommand RequestRemoveCommand { get; }
         public IDelegateCommand ToggleAddServiceFormCommand { get; }
         public IDelegateCommand ConfirmAddServiceCommand { get; }
@@ -127,7 +135,10 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             IList<MeasurementUnitViewModel> measurementUnits,
             Action<EASServiceViewModel> removeCallback,
             Func<string, string, AssetType, string, string, string, MilitaryServiceViewModel?> addServiceCallback,
-            Action<MilitaryServiceViewModel> saveHeadCallback)
+            Action<MilitaryServiceViewModel> saveHeadCallback,
+            IImportService importService,
+            IDataService dataService,
+            IDialogService dialogService)
         {
             AvailableServices = availableServices;
             AssetTypes = assetTypes;
@@ -138,9 +149,13 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             _removeCallback = removeCallback;
             _addServiceCallback = addServiceCallback;
             _saveHeadCallback = saveHeadCallback;
+            _importService = importService;
+            _dataService = dataService;
+            _dialogService = dialogService;
 
             AddAssetCommand = new DelegateCommand(AddAsset);
             RemoveAssetCommand = new DelegateCommand(RemoveAsset);
+            ImportAssetsCommand = new DelegateCommand(ImportAssetsCommandExecute);
             RequestRemoveCommand = new DelegateCommand(RequestRemoveCommandExecute);
             ToggleAddServiceFormCommand = new DelegateCommand(ToggleAddServiceForm);
             ConfirmAddServiceCommand = new DelegateCommand(ConfirmAddService);
@@ -244,6 +259,35 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                 Assets.Remove(SelectedAsset);
                 SelectedAsset = Assets.LastOrDefault();
             }
+        }
+
+        private async void ImportAssetsCommandExecute()
+        {
+            var importViewModel = new ImportViewModel(_importService, _dataService, _dialogService);
+            importViewModel.SetImportType(ImportType.EASAssets);
+
+            await _dialogService.OpenImportWindow(importViewModel);
+
+            // Do not gate on ImportViewModel.IsValid here: it tracks the dialog's live mapping state and
+            // flips back to false when the ComboBoxes unload on close. ImportDataResult is only set when
+            // the user actually confirmed the import.
+            var importResult = importViewModel.ImportDataResult;
+            if (importResult != null && importResult.IsSuccessful && importResult.Rows != null)
+            {
+                var importedAssets = importResult.Rows.Cast<EASAssetData>().ToList();
+                FillAssetsTable(importedAssets);
+            }
+        }
+
+        private void FillAssetsTable(IList<EASAssetData> importedAssets)
+        {
+            Assets.Clear();
+            foreach (var assetData in importedAssets)
+            {
+                Assets.Add(EASAssetViewModel.FromAssetData(assetData));
+            }
+
+            SelectedAsset = Assets.FirstOrDefault();
         }
 
         public void LoadFrom(EASServiceData data)

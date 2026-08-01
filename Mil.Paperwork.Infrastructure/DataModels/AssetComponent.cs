@@ -4,7 +4,7 @@ namespace Mil.Paperwork.Infrastructure.DataModels
 {
     public class AssetComponent
     {
-        [ImportColumn("Назва", isReqired: true)]
+        [ImportColumn("Назва", isRequired: true)]
         public string Name { get; set; }
 
         [ImportColumn("Од вимір")]
@@ -19,7 +19,7 @@ namespace Mil.Paperwork.Infrastructure.DataModels
         [ImportColumn("Категорія")]
         public int Category { get; set; } = 2;
 
-        [ImportColumn("Ціна", isReqired: true)]
+        [ImportColumn("Ціна", isRequired: true)]
         public decimal Price { get; set; }
 
         public bool Exclude { get; set; }

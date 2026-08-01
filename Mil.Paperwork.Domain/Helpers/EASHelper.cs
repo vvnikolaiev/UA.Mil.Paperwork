@@ -161,7 +161,7 @@ namespace Mil.Paperwork.Domain.Helpers
                     var sum = CalculateAssetSum(asset);
 
                     row.GetCell(AssetsTableColumnNumber).AddNumber(assetNumber, cellParams);
-                    row.GetCell(AssetsTableColumnName).AddText(ReportHelper.GetFullAssetName(asset.Name, asset.SerialNumber), nameParams);
+                    row.GetCell(AssetsTableColumnName).AddText(asset.Name, nameParams);
                     row.GetCell(AssetsTableColumnCode).AddText(asset.Code, cellParams);
                     row.GetCell(AssetsTableColumnUnit).AddText(asset.MeasurementUnit, cellParams);
                     row.GetCell(AssetsTableColumnCategory).AddText(ReportHelper.ConvertCategoryToText(asset.Category), cellParams);

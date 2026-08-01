@@ -190,8 +190,7 @@ namespace Mil.Paperwork.Tests.History
             Assert.Equal("Тетяна Коробка", service.HeadName);
 
             var asset = Assert.Single(service.Assets);
-            Assert.Equal("Телевізор", asset.Name);
-            Assert.Equal("SN-1", asset.SerialNumber);
+            Assert.Equal("Телевізор, с/н SN-1", asset.Name);
             Assert.Equal("NC-77", asset.Code);
             Assert.Equal(2, asset.Category);
             Assert.True(asset.OriginalPrice > 0);

@@ -4,31 +4,31 @@ namespace Mil.Paperwork.Infrastructure.DataModels
 {
     public class ProductDTO : IProductData
     {
-        [ImportColumn("Назва", isReqired: true)]
+        [ImportColumn("Назва", isRequired: true)]
         public string Name { get; set; }
         
-        [ImportColumn("Коротка назва", isReqired: false)]
+        [ImportColumn("Коротка назва", isRequired: false)]
         public string ShortName { get; set; }
 
-        [ImportColumn("Одиниця виміру", isReqired: true)]
+        [ImportColumn("Одиниця виміру", isRequired: true)]
         public string MeasurementUnit { get; set; }
 
-        [ImportColumn("Код номенклатури", isReqired: false)]
+        [ImportColumn("Код номенклатури", isRequired: false)]
         public string NomenclatureCode { get; set; }
 
-        [ImportColumn("Ціна", isReqired: true)]
+        [ImportColumn("Ціна", isRequired: true)]
         public decimal Price { get; set; }
 
-        [ImportColumn("Дата вв експл", isReqired: false)]
+        [ImportColumn("Дата вв експл", isRequired: false)]
         public DateTime StartDate { get; set; }
 
-        [ImportColumn("Гарантія (міс.)", isReqired: false)]
+        [ImportColumn("Гарантія (міс.)", isRequired: false)]
         public int WarrantyPeriodMonths { get; set; } = 12;
 
-        [ImportColumn("Рік виробництва", isReqired: false)]
+        [ImportColumn("Рік виробництва", isRequired: false)]
         public int YearManufactured { get; set; }
 
-        [ImportColumn("Ресурс (років)", isReqired: false)]
+        [ImportColumn("Ресурс (років)", isRequired: false)]
         public int ResourceYears { get; set; }
 
         public string AlmostUniqueID => $"{Name}{MeasurementUnit}{Price}{NomenclatureCode}";

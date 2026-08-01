@@ -148,7 +148,7 @@ namespace Mil.Paperwork.UI.Factories
                     createdTab = new WriteOffOrderViewModel(_reportManager, _dataService, _reportDataService, _reportHistoryService, _dialogService);
                     break;
                 case ReportType.EAS:
-                    createdTab = new EASViewModel(_reportManager, _dataService, _reportDataService, _reportHistoryService, _dialogService);
+                    createdTab = new EASViewModel(_reportManager, _dataService, _reportDataService, _reportHistoryService, _dialogService, _importService);
                     break;
                 default:
                     createdTab = null;

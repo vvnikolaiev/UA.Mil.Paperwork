@@ -115,7 +115,6 @@ namespace Mil.Paperwork.DataAccess.Mappers
                     break;
                 case EASReportSnapshot easSnapshot:
                     names.AddRange(easSnapshot.Services.SelectMany(service => service.Assets).Select(asset => asset.Name));
-                    serialNumbers.AddRange(easSnapshot.Services.SelectMany(service => service.Assets).Select(asset => asset.SerialNumber));
                     nomenclatureCodes.AddRange(easSnapshot.Services.SelectMany(service => service.Assets).Select(asset => asset.Code));
                     break;
             }

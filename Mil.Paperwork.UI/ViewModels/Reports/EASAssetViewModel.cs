@@ -7,7 +7,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
     internal class EASAssetViewModel : ObservableItem
     {
         private string _name = string.Empty;
-        private string _serialNumber = string.Empty;
         private string _code = string.Empty;
         private string _measurementUnit = string.Empty;
         private int _category;
@@ -19,12 +18,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         {
             get => _name;
             set => SetProperty(ref _name, value);
-        }
-
-        public string SerialNumber
-        {
-            get => _serialNumber;
-            set => SetProperty(ref _serialNumber, value);
         }
 
         public string Code
@@ -82,7 +75,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             var result = new EASAssetViewModel
             {
                 Name = data.Name,
-                SerialNumber = data.SerialNumber,
                 Code = data.Code,
                 MeasurementUnit = data.MeasurementUnit,
                 Category = data.Category,
@@ -98,7 +90,6 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             var result = new EASAssetData
             {
                 Name = Name,
-                SerialNumber = SerialNumber,
                 Code = Code,
                 MeasurementUnit = MeasurementUnit,
                 Category = Category,
