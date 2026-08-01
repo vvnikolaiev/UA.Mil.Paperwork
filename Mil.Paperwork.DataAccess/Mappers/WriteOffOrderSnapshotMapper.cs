@@ -1,6 +1,7 @@
 using Mil.Paperwork.DataAccess.DataModels.Snapshots;
 using Mil.Paperwork.Domain.DataModels;
 using Mil.Paperwork.Domain.DataModels.ReportData;
+using Mil.Paperwork.Infrastructure.DataModels;
 
 namespace Mil.Paperwork.DataAccess.Mappers
 {
@@ -120,30 +121,24 @@ namespace Mil.Paperwork.DataAccess.Mappers
             return result;
         }
 
-        private static List<WriteOffWitnessSnapshot> ToWitnessSnapshots(IList<WriteOffWitnessData>? witnesses)
+        private static List<PersonSnapshot> ToWitnessSnapshots(IList<PersonDTO>? witnesses)
         {
             var result = witnesses?
                 .Where(witness => witness != null)
-                .Select(witness => new WriteOffWitnessSnapshot
-                {
-                    Rank = witness.Rank,
-                    Name = witness.Name,
-                    Position = witness.Position
-                })
+                .Select(witness => PersonSnapshotMapper.ToSnapshot(witness))
+                .Where(snapshot => snapshot != null)
+                .Select(snapshot => snapshot!)
                 .ToList() ?? [];
 
             return result;
         }
 
-        private static IList<WriteOffWitnessData> ToWitnesses(List<WriteOffWitnessSnapshot>? snapshots)
+        private static IList<PersonDTO> ToWitnesses(List<PersonSnapshot>? snapshots)
         {
-            IList<WriteOffWitnessData> result = snapshots?
-                .Select(snapshot => new WriteOffWitnessData
-                {
-                    Rank = snapshot.Rank,
-                    Name = snapshot.Name,
-                    Position = snapshot.Position
-                })
+            IList<PersonDTO> result = snapshots?
+                .Select(snapshot => PersonSnapshotMapper.ToPerson(snapshot))
+                .Where(person => person != null)
+                .Select(person => person!)
                 .ToList() ?? [];
 
             return result;

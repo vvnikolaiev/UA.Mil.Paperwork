@@ -1,4 +1,5 @@
 ﻿using Mil.Paperwork.Infrastructure.Attributes;
+using Mil.Paperwork.Infrastructure.Helpers;
 
 namespace Mil.Paperwork.Infrastructure.DataModels
 {
@@ -23,22 +24,10 @@ namespace Mil.Paperwork.Infrastructure.DataModels
 
         public PersonDTO(string fullName, string position, string rank) : this()
         {
-            var name = fullName?.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            if (name != null && name.Length > 0)
-            {
-                // Ігор ПЕТРЕНКО
-                // ПЕТРЕНКО Ігор Володимирович
-                // Петренко
-                LastName = name.Length == 1 || name.Length == 3 ? name[0] : name[1];
-                FirstName = name.Length == 2 ? name[0] : name.Length == 3 ? name[1] : string.Empty;
-                Patronymic = name.Length == 3 ? name[1] : string.Empty;
-            }
-            else
-            {
-                FirstName = string.Empty;
-                LastName = string.Empty;
-                Patronymic = string.Empty;
-            }
+            var parsed = PersonNameHelper.ParseFullName(fullName);
+            FirstName = parsed.FirstName;
+            LastName = parsed.LastName;
+            Patronymic = parsed.Patronymic;
 
             Position = position;
             Rank = rank;

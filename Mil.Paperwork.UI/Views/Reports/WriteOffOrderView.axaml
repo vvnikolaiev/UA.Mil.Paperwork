@@ -237,7 +237,7 @@
                                     <DataGridTemplateColumn Header="ПРІЗВИЩЕ Ім'я По-батькові" Width="*">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                                <TextBox Text="{Binding FullNameWithPatronymic, UpdateSourceTrigger=PropertyChanged}"
                                                          PlaceholderText="УДАЛОВ Володимир Віталійович"
                                                          BorderThickness="0"
                                                          VerticalAlignment="Center"/>

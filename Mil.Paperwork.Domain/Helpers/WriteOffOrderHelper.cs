@@ -1,4 +1,6 @@
 using Mil.Paperwork.Domain.DataModels;
+using Mil.Paperwork.Infrastructure.DataModels;
+using Mil.Paperwork.Infrastructure.Helpers;
 
 namespace Mil.Paperwork.Domain.Helpers
 {
@@ -87,12 +89,13 @@ namespace Mil.Paperwork.Domain.Helpers
             return result;
         }
 
-        internal static IList<BlockParagraph> BuildWitnessesBlock(IList<WriteOffWitnessData> witnesses, string milUnit)
+        internal static IList<BlockParagraph> BuildWitnessesBlock(IList<PersonDTO> witnesses, string milUnit)
         {
             var paragraphs = new List<BlockParagraph>();
             foreach (var w in witnesses)
             {
-                var line = string.Format(WitnessLineFormat, w.Rank, w.Name, w.Position, milUnit);
+                var name = PersonNameHelper.FormatFullName(w.LastName, w.FirstName, w.Patronymic);
+                var line = string.Format(WitnessLineFormat, w.Rank, name, w.Position, milUnit);
                 paragraphs.Add(new BlockParagraph(line, IndentLevel: 1, FontSize: DocumentFontSize));
             }
             return paragraphs;
