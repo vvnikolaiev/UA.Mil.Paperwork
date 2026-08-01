@@ -300,9 +300,13 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             await _dialogService.OpenImportWindow(importViewModel);
 
-            if (importViewModel.IsValid)
+            // Do not gate on ImportViewModel.IsValid here: it tracks the dialog's live mapping state and
+            // flips back to false when the ComboBoxes unload on close. ImportDataResult is only set when
+            // the user actually confirmed the import.
+            var importResult = importViewModel.ImportDataResult;
+            if (importResult != null && importResult.IsSuccessful && importResult.Rows != null)
             {
-                var assetComponents = importViewModel.ImportDataResult.Rows.Cast<AssetComponent>().ToList();
+                var assetComponents = importResult.Rows.Cast<AssetComponent>().ToList();
                 FillAssetComponentsTable(assetComponents);
             }
         }
