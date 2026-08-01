@@ -18,6 +18,7 @@ namespace Mil.Paperwork.Domain
             services.AddSingleton<InvoiceReportService>();
             services.AddSingleton<Handover23ReportService>();
             services.AddSingleton<WriteOffOrderReportService>();
+            services.AddSingleton<EASReportService>();
 
             services.AddSingleton<IExportService, ExportService>();
             services.AddSingleton<IImportService, ImportService>();

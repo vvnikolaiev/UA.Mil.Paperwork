@@ -16,6 +16,7 @@ namespace Mil.Paperwork.DataAccess.Mappers
                 OrdenNumber = data.OrdenNumber,
                 OrdenDate = data.OrdenDate,
                 BookOfLossesExtract = ToBookExtractSnapshot(data.BookOfLossesExtractData),
+                ServiceKey = data.ServiceKey,
                 DestinationFolder = data.DestinationFolder
             };
 
@@ -32,6 +33,7 @@ namespace Mil.Paperwork.DataAccess.Mappers
                 OrdenNumber = snapshot.OrdenNumber,
                 OrdenDate = snapshot.OrdenDate,
                 BookOfLossesExtractData = ToBookExtractData(snapshot.BookOfLossesExtract),
+                ServiceKey = snapshot.ServiceKey,
                 DestinationFolder = snapshot.DestinationFolder
             };
 

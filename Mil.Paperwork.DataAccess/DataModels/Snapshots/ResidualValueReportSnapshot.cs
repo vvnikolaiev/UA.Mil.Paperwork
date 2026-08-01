@@ -9,6 +9,7 @@ namespace Mil.Paperwork.DataAccess.DataModels.Snapshots
         public Dictionary<string, decimal> MetalCosts { get; set; } = [];
         public DateTime EventDate { get; set; }
         public int? EventReportNumber { get; set; }
+        public string ServiceKey { get; set; } = string.Empty;
         public string DestinationFolder { get; set; } = string.Empty;
     }
 }

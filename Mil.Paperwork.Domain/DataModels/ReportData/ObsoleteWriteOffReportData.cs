@@ -43,6 +43,8 @@ namespace Mil.Paperwork.Domain.DataModels.ReportData
 
         public IBookExtractData BookOfLossesExtractData { get; set; }
 
+        public string ServiceKey { get; set; } = string.Empty;
+
         public string GetDestinationPath()
         {
             var destinationPath = PathsHelper.GetDestinationPath(DestinationFolder, EventReportNumber, EventDate);

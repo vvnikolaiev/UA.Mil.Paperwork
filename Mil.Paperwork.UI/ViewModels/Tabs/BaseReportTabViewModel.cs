@@ -129,6 +129,20 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             }
         }
 
+        protected override async void Close()
+        {
+            var dlgResult = DialogResult.Yes;
+            if (IsDirty)
+            {
+                dlgResult = await _dialogService.ShowMessageAsync(TabCloseConfirmation, "Підтвердження", DialogButtons.YesNo);
+            }
+
+            if (dlgResult == DialogResult.Yes)
+            {
+                RaiseTabCloseRequested();
+            }
+        }
+
         protected RibbonGroupViewModel CreateDocumentGroup(IDelegateCommand generateCommand)
         {
             var actions = new List<RibbonActionViewModel>

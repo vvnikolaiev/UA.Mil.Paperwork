@@ -24,7 +24,8 @@ namespace Mil.Paperwork.DataAccess.Conversions
                 Assets = [.. residualValueData.Assets ?? []],
                 EventDate = residualValueData.EventDate,
                 DocumentDate = today,
-                OrdenDate = today
+                OrdenDate = today,
+                ServiceKey = residualValueData.ServiceKey
             };
 
             result.Add(reportData);

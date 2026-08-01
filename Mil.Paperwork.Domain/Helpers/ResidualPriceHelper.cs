@@ -24,11 +24,19 @@ namespace Mil.Paperwork.Domain.Helpers
         public static decimal CalculateResidualPriceForItem(IAssetInfo asset, DateTime reportDate, int count = 1)
         {
             var calculator = asset.GetCalculator();
-            
+
             var indexationCoefficient = CoefficientsHelper.GetIndexationCoefficient(asset.StartDate.Year, reportDate.Year);
 
             var totalWearCoeff = calculator.CalculateTotalWearCoefficient(asset, reportDate);
             var result = CalculateResidualPrice(asset.Price, indexationCoefficient, totalWearCoeff, count);
+
+            return result;
+        }
+
+        public static decimal CalculateIndexedPrice(IAssetInfo asset, DateTime reportDate)
+        {
+            var indexationCoefficient = CoefficientsHelper.GetIndexationCoefficient(asset.StartDate.Year, reportDate.Year);
+            var result = Math.Round(asset.Price * indexationCoefficient, 2);
 
             return result;
         }

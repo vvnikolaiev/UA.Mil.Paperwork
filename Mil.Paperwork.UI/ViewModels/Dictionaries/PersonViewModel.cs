@@ -1,4 +1,5 @@
 ﻿using Mil.Paperwork.Infrastructure.DataModels;
+using Mil.Paperwork.Infrastructure.Helpers;
 using Mil.MVVM.Common;
 
 namespace Mil.Paperwork.UI.ViewModels.Dictionaries
@@ -30,6 +31,18 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
         }
 
         public string FullName => $"{FirstName} {LastName}";
+
+        public string FullNameWithPatronymic
+        {
+            get => PersonNameHelper.FormatFullName(LastName, FirstName, Patronymic);
+            set
+            {
+                var parsed = PersonNameHelper.ParseFullName(value);
+                FirstName = parsed.FirstName;
+                LastName = parsed.LastName;
+                Patronymic = parsed.Patronymic;
+            }
+        }
 
         public string Position
         {

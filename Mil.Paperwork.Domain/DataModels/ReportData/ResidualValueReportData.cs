@@ -11,6 +11,7 @@ namespace Mil.Paperwork.Domain.DataModels.ReportData
         public DateTime EventDate { get; set; }
         public string DestinationFolder { get; set; }
         public int? EventReportNumber { get; set; }
+        public string ServiceKey { get; set; } = string.Empty;
 
         public string GetDestinationPath()
         {

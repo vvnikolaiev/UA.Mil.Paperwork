@@ -1,0 +1,483 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="500"
+             x:Class="Mil.Paperwork.UI.Views.Reports.EASView"
+             xmlns:reportViewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Reports"
+             xmlns:dictionaries="clr-namespace:Mil.Paperwork.UI.ViewModels.Dictionaries"
+             xmlns:tabViewModels="clr-namespace:Mil.Paperwork.UI.ViewModels.Tabs"
+             xmlns:controls="clr-namespace:Mil.Paperwork.UI.Controls"
+             x:DataType="reportViewModels:EASViewModel">
+
+    <DockPanel>
+
+        <controls:RibbonToolbar DockPanel.Dock="Top" Groups="{Binding RibbonGroups}" StatusContent="{Binding DraftStatusText}" />
+
+        <!-- Main content: left fields + right services -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width=".7*" MinWidth="390" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <!-- LEFT: Document metadata fields -->
+            <ScrollViewer Grid.Column="0"
+                          HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto"
+                          Margin="4,4,2,4">
+                <StackPanel Spacing="6" Classes="parameters">
+
+                    <!-- Подія section -->
+                    <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                            BorderThickness="1" CornerRadius="4" Padding="6">
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                              ColumnDefinitions="Auto,*,Auto,*">
+
+                            <TextBlock Grid.Row="0" Grid.ColumnSpan="4" Text="Подія"
+                                       FontWeight="SemiBold" Margin="0,0,0,4"/>
+
+                            <!-- Рапорт № + Дата -->
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Рапорт №:"
+                                       VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBox   Grid.Row="1" Grid.Column="1"
+                                       Text="{Binding ReportNum, UpdateSourceTrigger=PropertyChanged}"
+                                       Margin="0,2,8,2"
+                                       AutomationProperties.AutomationId="EAS_ReportNumTextBox"/>
+                            <TextBlock Grid.Row="1" Grid.Column="2" Text="Дата:"
+                                       VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <CalendarDatePicker Grid.Row="1" Grid.Column="3"
+                                                HorizontalAlignment="Stretch"
+                                                SelectedDate="{Binding ReportDate}"
+                                                Margin="0,2"
+                                                AutomationProperties.AutomationId="EAS_ReportDatePicker"/>
+
+                            <!-- Звання (родовий відмінок) -->
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Звання:"
+                                       VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBox   Grid.Row="2" Grid.Column="1"
+                                       Text="{Binding ReporterRank, UpdateSourceTrigger=PropertyChanged}"
+                                       PlaceholderText="родовий відмінок"
+                                       Margin="0,2,8,2"
+                                       AutomationProperties.AutomationId="EAS_ReporterRankTextBox"/>
+
+                            <!-- Підрозділ -->
+                            <TextBlock Grid.Row="2" Grid.Column="2" Text="Підрозділ:"
+                                       VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBox   Grid.Row="2" Grid.Column="3"
+                                       Text="{Binding SubdivisionName, UpdateSourceTrigger=PropertyChanged}"
+                                       Margin="0,2"
+                                       AutomationProperties.AutomationId="EAS_SubdivisionNameTextBox"/>
+
+                            <!-- Прізвище, ім'я -->
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Ім'я, прізвище:"
+                                       VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBox   Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3"
+                                       Text="{Binding ReporterName, UpdateSourceTrigger=PropertyChanged}"
+                                       PlaceholderText="родовий відмінок"
+                                       Margin="0,2"
+                                       AutomationProperties.AutomationId="EAS_ReporterNameTextBox"/>
+
+                            <!-- Бойовий наказ № + Дата -->
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Бойовий наказ №:"
+                                       VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBox   Grid.Row="4" Grid.Column="1"
+                                       Text="{Binding BattleOrder, UpdateSourceTrigger=PropertyChanged}"
+                                       Margin="0,2,8,2"
+                                       AutomationProperties.AutomationId="EAS_BattleOrderTextBox"/>
+                            <TextBlock Grid.Row="4" Grid.Column="2" Text="Дата:"
+                                       VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <CalendarDatePicker Grid.Row="4" Grid.Column="3"
+                                                DisplayDateEnd="{Binding MaxDate}"
+                                                SelectedDate="{Binding BattleOrderDate, UpdateSourceTrigger=PropertyChanged}"
+                                                SelectedDateChanged="OnRestrictedDateChanged"
+                                                HorizontalAlignment="Stretch"
+                                                Margin="0,2"
+                                                AutomationProperties.AutomationId="EAS_BattleOrderDatePicker"/>
+
+                            <!-- Дата події + Час -->
+                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Дата події:"
+                                       VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <CalendarDatePicker Grid.Row="5" Grid.Column="1"
+                                                DisplayDateEnd="{Binding MaxDate}"
+                                                SelectedDate="{Binding EventDate, UpdateSourceTrigger=PropertyChanged}"
+                                                SelectedDateChanged="OnRestrictedDateChanged"
+                                                HorizontalAlignment="Stretch"
+                                                Margin="0,2,8,2"
+                                                AutomationProperties.AutomationId="EAS_EventDatePicker"/>
+                            <TextBlock Grid.Row="5" Grid.Column="2" Text="Час:"
+                                       VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <MaskedTextBox Grid.Row="5" Grid.Column="3"
+                                           Mask="00:00"
+                                           Text="{Binding EventTime}"
+                                           PlaceholderText="гг:хх"
+                                           HorizontalAlignment="Stretch"
+                                           VerticalAlignment="Center"
+                                           Margin="0,2"
+                                           AutomationProperties.AutomationId="EAS_EventTimeTextBox"/>
+
+                            <!-- Наказ на списання № + Дата -->
+                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Наказ на списання №:"
+                                       VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBox   Grid.Row="6" Grid.Column="1"
+                                       Text="{Binding OrdenNum, UpdateSourceTrigger=PropertyChanged}"
+                                       Margin="0,2,8,2"
+                                       AutomationProperties.AutomationId="EAS_OrdenNumTextBox"/>
+                            <TextBlock Grid.Row="6" Grid.Column="2" Text="Дата:"
+                                       VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <CalendarDatePicker Grid.Row="6" Grid.Column="3"
+                                                SelectedDate="{Binding OrdenDate, UpdateSourceTrigger=PropertyChanged}"
+                                                HorizontalAlignment="Stretch"
+                                                Margin="0,2"
+                                                AutomationProperties.AutomationId="EAS_OrdenDatePicker"/>
+
+                            <!-- Що сталося -->
+                            <TextBlock Grid.Row="7" Grid.ColumnSpan="4" Text="Що сталося:"
+                                       FontWeight="SemiBold" Margin="0,6,0,2"/>
+                        </Grid>
+                    </Border>
+
+                    <TextBox Text="{Binding WhatHappened, UpdateSourceTrigger=PropertyChanged}"
+                             AcceptsReturn="True"
+                             MinHeight="60"
+                             TextWrapping="Wrap"
+                             AutomationProperties.AutomationId="EAS_WhatHappenedTextBox"/>
+
+                    <!-- Свідки події -->
+                    <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                            BorderThickness="1" CornerRadius="4" Padding="6">
+                        <StackPanel Spacing="4">
+                            <Grid ColumnDefinitions="*,Auto,Auto">
+                                <TextBlock Grid.Column="0" Text="Свідки події"
+                                           FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                <Button Grid.Column="1"
+                                        Command="{Binding AddWitnessCommand}"
+                                        Padding="6"
+                                        Margin="0,0,2,0"
+                                        ToolTip.Tip="Додати свідка"
+                                        AutomationProperties.AutomationId="EAS_AddWitnessButton">
+                                    <PathIcon Width="16" Height="16"
+                                              Foreground="{DynamicResource BrushActionAdd}"
+                                              Data="{StaticResource IconAddTableRow}"/>
+                                </Button>
+                                <Button Grid.Column="2"
+                                        Command="{Binding RemoveWitnessCommand}"
+                                        Padding="6"
+                                        ToolTip.Tip="Видалити вибраного свідка"
+                                        AutomationProperties.AutomationId="EAS_RemoveWitnessButton">
+                                    <PathIcon Width="16" Height="16"
+                                              Foreground="{DynamicResource BrushActionDelete}"
+                                              Data="{StaticResource IconRemoveTableRow}"/>
+                                </Button>
+                            </Grid>
+
+                            <DataGrid ItemsSource="{Binding Witnesses}"
+                                      SelectedItem="{Binding SelectedWitness}"
+                                      MinHeight="60"
+                                      MaxHeight="220"
+                                      AutoGenerateColumns="False"
+                                      GridLinesVisibility="All"
+                                      AutomationProperties.AutomationId="EAS_WitnessesDataGrid">
+                                <DataGrid.Columns>
+                                    <DataGridTemplateColumn Header="Звання" Width="110">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBox Text="{Binding Rank, UpdateSourceTrigger=PropertyChanged}"
+                                                         PlaceholderText="старший солдат"
+                                                         BorderThickness="0"
+                                                         VerticalAlignment="Center"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+                                    <DataGridTemplateColumn Header="ПРІЗВИЩЕ Ім'я По-батькові" Width="*" MinWidth="200">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBox Text="{Binding FullNameWithPatronymic, UpdateSourceTrigger=PropertyChanged}"
+                                                         PlaceholderText="РЕМХА Тарас Юрійович"
+                                                         BorderThickness="0"
+                                                         VerticalAlignment="Center"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+                                    <DataGridTemplateColumn Header="Посада" Width="*" MinWidth="140">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBox Text="{Binding Position, UpdateSourceTrigger=PropertyChanged}"
+                                                         BorderThickness="0"
+                                                         VerticalAlignment="Center"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- RIGHT: Services section -->
+            <Grid Grid.Column="1" RowDefinitions="Auto,*" Margin="2,4,4,4">
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,0,0,6">
+                    <TextBlock Text="Служби забезпечення" FontWeight="Bold" FontSize="14" VerticalAlignment="Center"/>
+                    <Button Content="+ Додати службу" Command="{Binding AddServiceCommand}"
+                            AutomationProperties.AutomationId="EAS_AddServiceButton"/>
+                </StackPanel>
+
+                <ScrollViewer Grid.Row="1"
+                              HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding Services}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="reportViewModels:EASServiceViewModel">
+                                <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                        BorderThickness="1" CornerRadius="4" Margin="0,0,0,6">
+                                    <Expander IsExpanded="True" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch">
+                                        <Expander.Header>
+                                            <Grid ColumnDefinitions="*,Auto,Auto">
+                                                <TextBlock Grid.Column="0"
+                                                           Text="{Binding SelectedService.NominativeName, FallbackValue='— оберіть службу —'}"
+                                                           VerticalAlignment="Center"
+                                                           FontWeight="SemiBold"/>
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding ServiceSubtotal, StringFormat='Σ {0:N2} грн.'}"
+                                                           VerticalAlignment="Center"
+                                                           FontStyle="Italic"
+                                                           Margin="12,0"/>
+                                                <Button Grid.Column="2"
+                                                        Content="✕"
+                                                        Command="{Binding RequestRemoveCommand}"
+                                                        Padding="6,2"
+                                                        ToolTip.Tip="Видалити службу"/>
+                                            </Grid>
+                                        </Expander.Header>
+
+                                        <StackPanel Margin="4" Spacing="4">
+
+                                            <!-- Service selector row with asset row controls -->
+                                            <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto">
+                                                <TextBlock Grid.Column="0" Text="Служба:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                <ComboBox Grid.Column="1"
+                                                          ItemsSource="{Binding AvailableServices}"
+                                                          SelectedItem="{Binding SelectedService}"
+                                                          DisplayMemberBinding="{Binding NominativeName, DataType={x:Type tabViewModels:MilitaryServiceViewModel}}"
+                                                          HorizontalAlignment="Stretch"/>
+                                                <Button Grid.Column="2"
+                                                        Content="+ Нова"
+                                                        Command="{Binding ToggleAddServiceFormCommand}"
+                                                        IsVisible="{Binding !IsAddingNewService}"
+                                                        Padding="8,4"
+                                                        Margin="4,0,0,0"
+                                                        ToolTip.Tip="Додати нову службу до довідника"/>
+                                                <Button Grid.Column="3"
+                                                        Command="{Binding AddAssetCommand}"
+                                                        Padding="6"
+                                                        Margin="4,0,0,0"
+                                                        ToolTip.Tip="Додати рядок майна">
+                                                    <PathIcon Width="16" Height="16"
+                                                              Foreground="{DynamicResource BrushActionAdd}"
+                                                              Data="{StaticResource IconAddTableRow}"/>
+                                                </Button>
+                                                <Button Grid.Column="4"
+                                                        Command="{Binding RemoveAssetCommand}"
+                                                        Padding="6"
+                                                        Margin="2,0,0,0"
+                                                        ToolTip.Tip="Видалити вибраний рядок">
+                                                    <PathIcon Width="16" Height="16"
+                                                              Foreground="{DynamicResource BrushActionDelete}"
+                                                              Data="{StaticResource IconRemoveTableRow}"/>
+                                                </Button>
+                                            </Grid>
+
+                                            <!-- "Fix missing head of service" inline form -->
+                                            <Border IsVisible="{Binding IsHeadMissing}"
+                                                    BorderBrush="{DynamicResource BrushActionAdd}"
+                                                    BorderThickness="1" CornerRadius="3" Padding="6">
+                                                <Grid Classes="parameters"
+                                                      RowDefinitions="Auto,4,Auto,4,Auto,4,Auto"
+                                                      ColumnDefinitions="Auto,4,*">
+                                                    <TextBlock Grid.Row="0" Grid.ColumnSpan="3"
+                                                               Text="У довіднику не вказано начальника служби:"
+                                                               FontStyle="Italic" FontSize="11"/>
+
+                                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Звання:" VerticalAlignment="Center"/>
+                                                    <TextBox Grid.Row="2" Grid.Column="2"
+                                                             Text="{Binding SelectedService.HeadRank, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="ПІБ:" VerticalAlignment="Center"/>
+                                                    <TextBox Grid.Row="4" Grid.Column="2"
+                                                             Text="{Binding SelectedService.HeadName, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                                    <TextBlock Grid.Row="6" Grid.Column="0" Text="Посада:" VerticalAlignment="Center"/>
+                                                    <StackPanel Grid.Row="6" Grid.Column="2" Orientation="Horizontal" Spacing="6">
+                                                        <TextBox Text="{Binding SelectedService.HeadPosition, UpdateSourceTrigger=PropertyChanged}"
+                                                                 MinWidth="140"/>
+                                                        <Button Content="Зберегти"
+                                                                Command="{Binding SaveHeadCommand}"
+                                                                Padding="8,4"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+
+                                            <!-- Inline add-service form -->
+                                            <Border IsVisible="{Binding IsAddingNewService}"
+                                                    BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                                    BorderThickness="1" CornerRadius="3" Padding="6">
+                                                <Grid Classes="parameters"
+                                                      RowDefinitions="Auto,4,Auto,4,Auto,4,Auto,4,Auto,4,Auto,4,Auto,4,Auto"
+                                                      ColumnDefinitions="Auto,4,*">
+                                                    <TextBlock Grid.Row="0" Grid.ColumnSpan="3"
+                                                               Text="Нова служба до довідника:" FontStyle="Italic" FontSize="11"/>
+
+                                                    <TextBlock Grid.Row="2" Grid.Column="0"
+                                                               Text="Тип майна:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                    <ComboBox Grid.Row="2" Grid.Column="2"
+                                                              Classes="enum"
+                                                              ItemsSource="{Binding AssetTypes}"
+                                                              SelectedItem="{Binding NewServiceAssetType}"
+                                                              HorizontalAlignment="Stretch"/>
+
+                                                    <TextBox Grid.Row="4" Grid.ColumnSpan="3"
+                                                             Text="{Binding NewServiceNominative, UpdateSourceTrigger=PropertyChanged}"
+                                                             PlaceholderText="Назва (називний відмінок): напр. Служба зв'язку"/>
+                                                    <TextBox Grid.Row="6" Grid.ColumnSpan="3"
+                                                             Text="{Binding NewServiceGenitive, UpdateSourceTrigger=PropertyChanged}"
+                                                             PlaceholderText="Назва (родовий відмінок): напр. служби зв'язку"/>
+
+                                                    <TextBox Grid.Row="8" Grid.ColumnSpan="3"
+                                                             Text="{Binding NewServiceHeadRank, UpdateSourceTrigger=PropertyChanged}"
+                                                             PlaceholderText="Звання начальника служби"/>
+                                                    <TextBox Grid.Row="10" Grid.ColumnSpan="3"
+                                                             Text="{Binding NewServiceHeadName, UpdateSourceTrigger=PropertyChanged}"
+                                                             PlaceholderText="ПІБ начальника служби"/>
+                                                    <TextBox Grid.Row="12" Grid.ColumnSpan="3"
+                                                             Text="{Binding NewServiceHeadPosition, UpdateSourceTrigger=PropertyChanged}"
+                                                             PlaceholderText="Посада начальника служби"/>
+
+                                                    <StackPanel Grid.Row="14" Grid.ColumnSpan="3"
+                                                                Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
+                                                        <Button Content="Зберегти та обрати"
+                                                                Command="{Binding ConfirmAddServiceCommand}"
+                                                                Padding="8,4"/>
+                                                        <Button Content="Скасувати"
+                                                                Command="{Binding ToggleAddServiceFormCommand}"
+                                                                Padding="8,4"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+
+                                            <!-- Assets DataGrid -->
+                                            <DataGrid ItemsSource="{Binding Assets}"
+                                                      SelectedItem="{Binding SelectedAsset}"
+                                                      MinHeight="80"
+                                                      MaxHeight="320"
+                                                      AutoGenerateColumns="False"
+                                                      GridLinesVisibility="All">
+                                                <DataGrid.Columns>
+                                                    <DataGridTemplateColumn Header="Найменування" Width="*" MinWidth="140">
+                                                        <DataGridTemplateColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                                                         BorderThickness="0"
+                                                                         VerticalAlignment="Center"/>
+                                                            </DataTemplate>
+                                                        </DataGridTemplateColumn.CellTemplate>
+                                                    </DataGridTemplateColumn>
+
+                                                    <DataGridTemplateColumn Header="Серійний номер" Width="120">
+                                                        <DataGridTemplateColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <TextBox Text="{Binding SerialNumber, UpdateSourceTrigger=PropertyChanged}"
+                                                                         BorderThickness="0"
+                                                                         VerticalAlignment="Center"/>
+                                                            </DataTemplate>
+                                                        </DataGridTemplateColumn.CellTemplate>
+                                                    </DataGridTemplateColumn>
+
+                                                    <DataGridTemplateColumn Header="Код номенклатури" Width="110">
+                                                        <DataGridTemplateColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <TextBox Text="{Binding Code, UpdateSourceTrigger=PropertyChanged}"
+                                                                         BorderThickness="0"
+                                                                         VerticalAlignment="Center"/>
+                                                            </DataTemplate>
+                                                        </DataGridTemplateColumn.CellTemplate>
+                                                    </DataGridTemplateColumn>
+
+                                                    <DataGridTemplateColumn Header="Од. вим." Width="90">
+                                                        <DataGridTemplateColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <ComboBox ItemsSource="{Binding $parent[DataGrid].DataContext.MeasurementUnits}"
+                                                                          Text="{Binding MeasurementUnit}"
+                                                                          DisplayMemberBinding="{Binding ShortName, DataType={x:Type dictionaries:MeasurementUnitViewModel}}"
+                                                                          IsEditable="True"
+                                                                          HorizontalAlignment="Stretch"
+                                                                          BorderThickness="0"/>
+                                                            </DataTemplate>
+                                                        </DataGridTemplateColumn.CellTemplate>
+                                                    </DataGridTemplateColumn>
+
+                                                    <DataGridTemplateColumn Header="Категорія" Width="80">
+                                                        <DataGridTemplateColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <NumericUpDown Value="{Binding Category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                               Minimum="1" Maximum="5"
+                                                                               ParsingNumberStyle="Integer"
+                                                                               FormatString="0"
+                                                                               BorderThickness="0"/>
+                                                            </DataTemplate>
+                                                        </DataGridTemplateColumn.CellTemplate>
+                                                    </DataGridTemplateColumn>
+
+                                                    <DataGridTemplateColumn Header="К-сть" Width="70">
+                                                        <DataGridTemplateColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <NumericUpDown Value="{Binding Count, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                               Minimum="1"
+                                                                               ParsingNumberStyle="Integer"
+                                                                               FormatString="0"
+                                                                               BorderThickness="0"/>
+                                                            </DataTemplate>
+                                                        </DataGridTemplateColumn.CellTemplate>
+                                                    </DataGridTemplateColumn>
+
+                                                    <DataGridTemplateColumn Header="Первісна, грн." Width="110">
+                                                        <DataGridTemplateColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <NumericUpDown Value="{Binding OriginalPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                               Minimum="0"
+                                                                               FormatString="N2"
+                                                                               BorderThickness="0"/>
+                                                            </DataTemplate>
+                                                        </DataGridTemplateColumn.CellTemplate>
+                                                    </DataGridTemplateColumn>
+
+                                                    <DataGridTemplateColumn Header="Залишкова, грн." Width="110">
+                                                        <DataGridTemplateColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <NumericUpDown Value="{Binding ResidualPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                               Minimum="0"
+                                                                               FormatString="N2"
+                                                                               BorderThickness="0"/>
+                                                            </DataTemplate>
+                                                        </DataGridTemplateColumn.CellTemplate>
+                                                    </DataGridTemplateColumn>
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+
+                                        </StackPanel>
+                                    </Expander>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+            </Grid>
+        </Grid>
+
+    </DockPanel>
+</UserControl>

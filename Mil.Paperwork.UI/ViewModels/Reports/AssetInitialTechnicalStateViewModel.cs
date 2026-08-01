@@ -25,7 +25,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
     {
         private readonly ReportManager _reportManager;
         private readonly IDataService _dataService;
-        private readonly IReportDataService _reportDataService;
+        protected readonly IReportDataService _reportDataService;
         private readonly IDialogService _dialogService;
         private AssetsTableViewModel _assetsTable;
         private AssetAccetpanceViewModel _assetAcceptance;

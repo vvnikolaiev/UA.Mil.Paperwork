@@ -23,6 +23,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         private readonly IDataService _dataService;
         private readonly ReportManager _reportManager;
         private readonly IDialogService _dialogService;
+        private readonly IReportDataService _reportDataService;
         private int? _eventReportNumber = null;
         private DateTimeOffset _writeOffDate = DateTimeOffset.Now.Date;
         private EventType _eventType;
@@ -94,6 +95,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             _dataService = dataService;
             _reportManager = reportManager;
             _dialogService = dialogService;
+            _reportDataService = reportDataService;
 
             AssetsTable = new AssetsTableViewModel(assetFactory, dataService, dialogService);
 
@@ -126,7 +128,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                 DestinationFolder = DestinationFolderPath,
                 EventDate = WriteOffDate.Date,
                 Assets = [.. assets],
-                MetalCosts = MetalCostCollection.ToDictionary(x => x.Metal, x => x.Cost)
+                MetalCosts = MetalCostCollection.ToDictionary(x => x.Metal, x => x.Cost),
+                ServiceKey = _reportDataService.GetSelectedService()
             };
 
             return reportData;

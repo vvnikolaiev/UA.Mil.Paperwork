@@ -21,6 +21,7 @@ namespace Mil.Paperwork.DataAccess.Mappers
                 IAssetValuationReportData valuationData => ValuationSnapshotMapper.ToSnapshot(valuationData),
                 IHandoverReportData handoverData => Handover23SnapshotMapper.ToSnapshot(handoverData),
                 IWriteOffOrderReportData writeOffOrderData => WriteOffOrderSnapshotMapper.ToSnapshot(writeOffOrderData),
+                IEASReportData easData => EASSnapshotMapper.ToSnapshot(easData),
                 _ => throw new NotSupportedException($"Report data of type '{reportData?.GetType().Name}' ({reportType}) is not supported.")
             };
 
@@ -41,6 +42,7 @@ namespace Mil.Paperwork.DataAccess.Mappers
                 ValuationReportSnapshot valuationSnapshot => ValuationSnapshotMapper.ToReportData(valuationSnapshot),
                 Handover23ReportSnapshot handoverSnapshot => Handover23SnapshotMapper.ToReportData(handoverSnapshot),
                 WriteOffOrderReportSnapshot writeOffOrderSnapshot => WriteOffOrderSnapshotMapper.ToReportData(writeOffOrderSnapshot),
+                EASReportSnapshot easSnapshot => EASSnapshotMapper.ToReportData(easSnapshot),
                 _ => throw new NotSupportedException($"Snapshot of type '{snapshot?.GetType().Name}' is not supported.")
             };
 
@@ -110,6 +112,11 @@ namespace Mil.Paperwork.DataAccess.Mappers
                     break;
                 case WriteOffOrderReportSnapshot writeOffOrderSnapshot:
                     names.AddRange(writeOffOrderSnapshot.Services.SelectMany(service => service.Assets).Select(asset => asset.Name));
+                    break;
+                case EASReportSnapshot easSnapshot:
+                    names.AddRange(easSnapshot.Services.SelectMany(service => service.Assets).Select(asset => asset.Name));
+                    serialNumbers.AddRange(easSnapshot.Services.SelectMany(service => service.Assets).Select(asset => asset.SerialNumber));
+                    nomenclatureCodes.AddRange(easSnapshot.Services.SelectMany(service => service.Assets).Select(asset => asset.Code));
                     break;
             }
 
