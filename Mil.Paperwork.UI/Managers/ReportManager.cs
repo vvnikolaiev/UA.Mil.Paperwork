@@ -1,20 +1,13 @@
 using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Domain.Services;
-using Mil.Paperwork.Infrastructure.Enums;
-using Mil.Paperwork.Infrastructure.Services;
-using Mil.Paperwork.UI.Helpers;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Mil.Paperwork.UI.Managers
 {
     public class ReportManager
     {
-        private readonly IDialogService _dialogService;
-        private readonly IReportHistoryService _reportHistoryService;
         private readonly IReportService<ICommonWriteOffReportData> _qualityStateReportService;
         private readonly IReportService<ICommonWriteOffReportData> _writeOffActReportService;
         private readonly IReportService<IResidualValueReportData> _residualValueReportService;
@@ -41,13 +34,8 @@ namespace Mil.Paperwork.UI.Managers
             InvoiceReportService invoiceReportService,
             Handover23ReportService handover23ReportService,
             WriteOffOrderReportService writeOffOrderReportService,
-            EASReportService easReportService,
-            IReportHistoryService reportHistoryService,
-            IDialogService dialogService)
+            EASReportService easReportService)
         {
-            _dialogService = dialogService;
-            _reportHistoryService = reportHistoryService;
-
             _qualityStateReportService = qualityStateReportService;
             _technicalStateReportService = technicalStateReportService;
             _writeOffActReportService = writeOffActReportService;
@@ -63,186 +51,99 @@ namespace Mil.Paperwork.UI.Managers
             _easReportService = easReportService;
         }
 
-        public async void GenerateWriteOffReport(ObsoleteWriteOffReportData reportData)
+        public ReportGenerationResult GenerateResidualValueReport(IResidualValueReportData reportData)
         {
-            try
-            {
-                var qualityStateReportResult = _qualityStateReportService.TryGenerateReport(reportData);
-                var technicalStateReportResult = _technicalStateReportService.TryGenerateReport(reportData);
-                var residualValueReportResult = _residualValueReportService.TryGenerateReport(reportData);
-                var assetValuationReportResult = _valuationReportService.TryGenerateReport(reportData);
-                var dismantlingReportResult = _dismantlingReportService.TryGenerateReport(reportData);
-
-                string qualityStateReportResultStatus, technicalStateReportResultStatus, residualValueReportResultStatus, assetValuationReportResultStatus, dismantlingReportResultStatus;
-
-                qualityStateReportResultStatus = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.QualityStateReportName, qualityStateReportResult);
-                technicalStateReportResultStatus = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.TechnicalStateReportName, technicalStateReportResult);
-                residualValueReportResultStatus = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.ResidualValueReportName, residualValueReportResult);
-                assetValuationReportResultStatus = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.ValuationReportName, assetValuationReportResult);
-                dismantlingReportResultStatus = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.DismantlingReportName, dismantlingReportResult);
-
-                var message = $"{residualValueReportResultStatus}\n{technicalStateReportResultStatus}\n{qualityStateReportResultStatus}\n{assetValuationReportResultStatus}\n{dismantlingReportResultStatus}";
-
-                await _dialogService.ShowMessageAsync(message);
-            }
-            catch (Exception ex)
-            {
-                await _dialogService.ShowMessageAsync($"Помилка генерації звітів: {ex.Message}");
-            }
+            var result = RunReport(_residualValueReportService, reportData);
+            return result;
         }
 
-        public async void GenerateResidualValueReport(IResidualValueReportData reportData, Guid? historyEntryId = null)
+        public ReportGenerationResult GenerateInitialTechnicalStateReport(IInitialTechnicalStateReportData reportData)
         {
-            await RunReportAsync(_residualValueReportService, reportData, TextFormatHelper.ResidualValueReportName,
-                "Помилка генерації звіту", ReportType.ResidualValueReport, historyEntryId);
+            var result = RunReport(_initialTechnicalStateReportService, reportData);
+            return result;
         }
 
-        public async void GenerateInitialTechnicalStateReport(IInitialTechnicalStateReportData reportData, Guid? historyEntryId = null)
+        public ReportGenerationResult GenerateTechnicalStateReport(ITechnicalStateReportData reportData)
         {
-            await RunReportAsync(_initialTechnicalStateReportService, reportData, TextFormatHelper.InitialTechnicalStateReportName,
-                "Помилка генерації звіту", ReportType.TechnicalStateReport, historyEntryId);
+            var result = RunReport(_technicalStateReportService, reportData);
+            return result;
         }
 
-        public async void GenerateTechnicalStateReport(ITechnicalStateReportData reportData, Guid? historyEntryId = null)
+        public ReportGenerationResult GenerateQualityStateReport(ICommonWriteOffReportData reportData)
         {
-            await RunReportAsync(_technicalStateReportService, reportData, TextFormatHelper.TechnicalStateReportName,
-                "Помилка генерації звіту", ReportType.TechnicalStateReport, historyEntryId);
+            var result = RunReport(_qualityStateReportService, reportData);
+            return result;
         }
 
-        public async void GenerateQualityStateReport(ICommonWriteOffReportData reportData)
+        public ReportGenerationResult GenerateWriteOffActReport(ICommonWriteOffReportData reportData)
         {
-            await RunReportAsync(_qualityStateReportService, reportData, TextFormatHelper.QualityStateReportName, "Помилка генерації звіту");
+            var result = RunReport(_writeOffActReportService, reportData);
+            return result;
         }
 
-        public async void GenerateWriteOffActReport(ICommonWriteOffReportData reportData)
+        public ReportGenerationResult GenerateWriteOffPackage(IWriteOffPackageReportData reportData)
         {
-            await RunReportAsync(_writeOffActReportService, reportData, TextFormatHelper.WriteOffActReportName, "Помилка генерації звіту");
+            var result = RunReport(_writeOffReportsPackageService, reportData);
+            return result;
         }
 
-        public async void GenerateWriteOffPackage(IWriteOffPackageReportData reportData, Guid? historyEntryId = null)
+        public ReportGenerationResult GenerateValuationReport(IAssetValuationReportData reportData)
         {
-            await RunReportAsync(_writeOffReportsPackageService, reportData, TextFormatHelper.WriteOffPackageName,
-                "Помилка генерації пакету", ReportType.WriteOffPackage, historyEntryId);
+            var result = RunReport(_valuationReportService, reportData);
+            return result;
         }
 
-        public async void GenerateValuationReport(IAssetValuationReportData reportData, Guid? historyEntryId = null)
+        public ReportGenerationResult GenerateDismantlingReport(IDismantlingReportData reportData)
         {
-            await RunReportAsync(_valuationReportService, reportData, TextFormatHelper.ValuationReportName,
-                "Помилка генерації звіту", ReportType.AssetValuationReport, historyEntryId);
+            var assetDismantlingReportResult = RunReport(_dismantlingReportService, reportData);
+            var assetValuationReportResult = RunReport(_valuationReportService, reportData);
+
+            var combinedFiles = assetDismantlingReportResult.OutputFiles.Concat(assetValuationReportResult.OutputFiles).ToList();
+            var combinedResult = ReportGenerationResult.FromResult(assetDismantlingReportResult.Success, combinedFiles);
+            return combinedResult;
         }
 
-        public async void GenerateDismantlingReport(IDismantlingReportData reportData, Guid? historyEntryId = null)
+        public ReportGenerationResult GenerateCommissioningAct(ICommissioningActReportData reportData)
         {
-            try
-            {
-                var assetDismantlingReportResult = _dismantlingReportService.TryGenerateReport(reportData);
-                var assetValuationReportResult = _valuationReportService.TryGenerateReport(reportData);
-
-                var combinedFiles = assetDismantlingReportResult.OutputFiles.Concat(assetValuationReportResult.OutputFiles).ToList();
-                var combinedResult = ReportGenerationResult.FromResult(assetDismantlingReportResult.Success, combinedFiles);
-                TrySaveGeneratedToHistory(ReportType.AssetDismantlingReport, reportData, combinedResult, historyEntryId);
-
-                var status = TextFormatHelper.GetReportStatusMessage(TextFormatHelper.DismantlingReportName, assetDismantlingReportResult);
-                await _dialogService.ShowMessageAsync(status);
-            }
-            catch (Exception ex)
-            {
-                await _dialogService.ShowMessageAsync($"Помилка генерації звіту: {ex.Message}");
-            }
+            var result = RunReport(_commissioningActService, reportData);
+            return result;
         }
 
-        public async void GenerateCommissioningAct(ICommissioningActReportData reportData, Guid? historyEntryId = null)
+        public ReportGenerationResult GenerateCommissioningAct(IList<ICommissioningActReportData> reportData)
         {
-            await RunReportAsync(_commissioningActService, reportData, TextFormatHelper.CommisioninaActName,
-                "Помилка генерації акту", ReportType.CommissioningAct, historyEntryId);
+            var result = _commissioningActService.TryGenerateReport(reportData);
+            return result;
         }
 
-        public async void GenerateCommissioningAct(IList<ICommissioningActReportData> reportData)
+        public ReportGenerationResult GenerateInvoice(IInvoceReportData reportData)
         {
-            await RunReportAsync(_commissioningActService, reportData, TextFormatHelper.CommisioninaActName, "Помилка генерації акту");
+            var result = RunReport(_invoiceReportService, reportData);
+            return result;
         }
 
-        public async void GenerateInvoice(IInvoceReportData reportData, Guid? historyEntryId = null)
+        public ReportGenerationResult GenerateHandover23Act(IHandoverReportData reportData)
         {
-            await RunReportAsync(_invoiceReportService, reportData, TextFormatHelper.InvoiceName,
-                "Помилка генерації накладної", ReportType.Invoice, historyEntryId);
+            var result = RunReport(_handover23ReportService, reportData);
+            return result;
         }
 
-        public async void GenerateHandover23Act(IHandoverReportData reportData, Guid? historyEntryId = null)
+        public ReportGenerationResult GenerateWriteOffOrder(IWriteOffOrderReportData reportData)
         {
-            await RunReportAsync(_handover23ReportService, reportData, TextFormatHelper.Handover23Name,
-                "Помилка генерації акту", ReportType.Handover23Act, historyEntryId);
+            var result = RunReport(_writeOffOrderReportService, reportData);
+            return result;
         }
 
-        public async void GenerateWriteOffOrder(IWriteOffOrderReportData reportData, Guid? historyEntryId = null)
+        public ReportGenerationResult GenerateEAS(IEASReportData reportData)
         {
-            await RunReportAsync(_writeOffOrderReportService, reportData, "Наказ про списання",
-                "Помилка генерації наказу", ReportType.WriteOffOrder, historyEntryId);
+            var result = RunReport(_easReportService, reportData);
+            return result;
         }
 
-        public async void GenerateEAS(IEASReportData reportData, Guid? historyEntryId = null)
-        {
-            await RunReportAsync(_easReportService, reportData, "Єдиний акт списання",
-                "Помилка генерації акту", ReportType.EAS, historyEntryId);
-        }
-
-        private async Task RunReportAsync<TData>(
-            IReportService<TData> service,
-            TData reportData,
-            string displayName,
-            string errorPrefix,
-            ReportType reportType,
-            Guid? historyEntryId)
+        private static ReportGenerationResult RunReport<TData>(IReportService<TData> service, TData reportData)
             where TData : IReportData
         {
-            try
-            {
-                var result = service.TryGenerateReport(reportData);
-
-                TrySaveGeneratedToHistory(reportType, reportData, result, historyEntryId);
-
-                var status = TextFormatHelper.GetReportStatusMessage(displayName, result);
-                await _dialogService.ShowMessageAsync(status);
-            }
-            catch (Exception ex)
-            {
-                await _dialogService.ShowMessageAsync($"{errorPrefix}: {ex.Message}");
-            }
-        }
-
-        private async Task RunReportAsync<TData>(
-            IReportService<TData> service,
-            TData reportData,
-            string displayName,
-            string errorPrefix)
-        {
-            try
-            {
-                var result = service.TryGenerateReport(reportData);
-
-                var status = TextFormatHelper.GetReportStatusMessage(displayName, result);
-                await _dialogService.ShowMessageAsync(status);
-            }
-            catch (Exception ex)
-            {
-                await _dialogService.ShowMessageAsync($"{errorPrefix}: {ex.Message}");
-            }
-        }
-
-        private void TrySaveGeneratedToHistory(ReportType reportType, IReportData reportData, ReportGenerationResult result, Guid? historyEntryId)
-        {
-            if (result?.Success != true)
-            {
-                return;
-            }
-
-            try
-            {
-                _reportHistoryService.SaveGenerated(reportType, reportData, result.OutputFiles, historyEntryId);
-            }
-            catch (Exception)
-            {
-            }
+            var result = service.TryGenerateReport(reportData);
+            return result;
         }
     }
 }
