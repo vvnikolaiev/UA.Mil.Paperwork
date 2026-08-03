@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
-    internal class AssetTechnicalStateViewModel : AssetInitialTechnicalStateViewModel, IReportDataLoadable<IWriteOffPackageReportData>
+    internal class AssetTechnicalStateViewModel : AssetInitialTechnicalStateViewModel, IReportDataLoadable<WriteOffPackageTabData>
     {
         private readonly ReportManager _reportManager;
 
@@ -162,9 +162,23 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         protected override IReportData BuildReportData()
         {
             var assets = AssetsTable.AssetsCollection.Select(x => x.ToAssetInfo(EventType)).ToArray();
-            var reportData = BuildWriteOffPackageData(assets, string.Empty);
+            var packageData = BuildWriteOffPackageData(assets, string.Empty);
 
-            return reportData;
+            var tabData = new WriteOffPackageTabData
+            {
+                PackageData = packageData,
+                Reason = _reason,
+                EventType = EventType,
+                GenerateWriteOffPackage = GenerateWriteOffPackage,
+                GenerateWriteOffActs = GenerateWriteOffActs,
+                WriteOffRegNumber = WriteOffRegNumber,
+                WriteOffDocNumber = WriteOffDocNumber,
+                GenerateQualityStateReportInstead = GenerateQualityStateReportInstead,
+                QSRRegNumber = QSRRegNumber,
+                QSRDocNumber = QSRDocNumber
+            };
+
+            return tabData;
         }
 
         protected override async Task GenerateReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
@@ -287,16 +301,18 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             return writeOffPackageData;
         }
 
-        public void LoadReportData(IWriteOffPackageReportData data)
+        public void LoadReportData(WriteOffPackageTabData data)
         {
             WithDirtyTrackingSuspended(() =>
             {
-                DocumentDate = data.DocumentDate;
-                EventDate = data.EventDate;
-                OrdenNumber = data.OrdenNumber;
-                OrdenDate = data.OrdenDate;
+                var packageData = data.PackageData;
 
-                var extract = data.BookOfLossesExtractData;
+                DocumentDate = packageData.DocumentDate;
+                EventDate = packageData.EventDate;
+                OrdenNumber = packageData.OrdenNumber;
+                OrdenDate = packageData.OrdenDate;
+
+                var extract = packageData.BookOfLossesExtractData;
                 if (extract != null)
                 {
                     BookOfLossesYear = extract.Year;
@@ -305,7 +321,17 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                     BookOfLossesExtractDate = new DateTimeOffset(extract.RecordDate);
                 }
 
-                AssetsTable.LoadAssets(data.Assets ?? []);
+                AssetsTable.LoadAssets(packageData.Assets ?? []);
+
+                Reason = data.Reason;
+                EventType = data.EventType;
+                GenerateWriteOffPackage = data.GenerateWriteOffPackage;
+                GenerateWriteOffActs = data.GenerateWriteOffActs;
+                WriteOffRegNumber = data.WriteOffRegNumber;
+                WriteOffDocNumber = data.WriteOffDocNumber;
+                GenerateQualityStateReportInstead = data.GenerateQualityStateReportInstead;
+                QSRRegNumber = data.QSRRegNumber;
+                QSRDocNumber = data.QSRDocNumber;
             });
         }
 

@@ -24,10 +24,12 @@ namespace Mil.Paperwork.DataAccess.Conversions
         {
             var result = new List<IReportData>();
 
-            if (source is not IWriteOffPackageReportData writeOffPackageData)
+            if (source is not WriteOffPackageTabData tabData)
             {
                 return result;
             }
+
+            var writeOffPackageData = tabData.PackageData;
 
             var allServices = _reportDataService.GetAllServices();
             var serviceKey = !string.IsNullOrEmpty(writeOffPackageData.ServiceKey) && allServices.ContainsKey(writeOffPackageData.ServiceKey)

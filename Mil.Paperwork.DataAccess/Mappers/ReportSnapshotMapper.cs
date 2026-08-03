@@ -15,7 +15,7 @@ namespace Mil.Paperwork.DataAccess.Mappers
                 IResidualValueReportData residualValueData => ResidualValueSnapshotMapper.ToSnapshot(residualValueData),
                 IInitialTechnicalStateReportData initialTechnicalStateData => InitialTechnicalStateSnapshotMapper.ToSnapshot(initialTechnicalStateData),
                 ITechnicalStateReportData technicalStateData => TechnicalStateSnapshotMapper.ToSnapshot(technicalStateData),
-                IWriteOffPackageReportData writeOffPackageData => WriteOffPackageSnapshotMapper.ToSnapshot(writeOffPackageData),
+                WriteOffPackageTabData writeOffPackageData => WriteOffPackageSnapshotMapper.ToSnapshot(writeOffPackageData),
                 ICommissioningActReportData commissioningActData => CommissioningActSnapshotMapper.ToSnapshot(commissioningActData),
                 IDismantlingReportData dismantlingData => DismantlingSnapshotMapper.ToSnapshot(dismantlingData),
                 IAssetValuationReportData valuationData => ValuationSnapshotMapper.ToSnapshot(valuationData),

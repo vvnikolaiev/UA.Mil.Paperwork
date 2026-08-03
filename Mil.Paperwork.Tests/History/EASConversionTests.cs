@@ -167,7 +167,7 @@ namespace Mil.Paperwork.Tests.History
             };
             var conversion = new WriteOffPackageToEASConversion(new StubReportDataService(services, selectedServiceKey: "other"));
 
-            var source = new WriteOffPackageReportData
+            var packageData = new WriteOffPackageReportData
             {
                 EventDate = new DateTime(2026, 5, 20),
                 OrdenNumber = 7,
@@ -175,13 +175,14 @@ namespace Mil.Paperwork.Tests.History
                 ServiceKey = "svc-1",
                 Assets = [CreateAsset("Телевізор", "SN-1")]
             };
+            var source = new WriteOffPackageTabData { PackageData = packageData };
 
             var results = conversion.Convert(source);
 
             var easData = Assert.IsType<EASReportData>(Assert.Single(results));
-            Assert.Equal(source.EventDate, easData.EventDate);
+            Assert.Equal(packageData.EventDate, easData.EventDate);
             Assert.Equal("7", easData.OrdenNum);
-            Assert.Equal(source.OrdenDate, easData.OrdenDate);
+            Assert.Equal(packageData.OrdenDate, easData.OrdenDate);
             Assert.Empty(easData.Witnesses);
 
             var service = Assert.Single(easData.Services);
@@ -206,12 +207,13 @@ namespace Mil.Paperwork.Tests.History
             };
             var conversion = new WriteOffPackageToEASConversion(new StubReportDataService(services, selectedServiceKey: "default-svc"));
 
-            var source = new WriteOffPackageReportData
+            var packageData = new WriteOffPackageReportData
             {
                 EventDate = new DateTime(2026, 5, 20),
                 ServiceKey = string.Empty,
                 Assets = [CreateAsset("Антена", "SN-2")]
             };
+            var source = new WriteOffPackageTabData { PackageData = packageData };
 
             var results = conversion.Convert(source);
 

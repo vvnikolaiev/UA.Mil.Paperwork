@@ -210,7 +210,7 @@ namespace Mil.Paperwork.Tests.History
         [Fact]
         public void WriteOffPackage_RoundTrip_PreservesBookExtract()
         {
-            var data = new WriteOffPackageReportData
+            var packageData = new WriteOffPackageReportData
             {
                 Assets = new List<IAssetInfo> { CreateAsset() },
                 DocumentDate = new DateTime(2026, 04, 01),
@@ -226,15 +226,16 @@ namespace Mil.Paperwork.Tests.History
                 },
                 DestinationFolder = "C:\\Out"
             };
+            var data = new WriteOffPackageTabData { PackageData = packageData };
 
             var snapshot = ReportSnapshotMapper.ToSnapshot(ReportType.WriteOffPackage, data);
-            var restored = Assert.IsType<WriteOffPackageReportData>(ReportSnapshotMapper.ToReportData(snapshot));
+            var restored = Assert.IsType<WriteOffPackageTabData>(ReportSnapshotMapper.ToReportData(snapshot)).PackageData;
 
-            Assert.Equal(data.DocumentDate, restored.DocumentDate);
-            Assert.Equal(data.EventDate, restored.EventDate);
-            Assert.Equal(data.OrdenNumber, restored.OrdenNumber);
-            Assert.Equal(data.OrdenDate, restored.OrdenDate);
-            AssertAssetEqual(data.Assets[0], restored.Assets[0]);
+            Assert.Equal(packageData.DocumentDate, restored.DocumentDate);
+            Assert.Equal(packageData.EventDate, restored.EventDate);
+            Assert.Equal(packageData.OrdenNumber, restored.OrdenNumber);
+            Assert.Equal(packageData.OrdenDate, restored.OrdenDate);
+            AssertAssetEqual(packageData.Assets[0], restored.Assets[0]);
 
             Assert.NotNull(restored.BookOfLossesExtractData);
             Assert.Equal(2026, restored.BookOfLossesExtractData.Year);
@@ -246,17 +247,82 @@ namespace Mil.Paperwork.Tests.History
         [Fact]
         public void WriteOffPackage_RoundTrip_PreservesMissingBookExtract()
         {
-            var data = new WriteOffPackageReportData
+            var packageData = new WriteOffPackageReportData
             {
                 Assets = new List<IAssetInfo>(),
                 BookOfLossesExtractData = null,
                 DestinationFolder = "C:\\Out"
             };
+            var data = new WriteOffPackageTabData { PackageData = packageData };
 
             var snapshot = ReportSnapshotMapper.ToSnapshot(ReportType.WriteOffPackage, data);
-            var restored = Assert.IsType<WriteOffPackageReportData>(ReportSnapshotMapper.ToReportData(snapshot));
+            var restored = Assert.IsType<WriteOffPackageTabData>(ReportSnapshotMapper.ToReportData(snapshot)).PackageData;
 
             Assert.Null(restored.BookOfLossesExtractData);
+        }
+
+        [Fact]
+        public void WriteOffPackage_RoundTrip_PreservesTabFields()
+        {
+            var packageData = new WriteOffPackageReportData
+            {
+                Assets = new List<IAssetInfo> { CreateAsset() },
+                DocumentDate = new DateTime(2026, 04, 01),
+                EventDate = new DateTime(2026, 03, 15),
+                OrdenNumber = 7,
+                OrdenDate = new DateTime(2026, 03, 20),
+                DestinationFolder = "C:\\Out"
+            };
+            var data = new WriteOffPackageTabData
+            {
+                PackageData = packageData,
+                Reason = "Втрачено під час обстрілу",
+                EventType = EventType.Lost,
+                GenerateWriteOffPackage = false,
+                GenerateWriteOffActs = false,
+                WriteOffRegNumber = "РЕГ-1",
+                WriteOffDocNumber = "ДОК-1",
+                GenerateQualityStateReportInstead = true,
+                QSRRegNumber = "РЕГ-2",
+                QSRDocNumber = "ДОК-2"
+            };
+
+            var snapshot = ReportSnapshotMapper.ToSnapshot(ReportType.WriteOffPackage, data);
+            var restored = Assert.IsType<WriteOffPackageTabData>(ReportSnapshotMapper.ToReportData(snapshot));
+
+            Assert.Equal(data.Reason, restored.Reason);
+            Assert.Equal(data.EventType, restored.EventType);
+            Assert.Equal(data.GenerateWriteOffPackage, restored.GenerateWriteOffPackage);
+            Assert.Equal(data.GenerateWriteOffActs, restored.GenerateWriteOffActs);
+            Assert.Equal(data.WriteOffRegNumber, restored.WriteOffRegNumber);
+            Assert.Equal(data.WriteOffDocNumber, restored.WriteOffDocNumber);
+            Assert.Equal(data.GenerateQualityStateReportInstead, restored.GenerateQualityStateReportInstead);
+            Assert.Equal(data.QSRRegNumber, restored.QSRRegNumber);
+            Assert.Equal(data.QSRDocNumber, restored.QSRDocNumber);
+        }
+
+        [Fact]
+        public void WriteOffPackage_LegacySnapshotWithoutTabFields_RestoresViewModelDefaults()
+        {
+            var snapshot = new WriteOffPackageReportSnapshot
+            {
+                Assets = [],
+                DocumentDate = new DateTime(2026, 04, 01),
+                EventDate = new DateTime(2026, 03, 15),
+                DestinationFolder = "C:\\Out"
+            };
+
+            var restored = WriteOffPackageSnapshotMapper.ToReportData(snapshot);
+
+            Assert.Equal(string.Empty, restored.Reason);
+            Assert.Equal(EventType.None, restored.EventType);
+            Assert.True(restored.GenerateWriteOffPackage);
+            Assert.True(restored.GenerateWriteOffActs);
+            Assert.False(restored.GenerateQualityStateReportInstead);
+            Assert.Equal(string.Empty, restored.WriteOffRegNumber);
+            Assert.Equal(string.Empty, restored.WriteOffDocNumber);
+            Assert.Equal(string.Empty, restored.QSRRegNumber);
+            Assert.Equal(string.Empty, restored.QSRDocNumber);
         }
 
         [Fact]

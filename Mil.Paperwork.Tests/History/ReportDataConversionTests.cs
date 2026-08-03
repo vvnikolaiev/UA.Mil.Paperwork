@@ -139,7 +139,8 @@ namespace Mil.Paperwork.Tests.History
 
             var results = conversion.Convert(residualValueData);
 
-            var reportData = Assert.IsType<WriteOffPackageReportData>(Assert.Single(results));
+            var tabData = Assert.IsType<WriteOffPackageTabData>(Assert.Single(results));
+            var reportData = tabData.PackageData;
             Assert.Equal(residualValueData.Assets, reportData.Assets);
             Assert.Equal(residualValueData.EventDate, reportData.EventDate);
             Assert.Equal(DateTime.Now.Date, reportData.DocumentDate);

@@ -1,31 +1,44 @@
 using Mil.Paperwork.DataAccess.DataModels.Snapshots;
 using Mil.Paperwork.Domain.DataModels.Parameters;
 using Mil.Paperwork.Domain.DataModels.ReportData;
+using Mil.Paperwork.Domain.Enums;
 
 namespace Mil.Paperwork.DataAccess.Mappers
 {
     internal static class WriteOffPackageSnapshotMapper
     {
-        public static WriteOffPackageReportSnapshot ToSnapshot(IWriteOffPackageReportData data)
+        public static WriteOffPackageReportSnapshot ToSnapshot(WriteOffPackageTabData data)
         {
+            var packageData = data.PackageData;
+
             var snapshot = new WriteOffPackageReportSnapshot
             {
-                Assets = AssetSnapshotMapper.ToSnapshots(data.Assets),
-                DocumentDate = data.DocumentDate,
-                EventDate = data.EventDate,
-                OrdenNumber = data.OrdenNumber,
-                OrdenDate = data.OrdenDate,
-                BookOfLossesExtract = ToBookExtractSnapshot(data.BookOfLossesExtractData),
-                ServiceKey = data.ServiceKey,
-                DestinationFolder = data.DestinationFolder
+                Assets = AssetSnapshotMapper.ToSnapshots(packageData.Assets),
+                DocumentDate = packageData.DocumentDate,
+                EventDate = packageData.EventDate,
+                OrdenNumber = packageData.OrdenNumber,
+                OrdenDate = packageData.OrdenDate,
+                BookOfLossesExtract = ToBookExtractSnapshot(packageData.BookOfLossesExtractData),
+                ServiceKey = packageData.ServiceKey,
+                DestinationFolder = packageData.DestinationFolder,
+
+                Reason = data.Reason,
+                EventType = (int)data.EventType,
+                GenerateWriteOffPackage = data.GenerateWriteOffPackage,
+                GenerateWriteOffActs = data.GenerateWriteOffActs,
+                WriteOffRegNumber = data.WriteOffRegNumber,
+                WriteOffDocNumber = data.WriteOffDocNumber,
+                GenerateQualityStateReportInstead = data.GenerateQualityStateReportInstead,
+                QSRRegNumber = data.QSRRegNumber,
+                QSRDocNumber = data.QSRDocNumber
             };
 
             return snapshot;
         }
 
-        public static WriteOffPackageReportData ToReportData(WriteOffPackageReportSnapshot snapshot)
+        public static WriteOffPackageTabData ToReportData(WriteOffPackageReportSnapshot snapshot)
         {
-            var data = new WriteOffPackageReportData
+            var packageData = new WriteOffPackageReportData
             {
                 Assets = AssetSnapshotMapper.ToAssetInfos(snapshot.Assets),
                 DocumentDate = snapshot.DocumentDate,
@@ -35,6 +48,20 @@ namespace Mil.Paperwork.DataAccess.Mappers
                 BookOfLossesExtractData = ToBookExtractData(snapshot.BookOfLossesExtract),
                 ServiceKey = snapshot.ServiceKey,
                 DestinationFolder = snapshot.DestinationFolder
+            };
+
+            var data = new WriteOffPackageTabData
+            {
+                PackageData = packageData,
+                Reason = snapshot.Reason,
+                EventType = (EventType)snapshot.EventType,
+                GenerateWriteOffPackage = snapshot.GenerateWriteOffPackage,
+                GenerateWriteOffActs = snapshot.GenerateWriteOffActs,
+                WriteOffRegNumber = snapshot.WriteOffRegNumber,
+                WriteOffDocNumber = snapshot.WriteOffDocNumber,
+                GenerateQualityStateReportInstead = snapshot.GenerateQualityStateReportInstead,
+                QSRRegNumber = snapshot.QSRRegNumber,
+                QSRDocNumber = snapshot.QSRDocNumber
             };
 
             return data;
