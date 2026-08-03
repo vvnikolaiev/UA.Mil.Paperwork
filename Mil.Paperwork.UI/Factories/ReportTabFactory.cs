@@ -147,6 +147,9 @@ namespace Mil.Paperwork.UI.Factories
                 case ReportType.WriteOffOrder:
                     createdTab = new WriteOffOrderViewModel(_reportManager, _dataService, _reportDataService, _reportHistoryService, _dialogService);
                     break;
+                case ReportType.EAS:
+                    createdTab = new EASViewModel(_reportManager, _dataService, _reportDataService, _reportHistoryService, _dialogService, _importService);
+                    break;
                 default:
                     createdTab = null;
                     break;
@@ -185,6 +188,9 @@ namespace Mil.Paperwork.UI.Factories
                     break;
                 case IWriteOffOrderReportData writeOffOrderData when tab is WriteOffOrderViewModel writeOffOrderVm:
                     writeOffOrderVm.LoadReportData(writeOffOrderData);
+                    break;
+                case IEASReportData easData when tab is EASViewModel easVm:
+                    easVm.LoadReportData(easData);
                     break;
             }
         }

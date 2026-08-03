@@ -10,5 +10,6 @@ namespace Mil.Paperwork.Domain.DataModels.ReportData
         IDictionary<MetalType, decimal> MetalCosts { get; set; }
         DateTime EventDate { get; set; }
         int? EventReportNumber { get; set; }
+        string ServiceKey { get; set; }
     }
 }

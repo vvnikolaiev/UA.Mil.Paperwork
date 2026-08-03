@@ -1,9 +1,30 @@
-﻿using Mil.Paperwork.Domain.Helpers;
+﻿using Mil.Paperwork.Domain.DataModels.Assets;
+using Mil.Paperwork.Domain.Helpers;
 
 namespace Mil.Paperwork.Tests.Helpers
 {
     public class ResidualPriceHelperTests
     {
+        [Theory]
+        [InlineData(2016, 2024, 1000, 1238)]
+        [InlineData(2023, 2025, 500, 510)]
+        [InlineData(2025, 2025, 750, 750)]
+        public void CalculateIndexedPrice_MatchesIndexationCoefficientTimesPrice(int startYear, int reportYear, decimal price, decimal expected)
+        {
+            var asset = new AssetInfo
+            {
+                Name = "Тест",
+                ShortName = "Т",
+                MeasurementUnit = "шт.",
+                StartDate = new DateTime(startYear, 1, 1),
+                Price = price
+            };
+
+            var result = ResidualPriceHelper.CalculateIndexedPrice(asset, new DateTime(reportYear, 1, 1));
+
+            Assert.Equal(expected, result);
+        }
+
         [Theory]
         [InlineData(1000, 1.02, 0.99, 5, 5049)]
         [InlineData(999, 1.111, 0.8, 7, 6215.37)]

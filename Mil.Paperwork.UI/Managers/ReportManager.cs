@@ -27,6 +27,7 @@ namespace Mil.Paperwork.UI.Managers
         private readonly IReportService<IHandoverReportData> _handover23ReportService;
         private readonly IReportService<IWriteOffPackageReportData> _writeOffReportsPackageService;
         private readonly IReportService<IWriteOffOrderReportData> _writeOffOrderReportService;
+        private readonly IReportService<IEASReportData> _easReportService;
 
         public ReportManager(
             QualityStateReportService qualityStateReportService,
@@ -40,6 +41,7 @@ namespace Mil.Paperwork.UI.Managers
             InvoiceReportService invoiceReportService,
             Handover23ReportService handover23ReportService,
             WriteOffOrderReportService writeOffOrderReportService,
+            EASReportService easReportService,
             IReportHistoryService reportHistoryService,
             IDialogService dialogService)
         {
@@ -58,6 +60,7 @@ namespace Mil.Paperwork.UI.Managers
             _invoiceReportService = invoiceReportService;
             _handover23ReportService = handover23ReportService;
             _writeOffOrderReportService = writeOffOrderReportService;
+            _easReportService = easReportService;
         }
 
         public async void GenerateWriteOffReport(ObsoleteWriteOffReportData reportData)
@@ -175,6 +178,12 @@ namespace Mil.Paperwork.UI.Managers
         {
             await RunReportAsync(_writeOffOrderReportService, reportData, "Наказ про списання",
                 "Помилка генерації наказу", ReportType.WriteOffOrder, historyEntryId);
+        }
+
+        public async void GenerateEAS(IEASReportData reportData, Guid? historyEntryId = null)
+        {
+            await RunReportAsync(_easReportService, reportData, "Єдиний акт списання",
+                "Помилка генерації акту", ReportType.EAS, historyEntryId);
         }
 
         private async Task RunReportAsync<TData>(

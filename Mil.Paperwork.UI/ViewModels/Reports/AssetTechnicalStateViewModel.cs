@@ -265,7 +265,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                 DestinationFolder = destinationFolder,
                 OrdenNumber = _ordenNumber,
                 OrdenDate = _ordenDate.Date,
-                BookOfLossesExtractData = extract
+                BookOfLossesExtractData = extract,
+                ServiceKey = _reportDataService.GetSelectedService()
             };
 
             return writeOffPackageData;

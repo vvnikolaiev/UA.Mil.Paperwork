@@ -17,6 +17,8 @@ namespace Mil.Paperwork.Domain.DataModels.ReportData
 
         public IBookExtractData? BookOfLossesExtractData { get; set; }
 
+        public string ServiceKey { get; set; } = string.Empty;
+
         public string DestinationFolder { get; set; }
 
         public string GetDestinationPath()

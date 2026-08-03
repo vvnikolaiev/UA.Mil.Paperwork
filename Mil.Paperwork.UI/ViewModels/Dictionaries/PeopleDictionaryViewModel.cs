@@ -143,7 +143,9 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
 
             await _dialogService.OpenImportWindow(importViewModel);
 
-            if (importViewModel.IsValid)
+            // ImportViewModel.IsValid tracks the dialog's live mapping state and flips back to false when
+            // the ComboBoxes unload on close, so it cannot be used to detect a completed import.
+            if (importViewModel.ImportDataResult?.IsSuccessful == true)
             {
                 RefreshCommandExecute();
             }

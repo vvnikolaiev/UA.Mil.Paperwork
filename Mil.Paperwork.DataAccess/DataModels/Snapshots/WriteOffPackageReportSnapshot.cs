@@ -8,6 +8,7 @@ namespace Mil.Paperwork.DataAccess.DataModels.Snapshots
         public int OrdenNumber { get; set; }
         public DateTime OrdenDate { get; set; }
         public BookExtractSnapshot? BookOfLossesExtract { get; set; }
+        public string ServiceKey { get; set; } = string.Empty;
         public string DestinationFolder { get; set; } = string.Empty;
     }
 }

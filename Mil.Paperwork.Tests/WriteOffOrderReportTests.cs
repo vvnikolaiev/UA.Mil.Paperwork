@@ -106,10 +106,10 @@ namespace Mil.Paperwork.Tests
             public void WriteJsonToFile<T>(T _, string __) { }
         }
 
-        private static WriteOffWitnessData[] TestWitnesses =>
+        private static PersonDTO[] TestWitnesses =>
         [
-            new() { Rank = "молодший сержант", Name = "УДАЛОВ Володимир Віталійович", Position = "командир міномета мінометного взводу" },
-            new() { Rank = "старший солдат",   Name = "КОВАЛЬОВ Дмитро Миколайович",  Position = "майстер – номер обслуги мінометного взводу" }
+            new() { Rank = "молодший сержант", LastName = "УДАЛОВ", FirstName = "Володимир", Patronymic = "Віталійович", Position = "командир міномета мінометного взводу" },
+            new() { Rank = "старший солдат",   LastName = "КОВАЛЬОВ", FirstName = "Дмитро", Patronymic = "Миколайович",  Position = "майстер – номер обслуги мінометного взводу" }
         ];
 
         private static WriteOffOrderReportData BuildTestData()

@@ -15,6 +15,7 @@ namespace Mil.Paperwork.DataAccess.Mappers
                 MetalCosts = ToMetalCostsSnapshot(data.MetalCosts),
                 EventDate = data.EventDate,
                 EventReportNumber = data.EventReportNumber,
+                ServiceKey = data.ServiceKey,
                 DestinationFolder = data.DestinationFolder
             };
 
@@ -30,6 +31,7 @@ namespace Mil.Paperwork.DataAccess.Mappers
                 MetalCosts = ToMetalCosts(snapshot.MetalCosts),
                 EventDate = snapshot.EventDate,
                 EventReportNumber = snapshot.EventReportNumber,
+                ServiceKey = snapshot.ServiceKey,
                 DestinationFolder = snapshot.DestinationFolder
             };
 

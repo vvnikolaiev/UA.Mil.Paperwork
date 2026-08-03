@@ -504,9 +504,9 @@ namespace Mil.Paperwork.Tests.History
                         }
                     }
                 },
-                Witnesses = new List<WriteOffWitnessData>
+                Witnesses = new List<PersonDTO>
                 {
-                    new() { Rank = "солдат", Name = "Олег ШЕВЧЕНКО", Position = "стрілець" }
+                    new() { Rank = "солдат", FirstName = "Олег", LastName = "ШЕВЧЕНКО", Position = "стрілець" }
                 },
                 DestinationFolder = "C:\\Out"
             };
@@ -541,7 +541,87 @@ namespace Mil.Paperwork.Tests.History
 
             var witness = Assert.Single(restored.Witnesses);
             Assert.Equal("солдат", witness.Rank);
-            Assert.Equal("Олег ШЕВЧЕНКО", witness.Name);
+            Assert.Equal("Олег", witness.FirstName);
+            Assert.Equal("ШЕВЧЕНКО", witness.LastName);
+            Assert.Equal("стрілець", witness.Position);
+        }
+
+        [Fact]
+        public void EAS_RoundTrip_PreservesServicesWitnessesAndAssets()
+        {
+            var data = new EASReportData
+            {
+                ReportNum = "17",
+                ReportDate = new DateTime(2026, 06, 01),
+                EventDate = new DateTime(2026, 05, 20),
+                EventTime = "14:30",
+                BattleOrder = "БР-3",
+                BattleOrderDate = new DateTime(2026, 05, 19),
+                SubdivisionName = "1 рота",
+                ReporterRank = "сержант",
+                ReporterName = "Іван КОВАЛЬ",
+                WhatHappened = "артилерійський обстріл",
+                OrdenNum = "5",
+                OrdenDate = new DateTime(2026, 05, 30),
+                Services = new List<EASServiceData>
+                {
+                    new()
+                    {
+                        ServiceName = "служба зв'язку",
+                        ServiceNameGenitive = "служби зв'язку",
+                        HeadRank = "старший лейтенант",
+                        HeadName = "Олександр Шупер",
+                        HeadPosition = "Начальник групи зв'язку",
+                        Assets = new List<EASAssetData>
+                        {
+                            new() { Name = "Радіостанція", Code = "NC-1", MeasurementUnit = "шт.", Category = 2, Count = 2, OriginalPrice = 4000m, ResidualPrice = 3001m }
+                        }
+                    }
+                },
+                Witnesses = new List<PersonDTO>
+                {
+                    new() { Rank = "солдат", LastName = "Шевченко", FirstName = "Олег", Patronymic = "Васильович", Position = "стрілець" }
+                },
+                DestinationFolder = "C:\\Out"
+            };
+
+            var snapshot = ReportSnapshotMapper.ToSnapshot(ReportType.EAS, data);
+            var restored = Assert.IsType<EASReportData>(ReportSnapshotMapper.ToReportData(snapshot));
+
+            Assert.Equal(data.ReportNum, restored.ReportNum);
+            Assert.Equal(data.ReportDate, restored.ReportDate);
+            Assert.Equal(data.EventDate, restored.EventDate);
+            Assert.Equal(data.EventTime, restored.EventTime);
+            Assert.Equal(data.BattleOrder, restored.BattleOrder);
+            Assert.Equal(data.BattleOrderDate, restored.BattleOrderDate);
+            Assert.Equal(data.SubdivisionName, restored.SubdivisionName);
+            Assert.Equal(data.ReporterRank, restored.ReporterRank);
+            Assert.Equal(data.ReporterName, restored.ReporterName);
+            Assert.Equal(data.WhatHappened, restored.WhatHappened);
+            Assert.Equal(data.OrdenNum, restored.OrdenNum);
+            Assert.Equal(data.OrdenDate, restored.OrdenDate);
+
+            var service = Assert.Single(restored.Services);
+            Assert.Equal("служба зв'язку", service.ServiceName);
+            Assert.Equal("служби зв'язку", service.ServiceNameGenitive);
+            Assert.Equal("старший лейтенант", service.HeadRank);
+            Assert.Equal("Олександр Шупер", service.HeadName);
+            Assert.Equal("Начальник групи зв'язку", service.HeadPosition);
+
+            var serviceAsset = Assert.Single(service.Assets);
+            Assert.Equal("Радіостанція", serviceAsset.Name);
+            Assert.Equal("NC-1", serviceAsset.Code);
+            Assert.Equal("шт.", serviceAsset.MeasurementUnit);
+            Assert.Equal(2, serviceAsset.Category);
+            Assert.Equal(2, serviceAsset.Count);
+            Assert.Equal(4000m, serviceAsset.OriginalPrice);
+            Assert.Equal(3001m, serviceAsset.ResidualPrice);
+
+            var witness = Assert.Single(restored.Witnesses);
+            Assert.Equal("солдат", witness.Rank);
+            Assert.Equal("Шевченко", witness.LastName);
+            Assert.Equal("Олег", witness.FirstName);
+            Assert.Equal("Васильович", witness.Patronymic);
             Assert.Equal("стрілець", witness.Position);
         }
 

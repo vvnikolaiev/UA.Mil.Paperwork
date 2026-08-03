@@ -18,7 +18,7 @@ namespace Mil.Paperwork.DataAccess.DataModels.Snapshots
         public string MilUnitApproval { get; set; } = string.Empty;
         public string WhatHappened { get; set; } = string.Empty;
         public List<WriteOffServiceSnapshot> Services { get; set; } = [];
-        public List<WriteOffWitnessSnapshot> Witnesses { get; set; } = [];
+        public List<PersonSnapshot> Witnesses { get; set; } = [];
         public string DestinationFolder { get; set; } = string.Empty;
     }
 }
