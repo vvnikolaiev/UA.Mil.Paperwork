@@ -284,7 +284,7 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
 
         private bool SaveCanExecute()
         {
-            var result = SelectedService != null && SelectedService.AssetType != AssetType.Default;
+            var result = SelectedService != null;
             return result;
         }
 
@@ -360,7 +360,8 @@ namespace Mil.Paperwork.UI.ViewModels.Dictionaries
         private bool SetDefaultCanExecute()
         {
             var result = SelectedService != null
-                && SelectedService.ServiceKey != _defaultServiceKey;
+                && SelectedService.ServiceKey != _defaultServiceKey
+                && SelectedService.AssetType != AssetType.Default;
             return result;
         }
 

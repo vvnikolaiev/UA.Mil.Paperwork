@@ -149,7 +149,7 @@ namespace Mil.Paperwork.Domain.Helpers
 
             if (!String.IsNullOrEmpty(serialNumber))
             {
-                serialNumberText = String.Format(", серійний номер {0}", serialNumber);
+                serialNumberText = String.Format(", с/н {0}", serialNumber);
             }
 
             var result = String.Format("{0}{1}", assetName, serialNumberText);

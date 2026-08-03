@@ -66,6 +66,10 @@
 			<reportViews:WriteOffOrderView />
 		</DataTemplate>
 
+		<DataTemplate DataType="reportViewModels:EASViewModel">
+			<reportViews:EASView />
+		</DataTemplate>
+
 		<DataTemplate DataType="{x:Type reportViewModels:AssetValuationViewModel}">
 			<reportViews:AssetValuationView />
 		</DataTemplate>

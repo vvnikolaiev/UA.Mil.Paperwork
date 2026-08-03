@@ -13,6 +13,7 @@ namespace Mil.Paperwork.DataAccess.DataModels.Snapshots
     [JsonDerivedType(typeof(DismantlingReportSnapshot), "dismantling")]
     [JsonDerivedType(typeof(Handover23ReportSnapshot), "handover23")]
     [JsonDerivedType(typeof(WriteOffOrderReportSnapshot), "writeOffOrder")]
+    [JsonDerivedType(typeof(EASReportSnapshot), "eas")]
     public abstract class ReportSnapshotBase
     {
     }

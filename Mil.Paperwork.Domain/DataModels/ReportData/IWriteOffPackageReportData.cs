@@ -11,5 +11,6 @@ namespace Mil.Paperwork.Domain.DataModels.ReportData
         int OrdenNumber { get; }
         DateTime OrdenDate { get; }
         IBookExtractData BookOfLossesExtractData { get; }
+        string ServiceKey { get; set; }
     }
 }

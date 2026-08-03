@@ -13,6 +13,7 @@ namespace Mil.Paperwork.Common.Factories
                 ImportType.Products => new ProductsImportStrategy(dataService),
                 ImportType.People => new PeopleImportStrategy(dataService),
                 ImportType.Valuation => new ValuationImportStrategy(),
+                ImportType.EASAssets => new EASAssetsImportStrategy(),
                 _ => throw new NotSupportedException()
             };
 

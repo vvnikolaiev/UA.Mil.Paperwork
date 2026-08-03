@@ -185,6 +185,7 @@ namespace Mil.Paperwork.Domain.Helpers
             foreach (var target in targets)
             {
                 var pPr = target.GetFirstChild<ParagraphProperties>();
+                var tabStops = pPr?.GetFirstChild<Tabs>();
 
                 foreach (var bp in paragraphs)
                 {
@@ -200,6 +201,14 @@ namespace Mil.Paperwork.Domain.Helpers
                         }
                     }
 
+                    // The placeholder paragraph's own tab stops (if any) are reused as-is so that
+                    // a literal '\t' inside bp.Text lines up against whatever the template author
+                    // already defined (e.g. a right-aligned name column) — see HEADS_OF_SERVICES_BLOCK.
+                    if (tabStops != null)
+                    {
+                        newPPr.Append((Tabs)tabStops.CloneNode(true));
+                    }
+
                     if (bp.IndentLevel > 0)
                     {
                         newPPr.Append(new Indentation { Left = (bp.IndentLevel * 720).ToString() });
@@ -210,24 +219,7 @@ namespace Mil.Paperwork.Domain.Helpers
 
                     if (!string.IsNullOrEmpty(bp.Text))
                     {
-                        var rPr = new RunProperties();
-                        rPr.Append(new RunFonts
-                        {
-                            Ascii = WordDocumentHelper.DOCUMENT_FONT_NAME,
-                            HighAnsi = WordDocumentHelper.DOCUMENT_FONT_NAME,
-                            ComplexScript = WordDocumentHelper.DOCUMENT_FONT_NAME
-                        });
-                        rPr.Append(new FontSize { Val = (bp.FontSize * 2).ToString() });
-                        rPr.Append(new FontSizeComplexScript { Val = (bp.FontSize * 2).ToString() });
-                        if (bp.IsBold)
-                        {
-                            rPr.Append(new Bold());
-                        }
-
-                        var run = new Run();
-                        run.Append(rPr);
-                        run.Append(new Text(bp.Text) { Space = SpaceProcessingModeValues.Preserve });
-                        newPara.Append(run);
+                        AppendTabAwareRuns(newPara, bp);
                     }
 
                     target.InsertBeforeSelf(newPara);
@@ -235,6 +227,51 @@ namespace Mil.Paperwork.Domain.Helpers
 
                 target.Remove();
             }
+        }
+
+        private static void AppendTabAwareRuns(Paragraph paragraph, BlockParagraph bp)
+        {
+            var segments = bp.Text.Split('\t');
+
+            for (int i = 0; i < segments.Length; i++)
+            {
+                if (i > 0)
+                {
+                    var tabRun = new Run();
+                    tabRun.Append(BuildRunProperties(bp));
+                    tabRun.Append(new TabChar());
+                    paragraph.Append(tabRun);
+                }
+
+                if (segments[i].Length == 0)
+                {
+                    continue;
+                }
+
+                var run = new Run();
+                run.Append(BuildRunProperties(bp));
+                run.Append(new Text(segments[i]) { Space = SpaceProcessingModeValues.Preserve });
+                paragraph.Append(run);
+            }
+        }
+
+        private static RunProperties BuildRunProperties(BlockParagraph bp)
+        {
+            var rPr = new RunProperties();
+            rPr.Append(new RunFonts
+            {
+                Ascii = WordDocumentHelper.DOCUMENT_FONT_NAME,
+                HighAnsi = WordDocumentHelper.DOCUMENT_FONT_NAME,
+                ComplexScript = WordDocumentHelper.DOCUMENT_FONT_NAME
+            });
+            rPr.Append(new FontSize { Val = (bp.FontSize * 2).ToString() });
+            rPr.Append(new FontSizeComplexScript { Val = (bp.FontSize * 2).ToString() });
+            if (bp.IsBold)
+            {
+                rPr.Append(new Bold());
+            }
+
+            return rPr;
         }
 
         private static bool ContainsMergeField(Paragraph para, string fieldName)
@@ -447,15 +484,39 @@ namespace Mil.Paperwork.Domain.Helpers
             return result;
         }
 
-        public WordCell CreateMergedCell(int firstColumn, int count)
+        public WordCell CreateMergedCell(int firstLogicalColumn, int totalSpan)
         {
             var cells = _row.Elements<TableCell>().ToList();
-            if (firstColumn >= cells.Count)
+
+            // Walk cells by logical (gridSpan-aware) column so a merge range that starts or ends
+            // inside a cell that already spans more than one physical column (e.g. a previously
+            // merged "Найменування" cell) is handled correctly — unlike a plain list-index walk,
+            // which would either miss the start cell or remove a cell beyond the intended range.
+            int currentColumn = 0;
+            int startIndex = -1;
+            int endIndexExclusive = cells.Count;
+
+            for (int i = 0; i < cells.Count; i++)
+            {
+                int gridSpan = (int)(cells[i].TableCellProperties?.GridSpan?.Val?.Value ?? 1);
+                if (startIndex == -1 && currentColumn == firstLogicalColumn)
+                {
+                    startIndex = i;
+                }
+                currentColumn += gridSpan;
+                if (startIndex != -1 && currentColumn >= firstLogicalColumn + totalSpan)
+                {
+                    endIndexExclusive = i + 1;
+                    break;
+                }
+            }
+
+            if (startIndex == -1)
             {
                 return WordCell.NoOp;
             }
 
-            var startCell = cells[firstColumn];
+            var startCell = cells[startIndex];
 
             var tcPr = startCell.GetFirstChild<TableCellProperties>();
             if (tcPr == null)
@@ -465,12 +526,11 @@ namespace Mil.Paperwork.Domain.Helpers
             }
 
             tcPr.RemoveAllChildren<GridSpan>();
-            if (count > 1)
-                tcPr.Append(new GridSpan { Val = count });
+            if (totalSpan > 1)
+                tcPr.Append(new GridSpan { Val = totalSpan });
 
-            // Remove continuation cells
-            int lastIdx = Math.Min(firstColumn + count - 1, cells.Count - 1);
-            for (int i = firstColumn + 1; i <= lastIdx; i++)
+            // Remove continuation cells, from the end backwards so earlier indices stay valid.
+            for (int i = endIndexExclusive - 1; i > startIndex; i--)
                 cells[i].Remove();
 
             var result = new WordCell(startCell);

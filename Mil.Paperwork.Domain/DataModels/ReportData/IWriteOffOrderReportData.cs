@@ -1,3 +1,5 @@
+using Mil.Paperwork.Infrastructure.DataModels;
+
 namespace Mil.Paperwork.Domain.DataModels.ReportData
 {
     public interface IWriteOffOrderReportData : IReportData
@@ -18,6 +20,6 @@ namespace Mil.Paperwork.Domain.DataModels.ReportData
         string MilUnitApproval { get; set; }
         string WhatHappened { get; set; }
         IList<WriteOffServiceData> Services { get; set; }
-        IList<WriteOffWitnessData> Witnesses { get; set; }
+        IList<PersonDTO> Witnesses { get; set; }
     }
 }

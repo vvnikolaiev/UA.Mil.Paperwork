@@ -5,5 +5,6 @@
         Products,
         People,
         Valuation,
+        EASAssets,
     }
 }

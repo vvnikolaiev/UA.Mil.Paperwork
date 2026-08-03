@@ -36,6 +36,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
             var reportTypes = new List<ReportItemViewModel>()
             {
                 new(ReportType.WriteOffOrder),
+                new(ReportType.EAS),
                 new(ReportType.ResidualValueReport),
                 new(ReportType.WriteOffPackage),
                 new(ReportType.AssetValuationReport),

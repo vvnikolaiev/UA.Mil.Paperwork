@@ -27,6 +27,8 @@ namespace Mil.Paperwork.Infrastructure.Enums
         [Description("Пакет зі списання")]
         WriteOffPackage = 10,
         [Description("Наказ про списання")]
-        WriteOffOrder = 11
+        WriteOffOrder = 11,
+        [Description("Єдиний акт списання")]
+        EAS = 12
     }
 }

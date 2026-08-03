@@ -293,6 +293,7 @@ namespace Mil.Paperwork.DataAccess.Services
                 ReportType.AssetDismantlingReport => commisions.TechnicalStateCommission,
                 ReportType.CommissioningAct => commisions.TechnicalStateCommission,
                 ReportType.WriteOffPackage => commisions.WriteOffCommission,
+                ReportType.EAS => commisions.WriteOffCommission,
                 _ => dummyCommission
             };
 

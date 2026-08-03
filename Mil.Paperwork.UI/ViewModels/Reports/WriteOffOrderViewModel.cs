@@ -48,7 +48,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         private string _milUnitApproval = string.Empty;
         private string _subdivisionName = string.Empty;
 
-        private WriteOffWitnessViewModel? _selectedWitness;
+        private PersonViewModel? _selectedWitness;
 
         // REPORTER_ — person who filed the incident report (in the "Подія" section)
         private string _reporterRank = string.Empty;
@@ -67,7 +67,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public IList<MeasurementUnitViewModel> AvailableMeasurementUnits { get; }
         public ObservableCollection<PersonViewModel> AvailablePeople { get; }
         public ObservableCollection<WriteOffServiceViewModel> Services { get; }
-        public ObservableCollection<WriteOffWitnessViewModel> Witnesses { get; }
+        public ObservableCollection<PersonViewModel> Witnesses { get; }
 
         public PersonViewModel? SelectedCreator
         {
@@ -138,7 +138,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
         public string CreatorRank { get => _creatorRank; set => SetProperty(ref _creatorRank, value); }
         public string CreatorName { get => _creatorName; set => SetProperty(ref _creatorName, value); }
 
-        public WriteOffWitnessViewModel? SelectedWitness
+        public PersonViewModel? SelectedWitness
         {
             get => _selectedWitness;
             set => SetProperty(ref _selectedWitness, value);
@@ -252,7 +252,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
         private void AddWitness()
         {
-            Witnesses.Add(new WriteOffWitnessViewModel());
+            Witnesses.Add(new PersonViewModel());
         }
 
         private void RemoveSelectedWitness()
@@ -318,7 +318,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                 MilUnitApproval = MilUnitApproval,
                 WhatHappened = WhatHappened,
                 Services = [.. Services.Select(s => s.ToServiceData())],
-                Witnesses = [.. Witnesses.Select(w => w.ToWitnessData())],
+                Witnesses = [.. Witnesses.Select(w => w.ToDTO())],
             };
 
             return reportData;
@@ -361,7 +361,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                 Witnesses.Clear();
                 foreach (var witnessData in data.Witnesses ?? [])
                 {
-                    Witnesses.Add(WriteOffWitnessViewModel.FromWitnessData(witnessData));
+                    Witnesses.Add(new PersonViewModel(witnessData));
                 }
             });
         }

@@ -1,13 +1,14 @@
 ﻿using Mil.Paperwork.Infrastructure.Attributes;
+using Mil.Paperwork.Infrastructure.Helpers;
 
 namespace Mil.Paperwork.Infrastructure.DataModels
 {
     public class PersonDTO : IPerson
     {
-        [ImportColumn("Ім'я", isReqired: true)]
+        [ImportColumn("Ім'я", isRequired: true)]
         public string FirstName { get; set; }
 
-        [ImportColumn("Прізвище", isReqired: true)]
+        [ImportColumn("Прізвище", isRequired: true)]
         public string LastName { get; set; }
 
         [ImportColumn("По-батькові")]
@@ -15,30 +16,18 @@ namespace Mil.Paperwork.Infrastructure.DataModels
 
         public string FullName => $"{FirstName} {LastName?.ToUpper()}";
 
-        [ImportColumn("Посада", isReqired: false)]
+        [ImportColumn("Посада", isRequired: false)]
         public string Position { get; set; }
 
-        [ImportColumn("Звання", isReqired: false)]
+        [ImportColumn("Звання", isRequired: false)]
         public string Rank { get; set; }
 
         public PersonDTO(string fullName, string position, string rank) : this()
         {
-            var name = fullName?.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            if (name != null && name.Length > 0)
-            {
-                // Ігор ПЕТРЕНКО
-                // ПЕТРЕНКО Ігор Володимирович
-                // Петренко
-                LastName = name.Length == 1 || name.Length == 3 ? name[0] : name[1];
-                FirstName = name.Length == 2 ? name[0] : name.Length == 3 ? name[1] : string.Empty;
-                Patronymic = name.Length == 3 ? name[1] : string.Empty;
-            }
-            else
-            {
-                FirstName = string.Empty;
-                LastName = string.Empty;
-                Patronymic = string.Empty;
-            }
+            var parsed = PersonNameHelper.ParseFullName(fullName);
+            FirstName = parsed.FirstName;
+            LastName = parsed.LastName;
+            Patronymic = parsed.Patronymic;
 
             Position = position;
             Rank = rank;
