@@ -15,12 +15,14 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
     internal class EASViewModel : BaseReportTabViewModel, IReportDataLoadable<IEASReportData>
     {
         private const string HeaderText = "Єдиний акт списання";
+        private const string GenerateErrorPrefix = "Помилка генерації акту";
 
         private const string GroupTitlePersonnel = "Виконавці";
         private const string CaptionAddService = "Додати службу";
@@ -274,7 +276,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             var reportData = (EASReportData)BuildReportData();
             reportData.DestinationFolder = folderName;
 
-            _reportManager.GenerateEAS(reportData, EnsureHistoryEntryId());
+            var result = await RunReportAsync(HeaderText, GenerateErrorPrefix, () => _reportManager.GenerateEAS(reportData));
+            await RecordGeneratedAsync(result);
 
             ResetDirtyState();
         }

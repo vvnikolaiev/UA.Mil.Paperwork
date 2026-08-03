@@ -3,6 +3,7 @@ using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Infrastructure.Services;
+using Mil.Paperwork.UI.Helpers;
 using Mil.Paperwork.UI.Managers;
 using Mil.Paperwork.UI.ViewModels.Assets;
 using Mil.Paperwork.UI.ViewModels.Controls;
@@ -13,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
@@ -180,7 +182,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             if (_dialogService.TryPickFolder(out var folderName))
             {
-                GenerateReport(folderName);
+                await GenerateReport(folderName);
             }
         }
 
@@ -214,14 +216,17 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             return reportData;
         }
 
-        protected void GenerateReport(string folderName)
+        protected async Task GenerateReport(string folderName)
         {
             var reportData = (InvoceReportData)BuildReportData();
             reportData.DestinationFolder = folderName;
 
             _dataService.AlterPeople([reportData.Recipient, reportData.Transmitter]);
 
-            _reportManager.GenerateInvoice(reportData, EnsureHistoryEntryId());
+            var result = await RunReportAsync(TextFormatHelper.InvoiceName, "Помилка генерації накладної",
+                () => _reportManager.GenerateInvoice(reportData));
+            await RecordGeneratedAsync(result);
+
             ResetDirtyState();
         }
 

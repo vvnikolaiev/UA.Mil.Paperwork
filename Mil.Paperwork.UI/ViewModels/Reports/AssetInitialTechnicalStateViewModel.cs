@@ -14,10 +14,12 @@ using Mil.Paperwork.UI.Managers;
 using Mil.Paperwork.UI.ViewModels.Dictionaries;
 using Mil.Paperwork.UI.ViewModels.Ribbon;
 using Mil.Paperwork.UI.ViewModels.Tabs;
+using Mil.Paperwork.Domain.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
@@ -146,13 +148,13 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             return groups;
         }
 
-        private void GenerateReport()
+        private async void GenerateReport()
         {
             if (_dialogService.TryPickFolder(out var folderName))
             {
                 var assets = AssetsTable.AssetsCollection.Select(x => x.ToAssetInfo(EventType)).ToArray();
 
-                GenerateReport(assets, folderName);
+                await GenerateReport(assets, folderName);
 
                 var productInfos = assets.Select(DTOConvertionHelper.ConvertToProductDTO).ToList();
                 _dataService.AlterProductsData(productInfos);
@@ -181,7 +183,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             return reportData;
         }
 
-        protected virtual void GenerateReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
+        protected virtual async Task GenerateReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
         {
             var reportData = BuildTechnicalStateReportData(assets, destinationFolder);
             var personAccepted = AssetAcceptance.GetAcceptedDTO();
@@ -189,15 +191,17 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             _dataService.AlterPeople([personAccepted, personHanded]);
 
-            _reportManager.GenerateInitialTechnicalStateReport(reportData, EnsureHistoryEntryId());
+            var result = await RunReportAsync(TextFormatHelper.InitialTechnicalStateReportName, "Помилка генерації звіту",
+                () => _reportManager.GenerateInitialTechnicalStateReport(reportData));
+            await RecordGeneratedAsync(result);
 
-            GenerateInvoiceReport(assets, destinationFolder, personAccepted, personHanded);
+            await GenerateInvoiceReport(assets, destinationFolder, personAccepted, personHanded);
 
-            GenerateComissioningActReport(assets, destinationFolder, personAccepted, personHanded);
+            await GenerateComissioningActReport(assets, destinationFolder, personAccepted, personHanded);
             ResetDirtyState();
         }
 
-        private void GenerateComissioningActReport(IEnumerable<IAssetInfo> assets, string destinationFolder, PersonDTO personAccepted, PersonDTO personHanded)
+        private async Task GenerateComissioningActReport(IEnumerable<IAssetInfo> assets, string destinationFolder, PersonDTO personAccepted, PersonDTO personHanded)
         {
             if (IsCommissioningActNeeded)
             {
@@ -238,11 +242,12 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                 }
 
 
-                _reportManager.GenerateCommissioningAct(commissioningActDataList);
+                await RunReportAsync(TextFormatHelper.CommisioninaActName, "Помилка генерації акту",
+                    () => _reportManager.GenerateCommissioningAct(commissioningActDataList));
             }
         }
 
-        private void GenerateInvoiceReport(IEnumerable<IAssetInfo> assets, string destinationFolder, PersonDTO personAccepted, PersonDTO personHanded)
+        private async Task GenerateInvoiceReport(IEnumerable<IAssetInfo> assets, string destinationFolder, PersonDTO personAccepted, PersonDTO personHanded)
         {
             if (IsInvoiceNeeded)
             {
@@ -259,7 +264,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                     DestinationFolder = destinationFolder,
                 };
 
-                _reportManager.GenerateInvoice(invoiceReportData);
+                await RunReportAsync(TextFormatHelper.InvoiceName, "Помилка генерації накладної",
+                    () => _reportManager.GenerateInvoice(invoiceReportData));
             }
         }
 

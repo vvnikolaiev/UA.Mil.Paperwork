@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
@@ -135,18 +136,18 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             return reportData;
         }
 
-        private void GenerateReport()
+        private async void GenerateReport()
         {
             var reportData = (ResidualValueReportData)BuildReportData();
 
             reportData.DestinationFolder = Path.Combine(reportData.DestinationFolder, $"{reportData.EventDate:yyyyMMdd} {reportData.EventReportNumber}");
 
-            GenerateReport(reportData);
+            await GenerateReport(reportData);
 
             ResetDirtyState();
         }
 
-        private void GenerateReport(IResidualValueReportData reportData)
+        private async Task GenerateReport(IResidualValueReportData reportData)
         {
             if (reportData == null || reportData.Assets == null)
             {
@@ -155,7 +156,10 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             var productInfos = reportData.Assets.Select(DTOConvertionHelper.ConvertToProductDTO).ToList();
             _dataService.AlterProductsData(productInfos);
-            _reportManager.GenerateResidualValueReport(reportData, EnsureHistoryEntryId());
+
+            var result = await RunReportAsync(TextFormatHelper.ResidualValueReportName, "Помилка генерації звіту",
+                () => _reportManager.GenerateResidualValueReport(reportData));
+            await RecordGeneratedAsync(result);
         }
 
         public void LoadReportData(IResidualValueReportData data)

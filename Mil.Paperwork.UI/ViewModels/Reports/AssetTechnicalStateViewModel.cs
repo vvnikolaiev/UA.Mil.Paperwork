@@ -1,15 +1,18 @@
 ﻿using Mil.Paperwork.Domain.DataModels.Assets;
 using Mil.Paperwork.Domain.DataModels.Parameters;
 using Mil.Paperwork.Domain.DataModels.ReportData;
+using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Factories;
+using Mil.Paperwork.UI.Helpers;
 using Mil.Paperwork.UI.Managers;
 using Mil.Paperwork.UI.ViewModels.Tabs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
@@ -164,34 +167,40 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             return reportData;
         }
 
-        protected override void GenerateReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
+        protected override async Task GenerateReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
         {
+            var results = new List<ReportGenerationResult>();
+
             if (GenerateWriteOffPackage)
             {
-                GenerateWriteOffReports(assets, destinationFolder);
+                var packageResult = await GenerateWriteOffReports(assets, destinationFolder);
+                results.Add(packageResult);
             }
 
             // inroduce a new parameter to IAssetInfo to mark assets for write-off, and use it here instead of checking SerialNumber
             var valuableAssets = _generateWriteOffActs ? [.. assets.Where(x => !string.IsNullOrEmpty(x.SerialNumber))] : assets;
             var writeOffAssets = _generateWriteOffActs ? [.. assets.Where(x => string.IsNullOrEmpty(x.SerialNumber))] : Array.Empty<IAssetInfo>();
 
-            if (GenerateQualityStateReportInstead)
-            {
-                GenerateQualityStateReport(valuableAssets, destinationFolder);
-            }
-            else
-            {
-                GenerateTechnicalStateReport(valuableAssets, destinationFolder);
-            }
+            var mainResult = GenerateQualityStateReportInstead
+                ? await GenerateQualityStateReport(valuableAssets, destinationFolder)
+                : await GenerateTechnicalStateReport(valuableAssets, destinationFolder);
+            results.Add(mainResult);
 
             if (_generateWriteOffActs && writeOffAssets.Any())
             {
-                GenerateWriteOffActReport(writeOffAssets, destinationFolder);
+                var writeOffActResult = await GenerateWriteOffActReport(writeOffAssets, destinationFolder);
+                results.Add(writeOffActResult);
             }
+
+            var combinedSuccess = results.All(x => x.Success);
+            var combinedFiles = results.SelectMany(x => x.OutputFiles).ToList();
+            var combinedResult = ReportGenerationResult.FromResult(combinedSuccess, combinedFiles);
+            await RecordGeneratedAsync(combinedResult);
+
             ResetDirtyState();
         }
 
-        private void GenerateQualityStateReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
+        private async Task<ReportGenerationResult> GenerateQualityStateReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
         {
             var reportData = new CommonWriteOffReportData
             {
@@ -207,10 +216,12 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                 OrdenDate = _ordenDate.Date,
             };
 
-            _reportManager.GenerateQualityStateReport(reportData);
+            var result = await RunReportAsync(TextFormatHelper.QualityStateReportName, "Помилка генерації звіту",
+                () => _reportManager.GenerateQualityStateReport(reportData));
+            return result;
         }
 
-        private void GenerateWriteOffActReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
+        private async Task<ReportGenerationResult> GenerateWriteOffActReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
         {
             var writeOffReportData = new CommonWriteOffReportData
             {
@@ -226,10 +237,12 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                 OrdenDate = _ordenDate.Date,
             };
 
-            _reportManager.GenerateWriteOffActReport(writeOffReportData);
+            var result = await RunReportAsync(TextFormatHelper.WriteOffActReportName, "Помилка генерації звіту",
+                () => _reportManager.GenerateWriteOffActReport(writeOffReportData));
+            return result;
         }
 
-        private void GenerateTechnicalStateReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
+        private async Task<ReportGenerationResult> GenerateTechnicalStateReport(IEnumerable<IAssetInfo> assets, string destinationFolder)
         {
             var reportData = new TechnicalStateReportData
             {
@@ -244,7 +257,9 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                 GenerateWriteOffActs = _generateWriteOffActs
             };
 
-            _reportManager.GenerateTechnicalStateReport(reportData);
+            var result = await RunReportAsync(TextFormatHelper.TechnicalStateReportName, "Помилка генерації звіту",
+                () => _reportManager.GenerateTechnicalStateReport(reportData));
+            return result;
         }
 
         private WriteOffPackageReportData BuildWriteOffPackageData(IEnumerable<IAssetInfo> assets, string destinationFolder)
@@ -294,11 +309,13 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             });
         }
 
-        private void GenerateWriteOffReports(IEnumerable<IAssetInfo> assets, string destinationFolder)
+        private async Task<ReportGenerationResult> GenerateWriteOffReports(IEnumerable<IAssetInfo> assets, string destinationFolder)
         {
             var writeOffPackageData = BuildWriteOffPackageData(assets, destinationFolder);
 
-            _reportManager.GenerateWriteOffPackage(writeOffPackageData, EnsureHistoryEntryId());
+            var result = await RunReportAsync(TextFormatHelper.WriteOffPackageName, "Помилка генерації пакету",
+                () => _reportManager.GenerateWriteOffPackage(writeOffPackageData));
+            return result;
         }
     }
 }

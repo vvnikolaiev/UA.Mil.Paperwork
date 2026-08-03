@@ -22,6 +22,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
     internal class WriteOffOrderViewModel : BaseReportTabViewModel, IReportDataLoadable<IWriteOffOrderReportData>
     {
         private const string HeaderText = "Наказ про списання";
+        private const string GenerateErrorPrefix = "Помилка генерації наказу";
 
         private const string GroupTitlePersonnel = "Виконавці";
         private const string CaptionAddService = "Додати службу";
@@ -293,7 +294,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             reportData.DestinationFolder = folderName;
 
             _dataService.AlterPeople([creatorDto]);
-            _reportManager.GenerateWriteOffOrder(reportData, EnsureHistoryEntryId());
+            var result = await RunReportAsync(HeaderText, GenerateErrorPrefix, () => _reportManager.GenerateWriteOffOrder(reportData));
+            await RecordGeneratedAsync(result);
 
             ResetDirtyState();
         }

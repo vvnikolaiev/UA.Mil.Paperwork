@@ -7,6 +7,7 @@ using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Infrastructure.Services;
+using Mil.Paperwork.UI.Helpers;
 using Mil.Paperwork.UI.Managers;
 using Mil.Paperwork.UI.ViewModels.Controls;
 using Mil.Paperwork.UI.ViewModels.Dictionaries;
@@ -16,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
@@ -342,7 +344,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             if (_dialogService.TryPickFolder(out var folderName))
             {
-                GenerateReport(folderName);
+                await GenerateReport(folderName);
             }
         }
 
@@ -385,7 +387,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             return reportData;
         }
 
-        protected virtual void GenerateReport(string folderName)
+        protected virtual async Task GenerateReport(string folderName)
         {
             var reportData = (CommissioningActReportData)BuildReportData();
             reportData.DestinationFolder = folderName;
@@ -397,7 +399,9 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             _dataService.AlterPeople([personAccepted, personHanded]);
 
-            _reportManager.GenerateCommissioningAct(reportData, EnsureHistoryEntryId());
+            var result = await RunReportAsync(TextFormatHelper.CommisioninaActName, "Помилка генерації акту",
+                () => _reportManager.GenerateCommissioningAct(reportData));
+            await RecordGeneratedAsync(result);
 
             ResetDirtyState();
 
@@ -423,7 +427,8 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
                 };
 
-                _reportManager.GenerateInitialTechnicalStateReport(tsReportData);
+                await RunReportAsync(TextFormatHelper.InitialTechnicalStateReportName, "Помилка генерації звіту",
+                    () => _reportManager.GenerateInitialTechnicalStateReport(tsReportData));
             }
 
         }

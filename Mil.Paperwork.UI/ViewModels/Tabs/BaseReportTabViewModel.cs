@@ -1,12 +1,14 @@
 using Mil.MVVM.Common;
 using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Domain.DataModels.ReportData;
+using Mil.Paperwork.Domain.Services;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.Infrastructure.Services;
 using Mil.Paperwork.UI.Helpers;
 using Mil.Paperwork.UI.ViewModels.Ribbon;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Mil.Paperwork.UI.ViewModels.Tabs
 {
@@ -16,6 +18,7 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         private const string DraftSaveFailedMessageFormat = "Не вдалося зберегти чернетку: {0}";
         private const string DraftStatusTextFormat = "Чернетку збережено о {0}";
         private const string DraftStatusTimeFormat = "HH:mm";
+        private const string HistoryRecordFailedMessageFormat = "Документи сформовано, але не вдалося зберегти запис в історії: {0}";
 
         private const string GroupTitleDocument = "Документ";
         private const string GroupTitleTable = "Таблиця";
@@ -82,6 +85,40 @@ namespace Mil.Paperwork.UI.ViewModels.Tabs
         }
 
         protected abstract IReportData BuildReportData();
+
+        protected async Task<ReportGenerationResult> RunReportAsync(string displayName, string errorPrefix, Func<ReportGenerationResult> generate)
+        {
+            try
+            {
+                var result = generate();
+                var status = TextFormatHelper.GetReportStatusMessage(displayName, result);
+                await _dialogService.ShowMessageAsync(status);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                await _dialogService.ShowMessageAsync($"{errorPrefix}: {ex.Message}");
+                var failedResult = ReportGenerationResult.Failed();
+                return failedResult;
+            }
+        }
+
+        protected async Task RecordGeneratedAsync(ReportGenerationResult result)
+        {
+            if (result?.Success != true)
+            {
+                return;
+            }
+
+            try
+            {
+                _reportHistoryService.SaveGenerated(HistoryReportType, BuildReportData(), result.OutputFiles, EnsureHistoryEntryId());
+            }
+            catch (Exception ex)
+            {
+                await _dialogService.ShowMessageAsync(string.Format(HistoryRecordFailedMessageFormat, ex.Message));
+            }
+        }
 
         protected Guid EnsureHistoryEntryId()
         {

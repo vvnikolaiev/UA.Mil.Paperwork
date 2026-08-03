@@ -12,6 +12,7 @@ using Mil.Paperwork.UI.ViewModels.Tabs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
@@ -237,13 +238,17 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             });
         }
 
-        protected override void GenerateReport(string folderName)
+        protected override async Task GenerateReport(string folderName)
         {
             var reportData = (DismantlingReportData)BuildReportData();
             reportData.DestinationFolder = folderName;
 
             _dataService.SaveValuationData([.. reportData.Dismantlings]);
-            _reportManager.GenerateDismantlingReport(reportData, EnsureHistoryEntryId());
+
+            var result = await RunReportAsync(TextFormatHelper.DismantlingReportName, "Помилка генерації звіту",
+                () => _reportManager.GenerateDismantlingReport(reportData));
+            await RecordGeneratedAsync(result);
+
             ResetDirtyState();
         }
 
