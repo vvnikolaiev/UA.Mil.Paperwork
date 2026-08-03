@@ -6,6 +6,7 @@ using Mil.Paperwork.Infrastructure.DataModels;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Infrastructure.Services;
+using Mil.Paperwork.UI.Helpers;
 using Mil.Paperwork.UI.Managers;
 using Mil.Paperwork.UI.Memento;
 using Mil.Paperwork.UI.ViewModels.Controls;
@@ -16,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
@@ -320,7 +322,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             }
         }
 
-        private void GenerateReportCommandExecute()
+        private async void GenerateReportCommandExecute()
         {
             ValidateData();
             if (IsValid)
@@ -328,7 +330,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
                 // TODO: folderDialog.InitialDirectory = ;
                 if (_dialogService.TryPickFolder(out var folderName))
                 {
-                    GenerateReport(folderName);
+                    await GenerateReport(folderName);
                 }
             }
         }
@@ -373,13 +375,17 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             });
         }
 
-        protected virtual void GenerateReport(string folderName)
+        protected virtual async Task GenerateReport(string folderName)
         {
             var reportData = (AssetValuationReportData)BuildReportData();
             reportData.DestinationFolder = folderName;
 
             _dataService.SaveValuationData(reportData.ValuationData);
-            _reportManager.GenerateValuationReport(reportData, EnsureHistoryEntryId());
+
+            var result = await RunReportAsync(TextFormatHelper.ValuationReportName, "Помилка генерації звіту",
+                () => _reportManager.GenerateValuationReport(reportData));
+            await RecordGeneratedAsync(result);
+
             ResetDirtyState();
         }
 

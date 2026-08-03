@@ -3,6 +3,7 @@ using Mil.Paperwork.Domain.DataModels.ReportData;
 using Mil.Paperwork.Infrastructure.Enums;
 using Mil.Paperwork.DataAccess.Services;
 using Mil.Paperwork.Infrastructure.Services;
+using Mil.Paperwork.UI.Helpers;
 using Mil.Paperwork.UI.Managers;
 using Mil.Paperwork.UI.ViewModels.Ribbon;
 using Mil.Paperwork.UI.ViewModels.Tabs;
@@ -10,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Mil.Paperwork.UI.ViewModels.Reports
 {
@@ -160,7 +162,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
 
             if (_dialogService.TryPickFolder(out var folderName))
             {
-                GenerateReport(folderName);
+                await GenerateReport(folderName);
             }
         }
 
@@ -205,7 +207,7 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             return reportData;
         }
 
-        protected void GenerateReport(string folderName)
+        protected async Task GenerateReport(string folderName)
         {
             var reportData = (HandoverReportData)BuildReportData();
             reportData.DestinationFolder = folderName;
@@ -213,7 +215,10 @@ namespace Mil.Paperwork.UI.ViewModels.Reports
             _dataService.AlterPeople([reportData.PersonResponsible, reportData.PersonReceiver]);
 
             // Generate report
-            _reportManager.GenerateHandover23Act(reportData, EnsureHistoryEntryId());
+            var result = await RunReportAsync(TextFormatHelper.Handover23Name, "Помилка генерації акту",
+                () => _reportManager.GenerateHandover23Act(reportData));
+            await RecordGeneratedAsync(result);
+
             ResetDirtyState();
         }
 

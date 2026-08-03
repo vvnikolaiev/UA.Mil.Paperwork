@@ -19,13 +19,18 @@ namespace Mil.Paperwork.DataAccess.Conversions
             }
 
             var today = DateTime.Now.Date;
-            var reportData = new WriteOffPackageReportData
+            var packageData = new WriteOffPackageReportData
             {
                 Assets = [.. residualValueData.Assets ?? []],
                 EventDate = residualValueData.EventDate,
                 DocumentDate = today,
                 OrdenDate = today,
                 ServiceKey = residualValueData.ServiceKey
+            };
+
+            var reportData = new WriteOffPackageTabData
+            {
+                PackageData = packageData
             };
 
             result.Add(reportData);

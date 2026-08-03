@@ -174,7 +174,7 @@ namespace Mil.Paperwork.UI.Factories
                 case IResidualValueReportData rvData when tab is ResidualValueReportViewModel rvVm:
                     rvVm.LoadReportData(rvData);
                     break;
-                case IWriteOffPackageReportData wopData when tab is AssetTechnicalStateViewModel wopVm:
+                case WriteOffPackageTabData wopData when tab is AssetTechnicalStateViewModel wopVm:
                     wopVm.LoadReportData(wopData);
                     break;
                 case IDismantlingReportData dismantlingData when tab is AssetDismantlingViewModel dismantlingVm:
